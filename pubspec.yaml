@@ -1,4 +1,4 @@
-name: androssy_utils
+name: androssy_widgets
 description: Collection of widget with advanced style and controlling system.
 version: 0.0.2
 homepage: https://github.com/P-YMR/flutter_androssy.git
@@ -10,7 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.18.1
+  cached_network_image: ^3.2.3
+  flutter_svg: ^2.0.6
 
 dev_dependencies:
   flutter_test:
