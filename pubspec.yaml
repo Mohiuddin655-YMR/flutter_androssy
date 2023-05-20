@@ -1,6 +1,6 @@
-name: androssy
-description: Collection of service with advanced style and controlling system.
-version: 0.0.1
+name: androssy_utils
+description: Collection of widget with advanced style and controlling system.
+version: 0.0.2
 homepage: https://github.com/P-YMR/flutter_androssy.git
 
 environment:
@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
