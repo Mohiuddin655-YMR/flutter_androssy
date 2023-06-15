@@ -248,7 +248,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final double? paddingHorizontal, paddingVertical;
   final double? paddingTop, paddingBottom, paddingStart, paddingEnd;
 
-  final double? borderSize;
+  final double? border;
   final double? borderHorizontal, borderVertical;
   final double? borderTop, borderBottom, borderStart, borderEnd;
 
@@ -323,7 +323,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.paddingBottom,
     this.paddingStart,
     this.paddingEnd,
-    this.borderSize,
+    this.border,
     this.borderHorizontal,
     this.borderVertical,
     this.borderTop,
@@ -918,7 +918,7 @@ class ViewController {
     // VIEW BORDER PROPERTIES
     borderColor = view.borderColor;
     borderGradient = view.borderGradient;
-    border = view.borderSize ?? 0;
+    border = view.border ?? 0;
     _borderStart = view.borderStart;
     _borderEnd = view.borderEnd;
     _borderTop = view.borderTop;
