@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' show min, max;
 
+import 'package:badges/badges.dart' as b;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -57,6 +58,8 @@ part 'views/view_pager.dart';
 
 part 'views/widget_wrapper.dart';
 
+part 'widgets/badge_button.dart';
+
 part 'widgets/border_button.dart';
 
 part 'widgets/future_button.dart';
@@ -64,6 +67,8 @@ part 'widgets/future_button.dart';
 part 'widgets/image_button.dart';
 
 part 'widgets/material_icon.dart';
+
+part 'widgets/quantity_button.dart';
 
 part 'widgets/toggle_button.dart';
 

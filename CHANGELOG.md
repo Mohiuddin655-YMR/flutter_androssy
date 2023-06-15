@@ -1,3 +1,3 @@
-## 0.0.3
+## 0.0.4
 
-* Attach some widgets with single part
+* Create some widgets
