@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of '../widgets.dart';
 
 class FutureButton extends StatefulWidget {
   final double? width, height;
@@ -16,14 +16,14 @@ class FutureButton extends StatefulWidget {
   final bool expended;
   final EdgeInsetsGeometry? iconPadding;
   final EdgeInsetsGeometry? indicatorPadding;
-  final IconAlignment iconAlignment;
+  final FBIconAlignment iconAlignment;
   final bool visibleIndicator;
 
-  final bool? Function(ButtonState state)? expendedState;
-  final String? Function(ButtonState state)? textState;
-  final IconData? Function(ButtonState state)? iconState;
-  final Color? Function(ButtonState state)? colorState;
-  final Color? Function(ButtonState state)? backgroundState;
+  final bool? Function(FBState state)? expendedState;
+  final String? Function(FBState state)? textState;
+  final IconData? Function(FBState state)? iconState;
+  final Color? Function(FBState state)? colorState;
+  final Color? Function(FBState state)? backgroundState;
 
   const FutureButton({
     super.key,
@@ -44,7 +44,7 @@ class FutureButton extends StatefulWidget {
     this.iconSize = 18,
     this.iconPadding,
     this.indicatorPadding,
-    this.iconAlignment = IconAlignment.end,
+    this.iconAlignment = FBIconAlignment.end,
     this.visibleIndicator = true,
     this.expendedState,
     this.textState,
@@ -92,7 +92,7 @@ class _FutureButtonState extends State<FutureButton> {
                 children: [
                   FBIcon(
                     visible: isIconAvailable &&
-                        widget.iconAlignment == IconAlignment.start,
+                        widget.iconAlignment == FBIconAlignment.start,
                     state: state,
                     icon: widget.icon,
                     iconState: widget.iconState,
@@ -103,7 +103,8 @@ class _FutureButtonState extends State<FutureButton> {
                         title.isNotEmpty ? widget.iconPadding : EdgeInsets.zero,
                     visibleIndicator: widget.visibleIndicator,
                   ),
-                  if (isExpended && widget.iconAlignment == IconAlignment.start)
+                  if (isExpended &&
+                      widget.iconAlignment == FBIconAlignment.start)
                     const Spacer(),
                   FBText(
                     state: state,
@@ -115,11 +116,11 @@ class _FutureButtonState extends State<FutureButton> {
                     textState: widget.textState,
                     colorState: widget.colorState,
                   ),
-                  if (isExpended && widget.iconAlignment == IconAlignment.end)
+                  if (isExpended && widget.iconAlignment == FBIconAlignment.end)
                     const Spacer(),
                   FBIcon(
                     visible: isIconAvailable &&
-                        widget.iconAlignment == IconAlignment.end,
+                        widget.iconAlignment == FBIconAlignment.end,
                     state: state,
                     icon: widget.icon,
                     iconState: widget.iconState,
@@ -162,27 +163,27 @@ class _FutureButtonState extends State<FutureButton> {
 
   get loaded => setState(() => isLoaded = true);
 
-  ButtonState get state {
+  FBState get state {
     if (isEnabled) {
       if (isLoaded) {
-        return ButtonState.initial;
+        return FBState.initial;
       } else {
-        return ButtonState.loading;
+        return FBState.loading;
       }
     } else {
-      return ButtonState.disabled;
+      return FBState.disabled;
     }
   }
 }
 
 class FBIcon extends StatelessWidget {
-  final ButtonState state;
+  final FBState state;
   final IconData? icon;
   final EdgeInsetsGeometry? padding;
   final Color? color;
   final double? size;
-  final IconData? Function(ButtonState state)? iconState;
-  final Color? Function(ButtonState state)? colorState;
+  final IconData? Function(FBState state)? iconState;
+  final Color? Function(FBState state)? colorState;
   final bool visible;
   final bool visibleIndicator;
 
@@ -206,7 +207,7 @@ class FBIcon extends StatelessWidget {
       visible: visible,
       child: Container(
         padding: padding,
-        child: visibleIndicator && state == ButtonState.loading
+        child: visibleIndicator && state == FBState.loading
             ? SizedBox(
                 width: size,
                 height: size,
@@ -232,9 +233,9 @@ class FBText extends StatelessWidget {
   final String? text;
   final double? textSize;
   final FontWeight? textStyle;
-  final String? Function(ButtonState state)? textState;
-  final Color? Function(ButtonState state)? colorState;
-  final ButtonState state;
+  final String? Function(FBState state)? textState;
+  final Color? Function(FBState state)? colorState;
+  final FBState state;
   final bool visible;
 
   const FBText({
@@ -271,12 +272,12 @@ class FBText extends StatelessWidget {
   }
 }
 
-enum IconAlignment {
+enum FBIconAlignment {
   start,
   end,
 }
 
-enum ButtonState {
+enum FBState {
   initial,
   loading,
   disabled,

@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+part of '../widgets.dart';
 
 class ImageButton extends StatelessWidget {
   final double margin;
@@ -11,11 +10,11 @@ class ImageButton extends StatelessWidget {
   final double size;
   final Color? background, rippleColor, pressedColor, tint;
   final BoxFit? fit;
-  final ImageButtonIconType type;
+  final IBIconType type;
 
-  final IconData? Function(ImageButtonState state)? iconState;
-  final Color? Function(ImageButtonState state)? tintState;
-  final Color? Function(ImageButtonState state)? backgroundState;
+  final IconData? Function(IBState state)? iconState;
+  final Color? Function(IBState state)? tintState;
+  final Color? Function(IBState state)? backgroundState;
 
   final Function(BuildContext context)? onClick;
 
@@ -42,7 +41,7 @@ class ImageButton extends StatelessWidget {
     this.backgroundState,
     this.rippleColor,
     this.pressedColor = const Color(0xFFF2F2F2),
-    this.type = ImageButtonIconType.detect,
+    this.type = IBIconType.detect,
   });
 
   @override
@@ -67,7 +66,7 @@ class ImageButton extends StatelessWidget {
             child: Container(
               alignment: Alignment.center,
               padding: EdgeInsets.all(padding),
-              child: _Icon(
+              child: _IBIcon(
                 icon: src,
                 size: size,
                 tint: tint,
@@ -81,26 +80,26 @@ class ImageButton extends StatelessWidget {
     );
   }
 
-  ImageButtonState get state {
+  IBState get state {
     if (enabled && onClick != null) {
-      return ImageButtonState.enabled;
+      return IBState.enabled;
     } else {
-      return ImageButtonState.disabled;
+      return IBState.disabled;
     }
   }
 }
 
-class _Icon extends StatelessWidget {
+class _IBIcon extends StatelessWidget {
   final dynamic icon;
-  final ImageButtonIconType type;
+  final IBIconType type;
   final Color? tint;
   final double? size;
   final BoxFit? fit;
 
-  const _Icon({
+  const _IBIcon({
     Key? key,
     required this.icon,
-    this.type = ImageButtonIconType.detect,
+    this.type = IBIconType.detect,
     this.tint,
     this.size,
     this.fit,
@@ -109,13 +108,13 @@ class _Icon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (_type) {
-      case ImageButtonIconType.icon:
+      case IBIconType.icon:
         return Icon(
           icon,
           color: tint,
           size: size,
         );
-      case ImageButtonIconType.svg:
+      case IBIconType.svg:
         return SvgPicture.asset(
           icon,
           theme: SvgTheme(currentColor: tint ?? Colors.black),
@@ -123,7 +122,7 @@ class _Icon extends StatelessWidget {
           height: size,
           fit: fit ?? BoxFit.contain,
         );
-      case ImageButtonIconType.image:
+      case IBIconType.image:
         return Image.asset(
           icon,
           color: tint,
@@ -140,19 +139,19 @@ class _Icon extends StatelessWidget {
     }
   }
 
-  ImageButtonIconType get _type {
+  IBIconType get _type {
     final data = icon;
-    if (type == ImageButtonIconType.detect) {
+    if (type == IBIconType.detect) {
       if (data is IconData) {
-        return ImageButtonIconType.icon;
+        return IBIconType.icon;
       } else if (data is String) {
         if (data.contains('.svg')) {
-          return ImageButtonIconType.svg;
+          return IBIconType.svg;
         } else if (data.contains('.png') ||
             data.contains('.jpg') ||
             data.contains('.jpeg') ||
             data.contains('.webp')) {
-          return ImageButtonIconType.image;
+          return IBIconType.image;
         } else {
           return type;
         }
@@ -165,14 +164,14 @@ class _Icon extends StatelessWidget {
   }
 }
 
-enum ImageButtonIconType {
+enum IBIconType {
   detect,
   icon,
   svg,
   image,
 }
 
-enum ImageButtonState {
+enum IBState {
   disabled,
   enabled,
 }

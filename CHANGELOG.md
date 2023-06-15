@@ -1,3 +1,3 @@
-## 0.0.2
+## 0.0.3
 
-* Create some views and layouts
+* Attach some widgets with single part

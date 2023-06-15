@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of '../widgets.dart';
 
 class BorderButton extends StatefulWidget {
   final double? width, height;
@@ -15,13 +15,13 @@ class BorderButton extends StatefulWidget {
   final double iconSize;
   final bool expended;
   final EdgeInsetsGeometry? iconPadding;
-  final IconAlignment iconAlignment;
+  final BBIconAlignment iconAlignment;
   final Color? splashColor;
 
-  final String? Function(ButtonState state)? textState;
-  final IconData? Function(ButtonState state)? iconState;
-  final Color? Function(ButtonState state)? colorState;
-  final Color? Function(ButtonState state)? borderState;
+  final String? Function(BBState state)? textState;
+  final IconData? Function(BBState state)? iconState;
+  final Color? Function(BBState state)? colorState;
+  final Color? Function(BBState state)? borderState;
 
   const BorderButton({
     super.key,
@@ -41,7 +41,7 @@ class BorderButton extends StatefulWidget {
     this.expended = false,
     this.iconSize = 18,
     this.iconPadding,
-    this.iconAlignment = IconAlignment.end,
+    this.iconAlignment = BBIconAlignment.end,
     this.textState,
     this.iconState,
     this.colorState,
@@ -96,9 +96,9 @@ class _BorderButtonState extends State<BorderButton> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _Icon(
+                  _BBIcon(
                     visible: (widget.iconState ?? widget.icon) != null &&
-                        widget.iconAlignment == IconAlignment.start,
+                        widget.iconAlignment == BBIconAlignment.start,
                     state: state,
                     icon: widget.icon,
                     iconState: widget.iconState,
@@ -108,10 +108,10 @@ class _BorderButtonState extends State<BorderButton> {
                     padding: widget.iconPadding,
                   ),
                   if ((widget.iconState ?? widget.icon) != null &&
-                      widget.iconAlignment == IconAlignment.start &&
+                      widget.iconAlignment == BBIconAlignment.start &&
                       widget.expended)
                     const Spacer(),
-                  _Text(
+                  _BBText(
                     state: state,
                     primary: color,
                     text: widget.text,
@@ -122,12 +122,12 @@ class _BorderButtonState extends State<BorderButton> {
                     colorState: widget.colorState,
                   ),
                   if ((widget.iconState ?? widget.icon) != null &&
-                      widget.iconAlignment == IconAlignment.end &&
+                      widget.iconAlignment == BBIconAlignment.end &&
                       widget.expended)
                     const Spacer(),
-                  _Icon(
+                  _BBIcon(
                     visible: (widget.iconState ?? widget.icon) != null &&
-                        widget.iconAlignment == IconAlignment.end,
+                        widget.iconAlignment == BBIconAlignment.end,
                     state: state,
                     icon: widget.icon,
                     iconState: widget.iconState,
@@ -145,26 +145,26 @@ class _BorderButtonState extends State<BorderButton> {
     );
   }
 
-  ButtonState get state {
+  BBState get state {
     if (widget.enabled && widget.onClick != null) {
-      return ButtonState.enabled;
+      return BBState.enabled;
     } else {
-      return ButtonState.disabled;
+      return BBState.disabled;
     }
   }
 }
 
-class _Text extends StatelessWidget {
+class _BBText extends StatelessWidget {
   final Color? primary;
   final String? text;
   final double? textSize;
   final TextStyle textStyle;
   final FontWeight? textWeight;
-  final String? Function(ButtonState state)? textState;
-  final Color? Function(ButtonState state)? colorState;
-  final ButtonState state;
+  final String? Function(BBState state)? textState;
+  final Color? Function(BBState state)? colorState;
+  final BBState state;
 
-  const _Text({
+  const _BBText({
     Key? key,
     required this.state,
     this.primary,
@@ -190,17 +190,17 @@ class _Text extends StatelessWidget {
   }
 }
 
-class _Icon extends StatelessWidget {
-  final ButtonState state;
+class _BBIcon extends StatelessWidget {
+  final BBState state;
   final IconData? icon;
   final bool visible;
   final EdgeInsetsGeometry? padding;
   final Color? color;
   final double? size;
-  final IconData? Function(ButtonState state)? iconState;
-  final Color? Function(ButtonState state)? colorState;
+  final IconData? Function(BBState state)? iconState;
+  final Color? Function(BBState state)? colorState;
 
-  const _Icon({
+  const _BBIcon({
     Key? key,
     required this.state,
     this.icon,
@@ -228,12 +228,12 @@ class _Icon extends StatelessWidget {
   }
 }
 
-enum IconAlignment {
+enum BBIconAlignment {
   start,
   end,
 }
 
-enum ButtonState {
+enum BBState {
   disabled,
   enabled,
 }

@@ -57,6 +57,14 @@ part 'views/view_pager.dart';
 
 part 'views/widget_wrapper.dart';
 
+part 'widgets/border_button.dart';
+
+part 'widgets/future_button.dart';
+
+part 'widgets/image_button.dart';
+
+part 'widgets/material_icon.dart';
+
 part 'widgets/toggle_button.dart';
 
 typedef OnPagingListener = Function(dynamic value);

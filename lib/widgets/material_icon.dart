@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-
-import '../widgets.dart';
+part of '../widgets.dart';
 
 class MaterialIcon extends StatefulWidget {
   final MaterialIconController? controller;
