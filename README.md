@@ -1,2 +1,2 @@
-# androssy
-Collection of service with advanced style and controlling system.
+# flutter_androssy
+Collection of widget with advanced style and controlling system.
