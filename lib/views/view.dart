@@ -45,6 +45,16 @@ enum ViewPositionType {
   ]);
 }
 
+enum ViewScrollingType {
+  bouncing(physics: BouncingScrollPhysics()),
+  page(physics: PageScrollPhysics()),
+  none;
+
+  final ScrollPhysics? physics;
+
+  const ViewScrollingType({this.physics});
+}
+
 enum ViewShadowType { overlay, none }
 
 enum ViewShape { circular, rectangular, squire }
@@ -74,12 +84,14 @@ class ViewPosition {
 
 class ViewRoots {
   final bool ripple;
+  final bool scrollable;
   final bool position, flex, ratio, observer;
   final bool view, constraints, margin, padding;
   final bool decoration, shadow, shape, radius, border, background;
 
   const ViewRoots({
     this.ripple = true,
+    this.scrollable = true,
     this.position = true,
     this.flex = true,
     this.ratio = true,
@@ -228,7 +240,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final T? controller;
 
   final int? flex;
-  final bool? absorbMode, activated, enabled;
+  final bool? absorbMode, activated, enabled, scrollable;
 
   final int? animation;
   final Curve? animationType;
@@ -335,6 +347,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.borderRadiusBR,
     this.borderRadiusTL,
     this.borderRadiusTR,
+    this.scrollable,
     this.shadow,
     this.shadowBlurRadius,
     this.shadowSpreadRadius,
@@ -396,7 +409,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
 
   Widget? attach(BuildContext context, T controller) => controller.child;
 
-  ViewRoots get roots => const ViewRoots();
+  ViewRoots initRootProperties() => const ViewRoots();
 
   void onDispose() {}
 
@@ -444,17 +457,19 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
                   controller: controller,
                   attachView: _ViewListener(
                     controller: controller,
-                    onToggleHandler: widget.onToggleHandler,
-                    attachView: _ViewChild(
+                    attachView: _ViewScroller(
                       controller: controller,
-                      attach: widget.attach(context, controller),
-                      builder: (context, view) {
-                        return widget.build(
-                          context,
-                          controller,
-                          view,
-                        );
-                      },
+                      attachView: _ViewChild(
+                        controller: controller,
+                        attach: widget.attach(context, controller),
+                        builder: (context, view) {
+                          return widget.build(
+                            context,
+                            controller,
+                            view,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -534,13 +549,11 @@ class _ViewDimension extends StatelessWidget {
 class _ViewListener<T extends ViewController> extends StatelessWidget {
   final T controller;
   final Widget attachView;
-  final OnViewToggleHandler<T> onToggleHandler;
 
   const _ViewListener({
     Key? key,
     required this.controller,
     required this.attachView,
-    required this.onToggleHandler,
   }) : super(key: key);
 
   @override
@@ -586,7 +599,6 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
                         ? () {
                             if (controller.isToggleClickable) {
                               controller._onToggleNotify();
-                              onToggleHandler(context, controller);
                             } else {
                               controller.onClickHandler != null
                                   ? controller.onClickHandler?.call(controller)
@@ -652,6 +664,34 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
   }
 }
 
+class _ViewScroller extends StatelessWidget {
+  final ViewController controller;
+  final Widget attachView;
+
+  const _ViewScroller({
+    Key? key,
+    required this.controller,
+    required this.attachView,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return controller.isScrollable
+        ? SingleChildScrollView(
+            padding: controller.isPadding
+                ? EdgeInsets.only(
+                    left: controller.paddingStart,
+                    right: controller.paddingEnd,
+                    top: controller.paddingTop,
+                    bottom: controller.paddingBottom,
+                  )
+                : null,
+            child: attachView,
+          )
+        : attachView;
+  }
+}
+
 class _ViewChild extends StatelessWidget {
   final ViewController controller;
   final Widget? attach;
@@ -674,6 +714,7 @@ class _ViewChild extends StatelessWidget {
     final isMargin = controller.isMargin;
     final isPadding = controller.isPadding;
     final isBorder = controller.isBorder;
+    final isScrollable = controller.isScrollable;
     final isShadow = controller.isShadow;
     final isConstraints = controller.isConstraints;
 
@@ -794,7 +835,7 @@ class _ViewChild extends StatelessWidget {
                             top: controller.borderTop,
                             bottom: controller.borderBottom,
                           )
-                        : isPadding
+                        : isPadding && !isScrollable
                             ? EdgeInsets.only(
                                 left: controller.paddingStart,
                                 right: controller.paddingEnd,
@@ -968,7 +1009,8 @@ class ViewController {
     child = view.child;
 
     // Properties
-    roots = view.roots;
+    roots = view.initRootProperties();
+    scrollable = view.scrollable ?? false;
 
     // Value States
     backgroundState = view.backgroundState;
@@ -992,6 +1034,8 @@ class ViewController {
   ViewRoots roots = const ViewRoots();
 
   ThemeData get theme => Theme.of(context);
+
+  bool scrollable = false;
 
   double elevation = 0;
   double _ripple = 0;
@@ -1062,8 +1106,6 @@ class ViewController {
   double? _dimensionRatio;
 
   double get dimensionRatio => _dimensionRatio ?? 0;
-
-  bool get isDimensional => roots.ratio && dimensionRatio > 0;
 
   Color? foreground;
 
@@ -1295,34 +1337,6 @@ class ViewController {
 
   OnViewNotifier? _onNotifier;
 
-  bool get isHeight => height != null;
-
-  bool get isObservable {
-    return roots.observer &&
-        (isClickable || isDoubleClickable || isLongClickable);
-  }
-
-  bool get isClickable =>
-      onClick != null || onClickHandler != null || isToggleClickable;
-
-  bool get isDoubleClickable =>
-      onDoubleClick != null || onDoubleClickHandler != null;
-
-  bool get isLongClickable => onLongClick != null || onLongClickHandler != null;
-
-  bool get isRippled => roots.ripple && _ripple > 0 && isObservable;
-
-  bool get isToggleClickable => onToggle != null;
-
-  bool get isPositional {
-    return roots.position &&
-        (_position != null || positionType != ViewPositionType.none);
-  }
-
-  bool get isExpendable {
-    return roots.flex && flex > 0;
-  }
-
   bool get isBorder {
     final x = borderStart + borderEnd + borderTop + borderBottom;
     return roots.border && x > 0;
@@ -1333,6 +1347,31 @@ class ViewController {
         borderRadiusBLF + borderRadiusBRF + borderRadiusTLF + borderRadiusTRF;
     return roots.radius && x > 0;
   }
+
+  bool get isCircular => roots.shape && shape == ViewShape.circular;
+
+  bool get isClickable =>
+      onClick != null || onClickHandler != null || isToggleClickable;
+
+  bool get isConstraints =>
+      roots.constraints &&
+      (_widthMax != null ||
+          _widthMin != null ||
+          _heightMax != null ||
+          _heightMin != null);
+
+  bool get isDimensional => roots.ratio && dimensionRatio > 0;
+
+  bool get isDoubleClickable =>
+      onDoubleClick != null || onDoubleClickHandler != null;
+
+  bool get isExpendable {
+    return roots.flex && flex > 0;
+  }
+
+  bool get isHeight => height != null;
+
+  bool get isLongClickable => onLongClick != null || onLongClickHandler != null;
 
   bool get isMargin {
     return roots.margin && marginAll > 0;
@@ -1346,6 +1385,14 @@ class ViewController {
     return roots.margin && (marginTop + marginBottom) > 0;
   }
 
+  bool get isObservable {
+    return roots.observer &&
+        (isClickable || isDoubleClickable || isLongClickable);
+  }
+
+  bool get isOverlayShadow =>
+      roots.shadow && shadowType == ViewShadowType.overlay;
+
   bool get isPadding {
     return roots.padding && paddingAll > 0;
   }
@@ -1358,22 +1405,10 @@ class ViewController {
     return roots.padding && (paddingTop + paddingBottom) > 0;
   }
 
-  bool get isConstraints =>
-      roots.constraints &&
-      (_widthMax != null ||
-          _widthMin != null ||
-          _heightMax != null ||
-          _heightMin != null);
-
-  bool get isShadow {
-    final x = shadowStart + shadowEnd + shadowTop + shadowBottom;
-    return roots.shadow && (x > 0 || shadowType == ViewShadowType.overlay);
+  bool get isPositional {
+    return roots.position &&
+        (_position != null || positionType != ViewPositionType.none);
   }
-
-  bool get isOverlayShadow =>
-      roots.shadow && shadowType == ViewShadowType.overlay;
-
-  bool get isCircular => roots.shape && shape == ViewShape.circular;
 
   bool get isRadius {
     var a = roots.radius;
@@ -1382,9 +1417,20 @@ class ViewController {
     return a && b && c;
   }
 
+  bool get isRippled => roots.ripple && _ripple > 0 && isObservable;
+
+  bool get isScrollable => roots.scrollable && scrollable;
+
+  bool get isShadow {
+    final x = shadowStart + shadowEnd + shadowTop + shadowBottom;
+    return roots.shadow && (x > 0 || shadowType == ViewShadowType.overlay);
+  }
+
   bool get isSquire {
     return shape == ViewShape.squire;
   }
+
+  bool get isToggleClickable => onToggle != null;
 
   double get maxSize {
     return max(_width ?? 0, _height ?? 0);

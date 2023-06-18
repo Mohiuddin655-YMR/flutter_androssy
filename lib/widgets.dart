@@ -22,6 +22,8 @@ part 'views/avatar_view.dart';
 
 part 'views/button.dart';
 
+part 'views/content_view.dart';
+
 part 'views/expendable_text_view.dart';
 
 part 'views/expensive_scroll_view.dart';

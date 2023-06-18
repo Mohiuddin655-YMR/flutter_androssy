@@ -2,11 +2,10 @@ part of '../widgets.dart';
 
 class LinearLayout extends YMRView<LinearLayoutController> {
   final Axis? orientation;
-  final bool? scrollable;
   final LayoutGravity? layoutGravity;
   final MainAxisAlignment? mainGravity;
   final CrossAxisAlignment? crossGravity;
-  final LayoutScrollingType? scrollingType;
+  final ViewScrollingType? scrollingType;
   final ScrollController? scrollController;
   final OnViewChangeListener? onPagingListener;
 
@@ -74,6 +73,7 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.pressedColor,
     super.ripple,
     super.rippleColor,
+    super.scrollable,
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -98,7 +98,6 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.onLongClick,
     super.onToggle,
     this.orientation,
-    this.scrollable,
     this.layoutGravity,
     this.mainGravity,
     this.crossGravity,
@@ -114,28 +113,37 @@ class LinearLayout extends YMRView<LinearLayoutController> {
   }
 
   @override
+  ViewRoots initRootProperties() {
+    return const ViewRoots(scrollable: false);
+  }
+
+  @override
   LinearLayoutController attachController(LinearLayoutController controller) {
     return controller.fromLinearLayout(this);
   }
 
   @override
-  Widget build(
-    BuildContext context,
-    LinearLayoutController controller,
-    Widget parent,
-  ) {
+  Widget? attach(BuildContext context, LinearLayoutController controller) {
     return controller.scrollable
         ? SingleChildScrollView(
             controller: controller.scrollController,
             physics: controller.scrollingType.physics,
             scrollDirection: controller.orientation,
-            child: parent,
+            child: _LLChild(controller: controller),
           )
-        : parent;
+        : _LLChild(controller: controller);
   }
+}
+
+class _LLChild extends StatelessWidget {
+  final LinearLayoutController controller;
+
+  const _LLChild({
+    required this.controller,
+  });
 
   @override
-  Widget? attach(BuildContext context, LinearLayoutController controller) {
+  Widget build(BuildContext context) {
     return controller.orientation == Axis.vertical
         ? Column(
             mainAxisAlignment: controller.mainGravity,
@@ -155,8 +163,7 @@ class LinearLayoutController extends ViewController {
   LayoutGravity layoutGravity = LayoutGravity.start;
   MainAxisAlignment? _mainGravity;
   CrossAxisAlignment? _crossGravity;
-  bool scrollable = false;
-  LayoutScrollingType scrollingType = LayoutScrollingType.none;
+  ViewScrollingType scrollingType = ViewScrollingType.none;
   ScrollController _scrollController = ScrollController();
   List<Widget> children = [];
 
@@ -169,7 +176,7 @@ class LinearLayoutController extends ViewController {
     _mainGravity = view.mainGravity;
     _crossGravity = view.crossGravity;
     scrollable = view.scrollable ?? false;
-    scrollingType = view.scrollingType ?? LayoutScrollingType.none;
+    scrollingType = view.scrollingType ?? ViewScrollingType.none;
     _scrollController = view.scrollController ?? ScrollController();
     children = view.children ?? [];
     onPagingListener = view.onPagingListener;
@@ -238,14 +245,4 @@ enum LayoutGravity {
     required this.main,
     required this.cross,
   });
-}
-
-enum LayoutScrollingType {
-  bouncing(physics: BouncingScrollPhysics()),
-  page(physics: PageScrollPhysics()),
-  none;
-
-  final ScrollPhysics? physics;
-
-  const LayoutScrollingType({this.physics});
 }
