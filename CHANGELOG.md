@@ -1,3 +1,3 @@
-## 0.0.5
+## 0.0.6
 
-* All view attribute changed
+* Add Content View (for use privacy content, term service and condition, and refund policy content)
