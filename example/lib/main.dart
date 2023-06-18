@@ -33,9 +33,10 @@ class Example extends StatelessWidget {
         title: const Text("Privacy Policy"),
       ),
       body: ContentView(
+        scrollable: true,
         paddingVertical: 12,
         paddingHorizontal: 24,
-        header: PrivacyContent.none.title,
+        header: "Introduction",
         description: PrivacyContent.none.body,
         paragraphs: PrivacyContent.values
             .getRange(1, PrivacyContent.values.length)
