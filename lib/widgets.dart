@@ -2,7 +2,7 @@ library widgets;
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:math' show min, max;
+import 'dart:math' show max, min, sqrt;
 
 import 'package:badges/badges.dart' as b;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -46,6 +46,8 @@ part 'views/material_image_view.dart';
 part 'views/recycler_view.dart';
 
 part 'views/slide_image_view.dart';
+
+part 'builders/splash_view.dart';
 
 part 'views/stack_layout.dart';
 
