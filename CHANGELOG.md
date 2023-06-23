@@ -1,3 +1,3 @@
-## 0.0.6
+## 0.0.7
 
-* Add Content View (for use privacy content, term service and condition, and refund policy content)
+* Add Activity

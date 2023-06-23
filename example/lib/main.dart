@@ -1,3 +1,4 @@
+import 'package:example/home/activity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/widgets.dart';
 
@@ -18,7 +19,7 @@ class Application extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Example(),
+      home: const HomeActivity(),
     );
   }
 }
