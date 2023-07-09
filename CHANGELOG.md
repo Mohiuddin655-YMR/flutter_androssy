@@ -1,3 +1,3 @@
-## 0.0.9
+## 0.1.0-alpha1
 
-* Add SplashView
+* Textview spans bug fixed

@@ -19,7 +19,7 @@ class Application extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomeActivity(),
+      home: const Example(),
     );
   }
 }
@@ -31,28 +31,24 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Privacy Policy"),
+        title: const Text("TextView"),
       ),
-      body: ContentView(
-        scrollable: true,
-        paddingVertical: 12,
-        paddingHorizontal: 24,
-        header: "Introduction",
-        description: PrivacyContent.none.body,
-        paragraphs: PrivacyContent.values
-            .getRange(1, PrivacyContent.values.length)
-            .map((e) {
-          return Content(title: e.title, body: e.body);
-        }).toList(),
-        paragraphStyle: const ContentStyle(
+      body: const Center(
+        child: TextView(
+          text: "৳600 - ",
           textSize: 14,
           textColor: Colors.black,
-          textAlign: TextAlign.justify,
-        ),
-        titleStyle: const ContentStyle(
-          textSize: 16,
-          textColor: Colors.grey,
-          fontWeight: FontWeight.bold,
+          textSpans: [
+            TextSpan(
+              text: "৳500",
+              style: TextStyle(
+                color: Colors.purpleAccent,
+                decoration: TextDecoration.lineThrough,
+                decorationColor: Colors.purpleAccent,
+                decorationThickness: 2,
+              ),
+            ),
+          ],
         ),
       ),
     );
