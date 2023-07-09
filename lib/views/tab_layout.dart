@@ -167,14 +167,6 @@ class TabLayout extends YMRView<TabLayoutController> {
   }
 
   @override
-  void initialization(TabLayoutController controller) {
-    tabController.addListener(controller.onNotify);
-    controller.pagerController.setOnPageChangeListener((index) {
-      tabController.animateTo(index);
-    });
-  }
-
-  @override
   TabLayoutController attachController(TabLayoutController controller) {
     return controller.fromView(
       this,

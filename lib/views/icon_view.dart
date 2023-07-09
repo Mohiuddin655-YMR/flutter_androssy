@@ -49,9 +49,6 @@ class IconView extends YMRView<IconViewController> {
     super.foregroundImage,
     super.flex,
     super.gravity,
-    super.height,
-    super.heightMax,
-    super.heightMin,
     super.hoverColor,
     super.margin,
     super.marginHorizontal,
@@ -87,9 +84,6 @@ class IconView extends YMRView<IconViewController> {
     super.shape,
     super.transform,
     super.transformGravity,
-    super.width,
-    super.widthMax,
-    super.widthMin,
     super.visibility,
     super.onClick,
     super.onDoubleClick,
@@ -225,11 +219,6 @@ class IconViewController extends ViewController {
     tintState = view.tintState;
     tintMode = view.tintMode ?? BlendMode.srcIn;
     return this;
-  }
-
-  @override
-  double get borderRadius {
-    return super.borderRadius > 0 ? super.borderRadius : size;
   }
 
   dynamic get icon => iconState?.selected(activated) ?? _icon;

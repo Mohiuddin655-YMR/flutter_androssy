@@ -6,15 +6,28 @@ enum ImageType {
   asset,
   file,
   memory,
-  network;
+  network,
+  svg,
+  svgCode,
+  svgNetwork;
 
   factory ImageType.from(dynamic data, [ImageType type = ImageType.detect]) {
     if (type == ImageType.detect || type == ImageType.unknown) {
       if (data is String) {
-        if (data.startsWith('assets/')) {
-          return ImageType.asset;
-        } else if (data.startsWith('https://') || data.startsWith('http://')) {
-          return ImageType.network;
+        if (data.isAsset) {
+          if (data.isSvg) {
+            return ImageType.svg;
+          } else {
+            return ImageType.asset;
+          }
+        } else if (data.isNetwork) {
+          if (data.isSvg) {
+            return ImageType.svgNetwork;
+          } else {
+            return ImageType.network;
+          }
+        } else if (data.isSvgCode) {
+          return ImageType.svgCode;
         } else {
           return ImageType.unknown;
         }
@@ -28,6 +41,25 @@ enum ImageType {
     } else {
       return type;
     }
+  }
+}
+
+extension _ImageType on String {
+  bool get isAsset {
+    return startsWith('assets/') || startsWith('asset/');
+  }
+
+  bool get isNetwork {
+    return startsWith('https://') || startsWith('http://');
+  }
+
+  bool get isSvg {
+    return endsWith(".svg");
+  }
+
+  bool get isSvgCode {
+    var code = replaceAll("\n", "");
+    return code.startsWith("<svg") && code.endsWith("/svg>");
   }
 }
 
@@ -260,6 +292,27 @@ class RawImageView extends StatelessWidget {
         width: width,
         height: height,
         fit: scaleType,
+      );
+    } else if (type == ImageType.svg) {
+      return SvgPicture.asset(
+        image,
+        width: width,
+        height: height,
+        fit: scaleType ?? BoxFit.contain,
+      );
+    } else if (type == ImageType.svgNetwork) {
+      return SvgPicture.network(
+        image,
+        width: width,
+        height: height,
+        fit: scaleType ?? BoxFit.contain,
+      );
+    } else if (type == ImageType.svgCode) {
+      return SvgPicture.string(
+        image,
+        width: width,
+        height: height,
+        fit: scaleType ?? BoxFit.contain,
       );
     } else {
       return SizedBox(
