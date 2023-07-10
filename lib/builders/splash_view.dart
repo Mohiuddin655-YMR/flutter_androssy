@@ -1,11 +1,12 @@
 part of '../widgets.dart';
 
 class SplashView extends StatefulWidget {
+  final PositionalFlex flex;
   final int duration;
   final EdgeInsetsGeometry? contentPadding;
   final Color? statusBarColor;
   final Brightness statusBarBrightness;
-  final Widget? home;
+  final Color? backgroundColor;
   final Widget? custom;
   final String? title, subtitle;
   final Color? titleColor, subtitleColor;
@@ -18,22 +19,20 @@ class SplashView extends StatefulWidget {
   final String? logo;
   final Color? logoColor;
   final EdgeInsetsGeometry? logoPadding;
+  final double? logoRadius;
   final double? logoSize;
-  final Gravity gravity;
-  final ContentGravity? contentGravity;
 
   final Future Function()? onExecute;
   final Function(BuildContext context)? onRoute;
 
   const SplashView({
     Key? key,
-    this.gravity = Gravity.center,
-    this.contentGravity,
     this.contentPadding,
+    this.flex = const PositionalFlex(),
     this.duration = 5000,
     this.statusBarColor = Colors.white,
     this.statusBarBrightness = Brightness.dark,
-    this.home,
+    this.backgroundColor = Colors.white,
     this.custom,
     this.onRoute,
     this.onExecute,
@@ -45,15 +44,16 @@ class SplashView extends StatefulWidget {
     this.subtitleExtraSize = 1,
     this.titlePadding,
     this.subtitleMargin,
-    this.titleSize,
+    this.titleSize = 20,
     this.subtitleSize,
     this.titleStyle = const TextStyle(),
     this.subtitleStyle,
     this.titleWeight = FontWeight.bold,
-    this.subtitleWeight,
+    this.subtitleWeight = FontWeight.w300,
     this.logo,
     this.logoColor,
     this.logoPadding,
+    this.logoRadius,
     this.logoSize,
   }) : super(key: key);
 
@@ -64,33 +64,20 @@ class SplashView extends StatefulWidget {
 class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
-    if (widget.onExecute != null) {
-      widget.onExecute?.call().whenComplete(() => _route());
-    } else {
-      Timer(Duration(milliseconds: widget.duration), () => _route());
-    }
+    Timer(Duration(milliseconds: widget.duration), () {
+      if (widget.onExecute != null) {
+        widget.onExecute?.call().whenComplete(() {
+          return widget.onRoute?.call(context);
+        });
+      } else {
+        widget.onRoute?.call(context);
+      }
+    });
     super.initState();
-  }
-
-  _route() {
-    if (widget.onRoute == null && widget.home != null) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => widget.home!),
-        (route) => false,
-      );
-    } else {
-      widget.onRoute?.call(context);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final pixel = sqrt((size.width * size.width) + (size.height * size.height));
-    final logoSize = pixel * 0.10;
-    final titleSize = pixel * 0.02;
-    final titlePaddingTop = pixel * 0.02;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -101,103 +88,95 @@ class _SplashViewState extends State<SplashView> {
           statusBarBrightness: widget.statusBarBrightness,
         ),
       ),
-      body: SizedBox(
-        width: size.width,
-        height: size.height,
-        child: Expanded(
-          child: Column(
-            mainAxisAlignment: widget.gravity.main,
-            crossAxisAlignment: widget.gravity.cross,
-            children: [
-              Container(
-                padding: widget.contentPadding,
-                child: widget.custom ??
-                    Column(
-                      mainAxisAlignment:
-                          widget.contentGravity?.main ?? widget.gravity.main,
-                      crossAxisAlignment:
-                          widget.contentGravity?.cross ?? widget.gravity.cross,
-                      children: [
-                        Container(
-                          margin: widget.logoPadding,
-                          child: Image.asset(
-                            widget.logo ?? "",
-                            width: widget.logoSize ?? logoSize,
-                            height: widget.logoSize ?? logoSize,
-                          ),
-                        ),
-                        Container(
-                          margin: widget.titlePadding ??
-                              EdgeInsets.only(
-                                top: titlePaddingTop,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: widget.backgroundColor,
+        child: Column(
+          children: [
+            Spacer(flex: widget.flex.top),
+            Container(
+              padding: widget.contentPadding,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      child: widget.custom ??
+                          Column(
+                            children: [
+                              Container(
+                                margin: widget.logoPadding,
+                                width: widget.logoSize ?? 70,
+                                height: widget.logoSize ?? 70,
+                                clipBehavior: Clip.antiAlias,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                    widget.logoRadius ?? 0,
+                                  ),
+                                ),
+                                child: Image.asset(
+                                  widget.logo ?? "",
+                                  fit: BoxFit.cover,
+                                  color: widget.logoColor,
+                                ),
                               ),
-                          child: Text(
-                            widget.title ?? "",
-                            textAlign: TextAlign.center,
-                            style: widget.titleStyle.copyWith(
-                              color: widget.titleColor,
-                              fontSize: widget.titleSize ?? titleSize,
-                              fontWeight: widget.titleWeight,
-                              letterSpacing: widget.titleExtraSize / 10,
-                            ),
+                              Container(
+                                margin: widget.titlePadding ??
+                                    const EdgeInsets.only(top: 16),
+                                child: Text(
+                                  widget.title ?? "",
+                                  textAlign: TextAlign.center,
+                                  style: widget.titleStyle.copyWith(
+                                    color: widget.titleColor,
+                                    fontSize: widget.titleSize,
+                                    fontWeight: widget.titleWeight,
+                                    letterSpacing: widget.titleExtraSize / 10,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: widget.subtitleMargin ??
+                                    const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                child: Text(
+                                  widget.subtitle ?? "",
+                                  textAlign: TextAlign.center,
+                                  style: (widget.subtitleStyle ??
+                                          widget.titleStyle)
+                                      .copyWith(
+                                    color: widget.subtitleColor,
+                                    fontSize: widget.subtitleSize ??
+                                        ((widget.titleSize ?? 1) * 0.5),
+                                    fontWeight: widget.subtitleWeight,
+                                    letterSpacing:
+                                        widget.subtitleExtraSize / 10,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        Container(
-                          padding: widget.subtitleMargin,
-                          child: Text(
-                            widget.subtitle ?? "",
-                            textAlign: TextAlign.center,
-                            style: (widget.subtitleStyle ?? widget.titleStyle)
-                                .copyWith(
-                              color: widget.subtitleColor,
-                              fontSize: widget.subtitleSize ??
-                                  ((widget.titleSize ?? titleSize) * 0.5),
-                              fontWeight: widget.subtitleWeight,
-                              letterSpacing: widget.subtitleExtraSize / 10,
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Spacer(flex: widget.flex.bottom),
+          ],
         ),
       ),
     );
   }
 }
 
-enum Gravity {
-  center(main: MainAxisAlignment.center, cross: CrossAxisAlignment.center),
-  centerStart(main: MainAxisAlignment.center, cross: CrossAxisAlignment.start),
-  centerEnd(main: MainAxisAlignment.center, cross: CrossAxisAlignment.end),
-  centerTop(main: MainAxisAlignment.start, cross: CrossAxisAlignment.center),
-  centerBottom(main: MainAxisAlignment.end, cross: CrossAxisAlignment.center),
-  topStart(main: MainAxisAlignment.start, cross: CrossAxisAlignment.start),
-  topEnd(main: MainAxisAlignment.start, cross: CrossAxisAlignment.end),
-  bottomStart(main: MainAxisAlignment.end, cross: CrossAxisAlignment.start),
-  bottomEnd(main: MainAxisAlignment.end, cross: CrossAxisAlignment.end);
+class PositionalFlex {
+  final int top;
+  final int bottom;
 
-  final MainAxisAlignment main;
-  final CrossAxisAlignment cross;
-
-  const Gravity({
-    required this.main,
-    required this.cross,
-  });
-}
-
-enum ContentGravity {
-  center(main: MainAxisAlignment.center, cross: CrossAxisAlignment.center),
-  start(main: MainAxisAlignment.center, cross: CrossAxisAlignment.start),
-  end(main: MainAxisAlignment.center, cross: CrossAxisAlignment.end);
-
-  final MainAxisAlignment main;
-  final CrossAxisAlignment cross;
-
-  const ContentGravity({
-    required this.main,
-    required this.cross,
-  });
+  const PositionalFlex({
+    int top = 2,
+    int bottom = 3,
+  })  : top = top > 0 ? top : 1,
+        bottom = bottom > 0 ? bottom : 2;
 }

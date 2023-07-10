@@ -1,6 +1,10 @@
 part of '../widgets.dart';
 
 class TextView<T extends TextViewController> extends YMRView<T> {
+  final Axis? orientation;
+  final ViewScrollingType? scrollingType;
+  final ScrollController? scrollController;
+
   final int? maxCharacters;
   final int? maxLines;
 
@@ -8,13 +12,17 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final double? lineSpacingExtra;
   final double? wordSpacing;
 
-  final String? ellipsizeText;
-  final bool? ellipsizeVisibility;
-  final double? ellipsizeLetterSpace;
-  final Color? ellipsizeTextColor;
-  final double? ellipsizeTextSize;
-  final FontStyle? ellipsizeTextStyle;
-  final FontWeight? ellipsizeTextWeight;
+  final String? extraText;
+  final TextDecoration? extraTextDecoration;
+  final Color? extraTextDecorationColor;
+  final TextDecorationStyle? extraTextDecorationStyle;
+  final double? extraTextDecorationThickness;
+  final Color? extraTextColor;
+  final double? extraTextLetterSpace;
+  final double? extraTextSize;
+  final FontStyle? extraTextStyle;
+  final bool? extraTextVisible;
+  final FontWeight? extraTextWeight;
 
   final String? fontFamily;
   final FontStyle? fontStyle;
@@ -64,7 +72,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.borderRadiusBR,
     super.borderRadiusTL,
     super.borderRadiusTR,
-    super.child,
     super.clipBehavior,
     super.controller,
     super.dimensionRatio,
@@ -99,6 +106,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.pressedColor,
     super.ripple,
     super.rippleColor,
+    super.scrollable,
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -122,22 +130,29 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggle,
+    this.orientation,
+    this.scrollController,
+    this.scrollingType,
     this.maxCharacters,
     this.maxLines,
     this.letterSpacing,
     this.lineSpacingExtra,
     this.wordSpacing,
-    this.ellipsizeText,
-    this.ellipsizeVisibility,
-    this.ellipsizeLetterSpace,
-    this.ellipsizeTextColor,
-    this.ellipsizeTextSize,
-    this.ellipsizeTextStyle,
-    this.ellipsizeTextWeight,
+    this.extraText,
+    this.extraTextColor,
+    this.extraTextDecoration,
+    this.extraTextDecorationColor,
+    this.extraTextDecorationStyle,
+    this.extraTextDecorationThickness,
+    this.extraTextLetterSpace,
+    this.extraTextSize,
+    this.extraTextStyle,
+    this.extraTextVisible,
+    this.extraTextWeight,
     this.fontFamily,
     this.fontStyle,
     this.fontWeight,
-    this.text,
+    required this.text,
     this.textState,
     this.textAlign,
     this.textAllCaps,
@@ -161,30 +176,62 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   }
 
   @override
+  ViewRoots initRootProperties() {
+    return const ViewRoots(
+      margin: false,
+      padding: false,
+      scrollable: false,
+    );
+  }
+
+  @override
   T attachController(T controller) {
     return controller.fromTextView(this) as T;
   }
 
   @override
   Widget? attach(BuildContext context, T controller) {
+    return controller.scrollable
+        ? SingleChildScrollView(
+            padding: EdgeInsets.only(
+              left: controller.paddingStart,
+              right: controller.paddingEnd,
+              top: controller.paddingTop,
+              bottom: controller.paddingBottom,
+            ),
+            controller: controller.scrollController,
+            physics: controller.scrollingType.physics,
+            scrollDirection: controller.orientation,
+            child: _TVChild(controller: controller),
+          )
+        : _TVChild(controller: controller);
+  }
+}
+
+class _TVChild<T extends TextViewController> extends StatelessWidget {
+  final T controller;
+
+  const _TVChild({
+    super.key,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return RawTextView(
+      extraText: controller.extraText,
+      extraTextColor: controller.extraTextColor,
+      extraTextDecoration: controller.extraTextDecoration,
+      extraTextDecorationColor: controller.extraTextDecorationColor,
+      extraTextDecorationStyle: controller.extraTextDecorationStyle,
+      extraTextDecorationThickness: controller.extraTextDecorationThickness,
+      extraTextLetterSpace: controller.extraTextLetterSpace,
+      extraTextSize: controller.extraTextSize,
+      extraTextStyle: controller.extraTextStyle,
+      extraTextVisible: controller.extraTextVisible,
+      extraTextWeight: controller.extraTextWeight,
       text: controller.text,
-      textSpans: controller.isSpannable
-          ? [
-              TextSpan(
-                text: controller.isAutoEllipsize
-                    ? controller.ellipsizeText ?? " ... "
-                    : null,
-                style: TextStyle(
-                  color: controller.ellipsizeTextColor,
-                  fontSize: controller.ellipsizeTextSize,
-                  fontStyle: controller.ellipsizeTextStyle,
-                  letterSpacing: controller.ellipsizeLetterSpace,
-                  fontWeight: controller.ellipsizeTextWeight,
-                ),
-              ),
-            ]
-          : [],
+      textSpans: controller.textSpans,
       maxLines: controller.maxLines,
       textOverflow: controller.textOverflow,
       textStyle: controller.textStyle,
@@ -208,6 +255,18 @@ class TextView<T extends TextViewController> extends YMRView<T> {
 }
 
 class RawTextView extends StatelessWidget {
+  final String? extraText;
+  final Color? extraTextColor;
+  final TextDecoration? extraTextDecoration;
+  final Color? extraTextDecorationColor;
+  final TextDecorationStyle? extraTextDecorationStyle;
+  final double? extraTextDecorationThickness;
+  final double? extraTextLetterSpace;
+  final double? extraTextSize;
+  final FontStyle? extraTextStyle;
+  final bool? extraTextVisible;
+  final FontWeight? extraTextWeight;
+
   final int? maxCharacters;
   final int? maxLines;
 
@@ -230,11 +289,22 @@ class RawTextView extends StatelessWidget {
   final TextLeadingDistribution? textLeadingDistribution;
   final TextOverflow? textOverflow;
   final double textSize;
-  final List<TextSpan> textSpans;
+  final List<TextSpan>? textSpans;
   final TextStyle textStyle;
 
   const RawTextView({
     super.key,
+    this.extraText,
+    this.extraTextColor,
+    this.extraTextDecoration,
+    this.extraTextDecorationColor,
+    this.extraTextDecorationStyle,
+    this.extraTextDecorationThickness,
+    this.extraTextLetterSpace,
+    this.extraTextSize,
+    this.extraTextStyle,
+    this.extraTextVisible,
+    this.extraTextWeight,
     this.maxCharacters,
     this.maxLines,
     this.letterSpacing,
@@ -254,17 +324,35 @@ class RawTextView extends StatelessWidget {
     this.textLeadingDistribution,
     this.textOverflow,
     this.textSize = 14,
-    this.textSpans = const [],
+    this.textSpans,
     this.textStyle = const TextStyle(),
   });
 
   @override
   Widget build(BuildContext context) {
-    return textSpans.isNotEmpty
+    final spans = textSpans ??
+        [
+          if ((extraText ?? "").isNotEmpty)
+            TextSpan(
+              text: extraText,
+              style: TextStyle(
+                color: extraTextColor,
+                fontSize: extraTextSize,
+                fontStyle: extraTextStyle,
+                letterSpacing: extraTextLetterSpace,
+                fontWeight: extraTextWeight,
+                decoration: extraTextDecoration,
+                decorationColor: extraTextDecorationColor,
+                decorationStyle: extraTextDecorationStyle,
+                decorationThickness: extraTextDecorationThickness,
+              ),
+            ),
+        ];
+    return spans.isNotEmpty
         ? Text.rich(
             TextSpan(
               text: text,
-              children: textSpans,
+              children: spans,
             ),
             maxLines: maxLines,
             overflow: maxCharacters == 0 ? textOverflow : null,
@@ -312,6 +400,10 @@ class RawTextView extends StatelessWidget {
 }
 
 class TextViewController extends ViewController {
+  Axis orientation = Axis.vertical;
+  ScrollController scrollController = ScrollController();
+  ViewScrollingType scrollingType = ViewScrollingType.none;
+
   int maxCharacters = 0;
   int? maxLines;
 
@@ -319,13 +411,17 @@ class TextViewController extends ViewController {
   double lineSpacingExtra = 0;
   double? wordSpacing;
 
-  String? ellipsizeText;
-  bool ellipsizeVisibility = false;
-  double? ellipsizeLetterSpace;
-  Color? ellipsizeTextColor;
-  double? ellipsizeTextSize;
-  FontStyle? ellipsizeTextStyle;
-  FontWeight? ellipsizeTextWeight;
+  String? extraText;
+  TextDecoration? extraTextDecoration;
+  Color? extraTextDecorationColor;
+  TextDecorationStyle? extraTextDecorationStyle;
+  double? extraTextDecorationThickness;
+  Color? extraTextColor;
+  double? extraTextLetterSpace;
+  double? extraTextSize;
+  FontStyle? extraTextStyle;
+  bool extraTextVisible = true;
+  FontWeight? extraTextWeight;
 
   String? fontFamily;
   FontStyle? fontStyle;
@@ -351,6 +447,10 @@ class TextViewController extends ViewController {
   TextViewController fromTextView(TextView view) {
     super.fromView(view);
 
+    orientation = view.orientation ?? Axis.vertical;
+    scrollController = view.scrollController ?? ScrollController();
+    scrollingType = view.scrollingType ?? ViewScrollingType.none;
+
     maxCharacters = view.maxCharacters ?? 0;
     maxLines = view.maxLines;
 
@@ -358,13 +458,17 @@ class TextViewController extends ViewController {
     lineSpacingExtra = view.lineSpacingExtra ?? 0;
     wordSpacing = view.wordSpacing;
 
-    ellipsizeVisibility = view.ellipsizeVisibility ?? false;
-    ellipsizeLetterSpace = view.ellipsizeLetterSpace;
-    ellipsizeText = view.ellipsizeText;
-    ellipsizeTextColor = view.ellipsizeTextColor;
-    ellipsizeTextSize = view.ellipsizeTextSize;
-    ellipsizeTextStyle = view.ellipsizeTextStyle;
-    ellipsizeTextWeight = view.ellipsizeTextWeight;
+    extraTextLetterSpace = view.extraTextLetterSpace;
+    extraText = view.extraText;
+    extraTextColor = view.extraTextColor;
+    extraTextDecoration = view.extraTextDecoration;
+    extraTextDecorationColor = view.extraTextDecorationColor;
+    extraTextDecorationStyle = view.extraTextDecorationStyle;
+    extraTextDecorationThickness = view.extraTextDecorationThickness;
+    extraTextSize = view.extraTextSize;
+    extraTextStyle = view.extraTextStyle;
+    extraTextVisible = view.extraTextVisible ?? true;
+    extraTextWeight = view.extraTextWeight;
 
     fontFamily = view.fontFamily;
     fontStyle = view.fontStyle;
@@ -415,48 +519,44 @@ class TextViewController extends ViewController {
     return lineSpacingExtra > 0 ? y : null;
   }
 
-  bool get isAutoEllipsize {
+  bool get isAutoExtraText {
     final a = maxCharacters > 0;
     final b = text.length > maxCharacters;
-    return (a && b) || ellipsizeVisibility;
-  }
-
-  bool get isSpannable {
-    return (ellipsizeText ?? "").isNotEmpty || (textSpans ?? []).isNotEmpty;
+    return (a && b) || extraTextVisible;
   }
 
   void setEllipsizeLetterSpace(double? value) {
-    ellipsizeLetterSpace = value;
+    extraTextLetterSpace = value;
     _notify;
   }
 
   void setEllipsizeText(String? value) {
-    ellipsizeText = value;
+    extraText = value;
     _notify;
   }
 
   void setEllipsizeTextColor(Color? value) {
-    ellipsizeTextColor = value;
+    extraTextColor = value;
     _notify;
   }
 
   void setEllipsizeTextSize(double? value) {
-    ellipsizeTextSize = value;
+    extraTextSize = value;
     _notify;
   }
 
   void setEllipsizeTextStyle(FontStyle? value) {
-    ellipsizeTextStyle = value;
+    extraTextStyle = value;
     _notify;
   }
 
   void setEllipsizeTextWeight(FontWeight value) {
-    ellipsizeTextWeight = value;
+    extraTextWeight = value;
     _notify;
   }
 
   void setEllipsizeVisibility(bool value) {
-    ellipsizeVisibility = value;
+    extraTextVisible = value;
     _notify;
   }
 

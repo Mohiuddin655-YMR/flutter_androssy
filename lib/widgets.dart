@@ -2,10 +2,11 @@ library widgets;
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:math' show max, min, sqrt;
+import 'dart:math' show max, min;
 
 import 'package:badges/badges.dart' as b;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -20,6 +21,10 @@ part 'builders/fragment.dart';
 part 'builders/notifier_view.dart';
 
 part 'builders/render_time_builder.dart';
+
+part 'builders/splash_view.dart';
+
+part 'builders/theme.dart';
 
 part 'builders/widget_wrapper.dart';
 
@@ -46,8 +51,6 @@ part 'views/material_image_view.dart';
 part 'views/recycler_view.dart';
 
 part 'views/slide_image_view.dart';
-
-part 'builders/splash_view.dart';
 
 part 'views/stack_layout.dart';
 
@@ -79,7 +82,7 @@ part 'widgets/toggle_button.dart';
 
 typedef OnPagingListener = Function(dynamic value);
 
-extension ScrollControllerExtension on ScrollController {
+extension _ScrollControllerExtension on ScrollController {
   ScrollController paging({required OnPagingListener onListen}) {
     addListener(() {
       if (position.atEdge) {

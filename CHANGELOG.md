@@ -1,3 +1,3 @@
-## 0.1.0-alpha1
+## 0.1.0
 
 * Textview spans bug fixed

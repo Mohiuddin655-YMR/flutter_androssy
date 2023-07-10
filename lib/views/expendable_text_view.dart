@@ -36,7 +36,6 @@ class ExpendableTextView extends TextView {
     super.borderRadiusBR,
     super.borderRadiusTL,
     super.borderRadiusTR,
-    super.child,
     super.clipBehavior,
     super.controller,
     super.dimensionRatio,
@@ -99,13 +98,13 @@ class ExpendableTextView extends TextView {
     super.letterSpacing,
     super.lineSpacingExtra,
     super.wordSpacing,
-    super.ellipsizeText = " ...more ",
-    super.ellipsizeVisibility,
-    super.ellipsizeLetterSpace,
-    super.ellipsizeTextColor,
-    super.ellipsizeTextSize,
-    super.ellipsizeTextStyle,
-    super.ellipsizeTextWeight = FontWeight.bold,
+    super.extraText = " ...more ",
+    super.extraTextVisible,
+    super.extraTextLetterSpace,
+    super.extraTextColor,
+    super.extraTextSize,
+    super.extraTextStyle,
+    super.extraTextWeight = FontWeight.bold,
     super.fontFamily,
     super.fontStyle,
     super.fontWeight,
@@ -156,25 +155,25 @@ class _ExpendableTextViewState extends State<ExpendableTextView> {
       textDecorationColor: widget.textDecorationColor,
       textDecorationStyle: widget.textDecorationStyle,
       textDecorationThickness: widget.textDecorationThickness,
-      ellipsizeVisibility:
+      extraTextVisible:
           widget.expendedText != null && widget.expendedTextVisible,
-      ellipsizeLetterSpace: expended
-          ? widget.expendedCharacterSpace ?? widget.ellipsizeLetterSpace
-          : widget.ellipsizeLetterSpace,
-      ellipsizeText: expended ? widget.expendedText : widget.ellipsizeText,
-      ellipsizeTextColor: (expended
-              ? widget.expendedTextColor ?? widget.ellipsizeTextColor
-              : widget.ellipsizeTextColor) ??
+      extraTextLetterSpace: expended
+          ? widget.expendedCharacterSpace ?? widget.extraTextLetterSpace
+          : widget.extraTextLetterSpace,
+      extraText: expended ? widget.expendedText : widget.extraText,
+      extraTextColor: (expended
+              ? widget.expendedTextColor ?? widget.extraTextColor
+              : widget.extraTextColor) ??
           widget.textColor?.withOpacity(1 / 3),
-      ellipsizeTextSize: expended
-          ? widget.expendedTextSize ?? widget.ellipsizeTextSize
-          : widget.ellipsizeTextSize,
-      ellipsizeTextStyle: expended
-          ? widget.expendedTextStyle ?? widget.ellipsizeTextStyle
-          : widget.ellipsizeTextStyle,
-      ellipsizeTextWeight: expended
-          ? widget.expendedTextWeight ?? widget.ellipsizeTextWeight
-          : widget.ellipsizeTextWeight,
+      extraTextSize: expended
+          ? widget.expendedTextSize ?? widget.extraTextSize
+          : widget.extraTextSize,
+      extraTextStyle: expended
+          ? widget.expendedTextStyle ?? widget.extraTextStyle
+          : widget.extraTextStyle,
+      extraTextWeight: expended
+          ? widget.expendedTextWeight ?? widget.extraTextWeight
+          : widget.extraTextWeight,
       enabled: widget.enabled,
       flex: widget.flex,
       fontFamily: widget.fontFamily,

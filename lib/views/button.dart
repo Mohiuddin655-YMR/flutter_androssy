@@ -40,7 +40,6 @@ class Button extends TextView<ButtonController> {
     super.borderRadiusBR,
     super.borderRadiusTL,
     super.borderRadiusTR,
-    super.child,
     super.clipBehavior,
     super.controller,
     super.dimensionRatio,
