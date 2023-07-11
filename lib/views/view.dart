@@ -2,7 +2,6 @@ part of '../widgets.dart';
 
 typedef OnViewBuilder<T> = Widget Function(BuildContext context, T? controller);
 typedef OnViewChangeListener = Function(dynamic value);
-typedef OnViewErrorListener = String? Function(ErrorType error);
 typedef OnViewClickListener = Function(BuildContext context);
 typedef OnViewToggleListener = Function(bool value);
 typedef OnViewToggleHandler<T extends ViewController> = Function(
@@ -20,15 +19,6 @@ typedef OnViewModifyBuilder<T extends ViewController> = Widget Function(
 );
 typedef OnViewNotifier = void Function(VoidCallback fn);
 typedef OnViewNotifyListener<T extends ViewController> = Function(T controller);
-
-enum ErrorType {
-  none,
-  empty,
-  invalid,
-  maximum,
-  minimum,
-  unmodified,
-}
 
 enum ViewPositionType {
   bottomEnd(ViewPosition(bottom: 0, right: 0)),
@@ -467,16 +457,19 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
                   controller: controller,
                   attachView: _ViewListener(
                     controller: controller,
-                    attachView: _ViewChild(
+                    attachView: _ViewScroller(
                       controller: controller,
-                      attach: widget.attach(context, controller),
-                      builder: (context, view) {
-                        return widget.build(
-                          context,
-                          controller,
-                          view,
-                        );
-                      },
+                      attachView: _ViewChild(
+                        controller: controller,
+                        attach: widget.attach(context, controller),
+                        builder: (context, view) {
+                          return widget.build(
+                            context,
+                            controller,
+                            view,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -667,6 +660,34 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
                     ? AbsorbPointer(child: attachView)
                     : attachView,
               )
+        : attachView;
+  }
+}
+
+class _ViewScroller extends StatelessWidget {
+  final ViewController controller;
+  final Widget attachView;
+
+  const _ViewScroller({
+    Key? key,
+    required this.controller,
+    required this.attachView,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return controller.isScrollable
+        ? SingleChildScrollView(
+            padding: controller.isPadding
+                ? EdgeInsets.only(
+                    left: controller.paddingStart,
+                    right: controller.paddingEnd,
+                    top: controller.paddingTop,
+                    bottom: controller.paddingBottom,
+                  )
+                : null,
+            child: attachView,
+          )
         : attachView;
   }
 }

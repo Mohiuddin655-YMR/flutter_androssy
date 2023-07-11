@@ -1,10 +1,6 @@
 part of '../widgets.dart';
 
 class TextView<T extends TextViewController> extends YMRView<T> {
-  final Axis? orientation;
-  final ViewScrollingType? scrollingType;
-  final ScrollController? scrollController;
-
   final int? maxCharacters;
   final int? maxLines;
 
@@ -130,9 +126,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggle,
-    this.orientation,
-    this.scrollController,
-    this.scrollingType,
     this.maxCharacters,
     this.maxLines,
     this.letterSpacing,
@@ -178,8 +171,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   @override
   ViewRoots initRootProperties() {
     return const ViewRoots(
-      margin: false,
-      padding: false,
       scrollable: false,
     );
   }
@@ -191,33 +182,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
 
   @override
   Widget? attach(BuildContext context, T controller) {
-    return controller.scrollable
-        ? SingleChildScrollView(
-            padding: EdgeInsets.only(
-              left: controller.paddingStart,
-              right: controller.paddingEnd,
-              top: controller.paddingTop,
-              bottom: controller.paddingBottom,
-            ),
-            controller: controller.scrollController,
-            physics: controller.scrollingType.physics,
-            scrollDirection: controller.orientation,
-            child: _TVChild(controller: controller),
-          )
-        : _TVChild(controller: controller);
-  }
-}
-
-class _TVChild<T extends TextViewController> extends StatelessWidget {
-  final T controller;
-
-  const _TVChild({
-    super.key,
-    required this.controller,
-  });
-
-  @override
-  Widget build(BuildContext context) {
     return RawTextView(
       extraText: controller.extraText,
       extraTextColor: controller.extraTextColor,
@@ -400,10 +364,6 @@ class RawTextView extends StatelessWidget {
 }
 
 class TextViewController extends ViewController {
-  Axis orientation = Axis.vertical;
-  ScrollController scrollController = ScrollController();
-  ViewScrollingType scrollingType = ViewScrollingType.none;
-
   int maxCharacters = 0;
   int? maxLines;
 
@@ -446,10 +406,6 @@ class TextViewController extends ViewController {
 
   TextViewController fromTextView(TextView view) {
     super.fromView(view);
-
-    orientation = view.orientation ?? Axis.vertical;
-    scrollController = view.scrollController ?? ScrollController();
-    scrollingType = view.scrollingType ?? ViewScrollingType.none;
 
     maxCharacters = view.maxCharacters ?? 0;
     maxLines = view.maxLines;

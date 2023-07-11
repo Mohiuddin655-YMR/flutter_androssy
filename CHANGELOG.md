@@ -1,3 +1,3 @@
-## 0.1.0
+## 0.1.2
 
-* Textview spans bug fixed
+* View scrolling bug fixed
