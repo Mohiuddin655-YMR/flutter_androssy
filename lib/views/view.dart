@@ -20,6 +20,15 @@ typedef OnViewModifyBuilder<T extends ViewController> = Widget Function(
 typedef OnViewNotifier = void Function(VoidCallback fn);
 typedef OnViewNotifyListener<T extends ViewController> = Function(T controller);
 
+enum ViewErrorType {
+  none,
+  empty,
+  invalid,
+  maximum,
+  minimum,
+  unmodified,
+}
+
 enum ViewPositionType {
   bottomEnd(ViewPosition(bottom: 0, right: 0)),
   bottomStart(ViewPosition(bottom: 0, left: 0)),
@@ -288,6 +297,10 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final ValueState<Gradient>? backgroundGradientState;
   final ValueState<DecorationImage>? backgroundImageState;
 
+  final Axis? orientation;
+  final ViewScrollingType? scrollingType;
+  final ScrollController? scrollController;
+
   final ViewShadowType? shadowType;
   final ViewPosition? position;
   final ViewPositionType? positionType;
@@ -347,7 +360,10 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.borderRadiusBR,
     this.borderRadiusTL,
     this.borderRadiusTR,
+    this.orientation,
     this.scrollable,
+    this.scrollController,
+    this.scrollingType,
     this.shadow,
     this.shadowBlurRadius,
     this.shadowSpreadRadius,
@@ -589,7 +605,9 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
                               ),
                             )
                       : null,
-                  color: controller.background,
+                  color: controller.isBorder
+                      ? controller.borderColor
+                      : controller.background,
                   clipBehavior: controller.clipBehavior,
                   child: InkWell(
                     splashColor: controller.rippleColor,
@@ -632,9 +650,7 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
                 onTap: controller.isClickable
                     ? () {
                         if (controller.isToggleClickable) {
-                          controller.setActivated(
-                            !controller.activated,
-                          );
+                          controller._onToggleNotify();
                         } else {
                           controller.onClickHandler != null
                               ? controller.onClickHandler?.call(controller)
@@ -678,6 +694,9 @@ class _ViewScroller extends StatelessWidget {
   Widget build(BuildContext context) {
     return controller.isScrollable
         ? SingleChildScrollView(
+            controller: controller.scrollController,
+            physics: controller.scrollingType.physics,
+            scrollDirection: controller.orientation,
             padding: controller.isPadding
                 ? EdgeInsets.only(
                     left: controller.paddingStart,
@@ -743,7 +762,7 @@ class _ViewChild extends StatelessWidget {
             context,
             controller.roots.view
                 ? Container(
-                    alignment: controller.gravity,
+                    alignment: isBorder ? null : controller.gravity,
                     clipBehavior: root.decoration && !isRippled
                         ? controller.clipBehavior
                         : Clip.none,
@@ -820,7 +839,7 @@ class _ViewChild extends StatelessWidget {
                                 : BoxShape.rectangle,
                           )
                         : null,
-                    margin: isMargin && !isRippled
+                    margin: isMargin && !isRippled && !isScrollable
                         ? EdgeInsets.only(
                             left: controller.marginStart,
                             right: controller.marginEnd,
@@ -828,26 +847,28 @@ class _ViewChild extends StatelessWidget {
                             bottom: controller.marginBottom,
                           )
                         : null,
-                    padding: isBorder
-                        ? EdgeInsets.only(
-                            left: controller.borderStart,
-                            right: controller.borderEnd,
-                            top: controller.borderTop,
-                            bottom: controller.borderBottom,
-                          )
-                        : isPadding && !isScrollable
+                    padding: isScrollable
+                        ? null
+                        : isBorder
                             ? EdgeInsets.only(
-                                left: controller.paddingStart,
-                                right: controller.paddingEnd,
-                                top: controller.paddingTop,
-                                bottom: controller.paddingBottom,
+                                left: controller.borderStart,
+                                right: controller.borderEnd,
+                                top: controller.borderTop,
+                                bottom: controller.borderBottom,
                               )
-                            : null,
+                            : isPadding
+                                ? EdgeInsets.only(
+                                    left: controller.paddingStart,
+                                    right: controller.paddingEnd,
+                                    top: controller.paddingTop,
+                                    bottom: controller.paddingBottom,
+                                  )
+                                : null,
                     child: isBorder
                         ? _ViewBorder(
                             controller: controller,
                             isCircular: isCircular,
-                            isPadding: isPadding,
+                            isPadding: isPadding && !isScrollable,
                             isRadius: isRadius,
                             child: attach,
                           )
@@ -875,6 +896,7 @@ class _ViewBorder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: controller.gravity,
       clipBehavior:
           controller.roots.decoration ? controller.clipBehavior : Clip.none,
       padding: isPadding
@@ -972,7 +994,7 @@ class ViewController {
     _borderRadiusBL = view.borderRadiusBL;
     _borderRadiusBR = view.borderRadiusBR;
     _borderRadiusTL = view.borderRadiusTL;
-    _borderRadiusTL = view.borderRadiusTL;
+    _borderRadiusTR = view.borderRadiusTR;
 
     // VIEW SHADOW PROPERTIES
     shadowColor = view.shadowColor;
@@ -999,12 +1021,15 @@ class ViewController {
     foregroundImage = view.foregroundImage;
     clipBehavior = view.clipBehavior ?? Clip.antiAlias;
     gravity = view.gravity;
+    orientation = view.orientation ?? Axis.vertical;
+    _position = view.position;
+    positionType = view.positionType ?? ViewPositionType.none;
+    scrollController = view.scrollController ?? ScrollController();
+    scrollingType = view.scrollingType ?? ViewScrollingType.none;
+    shape = view.shape ?? ViewShape.rectangular;
     transform = view.transform;
     transformGravity = view.transformGravity;
     transform = view.transform;
-    _position = view.position;
-    positionType = view.positionType ?? ViewPositionType.none;
-    shape = view.shape ?? ViewShape.rectangular;
     visibility = view.visibility ?? ViewVisibility.visible;
     child = view.child;
 
@@ -1235,6 +1260,8 @@ class ViewController {
 
   double? marginVertical;
 
+  Axis orientation = Axis.vertical;
+
   double padding = 0;
 
   double get paddingAll =>
@@ -1265,6 +1292,10 @@ class ViewController {
   ViewPosition get position => _position ?? positionType.position;
 
   ViewPositionType positionType = ViewPositionType.none;
+
+  ScrollController scrollController = ScrollController();
+
+  ViewScrollingType scrollingType = ViewScrollingType.none;
 
   Matrix4? transform;
 

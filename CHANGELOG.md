@@ -1,3 +1,3 @@
-## 0.1.2
+## 0.1.3
 
-* View scrolling bug fixed
+* View border bug fixed

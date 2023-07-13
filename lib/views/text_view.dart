@@ -90,6 +90,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.orientation,
     super.padding,
     super.paddingHorizontal,
     super.paddingVertical,
@@ -103,6 +104,8 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.ripple,
     super.rippleColor,
     super.scrollable,
+    super.scrollController,
+    super.scrollingType,
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -166,13 +169,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   @override
   T initController() {
     return TextViewController() as T;
-  }
-
-  @override
-  ViewRoots initRootProperties() {
-    return const ViewRoots(
-      scrollable: false,
-    );
   }
 
   @override

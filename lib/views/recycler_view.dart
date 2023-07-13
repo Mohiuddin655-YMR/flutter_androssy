@@ -10,8 +10,6 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
   final RecyclerLayoutType layoutType;
   final Widget Function(int index, T item) builder;
   final Widget Function(int index, T item)? separator;
-  final RecyclerScrollingType? scrollingType;
-  final ScrollController? scrollController;
 
   const RecyclerView({
     super.key,
@@ -105,8 +103,6 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
     this.itemCount,
     this.snapCount = 1,
     this.layoutType = RecyclerLayoutType.linear,
-    this.scrollingType,
-    this.scrollController,
     this.onPagingListener,
   });
 
@@ -126,8 +122,6 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
       itemCount: itemCount,
       snapCount: snapCount,
       layoutType: layoutType,
-      scrollingType: scrollingType,
-      scrollController: scrollController,
       onPagingListener: onPagingListener,
     );
   }
@@ -488,16 +482,6 @@ class RecyclerItem<T> {
 
 enum RecyclerLayoutType { linear, grid }
 
-enum RecyclerScrollingType {
-  bouncing(physics: BouncingScrollPhysics()),
-  page(physics: PageScrollPhysics()),
-  none;
-
-  final ScrollPhysics? physics;
-
-  const RecyclerScrollingType({this.physics});
-}
-
 class _RecyclerViewBuilder<T> extends StatelessWidget {
   final T component;
   final Widget? Function(T value) builder;
@@ -520,17 +504,17 @@ class RecyclerViewController<T> extends ViewController {
   int? _itemCount;
   int snapCount = 1;
   RecyclerLayoutType layoutType = RecyclerLayoutType.linear;
-  RecyclerScrollingType scrollingType = RecyclerScrollingType.none;
 
   OnViewChangeListener? onPagingListener;
 
-  ScrollController _scrollController = ScrollController();
-
+  @override
   ScrollController get scrollController {
     if (onPagingListener != null) {
-      return _scrollController.paging(onListen: onPagingListener ?? (v) {});
+      return super
+          .scrollController
+          .paging(onListen: onPagingListener ?? (v) {});
     } else {
-      return _scrollController;
+      return super.scrollController;
     }
   }
 
@@ -542,9 +526,7 @@ class RecyclerViewController<T> extends ViewController {
     int? itemCount,
     int? snapCount,
     RecyclerLayoutType? layoutType,
-    RecyclerScrollingType? scrollingType,
     OnViewChangeListener? onPagingListener,
-    ScrollController? scrollController,
   }) {
     super.fromView(view);
     _itemCount = itemCount;
@@ -552,9 +534,7 @@ class RecyclerViewController<T> extends ViewController {
     this.direction = direction ?? Axis.vertical;
     this.layoutType = layoutType ?? RecyclerLayoutType.linear;
     this.snapCount = snapCount ?? 1;
-    this.scrollingType = scrollingType ?? RecyclerScrollingType.none;
     this.onPagingListener = onPagingListener;
-    _scrollController = scrollController ?? ScrollController();
     return this;
   }
 

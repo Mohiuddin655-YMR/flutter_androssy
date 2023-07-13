@@ -16,9 +16,6 @@ enum ScrollingType {
 }
 
 class ExpensiveScrollView extends YMRView<ExpensiveScrollViewController> {
-  final Axis? orientation;
-  final ScrollingType? scrollingType;
-
   const ExpensiveScrollView({
     super.key,
     super.absorbMode,
@@ -81,6 +78,9 @@ class ExpensiveScrollView extends YMRView<ExpensiveScrollViewController> {
     super.pressedColor,
     super.ripple,
     super.rippleColor,
+    super.orientation,
+    super.scrollable,
+    super.scrollingType,
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -104,8 +104,6 @@ class ExpensiveScrollView extends YMRView<ExpensiveScrollViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggle,
-    this.orientation,
-    this.scrollingType,
   });
 
   @override
@@ -116,11 +114,7 @@ class ExpensiveScrollView extends YMRView<ExpensiveScrollViewController> {
   @override
   ExpensiveScrollViewController attachController(
       ExpensiveScrollViewController controller) {
-    return controller.fromView(
-      this,
-      orientation: orientation,
-      scrollingType: scrollingType,
-    );
+    return controller.fromView(this);
   }
 
   @override
@@ -138,18 +132,11 @@ class ExpensiveScrollView extends YMRView<ExpensiveScrollViewController> {
 }
 
 class ExpensiveScrollViewController extends ViewController {
-  Axis orientation = Axis.vertical;
-  ScrollingType scrollingType = ScrollingType.none;
-
   @override
   ExpensiveScrollViewController fromView(
-    YMRView<ViewController> view, {
-    Axis? orientation,
-    ScrollingType? scrollingType,
-  }) {
+    YMRView<ViewController> view,
+  ) {
     super.fromView(view);
-    this.orientation = orientation ?? Axis.vertical;
-    this.scrollingType = scrollingType ?? ScrollingType.none;
     return this;
   }
 }
