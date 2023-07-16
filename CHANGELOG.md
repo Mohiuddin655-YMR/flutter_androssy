@@ -1,3 +1,3 @@
-## 0.1.3
+## 0.1.4
 
-* View border bug fixed
+* TextView ellipsize text recognizer bug fixed

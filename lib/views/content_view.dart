@@ -45,8 +45,6 @@ class ContentView extends YMRView<ContentViewController> {
   final ContentStyle? titleStyle;
   final ContentStyle? paragraphStyle;
   final DotStyle? dotStyle;
-  final ViewScrollingType? scrollingType;
-  final ScrollController? scrollController;
 
   const ContentView({
     super.key,
@@ -111,6 +109,8 @@ class ContentView extends YMRView<ContentViewController> {
     super.ripple,
     super.rippleColor,
     super.scrollable = true,
+    super.scrollController,
+    super.scrollingType,
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -136,8 +136,6 @@ class ContentView extends YMRView<ContentViewController> {
     this.paragraphs,
     this.titleStyle,
     this.paragraphStyle,
-    this.scrollController,
-    this.scrollingType,
   });
 
   @override

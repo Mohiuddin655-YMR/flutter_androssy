@@ -249,7 +249,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final T? controller;
 
   final int? flex;
-  final bool? absorbMode, activated, enabled, scrollable;
+  final bool? absorbMode, activated, enabled, expandable, scrollable;
 
   final int? animation;
   final Curve? animationType;
@@ -322,6 +322,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.absorbMode,
     this.activated,
     this.enabled,
+    this.expandable,
     this.visibility,
     this.animation,
     this.animationType,
@@ -616,7 +617,7 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
                     onTap: controller.isClickable
                         ? () {
                             if (controller.isToggleClickable) {
-                              controller._onToggleNotify();
+                              controller.onToggleNotify();
                             } else {
                               controller.onClickHandler != null
                                   ? controller.onClickHandler?.call(controller)
@@ -650,7 +651,7 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
                 onTap: controller.isClickable
                     ? () {
                         if (controller.isToggleClickable) {
-                          controller._onToggleNotify();
+                          controller.onToggleNotify();
                         } else {
                           controller.onClickHandler != null
                               ? controller.onClickHandler?.call(controller)
@@ -944,6 +945,7 @@ class ViewController {
     absorbMode = view.absorbMode ?? false;
     activated = view.activated ?? false;
     enabled = view.enabled ?? true;
+    expandable = view.expandable ?? false;
 
     // ANIMATION PROPERTIES
     animation = view.animation ?? 0;
@@ -1060,6 +1062,7 @@ class ViewController {
 
   ThemeData get theme => Theme.of(context);
 
+  bool expandable = false;
   bool scrollable = false;
 
   double elevation = 0;
@@ -1461,7 +1464,7 @@ class ViewController {
     return shape == ViewShape.squire;
   }
 
-  bool get isToggleClickable => onToggle != null;
+  bool get isToggleClickable => onToggle != null || expandable;
 
   double get maxSize {
     return max(_width ?? 0, _height ?? 0);
@@ -1867,7 +1870,7 @@ class ViewController {
     _onNotifier = notifier;
   }
 
-  void _onToggleNotify() {
+  void onToggleNotify() {
     activated = !activated;
     onToggle?.call(activated);
     _notify;

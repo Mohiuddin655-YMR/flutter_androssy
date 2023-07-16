@@ -123,7 +123,6 @@ class ViewPager extends YMRView<ViewPagerController> {
 
 class ViewPagerController extends ViewController {
   int index = 0;
-  Axis orientation = Axis.horizontal;
   List<Widget> items = [];
   late PageController pager;
   late TabController tab;

@@ -1,12 +1,9 @@
 part of '../widgets.dart';
 
 class LinearLayout extends YMRView<LinearLayoutController> {
-  final Axis? orientation;
   final LayoutGravity? layoutGravity;
   final MainAxisAlignment? mainGravity;
   final CrossAxisAlignment? crossGravity;
-  final ViewScrollingType? scrollingType;
-  final ScrollController? scrollController;
   final OnViewChangeListener? onPagingListener;
 
   final List<Widget>? children;
@@ -38,7 +35,6 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.borderRadiusBR,
     super.borderRadiusTL,
     super.borderRadiusTR,
-    super.child,
     super.clipBehavior,
     super.controller,
     super.dimensionRatio,
@@ -61,6 +57,7 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.orientation,
     super.padding,
     super.paddingHorizontal,
     super.paddingVertical,
@@ -74,6 +71,8 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.ripple,
     super.rippleColor,
     super.scrollable,
+    super.scrollingType,
+    super.scrollController,
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -97,12 +96,9 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggle,
-    this.orientation,
     this.layoutGravity,
     this.mainGravity,
     this.crossGravity,
-    this.scrollingType,
-    this.scrollController,
     this.onPagingListener,
     this.children,
   });
@@ -159,11 +155,9 @@ class _LLChild extends StatelessWidget {
 }
 
 class LinearLayoutController extends ViewController {
-  Axis orientation = Axis.vertical;
   LayoutGravity layoutGravity = LayoutGravity.start;
   MainAxisAlignment? _mainGravity;
   CrossAxisAlignment? _crossGravity;
-  ViewScrollingType scrollingType = ViewScrollingType.none;
   ScrollController _scrollController = ScrollController();
   List<Widget> children = [];
 
@@ -187,6 +181,7 @@ class LinearLayoutController extends ViewController {
 
   CrossAxisAlignment get crossGravity => _crossGravity ?? layoutGravity.cross;
 
+  @override
   ScrollController get scrollController {
     if (onPagingListener != null) {
       return _scrollController.paging(onListen: onPagingListener ?? (v) {});

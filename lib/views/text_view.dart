@@ -8,17 +8,22 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final double? lineSpacingExtra;
   final double? wordSpacing;
 
-  final String? extraText;
-  final TextDecoration? extraTextDecoration;
-  final Color? extraTextDecorationColor;
-  final TextDecorationStyle? extraTextDecorationStyle;
-  final double? extraTextDecorationThickness;
-  final Color? extraTextColor;
-  final double? extraTextLetterSpace;
-  final double? extraTextSize;
-  final FontStyle? extraTextStyle;
-  final bool? extraTextVisible;
-  final FontWeight? extraTextWeight;
+  final FontStyle? ellipsizeFontStyle;
+  final FontWeight? ellipsizeFontWeight;
+  final String? ellipsizeText;
+  final ValueState<String>? ellipsizeTextState;
+  final bool? ellipsizeTextAllCaps;
+  final Color? ellipsizeTextColor;
+  final ValueState<Color>? ellipsizeTextColorState;
+  final TextDecoration? ellipsizeTextDecoration;
+  final Color? ellipsizeTextDecorationColor;
+  final TextDecorationStyle? ellipsizeTextDecorationStyle;
+  final double? ellipsizeTextDecorationThickness;
+  final double? ellipsizeTextLetterSpace;
+  final double? ellipsizeTextSize;
+  final TextStyle? ellipsizeTextStyle;
+  final bool? ellipsizeTextVisible;
+  final OnViewClickListener? onEllipsizeClick;
 
   final String? fontFamily;
   final FontStyle? fontStyle;
@@ -73,6 +78,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.dimensionRatio,
     super.elevation,
     super.enabled,
+    super.expandable,
     super.foreground,
     super.foregroundBlendMode,
     super.foregroundGradient,
@@ -134,17 +140,22 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.letterSpacing,
     this.lineSpacingExtra,
     this.wordSpacing,
-    this.extraText,
-    this.extraTextColor,
-    this.extraTextDecoration,
-    this.extraTextDecorationColor,
-    this.extraTextDecorationStyle,
-    this.extraTextDecorationThickness,
-    this.extraTextLetterSpace,
-    this.extraTextSize,
-    this.extraTextStyle,
-    this.extraTextVisible,
-    this.extraTextWeight,
+    this.ellipsizeText,
+    this.ellipsizeTextState,
+    this.ellipsizeTextAllCaps,
+    this.ellipsizeTextColor,
+    this.ellipsizeTextColorState,
+    this.ellipsizeTextDecoration,
+    this.ellipsizeTextDecorationColor,
+    this.ellipsizeTextDecorationStyle,
+    this.ellipsizeTextDecorationThickness,
+    this.ellipsizeTextLetterSpace,
+    this.ellipsizeTextSize,
+    this.ellipsizeFontStyle,
+    this.ellipsizeTextVisible,
+    this.ellipsizeFontWeight,
+    this.ellipsizeTextStyle,
+    this.onEllipsizeClick,
     this.fontFamily,
     this.fontStyle,
     this.fontWeight,
@@ -179,17 +190,20 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   @override
   Widget? attach(BuildContext context, T controller) {
     return RawTextView(
-      extraText: controller.extraText,
-      extraTextColor: controller.extraTextColor,
-      extraTextDecoration: controller.extraTextDecoration,
-      extraTextDecorationColor: controller.extraTextDecorationColor,
-      extraTextDecorationStyle: controller.extraTextDecorationStyle,
-      extraTextDecorationThickness: controller.extraTextDecorationThickness,
-      extraTextLetterSpace: controller.extraTextLetterSpace,
-      extraTextSize: controller.extraTextSize,
-      extraTextStyle: controller.extraTextStyle,
-      extraTextVisible: controller.extraTextVisible,
-      extraTextWeight: controller.extraTextWeight,
+      ellipsizeText: controller.ellipsizeText,
+      ellipsizeTextColor: controller.ellipsizeTextColor,
+      ellipsizeTextDecoration: controller.ellipsizeTextDecoration,
+      ellipsizeTextDecorationColor: controller.ellipsizeTextDecorationColor,
+      ellipsizeTextDecorationStyle: controller.ellipsizeTextDecorationStyle,
+      ellipsizeTextDecorationThickness:
+          controller.ellipsizeTextDecorationThickness,
+      ellipsizeTextLetterSpace: controller.ellipsizeTextLetterSpace,
+      ellipsizeTextSize: controller.ellipsizeTextSize,
+      ellipsizeTextStyle: controller.ellipsizeTextStyle,
+      ellipsizeTextVisible: controller.ellipsizeTextVisible,
+      ellipsizeFontStyle: controller.ellipsizeFontStyle,
+      ellipsizeFontWeight: controller.ellipsizeFontWeight,
+      onEllipsizeClick: controller.onEllipsizeClick,
       text: controller.text,
       textSpans: controller.textSpans,
       maxLines: controller.maxLines,
@@ -215,17 +229,19 @@ class TextView<T extends TextViewController> extends YMRView<T> {
 }
 
 class RawTextView extends StatelessWidget {
-  final String? extraText;
-  final Color? extraTextColor;
-  final TextDecoration? extraTextDecoration;
-  final Color? extraTextDecorationColor;
-  final TextDecorationStyle? extraTextDecorationStyle;
-  final double? extraTextDecorationThickness;
-  final double? extraTextLetterSpace;
-  final double? extraTextSize;
-  final FontStyle? extraTextStyle;
-  final bool? extraTextVisible;
-  final FontWeight? extraTextWeight;
+  final FontStyle? ellipsizeFontStyle;
+  final FontWeight? ellipsizeFontWeight;
+  final String? ellipsizeText;
+  final Color? ellipsizeTextColor;
+  final TextDecoration? ellipsizeTextDecoration;
+  final Color? ellipsizeTextDecorationColor;
+  final TextDecorationStyle? ellipsizeTextDecorationStyle;
+  final double? ellipsizeTextDecorationThickness;
+  final double? ellipsizeTextLetterSpace;
+  final double? ellipsizeTextSize;
+  final TextStyle ellipsizeTextStyle;
+  final bool ellipsizeTextVisible;
+  final OnViewClickListener? onEllipsizeClick;
 
   final int? maxCharacters;
   final int? maxLines;
@@ -254,17 +270,19 @@ class RawTextView extends StatelessWidget {
 
   const RawTextView({
     super.key,
-    this.extraText,
-    this.extraTextColor,
-    this.extraTextDecoration,
-    this.extraTextDecorationColor,
-    this.extraTextDecorationStyle,
-    this.extraTextDecorationThickness,
-    this.extraTextLetterSpace,
-    this.extraTextSize,
-    this.extraTextStyle,
-    this.extraTextVisible,
-    this.extraTextWeight,
+    this.ellipsizeFontStyle,
+    this.ellipsizeFontWeight,
+    this.ellipsizeText,
+    this.ellipsizeTextColor,
+    this.ellipsizeTextDecoration,
+    this.ellipsizeTextDecorationColor,
+    this.ellipsizeTextDecorationStyle,
+    this.ellipsizeTextDecorationThickness,
+    this.ellipsizeTextLetterSpace,
+    this.ellipsizeTextSize,
+    this.ellipsizeTextStyle = const TextStyle(),
+    this.ellipsizeTextVisible = true,
+    this.onEllipsizeClick,
     this.maxCharacters,
     this.maxLines,
     this.letterSpacing,
@@ -292,19 +310,23 @@ class RawTextView extends StatelessWidget {
   Widget build(BuildContext context) {
     final spans = textSpans ??
         [
-          if ((extraText ?? "").isNotEmpty)
+          if ((ellipsizeText ?? "").isNotEmpty && ellipsizeTextVisible)
             TextSpan(
-              text: extraText,
-              style: TextStyle(
-                color: extraTextColor,
-                fontSize: extraTextSize,
-                fontStyle: extraTextStyle,
-                letterSpacing: extraTextLetterSpace,
-                fontWeight: extraTextWeight,
-                decoration: extraTextDecoration,
-                decorationColor: extraTextDecorationColor,
-                decorationStyle: extraTextDecorationStyle,
-                decorationThickness: extraTextDecorationThickness,
+              text: ellipsizeText,
+              recognizer: onEllipsizeClick != null
+                  ? (TapGestureRecognizer()
+                    ..onTap = () => onEllipsizeClick?.call(context))
+                  : null,
+              style: ellipsizeTextStyle.copyWith(
+                color: ellipsizeTextColor,
+                fontSize: ellipsizeTextSize,
+                fontStyle: ellipsizeFontStyle,
+                letterSpacing: ellipsizeTextLetterSpace,
+                fontWeight: ellipsizeFontWeight,
+                decoration: ellipsizeTextDecoration,
+                decorationColor: ellipsizeTextDecorationColor,
+                decorationStyle: ellipsizeTextDecorationStyle,
+                decorationThickness: ellipsizeTextDecorationThickness,
               ),
             ),
         ];
@@ -367,17 +389,22 @@ class TextViewController extends ViewController {
   double lineSpacingExtra = 0;
   double? wordSpacing;
 
-  String? extraText;
-  TextDecoration? extraTextDecoration;
-  Color? extraTextDecorationColor;
-  TextDecorationStyle? extraTextDecorationStyle;
-  double? extraTextDecorationThickness;
-  Color? extraTextColor;
-  double? extraTextLetterSpace;
-  double? extraTextSize;
-  FontStyle? extraTextStyle;
-  bool extraTextVisible = true;
-  FontWeight? extraTextWeight;
+  FontStyle? ellipsizeFontStyle;
+  FontWeight? ellipsizeFontWeight;
+  String? _ellipsizeText;
+  ValueState<String>? ellipsizeTextState;
+  bool ellipsizeTextAllCaps = false;
+  Color? _ellipsizeTextColor;
+  ValueState<Color>? ellipsizeTextColorState;
+  TextDecoration? ellipsizeTextDecoration;
+  Color? ellipsizeTextDecorationColor;
+  TextDecorationStyle? ellipsizeTextDecorationStyle;
+  double? ellipsizeTextDecorationThickness;
+  double? ellipsizeTextLetterSpace;
+  double? ellipsizeTextSize;
+  TextStyle ellipsizeTextStyle = const TextStyle();
+  bool ellipsizeTextVisible = true;
+  OnViewClickListener? _onEllipsizeClick;
 
   String? fontFamily;
   FontStyle? fontStyle;
@@ -410,17 +437,21 @@ class TextViewController extends ViewController {
     lineSpacingExtra = view.lineSpacingExtra ?? 0;
     wordSpacing = view.wordSpacing;
 
-    extraTextLetterSpace = view.extraTextLetterSpace;
-    extraText = view.extraText;
-    extraTextColor = view.extraTextColor;
-    extraTextDecoration = view.extraTextDecoration;
-    extraTextDecorationColor = view.extraTextDecorationColor;
-    extraTextDecorationStyle = view.extraTextDecorationStyle;
-    extraTextDecorationThickness = view.extraTextDecorationThickness;
-    extraTextSize = view.extraTextSize;
-    extraTextStyle = view.extraTextStyle;
-    extraTextVisible = view.extraTextVisible ?? true;
-    extraTextWeight = view.extraTextWeight;
+    ellipsizeFontStyle = view.ellipsizeFontStyle;
+    ellipsizeFontWeight = view.ellipsizeFontWeight;
+    ellipsizeText = view.ellipsizeText;
+    ellipsizeTextState = view.ellipsizeTextState;
+    ellipsizeTextColor = view.ellipsizeTextColor;
+    ellipsizeTextColorState = view.ellipsizeTextColorState;
+    ellipsizeTextDecoration = view.ellipsizeTextDecoration;
+    ellipsizeTextDecorationColor = view.ellipsizeTextDecorationColor;
+    ellipsizeTextDecorationStyle = view.ellipsizeTextDecorationStyle;
+    ellipsizeTextDecorationThickness = view.ellipsizeTextDecorationThickness;
+    ellipsizeTextLetterSpace = view.ellipsizeTextLetterSpace;
+    ellipsizeTextSize = view.ellipsizeTextSize;
+    ellipsizeTextStyle = view.ellipsizeTextStyle ?? const TextStyle();
+    ellipsizeTextVisible = view.ellipsizeTextVisible ?? true;
+    onEllipsizeClick = view.onEllipsizeClick;
 
     fontFamily = view.fontFamily;
     fontStyle = view.fontStyle;
@@ -446,17 +477,24 @@ class TextViewController extends ViewController {
     return this;
   }
 
+  double? get spacingFactor {
+    final x = textSize + lineSpacingExtra;
+    final y = x * 0.068;
+    return lineSpacingExtra > 0 ? y : null;
+  }
+
   set text(String? value) => _text = value;
 
   String get text {
     final value = textState?.activated(activated, enabled) ?? _text ?? "";
-    if (maxCharacters > 0) {
+    if (maxCharacters > 0 && !activated) {
       return value.substring(
         0,
         value.length > maxCharacters ? maxCharacters : value.length,
       );
+    } else {
+      return textAllCaps ? value.toUpperCase() : value;
     }
-    return textAllCaps ? value.toUpperCase() : value;
   }
 
   set textColor(Color? value) => _textColor = value;
@@ -465,50 +503,100 @@ class TextViewController extends ViewController {
     return textColorState?.activated(activated, enabled) ?? _textColor;
   }
 
-  double? get spacingFactor {
-    final x = textSize + lineSpacingExtra;
-    final y = x * 0.068;
-    return lineSpacingExtra > 0 ? y : null;
+  set ellipsizeText(String? value) => _ellipsizeText = value;
+
+  String? get ellipsizeText {
+    final value =
+        ellipsizeTextState?.activated(activated, enabled) ?? _ellipsizeText;
+    return ellipsizeTextAllCaps ? value?.toUpperCase() : value;
   }
 
-  bool get isAutoExtraText {
+  set ellipsizeTextColor(Color? value) => _ellipsizeTextColor = value;
+
+  Color? get ellipsizeTextColor {
+    return ellipsizeTextColorState?.activated(activated, enabled) ??
+        _ellipsizeTextColor;
+  }
+
+  bool get isAutoEllipsize {
     final a = maxCharacters > 0;
     final b = text.length > maxCharacters;
-    return (a && b) || extraTextVisible;
+    return (a && b) || ellipsizeTextVisible;
+  }
+
+  OnViewClickListener? get onEllipsizeClick =>
+      enabled ? _onEllipsizeClick : null;
+
+  set onEllipsizeClick(OnViewClickListener? listener) =>
+      _onEllipsizeClick ??= listener;
+
+  void setEllipsizeFontStyle(FontStyle? value) {
+    ellipsizeFontStyle = value;
+    _notify;
+  }
+
+  void setEllipsizeFontWeight(FontWeight value) {
+    ellipsizeFontWeight = value;
+    _notify;
   }
 
   void setEllipsizeLetterSpace(double? value) {
-    extraTextLetterSpace = value;
+    ellipsizeTextLetterSpace = value;
     _notify;
   }
 
   void setEllipsizeText(String? value) {
-    extraText = value;
+    ellipsizeText = value;
+    _notify;
+  }
+
+  void setEllipsizeTextState(ValueState<String>? value) {
+    ellipsizeTextState = value;
     _notify;
   }
 
   void setEllipsizeTextColor(Color? value) {
-    extraTextColor = value;
+    ellipsizeTextColor = value;
+    _notify;
+  }
+
+  void setEllipsizeTextColorState(ValueState<Color>? value) {
+    ellipsizeTextColorState = value;
+    _notify;
+  }
+
+  void setEllipsizeTextDecoration(TextDecoration? value) {
+    ellipsizeTextDecoration = value;
+    _notify;
+  }
+
+  void setEllipsizeTextDecorationColor(Color? value) {
+    ellipsizeTextDecorationColor = value;
+    _notify;
+  }
+
+  void setEllipsizeTextDecorationStyle(TextDecorationStyle? value) {
+    ellipsizeTextDecorationStyle = value;
+    _notify;
+  }
+
+  void setEllipsizeTextDecorationThickness(double? value) {
+    ellipsizeTextDecorationThickness = value;
     _notify;
   }
 
   void setEllipsizeTextSize(double? value) {
-    extraTextSize = value;
+    ellipsizeTextSize = value;
     _notify;
   }
 
-  void setEllipsizeTextStyle(FontStyle? value) {
-    extraTextStyle = value;
-    _notify;
-  }
-
-  void setEllipsizeTextWeight(FontWeight value) {
-    extraTextWeight = value;
+  void setEllipsizeTextStyle(TextStyle value) {
+    ellipsizeTextStyle = value;
     _notify;
   }
 
   void setEllipsizeVisibility(bool value) {
-    extraTextVisible = value;
+    ellipsizeTextVisible = value;
     _notify;
   }
 
@@ -590,5 +678,9 @@ class TextViewController extends ViewController {
   void setWordSpacing(double value) {
     wordSpacing = value;
     _notify;
+  }
+
+  void setOnEllipsizeClickListener(OnViewClickListener listener) {
+    _onClick = listener;
   }
 }
