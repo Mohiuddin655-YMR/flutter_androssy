@@ -16,6 +16,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 part 'builders/activity.dart';
 
+part 'builders/countdown_builder.dart';
+
 part 'builders/fragment.dart';
 
 part 'builders/notifier_view.dart';
