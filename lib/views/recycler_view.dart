@@ -144,9 +144,8 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
   }
 
   @override
-  void onDispose() {
-    controller?._dispose();
-    super.onDispose();
+  void onDispose(RecyclerViewController<T> controller) {
+    controller._dispose();
   }
 }
 

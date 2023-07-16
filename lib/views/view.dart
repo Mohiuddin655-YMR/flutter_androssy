@@ -410,8 +410,6 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.onToggle,
   }) : super(key: key);
 
-  void init(T controller) {}
-
   T initController() => ViewController() as T;
 
   T attachController(T controller) => controller.fromView(this) as T;
@@ -428,7 +426,13 @@ class YMRView<T extends ViewController> extends StatefulWidget {
 
   ViewRoots initRootProperties() => const ViewRoots();
 
-  void onDispose() {}
+  void onInit(T controller) {}
+
+  void onUpdateWidget(T controller, dynamic oldWidget) {}
+
+  void onChangeDependencies(T controller) {}
+
+  void onDispose(T controller) {}
 
   @override
   State<YMRView<T>> createState() => _YMRViewState<T>();
@@ -442,20 +446,26 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
     controller = widget.controller ?? widget.initController();
     controller._setNotifier(setState);
     controller = widget.attachController(controller);
-    widget.init(controller);
+    widget.onInit(controller);
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant YMRView<T> oldWidget) {
     controller = widget.attachController(controller);
-    widget.init(controller);
+    widget.onUpdateWidget(controller, oldWidget);
     super.didUpdateWidget(oldWidget);
   }
 
   @override
+  void didChangeDependencies() {
+    widget.onChangeDependencies(controller);
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
-    widget.onDispose();
+    widget.onDispose(controller);
     super.dispose();
   }
 

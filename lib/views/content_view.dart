@@ -139,7 +139,7 @@ class ContentView extends YMRView<ContentViewController> {
   });
 
   @override
-  void init(ContentViewController controller) {}
+  void onInit(ContentViewController controller) {}
 
   @override
   ContentViewController initController() {
