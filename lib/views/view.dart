@@ -157,24 +157,75 @@ class ViewRoots {
 class ValueState<T> {
   final T _primary;
   final T? _activated;
-  final T? _disabled;
+  final T? _unactivated;
   final T? _error;
-  final T? _focused;
   final T? _selected;
+  final T? _unselected;
+  final T? _focused;
+  final T? _unfocused;
+  final T? _enabled;
+  final T? _disabled;
 
-  const ValueState.all({
+  const ValueState({
     required T primary,
     T? activated,
-    T? disabled,
+    T? unactivated,
     T? error,
-    T? focused,
     T? selected,
+    T? unselected,
+    T? focused,
+    T? unfocused,
+    T? enabled,
+    T? disabled,
   })  : _primary = primary,
         _activated = activated,
-        _disabled = disabled,
+        _unactivated = unactivated,
         _error = error,
+        _selected = selected,
+        _unselected = unselected,
         _focused = focused,
-        _selected = selected;
+        _unfocused = unfocused,
+        _enabled = enabled,
+        _disabled = disabled;
+
+  factory ValueState.activate({
+    required T activated,
+    required T inactivated,
+    T? disabled,
+  }) {
+    return ValueState(
+      primary: inactivated,
+      activated: activated,
+      unactivated: inactivated,
+      disabled: disabled,
+    );
+  }
+
+  factory ValueState.focus({
+    required T focused,
+    required T unfocused,
+    T? disabled,
+  }) {
+    return ValueState(
+      primary: unfocused,
+      focused: focused,
+      unfocused: unfocused,
+      disabled: disabled,
+    );
+  }
+
+  factory ValueState.select({
+    required T selected,
+    required T unselected,
+    T? disabled,
+  }) {
+    return ValueState(
+      primary: unselected,
+      selected: selected,
+      unselected: unselected,
+      disabled: disabled,
+    );
+  }
 
   T get primaryValue => _primary;
 
@@ -188,46 +239,11 @@ class ValueState<T> {
 
   T? get selectedValue => _selected;
 
-  factory ValueState.active({
-    required T activated,
-    required T inactivated,
-    T? disabled,
-  }) {
-    return ValueState.all(
-      primary: inactivated,
-      activated: activated,
-      disabled: disabled,
-    );
-  }
-
-  factory ValueState.focus({
-    required T focused,
-    required T unfocused,
-    T? disabled,
-  }) {
-    return ValueState.all(
-      primary: unfocused,
-      focused: focused,
-      disabled: disabled,
-    );
-  }
-
-  factory ValueState.select({
-    required T selected,
-    required T unselected,
-    T? disabled,
-  }) {
-    return ValueState.all(
-      primary: unselected,
-      activated: selected,
-      selected: selected,
-      disabled: disabled,
-    );
-  }
+  T? detect(bool isEnabled) => isEnabled ? _primary : _disabled;
 
   T? activated(bool activated, [bool enabled = true]) {
     if (enabled) {
-      return activated ? _activated : _primary;
+      return activated ? _activated : _unactivated;
     } else {
       return _disabled;
     }
@@ -235,7 +251,7 @@ class ValueState<T> {
 
   T? focused(bool focused, [bool enabled = true]) {
     if (enabled) {
-      return focused ? _focused : _primary;
+      return focused ? _focused : _unfocused;
     } else {
       return _disabled;
     }
@@ -243,11 +259,52 @@ class ValueState<T> {
 
   T? selected(bool selected, [bool enabled = true]) {
     if (enabled) {
-      return selected ? _selected ?? _activated : _primary;
+      return selected ? _selected : _unselected;
     } else {
       return _disabled;
     }
   }
+
+  T? error(bool isError) => isError ? _error : _primary;
+
+  T? typed(StateValueType type) {
+    switch (type) {
+      case StateValueType.none:
+        return _primary;
+      case StateValueType.error:
+        return _error;
+      case StateValueType.selected:
+        return _selected;
+      case StateValueType.activated:
+        return _activated;
+      case StateValueType.inactivated:
+        return _unactivated;
+      case StateValueType.unselected:
+        return _unselected;
+      case StateValueType.focused:
+        return _focused;
+      case StateValueType.unfocused:
+        return _unfocused;
+      case StateValueType.enabled:
+        return _enabled;
+      case StateValueType.disabled:
+        return _disabled;
+    }
+  }
+
+}
+
+enum StateValueType {
+  none,
+  error,
+  activated,
+  inactivated,
+  selected,
+  unselected,
+  focused,
+  unfocused,
+  enabled,
+  disabled,
 }
 
 class YMRView<T extends ViewController> extends StatefulWidget {
