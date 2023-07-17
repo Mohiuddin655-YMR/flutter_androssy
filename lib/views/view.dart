@@ -3,7 +3,11 @@ part of '../widgets.dart';
 typedef OnViewBuilder<T> = Widget Function(BuildContext context, T? controller);
 typedef OnViewChangeListener = Function(dynamic value);
 typedef OnViewClickListener = Function(BuildContext context);
+typedef OnViewErrorListener = String? Function(ViewErrorType error);
 typedef OnViewToggleListener = Function(bool value);
+typedef OnViewValidListener = Function(bool value);
+typedef OnViewValidatorListener = bool Function(String value);
+
 typedef OnViewToggleHandler<T extends ViewController> = Function(
   BuildContext context,
   T controller,
@@ -291,7 +295,6 @@ class ValueState<T> {
         return _disabled;
     }
   }
-
 }
 
 enum StateValueType {
@@ -376,6 +379,10 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final OnViewNotifyListener<T>? onDoubleClickHandler;
   final OnViewNotifyListener<T>? onLongClickHandler;
   final OnViewToggleListener? onToggle;
+  final OnViewChangeListener? onChange;
+  final OnViewErrorListener? onError;
+  final OnViewValidListener? onValid;
+  final OnViewValidatorListener? onValidator;
 
   const YMRView({
     Key? key,
@@ -470,6 +477,10 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.onDoubleClickHandler,
     this.onLongClickHandler,
     this.onToggle,
+    this.onChange,
+    this.onError,
+    this.onValid,
+    this.onValidator,
   }) : super(key: key);
 
   T initController() => ViewController() as T;
@@ -1125,6 +1136,12 @@ class ViewController {
     onLongClickHandler = view.onLongClickHandler;
     onToggle = view.onToggle;
 
+    //VIEW DATA LISTENER PROPERTIES
+    onChange = view.onChange;
+    onError = view.onError;
+    onValid = view.onValid;
+    onValidator = view.onValidator;
+
     return this;
   }
 
@@ -1436,6 +1453,31 @@ class ViewController {
   OnViewToggleListener? get onToggle => enabled ? _onToggleClick : null;
 
   set onToggle(OnViewToggleListener? listener) => _onToggleClick ??= listener;
+
+  OnViewChangeListener? _onChange;
+
+  OnViewChangeListener? get onChange => enabled ? _onChange : null;
+
+  set onChange(OnViewChangeListener? listener) => _onChange ??= listener;
+
+  OnViewErrorListener? _onError;
+
+  OnViewErrorListener? get onError => enabled ? _onError : null;
+
+  set onError(OnViewErrorListener? listener) => _onError ??= listener;
+
+  OnViewValidListener? _onValid;
+
+  OnViewValidListener? get onValid => enabled ? _onValid : null;
+
+  set onValid(OnViewValidListener? listener) => _onValid ??= listener;
+
+  OnViewValidatorListener? _onValidator;
+
+  OnViewValidatorListener? get onValidator => enabled ? _onValidator : null;
+
+  set onValidator(OnViewValidatorListener? listener) =>
+      _onValidator ??= listener;
 
   OnViewNotifyListener? onClickHandler,
       onDoubleClickHandler,
@@ -1936,6 +1978,22 @@ class ViewController {
 
   void setOnToggleClickListener(OnViewToggleListener listener) {
     _onToggleClick = listener;
+  }
+
+  void setOnChangeListener(OnViewChangeListener listener) {
+    _onChange = listener;
+  }
+
+  void setOnErrorListener(OnViewErrorListener listener) {
+    _onError = listener;
+  }
+
+  void setOnValidListener(OnViewValidListener listener) {
+    _onValid = listener;
+  }
+
+  void setOnValidatorListener(OnViewValidatorListener listener) {
+    _onValidator = listener;
   }
 
   void _setNotifier(OnViewNotifier? notifier) {
