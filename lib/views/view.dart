@@ -158,18 +158,21 @@ class ValueState<T> {
   final T _primary;
   final T? _activated;
   final T? _disabled;
+  final T? _error;
   final T? _focused;
   final T? _selected;
 
-  const ValueState._({
+  const ValueState.all({
     required T primary,
     T? activated,
     T? disabled,
+    T? error,
     T? focused,
     T? selected,
   })  : _primary = primary,
         _activated = activated,
         _disabled = disabled,
+        _error = error,
         _focused = focused,
         _selected = selected;
 
@@ -178,6 +181,8 @@ class ValueState<T> {
   T? get activatedValue => _activated;
 
   T? get disabledValue => _disabled;
+
+  T? get errorValue => _error;
 
   T? get focusedValue => _focused;
 
@@ -188,7 +193,7 @@ class ValueState<T> {
     required T inactivated,
     T? disabled,
   }) {
-    return ValueState._(
+    return ValueState.all(
       primary: inactivated,
       activated: activated,
       disabled: disabled,
@@ -200,7 +205,7 @@ class ValueState<T> {
     required T unfocused,
     T? disabled,
   }) {
-    return ValueState._(
+    return ValueState.all(
       primary: unfocused,
       focused: focused,
       disabled: disabled,
@@ -212,7 +217,7 @@ class ValueState<T> {
     required T unselected,
     T? disabled,
   }) {
-    return ValueState._(
+    return ValueState.all(
       primary: unselected,
       activated: selected,
       selected: selected,

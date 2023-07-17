@@ -41,7 +41,7 @@ class _ExampleState extends State<Example> {
       ),
       body: CountdownView(
         builder: (value) {
-          return TextView(text: "${value.inMinutes}")
+          return TextView(text: "${value.inMinutes}");
         },
       ),
     );
