@@ -52,6 +52,10 @@ class _ExampleState extends State<Example> {
                 id: "email",
                 hint: "Email",
                 inputType: TextInputType.emailAddress,
+                background: context.primaryColor.withAlpha(50),
+                paddingHorizontal: 24,
+                paddingVertical: 0,
+                borderRadius: 12,
                 onValidator: (v) {
                   return v.contains("a");
                 },
@@ -60,7 +64,7 @@ class _ExampleState extends State<Example> {
                 marginTop: 24,
                 id: "password",
                 hint: "Password",
-                inputType: TextInputType.visiblePassword,
+                inputType: TextInputType.datetime,
                 onValidator: (v) {
                   return v.contains("1");
                 },

@@ -493,6 +493,26 @@ class EditTextController extends TextViewController {
   String? digits;
   int minCharacters = 0;
 
+  @override
+  int? get maxLines {
+    switch (inputType) {
+      case TextInputType.datetime:
+      case TextInputType.emailAddress:
+      case TextInputType.name:
+      case TextInputType.number:
+      case TextInputType.phone:
+      case TextInputType.streetAddress:
+      case TextInputType.text:
+      case TextInputType.visiblePassword:
+      case TextInputType.text:
+        return 1;
+      case TextInputType.multiline:
+      case TextInputType.url:
+      default:
+        return null;
+    }
+  }
+
   EditTextController() {
     _editable = TextEditingController();
     _node = FocusNode();
@@ -605,10 +625,9 @@ class EditTextController extends TextViewController {
       );
 
   List<TextInputFormatter>? get formatter {
-    final digit = digits ?? "";
-    if (digit.isNotEmpty) {
+    if ((digits ?? "").isNotEmpty) {
       return [
-        FilteringTextInputFormatter.allow(RegExp("[$digit]")),
+        FilteringTextInputFormatter.allow(RegExp("[$digits]")),
       ];
     }
     return null;
