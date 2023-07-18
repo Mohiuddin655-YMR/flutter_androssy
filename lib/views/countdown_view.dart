@@ -145,13 +145,14 @@ class CountdownViewController extends ViewController {
       } else {
         _rt = _rt - decrement;
       }
-      onNotify();
+      _notify;
     });
   }
 
-  void onRestart() {
+  void onStart() {
     _timer.cancel();
     _rt = target;
+    _notify;
     _onStart();
   }
 
@@ -161,24 +162,29 @@ class CountdownViewController extends ViewController {
 }
 
 extension CountdownDurationExtension on Duration {
-  Duration get current {
-    return Duration(
-      days: days,
-      hours: hours,
-      minutes: minutes,
-      seconds: seconds,
-      milliseconds: milliseconds,
-      microseconds: microseconds,
-    );
-  }
-
   int get days => inDays;
+
+  String get days2D => inDays.x2D;
+
+  String get days3D => inDays.x3D;
 
   int get hours => inHours - (inDays * 24);
 
+  String get hours2D => hours.x2D;
+
+  String get hours3D => hours.x3D;
+
   int get minutes => inMinutes - (inHours * 60);
 
+  String get minutes2D => minutes.x2D;
+
+  String get minutes3D => minutes.x3D;
+
   int get seconds => inSeconds - (inMinutes * 60);
+
+  String get seconds2D => seconds.x2D;
+
+  String get seconds3D => seconds.x3D;
 
   int get milliseconds => inMilliseconds - (inSeconds * 1000);
 
