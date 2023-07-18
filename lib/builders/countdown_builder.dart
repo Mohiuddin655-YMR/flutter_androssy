@@ -42,8 +42,33 @@ class _CountdownBuilderState extends State<CountdownBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(_rt);
+    return widget.builder(_rt.current);
   }
+}
+
+extension _CDE on Duration {
+  Duration get current {
+    return Duration(
+      days: daysPerTick,
+      hours: hoursPerTick,
+      minutes: minutesPerTick,
+      seconds: secondsPerTick,
+      milliseconds: millisecondsPerTick,
+      microseconds: microsecondsPerTick,
+    );
+  }
+
+  int get daysPerTick => inDays;
+
+  int get hoursPerTick => inHours - (inDays * 24);
+
+  int get minutesPerTick => inMinutes - (inHours * 60);
+
+  int get secondsPerTick => inSeconds - (inMinutes * 60);
+
+  int get millisecondsPerTick => inMilliseconds - (inSeconds * 1000);
+
+  int get microsecondsPerTick => inMicroseconds - (inMilliseconds * 1000);
 }
 
 extension CounterExtension on int? {

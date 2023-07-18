@@ -1,6 +1,3 @@
-## 0.1.6
+## 0.1.7-alpha1
 
-* Add Material Edit Text
-* Add Material Edit Form
-* Add Edit Text
-* Add Edit Form
+* Alpha version
