@@ -222,9 +222,7 @@ class IconViewController extends ViewController {
   }
 
   @override
-  double get borderRadius {
-    return super.borderRadius > 0 ? super.borderRadius : size;
-  }
+  double get _borderRadius => super._borderRadius ?? size;
 
   dynamic get icon => iconState?.selected(activated) ?? _icon;
 

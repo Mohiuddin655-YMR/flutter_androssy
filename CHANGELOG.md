@@ -1,3 +1,6 @@
-## 0.1.6-alpha3
+## 0.1.6
 
-* Alpha version
+* Add Material Edit Text
+* Add Material Edit Form
+* Add Edit Text
+* Add Edit Form

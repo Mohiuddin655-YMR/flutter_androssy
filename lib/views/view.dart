@@ -3,7 +3,7 @@ part of '../widgets.dart';
 typedef OnViewBuilder<T> = Widget Function(BuildContext context, T? controller);
 typedef OnViewChangeListener = Function(dynamic value);
 typedef OnViewClickListener = Function(BuildContext context);
-typedef OnViewErrorListener = String? Function(ViewErrorType error);
+typedef OnViewErrorListener = String? Function(ViewError error);
 typedef OnViewToggleListener = Function(bool value);
 typedef OnViewValidListener = Function(bool value);
 typedef OnViewValidatorListener = bool Function(String value);
@@ -24,13 +24,25 @@ typedef OnViewModifyBuilder<T extends ViewController> = Widget Function(
 typedef OnViewNotifier = void Function(VoidCallback fn);
 typedef OnViewNotifyListener<T extends ViewController> = Function(T controller);
 
-enum ViewErrorType {
+enum ViewError {
   none,
   empty,
   invalid,
   maximum,
   minimum,
   unmodified,
+}
+
+extension ViewErrorExtension on ViewError {
+  bool get isEmpty => this == ViewError.empty;
+
+  bool get isInvalid => this == ViewError.invalid;
+
+  bool get isMaximum => this == ViewError.maximum;
+
+  bool get isMinimum => this == ViewError.minimum;
+
+  bool get isUnmodified => this == ViewError.unmodified;
 }
 
 enum ViewPositionType {
@@ -160,76 +172,31 @@ class ViewRoots {
 
 class ValueState<T> {
   final T _primary;
+  final T _secondary;
+  final T _ternary;
   final T? _activated;
-  final T? _unactivated;
-  final T? _error;
-  final T? _selected;
-  final T? _unselected;
-  final T? _focused;
-  final T? _unfocused;
-  final T? _enabled;
   final T? _disabled;
+  final T? _error;
+  final T? _focused;
+  final T? _selected;
 
-  const ValueState({
+  const ValueState._({
     required T primary,
+    T? secondary,
+    T? ternary,
     T? activated,
-    T? unactivated,
+    T? disabled,
     T? error,
-    T? selected,
-    T? unselected,
     T? focused,
-    T? unfocused,
-    T? enabled,
-    T? disabled,
+    T? selected,
   })  : _primary = primary,
+        _secondary = secondary ?? primary,
+        _ternary = ternary ?? secondary ?? primary,
         _activated = activated,
-        _unactivated = unactivated,
+        _disabled = disabled,
         _error = error,
-        _selected = selected,
-        _unselected = unselected,
         _focused = focused,
-        _unfocused = unfocused,
-        _enabled = enabled,
-        _disabled = disabled;
-
-  factory ValueState.activate({
-    required T activated,
-    required T inactivated,
-    T? disabled,
-  }) {
-    return ValueState(
-      primary: inactivated,
-      activated: activated,
-      unactivated: inactivated,
-      disabled: disabled,
-    );
-  }
-
-  factory ValueState.focus({
-    required T focused,
-    required T unfocused,
-    T? disabled,
-  }) {
-    return ValueState(
-      primary: unfocused,
-      focused: focused,
-      unfocused: unfocused,
-      disabled: disabled,
-    );
-  }
-
-  factory ValueState.select({
-    required T selected,
-    required T unselected,
-    T? disabled,
-  }) {
-    return ValueState(
-      primary: unselected,
-      selected: selected,
-      unselected: unselected,
-      disabled: disabled,
-    );
-  }
+        _selected = selected;
 
   T get primaryValue => _primary;
 
@@ -243,11 +210,62 @@ class ValueState<T> {
 
   T? get selectedValue => _selected;
 
-  T? detect(bool isEnabled) => isEnabled ? _primary : _disabled;
+  factory ValueState.active({
+    required T activated,
+    required T inactivated,
+    T? disabled,
+  }) {
+    return ValueState._(
+      primary: inactivated,
+      activated: activated,
+      disabled: disabled,
+    );
+  }
+
+  factory ValueState.focus({
+    required T focused,
+    required T unfocused,
+    T? disabled,
+  }) {
+    return ValueState._(
+      primary: unfocused,
+      focused: focused,
+      disabled: disabled,
+    );
+  }
+
+  factory ValueState.select({
+    required T selected,
+    required T unselected,
+    T? disabled,
+  }) {
+    return ValueState._(
+      primary: unselected,
+      activated: selected,
+      selected: selected,
+      disabled: disabled,
+    );
+  }
+
+  factory ValueState.state({
+    required T primary,
+    T? secondary,
+    T? ternary,
+    T? error,
+    T? disable,
+  }) {
+    return ValueState._(
+      primary: primary,
+      secondary: secondary,
+      ternary: ternary,
+      error: error,
+      disabled: disable,
+    );
+  }
 
   T? activated(bool activated, [bool enabled = true]) {
     if (enabled) {
-      return activated ? _activated : _unactivated;
+      return activated ? _activated : _primary;
     } else {
       return _disabled;
     }
@@ -255,7 +273,7 @@ class ValueState<T> {
 
   T? focused(bool focused, [bool enabled = true]) {
     if (enabled) {
-      return focused ? _focused : _unfocused;
+      return focused ? _focused : _primary;
     } else {
       return _disabled;
     }
@@ -263,50 +281,41 @@ class ValueState<T> {
 
   T? selected(bool selected, [bool enabled = true]) {
     if (enabled) {
-      return selected ? _selected : _unselected;
+      return selected ? _selected ?? _activated : _primary;
     } else {
       return _disabled;
     }
   }
 
-  T? error(bool isError) => isError ? _error : _primary;
+  T? error(bool error, [bool enabled = true]) {
+    if (enabled) {
+      return error ? _error : _primary;
+    } else {
+      return _disabled;
+    }
+  }
 
-  T? typed(StateValueType type) {
-    switch (type) {
-      case StateValueType.none:
-        return _primary;
-      case StateValueType.error:
+  T? from(ViewState state) {
+    switch (state) {
+      case ViewState.secondary:
+        return _secondary;
+      case ViewState.ternary:
+        return _ternary;
+      case ViewState.error:
         return _error;
-      case StateValueType.selected:
-        return _selected;
-      case StateValueType.activated:
-        return _activated;
-      case StateValueType.inactivated:
-        return _unactivated;
-      case StateValueType.unselected:
-        return _unselected;
-      case StateValueType.focused:
-        return _focused;
-      case StateValueType.unfocused:
-        return _unfocused;
-      case StateValueType.enabled:
-        return _enabled;
-      case StateValueType.disabled:
+      case ViewState.disabled:
         return _disabled;
+      default:
+        return _primary;
     }
   }
 }
 
-enum StateValueType {
-  none,
+enum ViewState {
+  primary,
+  secondary,
+  ternary,
   error,
-  activated,
-  inactivated,
-  selected,
-  unselected,
-  focused,
-  unfocused,
-  enabled,
   disabled,
 }
 
@@ -661,33 +670,14 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
     return controller.isObservable
         ? controller.isRippled
             ? Padding(
-                padding: controller.isMargin
-                    ? EdgeInsets.only(
-                        left: controller.marginStart,
-                        right: controller.marginEnd,
-                        top: controller.marginTop,
-                        bottom: controller.marginBottom,
-                      )
-                    : EdgeInsets.zero,
+                padding:
+                    controller.isMargin ? controller.margin : EdgeInsets.zero,
                 child: Material(
                   elevation: controller.elevation,
                   borderRadius: controller.isRippled
                       ? controller.isCircular
                           ? BorderRadius.circular(controller.maxSize)
-                          : BorderRadius.only(
-                              topLeft: Radius.circular(
-                                controller.borderRadiusTLF,
-                              ),
-                              topRight: Radius.circular(
-                                controller.borderRadiusTRF,
-                              ),
-                              bottomLeft: Radius.circular(
-                                controller.borderRadiusBLF,
-                              ),
-                              bottomRight: Radius.circular(
-                                controller.borderRadiusBRF,
-                              ),
-                            )
+                          : controller.borderRadiusF
                       : null,
                   color: controller.isBorder
                       ? controller.borderColor
@@ -781,14 +771,7 @@ class _ViewScroller extends StatelessWidget {
             controller: controller.scrollController,
             physics: controller.scrollingType.physics,
             scrollDirection: controller.orientation,
-            padding: controller.isPadding
-                ? EdgeInsets.only(
-                    left: controller.paddingStart,
-                    right: controller.paddingEnd,
-                    top: controller.paddingTop,
-                    bottom: controller.paddingBottom,
-                  )
-                : null,
+            padding: controller.padding,
             child: attachView,
           )
         : attachView;
@@ -824,20 +807,7 @@ class _ViewChild extends StatelessWidget {
     final borderRadius = isRippled
         ? null
         : isRadius && !isCircular
-            ? BorderRadius.only(
-                topLeft: Radius.circular(
-                  controller.borderRadiusTLF,
-                ),
-                topRight: Radius.circular(
-                  controller.borderRadiusTRF,
-                ),
-                bottomLeft: Radius.circular(
-                  controller.borderRadiusBLF,
-                ),
-                bottomRight: Radius.circular(
-                  controller.borderRadiusBRF,
-                ),
-              )
+            ? controller.borderRadiusF
             : null;
 
     return controller.visibility.isInvisible
@@ -924,29 +894,14 @@ class _ViewChild extends StatelessWidget {
                           )
                         : null,
                     margin: isMargin && !isRippled && !isScrollable
-                        ? EdgeInsets.only(
-                            left: controller.marginStart,
-                            right: controller.marginEnd,
-                            top: controller.marginTop,
-                            bottom: controller.marginBottom,
-                          )
+                        ? controller.margin
                         : null,
                     padding: isScrollable
                         ? null
                         : isBorder
-                            ? EdgeInsets.only(
-                                left: controller.borderStart,
-                                right: controller.borderEnd,
-                                top: controller.borderTop,
-                                bottom: controller.borderBottom,
-                              )
+                            ? controller.border
                             : isPadding
-                                ? EdgeInsets.only(
-                                    left: controller.paddingStart,
-                                    right: controller.paddingEnd,
-                                    top: controller.paddingTop,
-                                    bottom: controller.paddingBottom,
-                                  )
+                                ? controller.padding
                                 : null,
                     child: isBorder
                         ? _ViewBorder(
@@ -983,33 +938,11 @@ class _ViewBorder extends StatelessWidget {
       alignment: controller.gravity,
       clipBehavior:
           controller.roots.decoration ? controller.clipBehavior : Clip.none,
-      padding: isPadding
-          ? EdgeInsets.only(
-              left: controller.paddingStart,
-              right: controller.paddingEnd,
-              top: controller.paddingTop,
-              bottom: controller.paddingBottom,
-            )
-          : null,
+      padding: isPadding ? controller.padding : null,
       decoration: BoxDecoration(
         color: controller.background,
         shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
-        borderRadius: isRadius
-            ? BorderRadius.only(
-                topLeft: Radius.circular(
-                  controller.borderRadiusTL,
-                ),
-                topRight: Radius.circular(
-                  controller.borderRadiusTR,
-                ),
-                bottomLeft: Radius.circular(
-                  controller.borderRadiusBL,
-                ),
-                bottomRight: Radius.circular(
-                  controller.borderRadiusBR,
-                ),
-              )
-            : null,
+        borderRadius: isRadius ? controller.borderRadius : null,
       ),
       child: child,
     );
@@ -1046,7 +979,7 @@ class ViewController {
     _heightMin = view.heightMin;
 
     // VIEW MARGIN PROPERTIES
-    margin = view.margin ?? 0;
+    _margin = view.margin ?? 0;
     marginVertical = view.marginVertical;
     _marginStart = view.marginStart;
     _marginEnd = view.marginEnd;
@@ -1055,7 +988,7 @@ class ViewController {
     marginHorizontal = view.marginHorizontal;
 
     // VIEW PADDING PROPERTIES
-    padding = view.padding ?? 0;
+    _padding = view.padding ?? 0;
     _paddingStart = view.paddingStart;
     _paddingEnd = view.paddingEnd;
     _paddingTop = view.paddingTop;
@@ -1066,7 +999,7 @@ class ViewController {
     // VIEW BORDER PROPERTIES
     borderColor = view.borderColor;
     borderGradient = view.borderGradient;
-    border = view.border ?? 0;
+    _border = view.border ?? 0;
     _borderStart = view.borderStart;
     _borderEnd = view.borderEnd;
     _borderTop = view.borderTop;
@@ -1075,7 +1008,7 @@ class ViewController {
     borderVertical = view.borderVertical;
 
     // VIEW BORDER RADIUS PROPERTIES
-    borderRadius = view.borderRadius ?? 0;
+    _borderRadius = view.borderRadius ?? 0;
     _borderRadiusBL = view.borderRadiusBL;
     _borderRadiusBR = view.borderRadiusBR;
     _borderRadiusTL = view.borderRadiusTL;
@@ -1232,71 +1165,117 @@ class ViewController {
 
   DecorationImage? foregroundImage;
 
-  double border = 0;
+  double? _border;
 
-  Color? borderColor;
+  EdgeInsets get border {
+    return EdgeInsets.only(
+      left: borderStart ?? 0,
+      right: borderEnd ?? 0,
+      top: borderTop ?? 0,
+      bottom: borderBottom ?? 0,
+    );
+  }
 
-  Gradient? borderGradient;
+  double get borderAll {
+    return border.left + border.right + border.top + border.bottom;
+  }
 
   double? borderHorizontal, borderVertical;
 
   double? _borderTop;
 
-  double get borderTop => _borderTop ?? borderVertical ?? border;
+  double? get borderTop => _borderTop ?? borderVertical ?? _border;
 
   double? _borderBottom;
 
-  double get borderBottom => _borderBottom ?? borderVertical ?? border;
+  double? get borderBottom => _borderBottom ?? borderVertical ?? _border;
 
   double? _borderStart;
 
-  double get borderStart => _borderStart ?? borderHorizontal ?? border;
+  double? get borderStart => _borderStart ?? borderHorizontal ?? _border;
 
   double? _borderEnd;
 
-  double get borderEnd => _borderEnd ?? borderHorizontal ?? border;
+  double? get borderEnd => _borderEnd ?? borderHorizontal ?? _border;
 
-  double borderRadius = 0;
+  bool get isBorder => roots.border && borderAll > 0;
+
+  bool get isBorderX => roots.border && (border.left + border.right) > 0;
+
+  bool get isBorderY => roots.border && (border.top + border.bottom) > 0;
+
+  Color? borderColor;
+
+  Gradient? borderGradient;
+
+  double? _borderRadius;
+
+  BorderRadius get borderRadius {
+    return BorderRadius.only(
+      topLeft: Radius.circular(borderRadiusTL ?? 0),
+      topRight: Radius.circular(borderRadiusTR ?? 0),
+      bottomLeft: Radius.circular(borderRadiusBL ?? 0),
+      bottomRight: Radius.circular(borderRadiusBR ?? 0),
+    );
+  }
+
+  BorderRadius get borderRadiusF {
+    return BorderRadius.only(
+      topLeft: Radius.circular(borderRadiusTLF ?? 0),
+      topRight: Radius.circular(borderRadiusTRF ?? 0),
+      bottomLeft: Radius.circular(borderRadiusBLF ?? 0),
+      bottomRight: Radius.circular(borderRadiusBRF ?? 0),
+    );
+  }
 
   double? _borderRadiusBL;
 
-  double get borderRadiusBL => _borderRadiusBL ?? borderRadius;
+  double? get borderRadiusBL => _borderRadiusBL ?? _borderRadius;
 
-  double get borderRadiusBLF {
-    final a = borderRadiusBL;
-    final b = a > 0 ? min(borderStart, borderBottom) : 0;
+  double? get borderRadiusBLF {
+    final a = borderRadiusBL ?? 0;
+    final b = a > 0 ? min(border.left, border.bottom) : 0;
     return a + b;
   }
 
   double? _borderRadiusBR;
 
-  double get borderRadiusBR => _borderRadiusBR ?? borderRadius;
+  double? get borderRadiusBR => _borderRadiusBR ?? _borderRadius;
 
-  double get borderRadiusBRF {
-    final a = borderRadiusBR;
-    final b = a > 0 ? min(borderEnd, borderBottom) : 0;
+  double? get borderRadiusBRF {
+    final a = borderRadiusBR ?? 0;
+    final b = a > 0 ? min(border.right, border.bottom) : 0;
     return a + b;
   }
 
   double? _borderRadiusTL;
 
-  double get borderRadiusTL => _borderRadiusTL ?? borderRadius;
+  double? get borderRadiusTL => _borderRadiusTL ?? _borderRadius;
 
-  double get borderRadiusTLF {
-    final a = borderRadiusTL;
-    final b = a > 0 ? min(borderStart, borderTop) : 0;
+  double? get borderRadiusTLF {
+    final a = borderRadiusTL ?? 0;
+    final b = a > 0 ? min(border.left, border.top) : 0;
     return a + b;
   }
 
   double? _borderRadiusTR;
 
-  double get borderRadiusTR => _borderRadiusTR ?? borderRadius;
+  double? get borderRadiusTR => _borderRadiusTR ?? _borderRadius;
 
-  double get borderRadiusTRF {
-    final a = borderRadiusTR;
-    final b = a > 0 ? min(borderEnd, borderTop) : 0;
+  double? get borderRadiusTRF {
+    final a = borderRadiusTR ?? 0;
+    final b = a > 0 ? min(border.right, border.top) : 0;
     return a + b;
   }
+
+  bool get isRadius {
+    var a = roots.radius;
+    var b = !isCircular;
+    var c = isBorderRadius;
+    return a && b && c;
+  }
+
+  bool get isBorderRadius => roots.radius && borderRadius != BorderRadius.zero;
 
   Widget? child;
 
@@ -1328,56 +1307,98 @@ class ViewController {
 
   double get heightMin => _heightMin ?? 0.0;
 
-  double margin = 0;
+  double? _margin;
 
-  double get marginAll => marginStart + marginEnd + marginTop + marginBottom;
+  EdgeInsets get margin {
+    return EdgeInsets.only(
+      left: marginStart ?? 0,
+      right: marginEnd ?? 0,
+      top: marginTop ?? 0,
+      bottom: marginBottom ?? 0,
+    );
+  }
+
+  double get marginAll {
+    return margin.left + margin.right + margin.top + margin.bottom;
+  }
 
   double? _marginStart;
 
-  double get marginStart => _marginStart ?? marginHorizontal ?? margin;
+  double? get marginStart => _marginStart ?? marginHorizontal ?? _margin;
 
   double? _marginEnd;
 
-  double get marginEnd => _marginEnd ?? marginHorizontal ?? margin;
+  double? get marginEnd => _marginEnd ?? marginHorizontal ?? _margin;
 
   double? _marginTop;
 
-  double get marginTop => _marginTop ?? marginVertical ?? margin;
+  double? get marginTop => _marginTop ?? marginVertical ?? _margin;
 
   double? _marginBottom;
 
-  double get marginBottom => _marginBottom ?? marginVertical ?? margin;
+  double? get marginBottom => _marginBottom ?? marginVertical ?? _margin;
 
   double? marginHorizontal;
 
   double? marginVertical;
 
+  bool get isMargin => roots.margin && marginAll > 0;
+
+  bool get isMarginX => roots.margin && (margin.left + margin.right) > 0;
+
+  bool get isMarginY => roots.margin && (margin.top + margin.bottom) > 0;
+
   Axis orientation = Axis.vertical;
 
-  double padding = 0;
+  double? _padding;
 
-  double get paddingAll =>
-      paddingStart + paddingEnd + paddingTop + paddingBottom;
+  EdgeInsets? get padding {
+    return paddingAll > 0
+        ? EdgeInsets.only(
+            left: paddingStart ?? 0,
+            right: paddingEnd ?? 0,
+            top: paddingTop ?? 0,
+            bottom: paddingBottom ?? 0,
+          )
+        : null;
+  }
+
+  double get paddingAll {
+    return (paddingStart ?? 0) +
+        (paddingEnd ?? 0) +
+        (paddingTop ?? 0) +
+        (paddingBottom ?? 0);
+  }
 
   double? _paddingStart;
 
-  double get paddingStart => _paddingStart ?? paddingHorizontal ?? padding;
+  double? get paddingStart => _paddingStart ?? paddingHorizontal ?? _padding;
 
   double? _paddingEnd;
 
-  double get paddingEnd => _paddingEnd ?? paddingHorizontal ?? padding;
+  double? get paddingEnd => _paddingEnd ?? paddingHorizontal ?? _padding;
 
   double? _paddingTop;
 
-  double get paddingTop => _paddingTop ?? paddingVertical ?? padding;
+  double? get paddingTop => _paddingTop ?? paddingVertical ?? _padding;
 
   double? _paddingBottom;
 
-  double get paddingBottom => _paddingBottom ?? paddingVertical ?? padding;
+  double? get paddingBottom => _paddingBottom ?? paddingVertical ?? _padding;
 
   double? paddingHorizontal;
 
   double? paddingVertical;
+
+  bool get isPadding => roots.padding && paddingAll > 0;
+
+  bool get isPaddingX {
+    return roots.padding && ((paddingStart ?? 0) + (paddingEnd ?? 0)) > 0;
+  }
+
+  bool get isPaddingY {
+    return roots.padding && ((paddingTop ?? 0) + (paddingBottom ?? 0)) > 0;
+  }
 
   ViewPosition? _position;
 
@@ -1394,6 +1415,11 @@ class ViewController {
   Alignment? transformGravity;
 
   double shadow = 0;
+
+  bool get isShadow {
+    final x = shadowStart + shadowEnd + shadowTop + shadowBottom;
+    return roots.shadow && (x > 0 || shadowType == ViewShadowType.overlay);
+  }
 
   Color? shadowColor;
 
@@ -1485,17 +1511,6 @@ class ViewController {
 
   OnViewNotifier? _onNotifier;
 
-  bool get isBorder {
-    final x = borderStart + borderEnd + borderTop + borderBottom;
-    return roots.border && x > 0;
-  }
-
-  bool get isBorderRadius {
-    final x =
-        borderRadiusBLF + borderRadiusBRF + borderRadiusTLF + borderRadiusTRF;
-    return roots.radius && x > 0;
-  }
-
   bool get isCircular => roots.shape && shape == ViewShape.circular;
 
   bool get isClickable =>
@@ -1521,18 +1536,6 @@ class ViewController {
 
   bool get isLongClickable => onLongClick != null || onLongClickHandler != null;
 
-  bool get isMargin {
-    return roots.margin && marginAll > 0;
-  }
-
-  bool get isMarginX {
-    return roots.margin && (marginStart + marginEnd) > 0;
-  }
-
-  bool get isMarginY {
-    return roots.margin && (marginTop + marginBottom) > 0;
-  }
-
   bool get isObservable {
     return roots.observer &&
         (isClickable || isDoubleClickable || isLongClickable);
@@ -1541,38 +1544,14 @@ class ViewController {
   bool get isOverlayShadow =>
       roots.shadow && shadowType == ViewShadowType.overlay;
 
-  bool get isPadding {
-    return roots.padding && paddingAll > 0;
-  }
-
-  bool get isPaddingX {
-    return roots.padding && (paddingStart + paddingEnd) > 0;
-  }
-
-  bool get isPaddingY {
-    return roots.padding && (paddingTop + paddingBottom) > 0;
-  }
-
   bool get isPositional {
     return roots.position &&
         (_position != null || positionType != ViewPositionType.none);
   }
 
-  bool get isRadius {
-    var a = roots.radius;
-    var b = !isCircular;
-    var c = isBorderRadius;
-    return a && b && c;
-  }
-
   bool get isRippled => roots.ripple && _ripple > 0 && isObservable;
 
   bool get isScrollable => roots.scrollable && scrollable;
-
-  bool get isShadow {
-    final x = shadowStart + shadowEnd + shadowTop + shadowBottom;
-    return roots.shadow && (x > 0 || shadowType == ViewShadowType.overlay);
-  }
 
   bool get isSquire {
     return shape == ViewShape.squire;
@@ -1700,7 +1679,7 @@ class ViewController {
   }
 
   void setBorder(double value) {
-    border = value;
+    _border = value;
     _notify;
   }
 
@@ -1735,7 +1714,7 @@ class ViewController {
   }
 
   void setBorderRadius(double value) {
-    borderRadius = value;
+    _borderRadius = value;
     _notify;
   }
 
@@ -1805,7 +1784,7 @@ class ViewController {
   }
 
   void setMargin(double value) {
-    margin = value;
+    _margin = value;
     _notify;
   }
 
@@ -1840,7 +1819,7 @@ class ViewController {
   }
 
   void setPadding(double value) {
-    padding = value;
+    _padding = value;
     _notify;
   }
 

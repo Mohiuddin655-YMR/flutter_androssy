@@ -3,6 +3,7 @@ library widgets;
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' show max, min;
+import 'dart:ui';
 
 import 'package:badges/badges.dart' as b;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -36,6 +37,10 @@ part 'views/button.dart';
 
 part 'views/content_view.dart';
 
+part 'views/edit_form.dart';
+
+part 'views/edit_text.dart';
+
 part 'views/expendable_text_view.dart';
 
 part 'views/expensive_scroll_view.dart';
@@ -47,6 +52,10 @@ part 'views/icon_view.dart';
 part 'views/image_view.dart';
 
 part 'views/linear_layout.dart';
+
+part 'views/material_edit_form.dart';
+
+part 'views/material_edit_text.dart';
 
 part 'views/material_image_view.dart';
 

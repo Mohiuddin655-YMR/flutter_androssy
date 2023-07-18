@@ -141,7 +141,7 @@ class AvatarView extends YMRView<AvatarViewController> {
       visibility: controller.visibility,
       width: controller.width,
       height: controller.height,
-      margin: controller.margin,
+      margin: controller._margin,
       marginHorizontal: controller.marginHorizontal,
       marginVertical: controller.marginVertical,
       marginTop: controller.marginTop,
@@ -149,7 +149,7 @@ class AvatarView extends YMRView<AvatarViewController> {
       marginStart: controller.marginStart,
       marginEnd: controller.marginEnd,
       border: controller.borderSize,
-      borderRadius: controller.borderRadius,
+      borderRadius: controller._borderRadius,
       shadow: controller.shadow,
       shadowBlurRadius: controller.shadowBlurRadius,
       shadowSpreadRadius: controller.shadowSpreadRadius,
@@ -221,30 +221,23 @@ class AvatarViewController extends ViewController {
     this.scaleType = scaleType ?? BoxFit.cover;
     this.borderSize = borderSize ?? 0;
     this.borderOverlay = borderOverlay ?? true;
-    this.borderOverlayColor = borderOverlayColor ?? Colors.black.withOpacity(0.5);
+    this.borderOverlayColor =
+        borderOverlayColor ?? Colors.black.withOpacity(0.5);
     this.borderOverlaySize = borderOverlaySize ?? 0.2;
     return this;
   }
 
   @override
-  double get marginStart {
-    return super.marginStart > 0 ? super.marginStart : overlaySize;
-  }
+  double get marginStart => super.marginStart ?? overlaySize;
 
   @override
-  double get marginEnd {
-    return super.marginEnd > 0 ? super.marginEnd : overlaySize;
-  }
+  double get marginEnd => super.marginEnd ?? overlaySize;
 
   @override
-  double get marginTop {
-    return super.marginTop > 0 ? super.marginTop : overlaySize;
-  }
+  double get marginTop => super.marginTop ?? overlaySize;
 
   @override
-  double get marginBottom {
-    return super.marginBottom > 0 ? super.marginBottom : overlaySize;
-  }
+  double get marginBottom => super.marginBottom ?? overlaySize;
 
   @override
   double? get width => size;
@@ -258,11 +251,9 @@ class AvatarViewController extends ViewController {
   Color get borderColor => super.borderColor ?? Colors.white;
 
   @override
-  double get borderRadius => circular
-      ? 0
-      : super.borderRadius > 0
-          ? super.borderRadius
-          : size;
+  double get _borderRadius {
+    return circular ? 0 : super._borderRadius ?? size;
+  }
 
   @override
   ViewShape get shape => circular ? ViewShape.circular : ViewShape.squire;
