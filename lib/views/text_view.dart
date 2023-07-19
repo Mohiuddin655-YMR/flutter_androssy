@@ -1,5 +1,209 @@
 part of '../widgets.dart';
 
+class RawTextView extends StatelessWidget {
+  final int? maxCharacters;
+  final int? maxLines;
+
+  final double? letterSpacing;
+  final double? lineHeight;
+  final double? wordSpacing;
+
+  final String? fontFamily;
+  final FontStyle? fontStyle;
+  final FontWeight? fontWeight;
+
+  final String? text;
+  final TextAlign? textAlign;
+  final Color? textColor;
+  final TextDecoration? textDecoration;
+  final Color? textDecorationColor;
+  final TextDecorationStyle? textDecorationStyle;
+  final double? textDecorationThickness;
+  final TextDirection? textDirection;
+  final TextLeadingDistribution? textLeadingDistribution;
+  final TextOverflow? textOverflow;
+  final double textSize;
+  final List<TextSpan> textSpans;
+  final TextStyle textStyle;
+  final OnViewClickListener? onClick;
+  ///PREFIX
+  final FontStyle? prefixFontStyle;
+  final FontWeight? prefixFontWeight;
+  final String? prefixText;
+  final Color? prefixTextColor;
+  final TextDecoration? prefixTextDecoration;
+  final Color? prefixTextDecorationColor;
+  final TextDecorationStyle? prefixTextDecorationStyle;
+  final double? prefixTextDecorationThickness;
+  final double? prefixTextLetterSpace;
+  final double? prefixTextSize;
+  final TextStyle prefixTextStyle;
+  final bool prefixTextVisible;
+  final OnViewClickListener? onPrefixClick;
+  ///SUFFIX
+  final FontStyle? suffixFontStyle;
+  final FontWeight? suffixFontWeight;
+  final String? suffixText;
+  final Color? suffixTextColor;
+  final TextDecoration? suffixTextDecoration;
+  final Color? suffixTextDecorationColor;
+  final TextDecorationStyle? suffixTextDecorationStyle;
+  final double? suffixTextDecorationThickness;
+  final double? suffixTextLetterSpace;
+  final double? suffixTextSize;
+  final TextStyle suffixTextStyle;
+  final bool suffixTextVisible;
+  final OnViewClickListener? onSuffixClick;
+
+  const RawTextView({
+    super.key,
+    this.maxCharacters,
+    this.maxLines,
+    this.letterSpacing,
+    this.lineHeight,
+    this.wordSpacing,
+    this.fontFamily,
+    this.fontStyle,
+    this.fontWeight,
+    required this.text,
+    this.textAlign,
+    this.textColor,
+    this.textDecoration,
+    this.textDecorationColor,
+    this.textDecorationStyle,
+    this.textDecorationThickness,
+    this.textDirection,
+    this.textLeadingDistribution,
+    this.textOverflow,
+    this.textSize = 14,
+    this.textSpans = const [],
+    this.textStyle = const TextStyle(),
+    this.onClick,
+    ///PREFIX
+    this.prefixFontStyle,
+    this.prefixFontWeight,
+    this.prefixText,
+    this.prefixTextColor,
+    this.prefixTextDecoration,
+    this.prefixTextDecorationColor,
+    this.prefixTextDecorationStyle,
+    this.prefixTextDecorationThickness,
+    this.prefixTextLetterSpace,
+    this.prefixTextSize,
+    this.prefixTextStyle = const TextStyle(),
+    this.prefixTextVisible = true,
+    this.onPrefixClick,
+    ///SUFFIX
+    this.suffixFontStyle,
+    this.suffixFontWeight,
+    this.suffixText,
+    this.suffixTextColor,
+    this.suffixTextDecoration,
+    this.suffixTextDecorationColor,
+    this.suffixTextDecorationStyle,
+    this.suffixTextDecorationThickness,
+    this.suffixTextLetterSpace,
+    this.suffixTextSize,
+    this.suffixTextStyle = const TextStyle(),
+    this.suffixTextVisible = true,
+    this.onSuffixClick,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var isPrefix = (prefixText ?? "").isNotEmpty && prefixTextVisible;
+    var isSuffix = (suffixText ?? "").isNotEmpty && suffixTextVisible;
+    var isMoreSpans = textSpans.isNotEmpty;
+    var isSpannable = isPrefix || isSuffix || isMoreSpans;
+
+    final spans = [
+      if (isPrefix)
+        TextSpan(
+          text: prefixText,
+          recognizer: onPrefixClick != null
+              ? (TapGestureRecognizer()
+                ..onTap = () => onPrefixClick?.call(context))
+              : null,
+          style: prefixTextStyle.copyWith(
+            color: prefixTextColor,
+            fontSize: prefixTextSize,
+            fontStyle: prefixFontStyle,
+            letterSpacing: prefixTextLetterSpace,
+            fontWeight: prefixFontWeight,
+            decoration: prefixTextDecoration,
+            decorationColor: prefixTextDecorationColor,
+            decorationStyle: prefixTextDecorationStyle,
+            decorationThickness: prefixTextDecorationThickness,
+          ),
+        ),
+      TextSpan(
+        text: text,
+        recognizer: onClick != null
+            ? (TapGestureRecognizer()..onTap = () => onClick?.call(context))
+            : null,
+      ),
+      if (isSuffix)
+        TextSpan(
+          text: suffixText,
+          recognizer: onSuffixClick != null
+              ? (TapGestureRecognizer()
+                ..onTap = () => onSuffixClick?.call(context))
+              : null,
+          style: suffixTextStyle.copyWith(
+            color: suffixTextColor,
+            fontSize: suffixTextSize,
+            fontStyle: suffixFontStyle,
+            letterSpacing: suffixTextLetterSpace,
+            fontWeight: suffixFontWeight,
+            decoration: suffixTextDecoration,
+            decorationColor: suffixTextDecorationColor,
+            decorationStyle: suffixTextDecorationStyle,
+            decorationThickness: suffixTextDecorationThickness,
+          ),
+        ),
+    ];
+
+    if (isMoreSpans) spans.addAll(textSpans);
+
+    var style = textStyle.copyWith(
+      color: textColor,
+      fontSize: textSize,
+      fontWeight: fontWeight,
+      decoration: textDecoration,
+      decorationColor: textDecorationColor,
+      decorationStyle: textDecorationStyle,
+      decorationThickness: textDecorationThickness,
+      fontFamily: fontFamily,
+      fontStyle: fontStyle,
+      height: lineHeight,
+      leadingDistribution: textLeadingDistribution,
+      letterSpacing: letterSpacing,
+      wordSpacing: wordSpacing,
+    );
+
+    return isSpannable
+        ? Text.rich(
+            TextSpan(children: spans),
+            maxLines: maxLines,
+            overflow: maxCharacters == 0 ? textOverflow : null,
+            style: style,
+            textAlign: textAlign,
+            textDirection: textDirection,
+          )
+        : GestureDetector(
+            onTap: onClick != null ? () => onClick?.call(context) : null,
+            child: Text(
+              text ?? "",
+              maxLines: maxLines,
+              overflow: maxCharacters == 0 ? textOverflow : null,
+              style: style,
+              textAlign: textAlign,
+              textDirection: textDirection,
+            ),
+          );
+  }
+}
+
 class TextView<T extends TextViewController> extends YMRView<T> {
   final int? maxCharacters;
   final int? maxLines;
@@ -7,23 +211,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final double? letterSpacing;
   final double? lineSpacingExtra;
   final double? wordSpacing;
-
-  final FontStyle? ellipsizeFontStyle;
-  final FontWeight? ellipsizeFontWeight;
-  final String? ellipsizeText;
-  final ValueState<String>? ellipsizeTextState;
-  final bool? ellipsizeTextAllCaps;
-  final Color? ellipsizeTextColor;
-  final ValueState<Color>? ellipsizeTextColorState;
-  final TextDecoration? ellipsizeTextDecoration;
-  final Color? ellipsizeTextDecorationColor;
-  final TextDecorationStyle? ellipsizeTextDecorationStyle;
-  final double? ellipsizeTextDecorationThickness;
-  final double? ellipsizeTextLetterSpace;
-  final double? ellipsizeTextSize;
-  final TextStyle? ellipsizeTextStyle;
-  final bool? ellipsizeTextVisible;
-  final OnViewClickListener? onEllipsizeClick;
 
   final String? fontFamily;
   final FontStyle? fontStyle;
@@ -45,6 +232,40 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final double? textSize;
   final List<TextSpan>? textSpans;
   final TextStyle? textStyle;
+  ///PREFIX
+  final FontStyle? prefixFontStyle;
+  final FontWeight? prefixFontWeight;
+  final String? prefixText;
+  final ValueState<String>? prefixTextState;
+  final bool? prefixTextAllCaps;
+  final Color? prefixTextColor;
+  final ValueState<Color>? prefixTextColorState;
+  final TextDecoration? prefixTextDecoration;
+  final Color? prefixTextDecorationColor;
+  final TextDecorationStyle? prefixTextDecorationStyle;
+  final double? prefixTextDecorationThickness;
+  final double? prefixTextLetterSpace;
+  final double? prefixTextSize;
+  final TextStyle? prefixTextStyle;
+  final bool? prefixTextVisible;
+  final OnViewClickListener? onPrefixClick;
+  ///SUFFIX
+  final FontStyle? suffixFontStyle;
+  final FontWeight? suffixFontWeight;
+  final String? suffixText;
+  final ValueState<String>? suffixTextState;
+  final bool? suffixTextAllCaps;
+  final Color? suffixTextColor;
+  final ValueState<Color>? suffixTextColorState;
+  final TextDecoration? suffixTextDecoration;
+  final Color? suffixTextDecorationColor;
+  final TextDecorationStyle? suffixTextDecorationStyle;
+  final double? suffixTextDecorationThickness;
+  final double? suffixTextLetterSpace;
+  final double? suffixTextSize;
+  final TextStyle? suffixTextStyle;
+  final bool? suffixTextVisible;
+  final OnViewClickListener? onSuffixClick;
 
   const TextView({
     super.key,
@@ -144,22 +365,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.letterSpacing,
     this.lineSpacingExtra,
     this.wordSpacing,
-    this.ellipsizeText,
-    this.ellipsizeTextState,
-    this.ellipsizeTextAllCaps,
-    this.ellipsizeTextColor,
-    this.ellipsizeTextColorState,
-    this.ellipsizeTextDecoration,
-    this.ellipsizeTextDecorationColor,
-    this.ellipsizeTextDecorationStyle,
-    this.ellipsizeTextDecorationThickness,
-    this.ellipsizeTextLetterSpace,
-    this.ellipsizeTextSize,
-    this.ellipsizeFontStyle,
-    this.ellipsizeTextVisible,
-    this.ellipsizeFontWeight,
-    this.ellipsizeTextStyle,
-    this.onEllipsizeClick,
     this.fontFamily,
     this.fontStyle,
     this.fontWeight,
@@ -179,6 +384,40 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.textSize,
     this.textSpans,
     this.textStyle,
+    ///PREFIX
+    this.prefixFontStyle,
+    this.prefixFontWeight,
+    this.prefixText,
+    this.prefixTextState,
+    this.prefixTextAllCaps,
+    this.prefixTextColor,
+    this.prefixTextColorState,
+    this.prefixTextDecoration,
+    this.prefixTextDecorationColor,
+    this.prefixTextDecorationStyle,
+    this.prefixTextDecorationThickness,
+    this.prefixTextLetterSpace,
+    this.prefixTextSize,
+    this.prefixTextStyle,
+    this.prefixTextVisible,
+    this.onPrefixClick,
+    ///SUFFIX
+    this.suffixText,
+    this.suffixTextState,
+    this.suffixTextAllCaps,
+    this.suffixTextColor,
+    this.suffixTextColorState,
+    this.suffixTextDecoration,
+    this.suffixTextDecorationColor,
+    this.suffixTextDecorationStyle,
+    this.suffixTextDecorationThickness,
+    this.suffixTextLetterSpace,
+    this.suffixTextSize,
+    this.suffixFontStyle,
+    this.suffixTextVisible,
+    this.suffixFontWeight,
+    this.suffixTextStyle,
+    this.onSuffixClick,
   });
 
   @override
@@ -194,20 +433,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   @override
   Widget? attach(BuildContext context, T controller) {
     return RawTextView(
-      ellipsizeText: controller.ellipsizeText,
-      ellipsizeTextColor: controller.ellipsizeTextColor,
-      ellipsizeTextDecoration: controller.ellipsizeTextDecoration,
-      ellipsizeTextDecorationColor: controller.ellipsizeTextDecorationColor,
-      ellipsizeTextDecorationStyle: controller.ellipsizeTextDecorationStyle,
-      ellipsizeTextDecorationThickness:
-          controller.ellipsizeTextDecorationThickness,
-      ellipsizeTextLetterSpace: controller.ellipsizeTextLetterSpace,
-      ellipsizeTextSize: controller.ellipsizeTextSize,
-      ellipsizeTextStyle: controller.ellipsizeTextStyle,
-      ellipsizeTextVisible: controller.ellipsizeTextVisible,
-      ellipsizeFontStyle: controller.ellipsizeFontStyle,
-      ellipsizeFontWeight: controller.ellipsizeFontWeight,
-      onEllipsizeClick: controller.onEllipsizeClick,
       text: controller.text,
       textSpans: controller.textSpans,
       maxLines: controller.maxLines,
@@ -228,160 +453,35 @@ class TextView<T extends TextViewController> extends YMRView<T> {
       wordSpacing: controller.wordSpacing,
       textAlign: controller.textAlign,
       textDirection: controller.textDirection,
+      /// PREFIX
+      prefixText: controller.prefixText,
+      prefixTextColor: controller.prefixTextColor,
+      prefixTextDecoration: controller.prefixTextDecoration,
+      prefixTextDecorationColor: controller.prefixTextDecorationColor,
+      prefixTextDecorationStyle: controller.prefixTextDecorationStyle,
+      prefixTextDecorationThickness: controller.prefixTextDecorationThickness,
+      prefixTextLetterSpace: controller.prefixTextLetterSpace,
+      prefixTextSize: controller.prefixTextSize,
+      prefixTextStyle: controller.prefixTextStyle,
+      prefixTextVisible: controller.prefixTextVisible,
+      prefixFontStyle: controller.prefixFontStyle,
+      prefixFontWeight: controller.prefixFontWeight,
+      onPrefixClick: controller.onPrefixClick,
+      /// SUFFIX
+      suffixText: controller.suffixText,
+      suffixTextColor: controller.suffixTextColor,
+      suffixTextDecoration: controller.suffixTextDecoration,
+      suffixTextDecorationColor: controller.suffixTextDecorationColor,
+      suffixTextDecorationStyle: controller.suffixTextDecorationStyle,
+      suffixTextDecorationThickness: controller.suffixTextDecorationThickness,
+      suffixTextLetterSpace: controller.suffixTextLetterSpace,
+      suffixTextSize: controller.suffixTextSize,
+      suffixTextStyle: controller.suffixTextStyle,
+      suffixTextVisible: controller.suffixTextVisible,
+      suffixFontStyle: controller.suffixFontStyle,
+      suffixFontWeight: controller.suffixFontWeight,
+      onSuffixClick: controller.onSuffixClick,
     );
-  }
-}
-
-class RawTextView extends StatelessWidget {
-  final FontStyle? ellipsizeFontStyle;
-  final FontWeight? ellipsizeFontWeight;
-  final String? ellipsizeText;
-  final Color? ellipsizeTextColor;
-  final TextDecoration? ellipsizeTextDecoration;
-  final Color? ellipsizeTextDecorationColor;
-  final TextDecorationStyle? ellipsizeTextDecorationStyle;
-  final double? ellipsizeTextDecorationThickness;
-  final double? ellipsizeTextLetterSpace;
-  final double? ellipsizeTextSize;
-  final TextStyle ellipsizeTextStyle;
-  final bool ellipsizeTextVisible;
-  final OnViewClickListener? onEllipsizeClick;
-
-  final int? maxCharacters;
-  final int? maxLines;
-
-  final double? letterSpacing;
-  final double? lineHeight;
-  final double? wordSpacing;
-
-  final String? fontFamily;
-  final FontStyle? fontStyle;
-  final FontWeight? fontWeight;
-
-  final String? text;
-  final TextAlign? textAlign;
-  final Color? textColor;
-  final TextDecoration? textDecoration;
-  final Color? textDecorationColor;
-  final TextDecorationStyle? textDecorationStyle;
-  final double? textDecorationThickness;
-  final TextDirection? textDirection;
-  final TextLeadingDistribution? textLeadingDistribution;
-  final TextOverflow? textOverflow;
-  final double textSize;
-  final List<TextSpan>? textSpans;
-  final TextStyle textStyle;
-
-  const RawTextView({
-    super.key,
-    this.ellipsizeFontStyle,
-    this.ellipsizeFontWeight,
-    this.ellipsizeText,
-    this.ellipsizeTextColor,
-    this.ellipsizeTextDecoration,
-    this.ellipsizeTextDecorationColor,
-    this.ellipsizeTextDecorationStyle,
-    this.ellipsizeTextDecorationThickness,
-    this.ellipsizeTextLetterSpace,
-    this.ellipsizeTextSize,
-    this.ellipsizeTextStyle = const TextStyle(),
-    this.ellipsizeTextVisible = true,
-    this.onEllipsizeClick,
-    this.maxCharacters,
-    this.maxLines,
-    this.letterSpacing,
-    this.lineHeight,
-    this.wordSpacing,
-    this.fontFamily,
-    this.fontStyle,
-    this.fontWeight,
-    required this.text,
-    this.textAlign,
-    this.textColor,
-    this.textDecoration,
-    this.textDecorationColor,
-    this.textDecorationStyle,
-    this.textDecorationThickness,
-    this.textDirection,
-    this.textLeadingDistribution,
-    this.textOverflow,
-    this.textSize = 14,
-    this.textSpans,
-    this.textStyle = const TextStyle(),
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final spans = textSpans ??
-        [
-          if ((ellipsizeText ?? "").isNotEmpty && ellipsizeTextVisible)
-            TextSpan(
-              text: ellipsizeText,
-              recognizer: onEllipsizeClick != null
-                  ? (TapGestureRecognizer()
-                    ..onTap = () => onEllipsizeClick?.call(context))
-                  : null,
-              style: ellipsizeTextStyle.copyWith(
-                color: ellipsizeTextColor,
-                fontSize: ellipsizeTextSize,
-                fontStyle: ellipsizeFontStyle,
-                letterSpacing: ellipsizeTextLetterSpace,
-                fontWeight: ellipsizeFontWeight,
-                decoration: ellipsizeTextDecoration,
-                decorationColor: ellipsizeTextDecorationColor,
-                decorationStyle: ellipsizeTextDecorationStyle,
-                decorationThickness: ellipsizeTextDecorationThickness,
-              ),
-            ),
-        ];
-    return spans.isNotEmpty
-        ? Text.rich(
-            TextSpan(
-              text: text,
-              children: spans,
-            ),
-            maxLines: maxLines,
-            overflow: maxCharacters == 0 ? textOverflow : null,
-            style: textStyle.copyWith(
-              color: textColor,
-              fontSize: textSize,
-              fontWeight: fontWeight,
-              decoration: textDecoration,
-              decorationColor: textDecorationColor,
-              decorationStyle: textDecorationStyle,
-              decorationThickness: textDecorationThickness,
-              fontFamily: fontFamily,
-              fontStyle: fontStyle,
-              height: lineHeight,
-              leadingDistribution: textLeadingDistribution,
-              letterSpacing: letterSpacing,
-              wordSpacing: wordSpacing,
-            ),
-            textAlign: textAlign,
-            textDirection: textDirection,
-          )
-        : Text(
-            text ?? "",
-            maxLines: maxLines,
-            overflow: maxCharacters == 0 ? textOverflow : null,
-            style: textStyle.copyWith(
-              color: textColor,
-              fontSize: textSize,
-              fontWeight: fontWeight,
-              decoration: textDecoration,
-              decorationColor: textDecorationColor,
-              decorationStyle: textDecorationStyle,
-              decorationThickness: textDecorationThickness,
-              fontFamily: fontFamily,
-              fontStyle: fontStyle,
-              height: lineHeight,
-              leadingDistribution: textLeadingDistribution,
-              letterSpacing: letterSpacing,
-              wordSpacing: wordSpacing,
-            ),
-            textAlign: textAlign,
-            textDirection: textDirection,
-          );
   }
 }
 
@@ -392,23 +492,6 @@ class TextViewController extends ViewController {
   double? letterSpacing;
   double lineSpacingExtra = 0;
   double? wordSpacing;
-
-  FontStyle? ellipsizeFontStyle;
-  FontWeight? ellipsizeFontWeight;
-  String? _ellipsizeText;
-  ValueState<String>? ellipsizeTextState;
-  bool ellipsizeTextAllCaps = false;
-  Color? _ellipsizeTextColor;
-  ValueState<Color>? ellipsizeTextColorState;
-  TextDecoration? ellipsizeTextDecoration;
-  Color? ellipsizeTextDecorationColor;
-  TextDecorationStyle? ellipsizeTextDecorationStyle;
-  double? ellipsizeTextDecorationThickness;
-  double? ellipsizeTextLetterSpace;
-  double? ellipsizeTextSize;
-  TextStyle ellipsizeTextStyle = const TextStyle();
-  bool ellipsizeTextVisible = true;
-  OnViewClickListener? _onEllipsizeClick;
 
   String? fontFamily;
   FontStyle? fontStyle;
@@ -428,8 +511,42 @@ class TextViewController extends ViewController {
   TextLeadingDistribution? textLeadingDistribution;
   TextOverflow? textOverflow;
   double textSize = 14;
-  List<TextSpan>? textSpans;
+  List<TextSpan> textSpans = [];
   TextStyle textStyle = const TextStyle();
+  ///PREFIX
+  FontStyle? prefixFontStyle;
+  FontWeight? prefixFontWeight;
+  String? _prefixText;
+  ValueState<String>? prefixTextState;
+  bool prefixTextAllCaps = false;
+  Color? _prefixTextColor;
+  ValueState<Color>? prefixTextColorState;
+  TextDecoration? prefixTextDecoration;
+  Color? prefixTextDecorationColor;
+  TextDecorationStyle? prefixTextDecorationStyle;
+  double? prefixTextDecorationThickness;
+  double? prefixTextLetterSpace;
+  double? prefixTextSize;
+  TextStyle prefixTextStyle = const TextStyle();
+  bool prefixTextVisible = true;
+  OnViewClickListener? _onPrefixClick;
+  /// SUFFIX
+  FontStyle? suffixFontStyle;
+  FontWeight? suffixFontWeight;
+  String? _suffixText;
+  ValueState<String>? suffixTextState;
+  bool suffixTextAllCaps = false;
+  Color? _suffixTextColor;
+  ValueState<Color>? suffixTextColorState;
+  TextDecoration? suffixTextDecoration;
+  Color? suffixTextDecorationColor;
+  TextDecorationStyle? suffixTextDecorationStyle;
+  double? suffixTextDecorationThickness;
+  double? suffixTextLetterSpace;
+  double? suffixTextSize;
+  TextStyle suffixTextStyle = const TextStyle();
+  bool suffixTextVisible = true;
+  OnViewClickListener? _onSuffixClick;
 
   TextViewController fromTextView(TextView view) {
     super.fromView(view);
@@ -440,22 +557,6 @@ class TextViewController extends ViewController {
     letterSpacing = view.letterSpacing;
     lineSpacingExtra = view.lineSpacingExtra ?? 0;
     wordSpacing = view.wordSpacing;
-
-    ellipsizeFontStyle = view.ellipsizeFontStyle;
-    ellipsizeFontWeight = view.ellipsizeFontWeight;
-    ellipsizeText = view.ellipsizeText;
-    ellipsizeTextState = view.ellipsizeTextState;
-    ellipsizeTextColor = view.ellipsizeTextColor;
-    ellipsizeTextColorState = view.ellipsizeTextColorState;
-    ellipsizeTextDecoration = view.ellipsizeTextDecoration;
-    ellipsizeTextDecorationColor = view.ellipsizeTextDecorationColor;
-    ellipsizeTextDecorationStyle = view.ellipsizeTextDecorationStyle;
-    ellipsizeTextDecorationThickness = view.ellipsizeTextDecorationThickness;
-    ellipsizeTextLetterSpace = view.ellipsizeTextLetterSpace;
-    ellipsizeTextSize = view.ellipsizeTextSize;
-    ellipsizeTextStyle = view.ellipsizeTextStyle ?? const TextStyle();
-    ellipsizeTextVisible = view.ellipsizeTextVisible ?? true;
-    onEllipsizeClick = view.onEllipsizeClick;
 
     fontFamily = view.fontFamily;
     fontStyle = view.fontStyle;
@@ -475,8 +576,42 @@ class TextViewController extends ViewController {
     textLeadingDistribution = view.textLeadingDistribution;
     textOverflow = view.textOverflow;
     textSize = view.textSize ?? 14;
-    textSpans = view.textSpans;
+    textSpans = view.textSpans ?? [];
     textStyle = view.textStyle ?? const TextStyle();
+    ///PREFIX
+    prefixFontStyle = view.prefixFontStyle;
+    prefixFontWeight = view.prefixFontWeight;
+    prefixText = view.prefixText;
+    prefixTextState = view.prefixTextState;
+    prefixTextAllCaps = view.prefixTextAllCaps ?? false;
+    prefixTextColor = view.prefixTextColor;
+    prefixTextColorState = view.prefixTextColorState;
+    prefixTextDecoration = view.prefixTextDecoration;
+    prefixTextDecorationColor = view.prefixTextDecorationColor;
+    prefixTextDecorationStyle = view.prefixTextDecorationStyle;
+    prefixTextDecorationThickness = view.prefixTextDecorationThickness;
+    prefixTextLetterSpace = view.prefixTextLetterSpace;
+    prefixTextSize = view.prefixTextSize;
+    prefixTextStyle = view.prefixTextStyle ?? const TextStyle();
+    prefixTextVisible = view.prefixTextVisible ?? true;
+    onPrefixClick = view.onSuffixClick;
+    ///SUFFIX
+    suffixFontStyle = view.suffixFontStyle;
+    suffixFontWeight = view.suffixFontWeight;
+    suffixText = view.suffixText;
+    suffixTextState = view.suffixTextState;
+    suffixTextAllCaps = view.suffixTextAllCaps ?? false;
+    suffixTextColor = view.suffixTextColor;
+    suffixTextColorState = view.suffixTextColorState;
+    suffixTextDecoration = view.suffixTextDecoration;
+    suffixTextDecorationColor = view.suffixTextDecorationColor;
+    suffixTextDecorationStyle = view.suffixTextDecorationStyle;
+    suffixTextDecorationThickness = view.suffixTextDecorationThickness;
+    suffixTextLetterSpace = view.suffixTextLetterSpace;
+    suffixTextSize = view.suffixTextSize;
+    suffixTextStyle = view.suffixTextStyle ?? const TextStyle();
+    suffixTextVisible = view.suffixTextVisible ?? true;
+    onSuffixClick = view.onSuffixClick;
 
     return this;
   }
@@ -507,102 +642,209 @@ class TextViewController extends ViewController {
     return textColorState?.activated(activated, enabled) ?? _textColor;
   }
 
-  set ellipsizeText(String? value) => _ellipsizeText = value;
+  /// PREFIX
 
-  String? get ellipsizeText {
-    final value =
-        ellipsizeTextState?.activated(activated, enabled) ?? _ellipsizeText;
-    return ellipsizeTextAllCaps ? value?.toUpperCase() : value;
+  set prefixText(String? value) => _prefixText = value;
+
+  String? get prefixText {
+    final value = prefixTextState?.activated(activated, enabled) ?? _prefixText;
+    return prefixTextAllCaps ? value?.toUpperCase() : value;
   }
 
-  set ellipsizeTextColor(Color? value) => _ellipsizeTextColor = value;
+  set prefixTextColor(Color? value) => _prefixTextColor = value;
 
-  Color? get ellipsizeTextColor {
-    return ellipsizeTextColorState?.activated(activated, enabled) ??
-        _ellipsizeTextColor;
+  Color? get prefixTextColor {
+    return prefixTextColorState?.activated(activated, enabled) ??
+        _prefixTextColor;
   }
 
-  bool get isAutoEllipsize {
+  bool get isAutoPrefix {
     final a = maxCharacters > 0;
     final b = text.length > maxCharacters;
-    return (a && b) || ellipsizeTextVisible;
+    return (a && b) || prefixTextVisible;
   }
 
-  OnViewClickListener? get onEllipsizeClick =>
-      enabled ? _onEllipsizeClick : null;
+  OnViewClickListener? get onPrefixClick => enabled ? _onPrefixClick : null;
 
-  set onEllipsizeClick(OnViewClickListener? listener) =>
-      _onEllipsizeClick ??= listener;
+  set onPrefixClick(OnViewClickListener? listener) =>
+      _onPrefixClick ??= listener;
 
-  void setEllipsizeFontStyle(FontStyle? value) {
-    ellipsizeFontStyle = value;
+  void setPrefixFontStyle(FontStyle? value) {
+    prefixFontStyle = value;
     _notify;
   }
 
-  void setEllipsizeFontWeight(FontWeight value) {
-    ellipsizeFontWeight = value;
+  void setPrefixFontWeight(FontWeight value) {
+    prefixFontWeight = value;
     _notify;
   }
 
-  void setEllipsizeLetterSpace(double? value) {
-    ellipsizeTextLetterSpace = value;
+  void setPrefixLetterSpace(double? value) {
+    prefixTextLetterSpace = value;
     _notify;
   }
 
-  void setEllipsizeText(String? value) {
-    ellipsizeText = value;
+  void setPrefixText(String? value) {
+    prefixText = value;
     _notify;
   }
 
-  void setEllipsizeTextState(ValueState<String>? value) {
-    ellipsizeTextState = value;
+  void setPrefixTextState(ValueState<String>? value) {
+    prefixTextState = value;
     _notify;
   }
 
-  void setEllipsizeTextColor(Color? value) {
-    ellipsizeTextColor = value;
+  void setPrefixTextColor(Color? value) {
+    prefixTextColor = value;
     _notify;
   }
 
-  void setEllipsizeTextColorState(ValueState<Color>? value) {
-    ellipsizeTextColorState = value;
+  void setPrefixTextColorState(ValueState<Color>? value) {
+    prefixTextColorState = value;
     _notify;
   }
 
-  void setEllipsizeTextDecoration(TextDecoration? value) {
-    ellipsizeTextDecoration = value;
+  void setPrefixTextDecoration(TextDecoration? value) {
+    prefixTextDecoration = value;
     _notify;
   }
 
-  void setEllipsizeTextDecorationColor(Color? value) {
-    ellipsizeTextDecorationColor = value;
+  void setPrefixTextDecorationColor(Color? value) {
+    prefixTextDecorationColor = value;
     _notify;
   }
 
-  void setEllipsizeTextDecorationStyle(TextDecorationStyle? value) {
-    ellipsizeTextDecorationStyle = value;
+  void setPrefixTextDecorationStyle(TextDecorationStyle? value) {
+    prefixTextDecorationStyle = value;
     _notify;
   }
 
-  void setEllipsizeTextDecorationThickness(double? value) {
-    ellipsizeTextDecorationThickness = value;
+  void setPrefixTextDecorationThickness(double? value) {
+    prefixTextDecorationThickness = value;
     _notify;
   }
 
-  void setEllipsizeTextSize(double? value) {
-    ellipsizeTextSize = value;
+  void setPrefixTextSize(double? value) {
+    prefixTextSize = value;
     _notify;
   }
 
-  void setEllipsizeTextStyle(TextStyle value) {
-    ellipsizeTextStyle = value;
+  void setPrefixTextStyle(TextStyle value) {
+    prefixTextStyle = value;
     _notify;
   }
 
-  void setEllipsizeVisibility(bool value) {
-    ellipsizeTextVisible = value;
+  void setPrefixVisibility(bool value) {
+    prefixTextVisible = value;
     _notify;
   }
+
+  void setOnPrefixClickListener(OnViewClickListener listener) {
+    _onPrefixClick = listener;
+  }
+
+  ///SUFFIX
+
+  set suffixText(String? value) => _suffixText = value;
+
+  String? get suffixText {
+    final value = suffixTextState?.activated(activated, enabled) ?? _suffixText;
+    return suffixTextAllCaps ? value?.toUpperCase() : value;
+  }
+
+  set suffixTextColor(Color? value) => _suffixTextColor = value;
+
+  Color? get suffixTextColor {
+    return suffixTextColorState?.activated(activated, enabled) ??
+        _suffixTextColor;
+  }
+
+  bool get isAutoSuffix {
+    final a = maxCharacters > 0;
+    final b = text.length > maxCharacters;
+    return (a && b) || suffixTextVisible;
+  }
+
+  OnViewClickListener? get onSuffixClick => enabled ? _onSuffixClick : null;
+
+  set onSuffixClick(OnViewClickListener? listener) =>
+      _onSuffixClick ??= listener;
+
+  void setSuffixFontStyle(FontStyle? value) {
+    suffixFontStyle = value;
+    _notify;
+  }
+
+  void setSuffixFontWeight(FontWeight value) {
+    suffixFontWeight = value;
+    _notify;
+  }
+
+  void setSuffixLetterSpace(double? value) {
+    suffixTextLetterSpace = value;
+    _notify;
+  }
+
+  void setSuffixText(String? value) {
+    suffixText = value;
+    _notify;
+  }
+
+  void setSuffixTextState(ValueState<String>? value) {
+    suffixTextState = value;
+    _notify;
+  }
+
+  void setSuffixTextColor(Color? value) {
+    suffixTextColor = value;
+    _notify;
+  }
+
+  void setSuffixTextColorState(ValueState<Color>? value) {
+    suffixTextColorState = value;
+    _notify;
+  }
+
+  void setSuffixTextDecoration(TextDecoration? value) {
+    suffixTextDecoration = value;
+    _notify;
+  }
+
+  void setSuffixTextDecorationColor(Color? value) {
+    suffixTextDecorationColor = value;
+    _notify;
+  }
+
+  void setSuffixTextDecorationStyle(TextDecorationStyle? value) {
+    suffixTextDecorationStyle = value;
+    _notify;
+  }
+
+  void setSuffixTextDecorationThickness(double? value) {
+    suffixTextDecorationThickness = value;
+    _notify;
+  }
+
+  void setSuffixTextSize(double? value) {
+    suffixTextSize = value;
+    _notify;
+  }
+
+  void setSuffixTextStyle(TextStyle value) {
+    suffixTextStyle = value;
+    _notify;
+  }
+
+  void setSuffixVisibility(bool value) {
+    suffixTextVisible = value;
+    _notify;
+  }
+
+  void setOnSuffixClickListener(OnViewClickListener listener) {
+    _onSuffixClick = listener;
+  }
+
+  /// GENERAL
 
   void setFontWeight(FontWeight value) {
     fontWeight = value;
@@ -682,9 +924,5 @@ class TextViewController extends ViewController {
   void setWordSpacing(double value) {
     wordSpacing = value;
     _notify;
-  }
-
-  void setOnEllipsizeClickListener(OnViewClickListener listener) {
-    _onClick = listener;
   }
 }

@@ -4,6 +4,7 @@ class CountdownView extends YMRView<CountdownViewController> {
   final Duration? target;
   final Duration? decrement;
   final Duration? periodic;
+  final bool? initialStartMode;
 
   final Widget Function(BuildContext, Duration) builder;
 
@@ -99,6 +100,7 @@ class CountdownView extends YMRView<CountdownViewController> {
     this.target,
     this.decrement,
     this.periodic,
+    this.initialStartMode,
     required this.builder,
   });
 
@@ -111,7 +113,9 @@ class CountdownView extends YMRView<CountdownViewController> {
   }
 
   @override
-  void onInit(CountdownViewController controller) => controller._onStart();
+  void onInit(CountdownViewController controller) {
+    if (controller.initialStartMode) controller._continue();
+  }
 
   @override
   void onDispose(CountdownViewController controller) => controller._dispose();
@@ -123,42 +127,61 @@ class CountdownView extends YMRView<CountdownViewController> {
 }
 
 class CountdownViewController extends ViewController {
-  Duration target = const Duration(minutes: 2);
-  Duration decrement = const Duration(seconds: 1);
-  Duration periodic = const Duration(seconds: 1);
+  Duration targetTime = const Duration(minutes: 2);
+  Duration decrementTime = const Duration(seconds: 1);
+  Duration periodicTime = const Duration(seconds: 1);
+  bool initialStartMode = true;
 
-  late Timer _timer;
-  late Duration _rt = target;
+  late Duration _rt = targetTime;
+  Timer? _timer;
+  bool _isRunning = false;
 
   CountdownViewController fromCountdownView(CountdownView view) {
     super.fromView(view);
-    target = view.target ?? const Duration(minutes: 2);
-    decrement = view.decrement ?? const Duration(seconds: 1);
-    periodic = view.periodic ?? const Duration(seconds: 1);
+    targetTime = view.target ?? const Duration(minutes: 2);
+    decrementTime = view.decrement ?? const Duration(seconds: 1);
+    periodicTime = view.periodic ?? const Duration(seconds: 1);
+    initialStartMode = view.initialStartMode ?? true;
     return this;
   }
 
-  void _onStart() {
-    _timer = Timer.periodic(periodic, (ticker) {
-      if (_rt.inSeconds <= 0) {
-        ticker.cancel();
-      } else {
-        _rt = _rt - decrement;
-      }
-      _notify;
-    });
+  void _continue() {
+    if (!_isRunning) {
+      _timer = Timer.periodic(periodicTime, (ticker) {
+        if (_rt.inSeconds <= 0) {
+          ticker.cancel();
+        } else {
+          _rt = _rt - decrementTime;
+        }
+        _notify;
+      });
+    }
+    _isRunning = true;
   }
 
-  void onStart() {
-    _timer.cancel();
-    _rt = target;
+  void _cancel() {
+    if (_timer != null) _timer!.cancel();
+    _isRunning = false;
+  }
+
+  void onStart() => _continue();
+
+  void onRestart() {
+    _cancel();
+    _rt = targetTime;
     _notify;
-    _onStart();
+    _continue();
   }
 
-  void onStop() => _timer.cancel();
+  void onStop() => _cancel();
 
-  void _dispose() => _timer.cancel();
+  void onClear() {
+    _cancel();
+    _rt = const Duration();
+    _notify;
+  }
+
+  void _dispose() => _cancel();
 }
 
 extension CountdownDurationExtension on Duration {
