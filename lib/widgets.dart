@@ -33,6 +33,8 @@ part 'views/avatar_view.dart';
 
 part 'views/button.dart';
 
+part 'views/category_view.dart';
+
 part 'views/content_view.dart';
 
 part 'views/countdown_view.dart';
