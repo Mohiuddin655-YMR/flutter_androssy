@@ -39,7 +39,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final bool? forceLine;
   final TextInputType? inputType;
   final Brightness? keyboardAppearance;
-  final Locale? locale;
   final TextMagnifierConfiguration? magnifierConfiguration;
   final int? minLines;
   final MouseCursor? mouseCursor;
@@ -61,7 +60,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final ScrollController? scrollControllerText;
   final EdgeInsets? scrollPaddingText;
   final ScrollPhysics? scrollPhysicsText;
-  final Color? selectionColor;
   final TextSelectionControls? selectionControls;
   final BoxHeightStyle? selectionHeightStyle;
   final BoxWidthStyle? selectionWidthStyle;
@@ -70,12 +68,8 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final SmartDashesType? smartDashesType;
   final SmartQuotesType? smartQuotesType;
   final SpellCheckConfiguration? spellCheckConfiguration;
-  final StrutStyle? strutStyle;
   final TextCapitalization? textCapitalization;
   final TextInputAction? textInputAction;
-  final TextHeightBehavior? textHeightBehavior;
-  final TextWidthBasis? textWidthBasis;
-  final double? textScaleFactor;
   final UndoHistoryController? undoController;
 
   final String? id;
@@ -174,17 +168,23 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.maxLines,
     super.letterSpacing,
     super.lineSpacingExtra,
+    super.locale,
     super.wordSpacing,
     super.fontFamily,
     super.fontStyle,
     super.fontWeight,
+    super.selectionColor,
+    super.strutStyle,
     super.text,
     super.textAlign,
     super.textAllCaps,
     super.textColor,
+    super.textHeightBehavior,
     super.textOverflow,
+    super.textScaleFactor,
     super.textSize,
     super.textStyle,
+    super.textWidthBasis,
     super.onChange,
     super.onError,
     super.onValid,
@@ -212,7 +212,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.forceLine,
     this.keyboardAppearance,
     this.inputType,
-    this.locale,
     this.magnifierConfiguration,
     this.minLines,
     this.mouseCursor,
@@ -234,7 +233,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.scrollControllerText,
     this.scrollPaddingText,
     this.scrollPhysicsText,
-    this.selectionColor,
     this.selectionControls,
     this.selectionHeightStyle,
     this.selectionWidthStyle,
@@ -243,12 +241,8 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.smartDashesType,
     this.smartQuotesType,
     this.spellCheckConfiguration,
-    this.strutStyle,
     this.textCapitalization,
     this.textInputAction,
-    this.textHeightBehavior,
-    this.textWidthBasis,
-    this.textScaleFactor,
     this.undoController,
     this.id,
     this.primary,
@@ -284,7 +278,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
       fontSize: controller.textSize,
     );
     return GestureDetector(
-      onTap: controller.showKeyboard,
+      onTap: () => controller.showKeyboard(context),
       child: AbsorbPointer(
         child: Column(
           children: [
@@ -439,7 +433,6 @@ class EditTextController extends TextViewController {
   bool forceLine = true;
   Brightness keyboardAppearance = Brightness.light;
   TextInputType? inputType;
-  Locale? locale;
   TextMagnifierConfiguration magnifierConfiguration =
       TextMagnifierConfiguration.disabled;
   int? minLines;
@@ -462,7 +455,6 @@ class EditTextController extends TextViewController {
   ScrollController? scrollControllerText;
   EdgeInsets scrollPaddingText = const EdgeInsets.all(20);
   ScrollPhysics? scrollPhysicsText;
-  Color? selectionColor;
   TextSelectionControls? selectionControls;
   BoxHeightStyle selectionHeightStyle = BoxHeightStyle.tight;
   BoxWidthStyle selectionWidthStyle = BoxWidthStyle.tight;
@@ -471,12 +463,8 @@ class EditTextController extends TextViewController {
   SmartDashesType? smartDashesType;
   SmartQuotesType? smartQuotesType;
   SpellCheckConfiguration? spellCheckConfiguration;
-  StrutStyle? strutStyle;
   TextCapitalization textCapitalization = TextCapitalization.none;
   TextInputAction? textInputAction;
-  TextHeightBehavior? textHeightBehavior;
-  TextWidthBasis textWidthBasis = TextWidthBasis.parent;
-  double? textScaleFactor;
   UndoHistoryController? undoController;
 
   Color? primary;
@@ -544,7 +532,6 @@ class EditTextController extends TextViewController {
     forceLine = view.forceLine ?? true;
     keyboardAppearance = view.keyboardAppearance ?? Brightness.light;
     inputType = view.inputType;
-    locale = view.locale;
     magnifierConfiguration =
         view.magnifierConfiguration ?? TextMagnifierConfiguration.disabled;
     minLines = view.minLines;
@@ -567,7 +554,6 @@ class EditTextController extends TextViewController {
     scrollControllerText = view.scrollControllerText;
     scrollPaddingText = view.scrollPaddingText ?? const EdgeInsets.all(20);
     scrollPhysicsText = view.scrollPhysicsText;
-    selectionColor = view.selectionColor;
     selectionControls = view.selectionControls;
     selectionHeightStyle = view.selectionHeightStyle ?? BoxHeightStyle.tight;
     selectionWidthStyle = view.selectionWidthStyle ?? BoxWidthStyle.tight;
@@ -576,12 +562,9 @@ class EditTextController extends TextViewController {
     smartDashesType = view.smartDashesType;
     smartQuotesType = view.smartQuotesType;
     spellCheckConfiguration = view.spellCheckConfiguration;
-    strutStyle = view.strutStyle;
     textCapitalization = view.textCapitalization ?? TextCapitalization.none;
     textInputAction = view.textInputAction;
     textHeightBehavior = view.textHeightBehavior;
-    textWidthBasis = view.textWidthBasis ?? TextWidthBasis.parent;
-    textScaleFactor = view.textScaleFactor;
     undoController = view.undoController;
 
     _editable.text = view.text ?? "";
@@ -641,8 +624,9 @@ class EditTextController extends TextViewController {
   EdgeInsets get padding =>
       super.padding ?? const EdgeInsets.symmetric(vertical: 8);
 
-  void showKeyboard() async {
-    if (_node.hasFocus) {
+  void showKeyboard(BuildContext context) async {
+    var keyboard = WidgetsBinding.instance.window.viewInsets.bottom;
+    if (_node.hasFocus && keyboard <= 0) {
       _node.unfocus();
       await Future.delayed(const Duration(milliseconds: 100)).then((value) {
         FocusScope.of(context).requestFocus(_node);

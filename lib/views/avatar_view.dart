@@ -138,7 +138,7 @@ class AvatarView extends YMRView<AvatarViewController> {
     return ImageView(
       activated: controller.activated,
       enabled: controller.enabled,
-      visibility: controller.visibility,
+      visibility: controller.visible,
       width: controller.width,
       height: controller.height,
       margin: controller._margin,

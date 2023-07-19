@@ -1,16 +1,35 @@
 part of '../widgets.dart';
 
+class EllipsisPainter extends CustomPainter {
+  final TextPainter painter;
+
+  const EllipsisPainter(this.painter);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    painter.paint(canvas, const Offset(0, 0));
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
 class RawTextView extends StatelessWidget {
-  final int? maxCharacters;
+  final String? ellipsis;
   final int? maxLines;
 
   final double? letterSpacing;
   final double? lineHeight;
+  final Locale? locale;
   final double? wordSpacing;
 
   final String? fontFamily;
   final FontStyle? fontStyle;
   final FontWeight? fontWeight;
+  final Color? selectionColor;
+  final String? semanticsLabel;
+  final bool? softWrap;
+  final StrutStyle? strutStyle;
 
   final String? text;
   final TextAlign? textAlign;
@@ -20,12 +39,16 @@ class RawTextView extends StatelessWidget {
   final TextDecorationStyle? textDecorationStyle;
   final double? textDecorationThickness;
   final TextDirection? textDirection;
+  final TextHeightBehavior? textHeightBehavior;
   final TextLeadingDistribution? textLeadingDistribution;
   final TextOverflow? textOverflow;
+  final double? textScaleFactor;
   final double textSize;
   final List<TextSpan> textSpans;
   final TextStyle textStyle;
+  final TextWidthBasis textWidthBasis;
   final OnViewClickListener? onClick;
+
   ///PREFIX
   final FontStyle? prefixFontStyle;
   final FontWeight? prefixFontWeight;
@@ -40,6 +63,7 @@ class RawTextView extends StatelessWidget {
   final TextStyle prefixTextStyle;
   final bool prefixTextVisible;
   final OnViewClickListener? onPrefixClick;
+
   ///SUFFIX
   final FontStyle? suffixFontStyle;
   final FontWeight? suffixFontWeight;
@@ -57,14 +81,18 @@ class RawTextView extends StatelessWidget {
 
   const RawTextView({
     super.key,
-    this.maxCharacters,
-    this.maxLines,
-    this.letterSpacing,
-    this.lineHeight,
-    this.wordSpacing,
+    this.ellipsis,
     this.fontFamily,
     this.fontStyle,
     this.fontWeight,
+    this.letterSpacing,
+    this.lineHeight,
+    this.locale,
+    this.maxLines,
+    this.selectionColor,
+    this.semanticsLabel,
+    this.softWrap,
+    this.strutStyle,
     required this.text,
     this.textAlign,
     this.textColor,
@@ -73,12 +101,17 @@ class RawTextView extends StatelessWidget {
     this.textDecorationStyle,
     this.textDecorationThickness,
     this.textDirection,
+    this.textHeightBehavior,
     this.textLeadingDistribution,
     this.textOverflow,
+    this.textScaleFactor,
     this.textSize = 14,
     this.textSpans = const [],
     this.textStyle = const TextStyle(),
+    this.textWidthBasis = TextWidthBasis.parent,
+    this.wordSpacing,
     this.onClick,
+
     ///PREFIX
     this.prefixFontStyle,
     this.prefixFontWeight,
@@ -93,6 +126,7 @@ class RawTextView extends StatelessWidget {
     this.prefixTextStyle = const TextStyle(),
     this.prefixTextVisible = true,
     this.onPrefixClick,
+
     ///SUFFIX
     this.suffixFontStyle,
     this.suffixFontWeight,
@@ -111,59 +145,10 @@ class RawTextView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var isEllipsis = ellipsis != null;
     var isPrefix = (prefixText ?? "").isNotEmpty && prefixTextVisible;
     var isSuffix = (suffixText ?? "").isNotEmpty && suffixTextVisible;
-    var isMoreSpans = textSpans.isNotEmpty;
-    var isSpannable = isPrefix || isSuffix || isMoreSpans;
-
-    final spans = [
-      if (isPrefix)
-        TextSpan(
-          text: prefixText,
-          recognizer: onPrefixClick != null
-              ? (TapGestureRecognizer()
-                ..onTap = () => onPrefixClick?.call(context))
-              : null,
-          style: prefixTextStyle.copyWith(
-            color: prefixTextColor,
-            fontSize: prefixTextSize,
-            fontStyle: prefixFontStyle,
-            letterSpacing: prefixTextLetterSpace,
-            fontWeight: prefixFontWeight,
-            decoration: prefixTextDecoration,
-            decorationColor: prefixTextDecorationColor,
-            decorationStyle: prefixTextDecorationStyle,
-            decorationThickness: prefixTextDecorationThickness,
-          ),
-        ),
-      TextSpan(
-        text: text,
-        recognizer: onClick != null
-            ? (TapGestureRecognizer()..onTap = () => onClick?.call(context))
-            : null,
-      ),
-      if (isSuffix)
-        TextSpan(
-          text: suffixText,
-          recognizer: onSuffixClick != null
-              ? (TapGestureRecognizer()
-                ..onTap = () => onSuffixClick?.call(context))
-              : null,
-          style: suffixTextStyle.copyWith(
-            color: suffixTextColor,
-            fontSize: suffixTextSize,
-            fontStyle: suffixFontStyle,
-            letterSpacing: suffixTextLetterSpace,
-            fontWeight: suffixFontWeight,
-            decoration: suffixTextDecoration,
-            decorationColor: suffixTextDecorationColor,
-            decorationStyle: suffixTextDecorationStyle,
-            decorationThickness: suffixTextDecorationThickness,
-          ),
-        ),
-    ];
-
-    if (isMoreSpans) spans.addAll(textSpans);
+    var isSpannable = isPrefix || isSuffix || textSpans.isNotEmpty;
 
     var style = textStyle.copyWith(
       color: textColor,
@@ -181,26 +166,109 @@ class RawTextView extends StatelessWidget {
       wordSpacing: wordSpacing,
     );
 
-    return isSpannable
-        ? Text.rich(
-            TextSpan(children: spans),
-            maxLines: maxLines,
-            overflow: maxCharacters == 0 ? textOverflow : null,
-            style: style,
-            textAlign: textAlign,
-            textDirection: textDirection,
+    var span = isSpannable
+        ? TextSpan(
+            style: isEllipsis ? style : null,
+            semanticsLabel: semanticsLabel,
+            children: [
+              if (isPrefix)
+                TextSpan(
+                  text: prefixText,
+                  recognizer: context.onClick(onPrefixClick ?? onClick),
+                  style: prefixTextStyle.copyWith(
+                    color: prefixTextColor,
+                    fontSize: prefixTextSize,
+                    fontStyle: prefixFontStyle,
+                    letterSpacing: prefixTextLetterSpace,
+                    fontWeight: prefixFontWeight,
+                    decoration: prefixTextDecoration,
+                    decorationColor: prefixTextDecorationColor,
+                    decorationStyle: prefixTextDecorationStyle,
+                    decorationThickness: prefixTextDecorationThickness,
+                  ),
+                ),
+              TextSpan(
+                text: text,
+                recognizer: context.onClick(onClick),
+              ),
+              ...textSpans,
+              if (isSuffix)
+                TextSpan(
+                  text: suffixText,
+                  recognizer: context.onClick(onSuffixClick ?? onClick),
+                  style: suffixTextStyle.copyWith(
+                    color: suffixTextColor,
+                    fontSize: suffixTextSize,
+                    fontStyle: suffixFontStyle,
+                    letterSpacing: suffixTextLetterSpace,
+                    fontWeight: suffixFontWeight,
+                    decoration: suffixTextDecoration,
+                    decorationColor: suffixTextDecorationColor,
+                    decorationStyle: suffixTextDecorationStyle,
+                    decorationThickness: suffixTextDecorationThickness,
+                  ),
+                ),
+            ],
           )
-        : GestureDetector(
-            onTap: onClick != null ? () => onClick?.call(context) : null,
-            child: Text(
-              text ?? "",
-              maxLines: maxLines,
-              overflow: maxCharacters == 0 ? textOverflow : null,
-              style: style,
-              textAlign: textAlign,
-              textDirection: textDirection,
-            ),
+        : null;
+
+    if (isEllipsis) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          var painter = TextPainter(
+            text: span,
+            textAlign: textAlign ?? TextAlign.start,
+            textDirection: textDirection ?? TextDirection.ltr,
+            textScaleFactor: textScaleFactor ?? 1,
+            maxLines: maxLines,
+            ellipsis: ellipsis ?? "...",
+            locale: locale,
+            strutStyle: strutStyle,
+            textWidthBasis: textWidthBasis,
+            textHeightBehavior: textHeightBehavior,
           );
+          painter.layout(maxWidth: constraints.maxWidth);
+          return CustomPaint(
+            size: painter.size,
+            painter: EllipsisPainter(painter),
+          );
+        },
+      );
+    } else if (span != null) {
+      return Text.rich(
+        span,
+        style: style,
+        strutStyle: strutStyle,
+        textAlign: textAlign,
+        textDirection: textDirection,
+        locale: locale,
+        softWrap: softWrap,
+        overflow: textOverflow,
+        textScaleFactor: textScaleFactor,
+        maxLines: maxLines,
+        semanticsLabel: semanticsLabel,
+        textWidthBasis: textWidthBasis,
+        textHeightBehavior: textHeightBehavior,
+        selectionColor: selectionColor,
+      );
+    } else {
+      return Text(
+        text ?? "",
+        style: style,
+        strutStyle: strutStyle,
+        textAlign: textAlign,
+        textDirection: textDirection,
+        locale: locale,
+        softWrap: softWrap,
+        overflow: textOverflow,
+        textScaleFactor: textScaleFactor,
+        maxLines: maxLines,
+        semanticsLabel: semanticsLabel,
+        textWidthBasis: textWidthBasis,
+        textHeightBehavior: textHeightBehavior,
+        selectionColor: selectionColor,
+      );
+    }
   }
 }
 
@@ -210,12 +278,19 @@ class TextView<T extends TextViewController> extends YMRView<T> {
 
   final double? letterSpacing;
   final double? lineSpacingExtra;
+  final Color? selectionColor;
+  final String? semanticsLabel;
+  final bool? softWrap;
+  final StrutStyle? strutStyle;
   final double? wordSpacing;
+
+  final String? ellipsis;
 
   final String? fontFamily;
   final FontStyle? fontStyle;
   final FontWeight? fontWeight;
 
+  final Locale? locale;
   final String? text;
   final ValueState<String>? textState;
   final TextAlign? textAlign;
@@ -227,11 +302,15 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final TextDecorationStyle? textDecorationStyle;
   final double? textDecorationThickness;
   final TextDirection? textDirection;
+  final TextHeightBehavior? textHeightBehavior;
   final TextLeadingDistribution? textLeadingDistribution;
   final TextOverflow? textOverflow;
+  final double? textScaleFactor;
   final double? textSize;
   final List<TextSpan>? textSpans;
   final TextStyle? textStyle;
+  final TextWidthBasis? textWidthBasis;
+
   ///PREFIX
   final FontStyle? prefixFontStyle;
   final FontWeight? prefixFontWeight;
@@ -249,6 +328,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final TextStyle? prefixTextStyle;
   final bool? prefixTextVisible;
   final OnViewClickListener? onPrefixClick;
+
   ///SUFFIX
   final FontStyle? suffixFontStyle;
   final FontWeight? suffixFontWeight;
@@ -360,14 +440,20 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.onError,
     super.onValid,
     super.onValidator,
-    this.maxCharacters,
-    this.maxLines,
-    this.letterSpacing,
-    this.lineSpacingExtra,
-    this.wordSpacing,
+    this.ellipsis,
     this.fontFamily,
     this.fontStyle,
     this.fontWeight,
+    this.letterSpacing,
+    this.lineSpacingExtra,
+    this.locale,
+    this.maxCharacters,
+    this.maxLines,
+    this.selectionColor,
+    this.semanticsLabel,
+    this.softWrap,
+    this.strutStyle,
+    this.wordSpacing,
     required this.text,
     this.textState,
     this.textAlign,
@@ -379,11 +465,15 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.textDecorationStyle,
     this.textDecorationThickness,
     this.textDirection,
+    this.textHeightBehavior,
     this.textLeadingDistribution,
     this.textOverflow,
+    this.textScaleFactor,
     this.textSize,
     this.textSpans,
     this.textStyle,
+    this.textWidthBasis,
+
     ///PREFIX
     this.prefixFontStyle,
     this.prefixFontWeight,
@@ -401,6 +491,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.prefixTextStyle,
     this.prefixTextVisible,
     this.onPrefixClick,
+
     ///SUFFIX
     this.suffixText,
     this.suffixTextState,
@@ -433,27 +524,40 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   @override
   Widget? attach(BuildContext context, T controller) {
     return RawTextView(
-      text: controller.text,
-      textSpans: controller.textSpans,
-      maxLines: controller.maxLines,
-      textOverflow: controller.textOverflow,
-      textStyle: controller.textStyle,
-      textColor: controller.textColor,
-      textSize: controller.textSize,
+      ellipsis: controller.ellipsis,
+      fontFamily: controller.fontFamily,
+      fontStyle: controller.fontStyle,
       fontWeight: controller.fontWeight,
+      letterSpacing: controller.letterSpacing,
+      lineHeight: controller.spacingFactor,
+      locale: controller.locale,
+      maxLines: controller.maxLines,
+      selectionColor: controller.selectionColor,
+      semanticsLabel: controller.semanticsLabel,
+      softWrap: controller.softWrap,
+      strutStyle: controller.strutStyle,
+      text: controller.text,
+      textAlign: controller.textAlign,
+      textColor: controller.textColor,
       textDecoration: controller.textDecoration,
       textDecorationColor: controller.textDecorationColor,
       textDecorationStyle: controller.textDecorationStyle,
       textDecorationThickness: controller.textDecorationThickness,
-      fontFamily: controller.fontFamily,
-      fontStyle: controller.fontStyle,
-      textLeadingDistribution: controller.textLeadingDistribution,
-      lineHeight: controller.spacingFactor,
-      letterSpacing: controller.letterSpacing,
-      wordSpacing: controller.wordSpacing,
-      textAlign: controller.textAlign,
       textDirection: controller.textDirection,
+      textHeightBehavior: controller.textHeightBehavior,
+      textLeadingDistribution: controller.textLeadingDistribution,
+      textOverflow: controller.textOverflow,
+      textScaleFactor: controller.textScaleFactor,
+      textSize: controller.textSize,
+      textSpans: controller.textSpans,
+      textStyle: controller.textStyle,
+      textWidthBasis: controller.textWidthBasis,
+      wordSpacing: controller.wordSpacing,
+      onClick: null,
+
       /// PREFIX
+      prefixFontStyle: controller.prefixFontStyle,
+      prefixFontWeight: controller.prefixFontWeight,
       prefixText: controller.prefixText,
       prefixTextColor: controller.prefixTextColor,
       prefixTextDecoration: controller.prefixTextDecoration,
@@ -464,10 +568,11 @@ class TextView<T extends TextViewController> extends YMRView<T> {
       prefixTextSize: controller.prefixTextSize,
       prefixTextStyle: controller.prefixTextStyle,
       prefixTextVisible: controller.prefixTextVisible,
-      prefixFontStyle: controller.prefixFontStyle,
-      prefixFontWeight: controller.prefixFontWeight,
       onPrefixClick: controller.onPrefixClick,
+
       /// SUFFIX
+      suffixFontStyle: controller.suffixFontStyle,
+      suffixFontWeight: controller.suffixFontWeight,
       suffixText: controller.suffixText,
       suffixTextColor: controller.suffixTextColor,
       suffixTextDecoration: controller.suffixTextDecoration,
@@ -478,8 +583,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
       suffixTextSize: controller.suffixTextSize,
       suffixTextStyle: controller.suffixTextStyle,
       suffixTextVisible: controller.suffixTextVisible,
-      suffixFontStyle: controller.suffixFontStyle,
-      suffixFontWeight: controller.suffixFontWeight,
       onSuffixClick: controller.onSuffixClick,
     );
   }
@@ -488,11 +591,17 @@ class TextView<T extends TextViewController> extends YMRView<T> {
 class TextViewController extends ViewController {
   int maxCharacters = 0;
   int? maxLines;
+  Color? selectionColor;
+  String? semanticsLabel;
+  bool? softWrap;
+  StrutStyle? strutStyle;
 
   double? letterSpacing;
   double lineSpacingExtra = 0;
+  Locale? locale;
   double? wordSpacing;
 
+  String? ellipsis;
   String? fontFamily;
   FontStyle? fontStyle;
   FontWeight? fontWeight;
@@ -508,11 +617,15 @@ class TextViewController extends ViewController {
   TextDecorationStyle? textDecorationStyle;
   double? textDecorationThickness;
   TextDirection? textDirection;
+  TextHeightBehavior? textHeightBehavior;
   TextLeadingDistribution? textLeadingDistribution;
   TextOverflow? textOverflow;
+  double textScaleFactor = 1;
   double textSize = 14;
   List<TextSpan> textSpans = [];
   TextStyle textStyle = const TextStyle();
+  TextWidthBasis textWidthBasis = TextWidthBasis.parent;
+
   ///PREFIX
   FontStyle? prefixFontStyle;
   FontWeight? prefixFontWeight;
@@ -530,6 +643,7 @@ class TextViewController extends ViewController {
   TextStyle prefixTextStyle = const TextStyle();
   bool prefixTextVisible = true;
   OnViewClickListener? _onPrefixClick;
+
   /// SUFFIX
   FontStyle? suffixFontStyle;
   FontWeight? suffixFontWeight;
@@ -551,16 +665,23 @@ class TextViewController extends ViewController {
   TextViewController fromTextView(TextView view) {
     super.fromView(view);
 
-    maxCharacters = view.maxCharacters ?? 0;
-    maxLines = view.maxLines;
-
-    letterSpacing = view.letterSpacing;
-    lineSpacingExtra = view.lineSpacingExtra ?? 0;
-    wordSpacing = view.wordSpacing;
-
+    ellipsis = view.ellipsis;
     fontFamily = view.fontFamily;
     fontStyle = view.fontStyle;
     fontWeight = view.fontWeight;
+
+    maxCharacters = view.maxCharacters ?? 0;
+    maxLines = view.maxLines;
+    locale = view.locale;
+
+    letterSpacing = view.letterSpacing;
+    lineSpacingExtra = view.lineSpacingExtra ?? 0;
+    selectionColor = view.selectionColor;
+    semanticsLabel = view.semanticsLabel;
+    softWrap = view.softWrap;
+    textScaleFactor = view.textScaleFactor ?? 1;
+    strutStyle = view.strutStyle;
+    wordSpacing = view.wordSpacing;
 
     text = view.text;
     textState = view.textState;
@@ -573,11 +694,14 @@ class TextViewController extends ViewController {
     textDecorationStyle = view.textDecorationStyle;
     textDecorationThickness = view.textDecorationThickness;
     textDirection = view.textDirection;
+    textHeightBehavior = view.textHeightBehavior;
     textLeadingDistribution = view.textLeadingDistribution;
     textOverflow = view.textOverflow;
     textSize = view.textSize ?? 14;
     textSpans = view.textSpans ?? [];
     textStyle = view.textStyle ?? const TextStyle();
+    textWidthBasis = view.textWidthBasis ?? TextWidthBasis.parent;
+
     ///PREFIX
     prefixFontStyle = view.prefixFontStyle;
     prefixFontWeight = view.prefixFontWeight;
@@ -594,7 +718,8 @@ class TextViewController extends ViewController {
     prefixTextSize = view.prefixTextSize;
     prefixTextStyle = view.prefixTextStyle ?? const TextStyle();
     prefixTextVisible = view.prefixTextVisible ?? true;
-    onPrefixClick = view.onSuffixClick;
+    onPrefixClick = view.onPrefixClick;
+
     ///SUFFIX
     suffixFontStyle = view.suffixFontStyle;
     suffixFontWeight = view.suffixFontWeight;

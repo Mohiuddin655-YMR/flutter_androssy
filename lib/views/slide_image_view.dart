@@ -231,9 +231,7 @@ class _SIVChildState<T> extends State<_SIVChild<T>> {
             },
           ),
           YMRView(
-            visibility: controller.counterVisibility
-                ? ViewVisibility.visible
-                : ViewVisibility.gone,
+            visibility: controller.counterVisibility,
             positionType: controller.counterPosition,
             child: controller.counterBuilder != null
                 ? ViewNotifier(
@@ -258,8 +256,7 @@ class _SIVChildState<T> extends State<_SIVChild<T>> {
                     textColor: Colors.white,
                     textSize: 12,
                     maxLines: 1,
-                    visibility:
-                        size > 1 ? ViewVisibility.visible : ViewVisibility.gone,
+                    visibility: size > 1,
                   ),
           ),
         ],

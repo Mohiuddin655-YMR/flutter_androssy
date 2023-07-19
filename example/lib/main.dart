@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/widgets.dart';
 
@@ -44,21 +46,37 @@ class _ExampleState extends State<Example> {
         paddingBottom: 40,
         children: [
           TextView(
-            text: "1313670655 ",
+            ellipsis: "###",
+            text: "Main ",
             textColor: Colors.grey,
-            prefixText: "+880 ",
-            prefixTextState: ValueState.active(
-              activated: "activated",
-              inactivated: "inactivated",
-            ),
-            suffixTextState: ValueState.active(
-              activated: "activated",
-              inactivated: "inactivated",
-            ),
+            prefixText: "Prefix ",
+            maxLines: 2,
+            textOverflow: TextOverflow.ellipsis,
+            suffixText: "Suffix",
+            textSpans: const [
+              TextSpan(text: "Middle-1 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+              TextSpan(text: "Middle-2 "),
+            ],
             prefixTextColor: Colors.red,
             prefixFontWeight: FontWeight.w500,
-            suffixText: "(BD)",
-            onToggle: (v) {},
+            onClick: (context) => log("onClick"),
+            onPrefixClick: (context) => log("onPrefixClick"),
+            onSuffixClick: (context) => log("onSuffixClick"),
           ),
           // CountdownView(
           //   initialStartMode: false,

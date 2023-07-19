@@ -128,7 +128,7 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
 
   @override
   Widget? attach(BuildContext context, RecyclerViewController<T> controller) {
-    return controller.visibility.isVisible
+    return controller.visible
         ? controller.layoutType == RecyclerLayoutType.grid
             ? _Grid(
                 controller: controller,

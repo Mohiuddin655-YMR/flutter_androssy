@@ -195,7 +195,7 @@ class _Icon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconView(
-      visibility: visible ? ViewVisibility.visible : ViewVisibility.gone,
+      visibility: visible,
       marginStart: !controller.isCenterText && controller.isEndIconVisible
           ? controller.iconSpace
           : null,

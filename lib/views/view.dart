@@ -24,152 +24,6 @@ typedef OnViewModifyBuilder<T extends ViewController> = Widget Function(
 typedef OnViewNotifier = void Function(VoidCallback fn);
 typedef OnViewNotifyListener<T extends ViewController> = Function(T controller);
 
-enum ViewError {
-  none,
-  empty,
-  invalid,
-  maximum,
-  minimum,
-  unmodified,
-}
-
-extension ViewErrorExtension on ViewError {
-  bool get isEmpty => this == ViewError.empty;
-
-  bool get isInvalid => this == ViewError.invalid;
-
-  bool get isMaximum => this == ViewError.maximum;
-
-  bool get isMinimum => this == ViewError.minimum;
-
-  bool get isUnmodified => this == ViewError.unmodified;
-}
-
-enum ViewPositionType {
-  bottomEnd(ViewPosition(bottom: 0, right: 0)),
-  bottomStart(ViewPosition(bottom: 0, left: 0)),
-  center,
-  centerBottom(ViewPosition(bottom: 0, left: 0, right: 0)),
-  centerEnd(ViewPosition(right: 0, top: 0, bottom: 0)),
-  centerStart(ViewPosition(left: 0, top: 0, bottom: 0)),
-  centerTop(ViewPosition(top: 0, left: 0, right: 0)),
-  flexStart(ViewPosition(left: 0, top: 0, bottom: 0)),
-  flexEnd(ViewPosition(right: 0, top: 0, bottom: 0)),
-  flexTop(ViewPosition(top: 0, left: 0, right: 0)),
-  flexBottom(ViewPosition(bottom: 0, left: 0, right: 0)),
-  flexHorizontal(ViewPosition(left: 0, right: 0)),
-  flexVertical(ViewPosition(top: 0, bottom: 0)),
-  topEnd(ViewPosition(top: 0, right: 0)),
-  topStart(ViewPosition(top: 0, left: 0)),
-  none;
-
-  final ViewPosition position;
-
-  const ViewPositionType([
-    this.position = const ViewPosition(),
-  ]);
-}
-
-enum ViewScrollingType {
-  bouncing(physics: BouncingScrollPhysics()),
-  page(physics: PageScrollPhysics()),
-  none;
-
-  final ScrollPhysics? physics;
-
-  const ViewScrollingType({this.physics});
-}
-
-enum ViewShadowType { overlay, none }
-
-enum ViewShape { circular, rectangular, squire }
-
-enum ViewVisibility { gone, visible, invisible }
-
-extension VisibilityExtension on ViewVisibility {
-  bool get isGone => this == ViewVisibility.gone;
-
-  bool get isVisible => this == ViewVisibility.visible;
-
-  bool get isInvisible => this == ViewVisibility.invisible;
-
-  bool get isVisibleOrInvisible => isVisible || isInvisible;
-}
-
-class ViewPosition {
-  final double? top, bottom, left, right;
-
-  const ViewPosition({
-    this.top,
-    this.bottom,
-    this.left,
-    this.right,
-  });
-}
-
-class ViewRoots {
-  final bool ripple;
-  final bool scrollable;
-  final bool position, flex, ratio, observer;
-  final bool view, constraints, margin, padding;
-  final bool decoration, shadow, shape, radius, border, background;
-
-  const ViewRoots({
-    this.ripple = true,
-    this.scrollable = true,
-    this.position = true,
-    this.flex = true,
-    this.ratio = true,
-    this.observer = true,
-    this.view = true,
-    this.constraints = true,
-    this.margin = true,
-    this.padding = true,
-    this.decoration = true,
-    this.shadow = true,
-    this.shape = true,
-    this.radius = true,
-    this.border = true,
-    this.background = true,
-  });
-
-  ViewRoots modify({
-    bool? ripple,
-    bool? position,
-    bool? flex,
-    bool? ratio,
-    bool? observer,
-    bool? view,
-    bool? constraints,
-    bool? margin,
-    bool? padding,
-    bool? decoration,
-    bool? shadow,
-    bool? shape,
-    bool? radius,
-    bool? border,
-    bool? background,
-  }) {
-    return ViewRoots(
-      ripple: ripple ?? this.ripple,
-      position: position ?? this.position,
-      flex: flex ?? this.flex,
-      ratio: ratio ?? this.ratio,
-      observer: observer ?? this.observer,
-      view: view ?? this.view,
-      constraints: constraints ?? this.constraints,
-      margin: margin ?? this.margin,
-      padding: padding ?? this.padding,
-      decoration: decoration ?? this.decoration,
-      shadow: shadow ?? this.shadow,
-      shape: shape ?? this.shape,
-      radius: radius ?? this.radius,
-      border: border ?? this.border,
-      background: background ?? this.background,
-    );
-  }
-}
-
 class ValueState<T> {
   final T _primary;
   final T _secondary;
@@ -311,6 +165,184 @@ class ValueState<T> {
   }
 }
 
+enum ViewError {
+  none,
+  empty,
+  invalid,
+  maximum,
+  minimum,
+  unmodified,
+}
+
+extension ViewErrorExtension on ViewError {
+  bool get isEmpty => this == ViewError.empty;
+
+  bool get isInvalid => this == ViewError.invalid;
+
+  bool get isMaximum => this == ViewError.maximum;
+
+  bool get isMinimum => this == ViewError.minimum;
+
+  bool get isUnmodified => this == ViewError.unmodified;
+}
+
+class ViewPosition {
+  final double? top, bottom, left, right;
+
+  const ViewPosition({
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+  });
+}
+
+enum ViewPositionType {
+  bottomEnd(ViewPosition(bottom: 0, right: 0)),
+  bottomStart(ViewPosition(bottom: 0, left: 0)),
+  center,
+  centerBottom(ViewPosition(bottom: 0, left: 0, right: 0)),
+  centerEnd(ViewPosition(right: 0, top: 0, bottom: 0)),
+  centerStart(ViewPosition(left: 0, top: 0, bottom: 0)),
+  centerTop(ViewPosition(top: 0, left: 0, right: 0)),
+  flexStart(ViewPosition(left: 0, top: 0, bottom: 0)),
+  flexEnd(ViewPosition(right: 0, top: 0, bottom: 0)),
+  flexTop(ViewPosition(top: 0, left: 0, right: 0)),
+  flexBottom(ViewPosition(bottom: 0, left: 0, right: 0)),
+  flexHorizontal(ViewPosition(left: 0, right: 0)),
+  flexVertical(ViewPosition(top: 0, bottom: 0)),
+  topEnd(ViewPosition(top: 0, right: 0)),
+  topStart(ViewPosition(top: 0, left: 0)),
+  none;
+
+  final ViewPosition position;
+
+  const ViewPositionType([
+    this.position = const ViewPosition(),
+  ]);
+}
+
+class ViewRecognizer {
+  final BuildContext context;
+
+  const ViewRecognizer.of(this.context);
+
+  GestureRecognizer? onClick(OnViewClickListener? callback) {
+    return context.onClick(callback);
+  }
+
+  GestureRecognizer? onDoubleClick(OnViewClickListener? callback) {
+    return context.onDoubleClick(callback);
+  }
+
+  GestureRecognizer? onLongClick(OnViewClickListener? callback) {
+    return context.onLongClick(callback);
+  }
+}
+
+extension ViewRecognizerExtension on BuildContext {
+  GestureRecognizer? onClick(OnViewClickListener? callback) {
+    if (callback != null) {
+      return TapGestureRecognizer()..onTap = () => callback(this);
+    } else {
+      return null;
+    }
+  }
+
+  GestureRecognizer? onDoubleClick(OnViewClickListener? callback) {
+    if (callback != null) {
+      return DoubleTapGestureRecognizer()..onDoubleTap = () => callback(this);
+    } else {
+      return null;
+    }
+  }
+
+  GestureRecognizer? onLongClick(OnViewClickListener? callback) {
+    if (callback != null) {
+      return LongPressGestureRecognizer()..onLongPress = () => callback(this);
+    } else {
+      return null;
+    }
+  }
+}
+
+class ViewRoots {
+  final bool ripple;
+  final bool scrollable;
+  final bool position, flex, ratio, observer;
+  final bool view, constraints, margin, padding;
+  final bool decoration, shadow, shape, radius, border, background;
+
+  const ViewRoots({
+    this.ripple = true,
+    this.scrollable = true,
+    this.position = true,
+    this.flex = true,
+    this.ratio = true,
+    this.observer = true,
+    this.view = true,
+    this.constraints = true,
+    this.margin = true,
+    this.padding = true,
+    this.decoration = true,
+    this.shadow = true,
+    this.shape = true,
+    this.radius = true,
+    this.border = true,
+    this.background = true,
+  });
+
+  ViewRoots modify({
+    bool? ripple,
+    bool? position,
+    bool? flex,
+    bool? ratio,
+    bool? observer,
+    bool? view,
+    bool? constraints,
+    bool? margin,
+    bool? padding,
+    bool? decoration,
+    bool? shadow,
+    bool? shape,
+    bool? radius,
+    bool? border,
+    bool? background,
+  }) {
+    return ViewRoots(
+      ripple: ripple ?? this.ripple,
+      position: position ?? this.position,
+      flex: flex ?? this.flex,
+      ratio: ratio ?? this.ratio,
+      observer: observer ?? this.observer,
+      view: view ?? this.view,
+      constraints: constraints ?? this.constraints,
+      margin: margin ?? this.margin,
+      padding: padding ?? this.padding,
+      decoration: decoration ?? this.decoration,
+      shadow: shadow ?? this.shadow,
+      shape: shape ?? this.shape,
+      radius: radius ?? this.radius,
+      border: border ?? this.border,
+      background: background ?? this.background,
+    );
+  }
+}
+
+enum ViewScrollingType {
+  bouncing(physics: BouncingScrollPhysics()),
+  page(physics: PageScrollPhysics()),
+  none;
+
+  final ScrollPhysics? physics;
+
+  const ViewScrollingType({this.physics});
+}
+
+enum ViewShadowType { overlay, none }
+
+enum ViewShape { circular, rectangular, squire }
+
 enum ViewState {
   primary,
   secondary,
@@ -379,7 +411,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final ViewPosition? position;
   final ViewPositionType? positionType;
   final ViewShape? shape;
-  final ViewVisibility? visibility;
+  final bool? visibility;
 
   final Widget? child;
 
@@ -554,7 +586,7 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
   @override
   Widget build(BuildContext context) {
     controller.context = context;
-    return controller.visibility.isVisibleOrInvisible
+    return controller.visible
         ? widget.root(
             context,
             controller,
@@ -810,9 +842,8 @@ class _ViewChild extends StatelessWidget {
             ? controller.borderRadiusF
             : null;
 
-    return controller.visibility.isInvisible
-        ? null
-        : builder(
+    return controller.visible
+        ? builder(
             context,
             controller.roots.view
                 ? Container(
@@ -914,7 +945,8 @@ class _ViewChild extends StatelessWidget {
                         : attach,
                   )
                 : const SizedBox(),
-          );
+          )
+        : null;
   }
 }
 
@@ -1048,7 +1080,7 @@ class ViewController {
     transform = view.transform;
     transformGravity = view.transformGravity;
     transform = view.transform;
-    visibility = view.visibility ?? ViewVisibility.visible;
+    visible = view.visibility ?? true;
     child = view.child;
 
     // Properties
@@ -1453,7 +1485,7 @@ class ViewController {
 
   ViewShape shape = ViewShape.rectangular;
 
-  ViewVisibility visibility = ViewVisibility.visible;
+  bool visible = true;
 
   OnViewClickListener? _onClick;
 
@@ -1938,8 +1970,8 @@ class ViewController {
     _notify;
   }
 
-  void setVisibility(ViewVisibility value) {
-    visibility = value;
+  void setVisibility(bool value) {
+    visible = value;
     _notify;
   }
 
