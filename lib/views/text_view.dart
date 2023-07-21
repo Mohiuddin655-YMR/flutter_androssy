@@ -7,6 +7,7 @@ class EllipsisPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    painter.layout(maxWidth: size.width);
     painter.paint(canvas, const Offset(0, 0));
   }
 
@@ -23,9 +24,9 @@ class RawTextView extends StatelessWidget {
   final Locale? locale;
   final double? wordSpacing;
 
-  final String? fontFamily;
-  final FontStyle? fontStyle;
-  final FontWeight? fontWeight;
+  final String? textFontFamily;
+  final FontStyle? textFontStyle;
+  final FontWeight? textFontWeight;
   final Color? selectionColor;
   final String? semanticsLabel;
   final bool? softWrap;
@@ -43,7 +44,7 @@ class RawTextView extends StatelessWidget {
   final TextLeadingDistribution? textLeadingDistribution;
   final TextOverflow? textOverflow;
   final double? textScaleFactor;
-  final double textSize;
+  final double? textSize;
   final List<TextSpan> textSpans;
   final TextStyle textStyle;
   final TextWidthBasis textWidthBasis;
@@ -82,9 +83,9 @@ class RawTextView extends StatelessWidget {
   const RawTextView({
     super.key,
     this.ellipsis,
-    this.fontFamily,
-    this.fontStyle,
-    this.fontWeight,
+    this.textFontFamily,
+    this.textFontStyle,
+    this.textFontWeight,
     this.letterSpacing,
     this.lineHeight,
     this.locale,
@@ -105,7 +106,7 @@ class RawTextView extends StatelessWidget {
     this.textLeadingDistribution,
     this.textOverflow,
     this.textScaleFactor,
-    this.textSize = 14,
+    this.textSize,
     this.textSpans = const [],
     this.textStyle = const TextStyle(),
     this.textWidthBasis = TextWidthBasis.parent,
@@ -153,13 +154,13 @@ class RawTextView extends StatelessWidget {
     var style = textStyle.copyWith(
       color: textColor,
       fontSize: textSize,
-      fontWeight: fontWeight,
+      fontWeight: textFontWeight,
       decoration: textDecoration,
       decorationColor: textDecorationColor,
       decorationStyle: textDecorationStyle,
       decorationThickness: textDecorationThickness,
-      fontFamily: fontFamily,
-      fontStyle: fontStyle,
+      fontFamily: textFontFamily,
+      fontStyle: textFontStyle,
       height: lineHeight,
       leadingDistribution: textLeadingDistribution,
       letterSpacing: letterSpacing,
@@ -216,7 +217,14 @@ class RawTextView extends StatelessWidget {
       return LayoutBuilder(
         builder: (context, constraints) {
           var painter = TextPainter(
-            text: span,
+            text: span ??
+                TextSpan(
+                  text: text,
+                  style: style,
+                  locale: locale,
+                  semanticsLabel: semanticsLabel,
+                  recognizer: context.onClick(onClick),
+                ),
             textAlign: textAlign ?? TextAlign.start,
             textDirection: textDirection ?? TextDirection.ltr,
             textScaleFactor: textScaleFactor ?? 1,
@@ -286,10 +294,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
 
   final String? ellipsis;
 
-  final String? fontFamily;
-  final FontStyle? fontStyle;
-  final FontWeight? fontWeight;
-
   final Locale? locale;
   final String? text;
   final ValueState<String>? textState;
@@ -302,18 +306,25 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final TextDecorationStyle? textDecorationStyle;
   final double? textDecorationThickness;
   final TextDirection? textDirection;
+  final String? textFontFamily;
+  final FontStyle? textFontStyle;
+  final FontWeight? textFontWeight;
+  final ValueState<FontWeight>? textFontWeightState;
   final TextHeightBehavior? textHeightBehavior;
   final TextLeadingDistribution? textLeadingDistribution;
   final TextOverflow? textOverflow;
   final double? textScaleFactor;
   final double? textSize;
+  final ValueState<double>? textSizeState;
   final List<TextSpan>? textSpans;
   final TextStyle? textStyle;
+  final ValueState<TextStyle>? textStyleState;
   final TextWidthBasis? textWidthBasis;
 
   ///PREFIX
   final FontStyle? prefixFontStyle;
   final FontWeight? prefixFontWeight;
+  final ValueState<FontWeight>? prefixFontWeightState;
   final String? prefixText;
   final ValueState<String>? prefixTextState;
   final bool? prefixTextAllCaps;
@@ -325,13 +336,16 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final double? prefixTextDecorationThickness;
   final double? prefixTextLetterSpace;
   final double? prefixTextSize;
+  final ValueState<double>? prefixTextSizeState;
   final TextStyle? prefixTextStyle;
+  final ValueState<TextStyle>? prefixTextStyleState;
   final bool? prefixTextVisible;
   final OnViewClickListener? onPrefixClick;
 
   ///SUFFIX
   final FontStyle? suffixFontStyle;
   final FontWeight? suffixFontWeight;
+  final ValueState<FontWeight>? suffixFontWeightState;
   final String? suffixText;
   final ValueState<String>? suffixTextState;
   final bool? suffixTextAllCaps;
@@ -343,7 +357,9 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final double? suffixTextDecorationThickness;
   final double? suffixTextLetterSpace;
   final double? suffixTextSize;
+  final ValueState<double>? suffixTextSizeState;
   final TextStyle? suffixTextStyle;
+  final ValueState<TextStyle>? suffixTextStyleState;
   final bool? suffixTextVisible;
   final OnViewClickListener? onSuffixClick;
 
@@ -441,9 +457,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.onValid,
     super.onValidator,
     this.ellipsis,
-    this.fontFamily,
-    this.fontStyle,
-    this.fontWeight,
     this.letterSpacing,
     this.lineSpacingExtra,
     this.locale,
@@ -465,18 +478,25 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.textDecorationStyle,
     this.textDecorationThickness,
     this.textDirection,
+    this.textFontFamily,
+    this.textFontStyle,
+    this.textFontWeight,
+    this.textFontWeightState,
     this.textHeightBehavior,
     this.textLeadingDistribution,
     this.textOverflow,
     this.textScaleFactor,
     this.textSize,
+    this.textSizeState,
     this.textSpans,
     this.textStyle,
+    this.textStyleState,
     this.textWidthBasis,
 
     ///PREFIX
     this.prefixFontStyle,
     this.prefixFontWeight,
+    this.prefixFontWeightState,
     this.prefixText,
     this.prefixTextState,
     this.prefixTextAllCaps,
@@ -488,7 +508,9 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.prefixTextDecorationThickness,
     this.prefixTextLetterSpace,
     this.prefixTextSize,
+    this.prefixTextSizeState,
     this.prefixTextStyle,
+    this.prefixTextStyleState,
     this.prefixTextVisible,
     this.onPrefixClick,
 
@@ -504,10 +526,13 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.suffixTextDecorationThickness,
     this.suffixTextLetterSpace,
     this.suffixTextSize,
+    this.suffixTextSizeState,
     this.suffixFontStyle,
-    this.suffixTextVisible,
     this.suffixFontWeight,
+    this.suffixFontWeightState,
+    this.suffixTextVisible,
     this.suffixTextStyle,
+    this.suffixTextStyleState,
     this.onSuffixClick,
   });
 
@@ -525,9 +550,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   Widget? attach(BuildContext context, T controller) {
     return RawTextView(
       ellipsis: controller.ellipsis,
-      fontFamily: controller.fontFamily,
-      fontStyle: controller.fontStyle,
-      fontWeight: controller.fontWeight,
       letterSpacing: controller.letterSpacing,
       lineHeight: controller.spacingFactor,
       locale: controller.locale,
@@ -544,6 +566,9 @@ class TextView<T extends TextViewController> extends YMRView<T> {
       textDecorationStyle: controller.textDecorationStyle,
       textDecorationThickness: controller.textDecorationThickness,
       textDirection: controller.textDirection,
+      textFontFamily: controller.textFontFamily,
+      textFontStyle: controller.textFontStyle,
+      textFontWeight: controller.textFontWeight,
       textHeightBehavior: controller.textHeightBehavior,
       textLeadingDistribution: controller.textLeadingDistribution,
       textOverflow: controller.textOverflow,
@@ -600,13 +625,10 @@ class TextViewController extends ViewController {
   double lineSpacingExtra = 0;
   Locale? locale;
   double? wordSpacing;
-
   String? ellipsis;
-  String? fontFamily;
-  FontStyle? fontStyle;
-  FontWeight? fontWeight;
 
   String? _text;
+  String? textExtras;
   ValueState<String>? textState;
   TextAlign? textAlign;
   bool textAllCaps = false;
@@ -617,18 +639,25 @@ class TextViewController extends ViewController {
   TextDecorationStyle? textDecorationStyle;
   double? textDecorationThickness;
   TextDirection? textDirection;
+  String? textFontFamily;
+  FontStyle? textFontStyle;
+  FontWeight? _textFontWeight;
+  ValueState<FontWeight>? textFontWeightState;
   TextHeightBehavior? textHeightBehavior;
   TextLeadingDistribution? textLeadingDistribution;
   TextOverflow? textOverflow;
   double textScaleFactor = 1;
-  double textSize = 14;
+  double? _textSize;
+  ValueState<double>? textSizeState;
   List<TextSpan> textSpans = [];
-  TextStyle textStyle = const TextStyle();
+  TextStyle? _textStyle;
+  ValueState<TextStyle>? textStyleState;
   TextWidthBasis textWidthBasis = TextWidthBasis.parent;
 
   ///PREFIX
   FontStyle? prefixFontStyle;
-  FontWeight? prefixFontWeight;
+  FontWeight? _prefixFontWeight;
+  ValueState<FontWeight>? prefixFontWeightState;
   String? _prefixText;
   ValueState<String>? prefixTextState;
   bool prefixTextAllCaps = false;
@@ -639,14 +668,17 @@ class TextViewController extends ViewController {
   TextDecorationStyle? prefixTextDecorationStyle;
   double? prefixTextDecorationThickness;
   double? prefixTextLetterSpace;
-  double? prefixTextSize;
-  TextStyle prefixTextStyle = const TextStyle();
+  double? _prefixTextSize;
+  ValueState<double>? prefixTextSizeState;
+  TextStyle? _prefixTextStyle;
+  ValueState<TextStyle>? prefixTextStyleState;
   bool prefixTextVisible = true;
   OnViewClickListener? _onPrefixClick;
 
   /// SUFFIX
   FontStyle? suffixFontStyle;
-  FontWeight? suffixFontWeight;
+  FontWeight? _suffixFontWeight;
+  ValueState<FontWeight>? suffixFontWeightState;
   String? _suffixText;
   ValueState<String>? suffixTextState;
   bool suffixTextAllCaps = false;
@@ -657,8 +689,10 @@ class TextViewController extends ViewController {
   TextDecorationStyle? suffixTextDecorationStyle;
   double? suffixTextDecorationThickness;
   double? suffixTextLetterSpace;
-  double? suffixTextSize;
-  TextStyle suffixTextStyle = const TextStyle();
+  double? _suffixTextSize;
+  ValueState<double>? suffixTextSizeState;
+  TextStyle? _suffixTextStyle;
+  ValueState<TextStyle>? suffixTextStyleState;
   bool suffixTextVisible = true;
   OnViewClickListener? _onSuffixClick;
 
@@ -666,9 +700,6 @@ class TextViewController extends ViewController {
     super.fromView(view);
 
     ellipsis = view.ellipsis;
-    fontFamily = view.fontFamily;
-    fontStyle = view.fontStyle;
-    fontWeight = view.fontWeight;
 
     maxCharacters = view.maxCharacters ?? 0;
     maxLines = view.maxLines;
@@ -694,17 +725,24 @@ class TextViewController extends ViewController {
     textDecorationStyle = view.textDecorationStyle;
     textDecorationThickness = view.textDecorationThickness;
     textDirection = view.textDirection;
+    textFontFamily = view.textFontFamily;
+    textFontStyle = view.textFontStyle;
+    textFontWeight = view.textFontWeight;
+    textFontWeightState = view.textFontWeightState;
     textHeightBehavior = view.textHeightBehavior;
     textLeadingDistribution = view.textLeadingDistribution;
     textOverflow = view.textOverflow;
-    textSize = view.textSize ?? 14;
+    textSize = view.textSize;
+    textSizeState = view.textSizeState;
     textSpans = view.textSpans ?? [];
-    textStyle = view.textStyle ?? const TextStyle();
+    textStyle = view.textStyle;
     textWidthBasis = view.textWidthBasis ?? TextWidthBasis.parent;
+    textExtras = textExtrasFromSpans;
 
     ///PREFIX
     prefixFontStyle = view.prefixFontStyle;
     prefixFontWeight = view.prefixFontWeight;
+    prefixFontWeightState = view.prefixFontWeightState;
     prefixText = view.prefixText;
     prefixTextState = view.prefixTextState;
     prefixTextAllCaps = view.prefixTextAllCaps ?? false;
@@ -716,13 +754,16 @@ class TextViewController extends ViewController {
     prefixTextDecorationThickness = view.prefixTextDecorationThickness;
     prefixTextLetterSpace = view.prefixTextLetterSpace;
     prefixTextSize = view.prefixTextSize;
-    prefixTextStyle = view.prefixTextStyle ?? const TextStyle();
+    prefixTextSizeState = view.prefixTextSizeState;
+    prefixTextStyle = view.prefixTextStyle;
+    prefixTextStyleState = view.prefixTextStyleState;
     prefixTextVisible = view.prefixTextVisible ?? true;
     onPrefixClick = view.onPrefixClick;
 
     ///SUFFIX
     suffixFontStyle = view.suffixFontStyle;
     suffixFontWeight = view.suffixFontWeight;
+    suffixFontWeightState = view.suffixFontWeightState;
     suffixText = view.suffixText;
     suffixTextState = view.suffixTextState;
     suffixTextAllCaps = view.suffixTextAllCaps ?? false;
@@ -734,7 +775,9 @@ class TextViewController extends ViewController {
     suffixTextDecorationThickness = view.suffixTextDecorationThickness;
     suffixTextLetterSpace = view.suffixTextLetterSpace;
     suffixTextSize = view.suffixTextSize;
-    suffixTextStyle = view.suffixTextStyle ?? const TextStyle();
+    suffixTextSizeState = view.suffixTextSizeState;
+    suffixTextStyle = view.suffixTextStyle;
+    suffixTextStyleState = view.suffixTextStyleState;
     suffixTextVisible = view.suffixTextVisible ?? true;
     onSuffixClick = view.onSuffixClick;
 
@@ -742,7 +785,7 @@ class TextViewController extends ViewController {
   }
 
   double? get spacingFactor {
-    final x = textSize + lineSpacingExtra;
+    final x = (textSize ?? 0) + lineSpacingExtra;
     final y = x * 0.068;
     return lineSpacingExtra > 0 ? y : null;
   }
@@ -761,11 +804,32 @@ class TextViewController extends ViewController {
     }
   }
 
+  String get textExtrasFromSpans {
+    StringBuffer buffer = StringBuffer();
+    buffer.writeAll(textSpans.map((e) => e.text ?? ""));
+    return buffer.toString();
+  }
+
   set textColor(Color? value) => _textColor = value;
 
   Color? get textColor {
     return textColorState?.activated(activated, enabled) ?? _textColor;
   }
+
+  FontWeight? get textFontWeight {
+    return textFontWeightState?.activated(activated) ?? _textFontWeight;
+  }
+
+  set textFontWeight(FontWeight? value) => _textFontWeight = value;
+
+  double? get textSize => textSizeState?.activated(activated) ?? _textSize;
+
+  set textSize(double? value) => _textSize = value;
+
+  TextStyle get textStyle =>
+      textStyleState?.activated(activated) ?? _textStyle ?? const TextStyle();
+
+  set textStyle(TextStyle? value) => _textStyle = value;
 
   /// PREFIX
 
@@ -783,6 +847,24 @@ class TextViewController extends ViewController {
         _prefixTextColor;
   }
 
+  FontWeight? get prefixFontWeight {
+    return prefixFontWeightState?.activated(activated) ?? _prefixFontWeight;
+  }
+
+  set prefixFontWeight(FontWeight? value) => _prefixFontWeight = value;
+
+  double? get prefixTextSize =>
+      prefixTextSizeState?.activated(activated) ?? _prefixTextSize;
+
+  set prefixTextSize(double? value) => _prefixTextSize = value;
+
+  TextStyle get prefixTextStyle =>
+      prefixTextStyleState?.activated(activated) ??
+      _prefixTextStyle ??
+      const TextStyle();
+
+  set prefixTextStyle(TextStyle? value) => _prefixTextStyle = value;
+
   bool get isAutoPrefix {
     final a = maxCharacters > 0;
     final b = text.length > maxCharacters;
@@ -799,8 +881,13 @@ class TextViewController extends ViewController {
     _notify;
   }
 
-  void setPrefixFontWeight(FontWeight value) {
+  void setPrefixFontWeight(FontWeight? value) {
     prefixFontWeight = value;
+    _notify;
+  }
+
+  void setPrefixFontWeightState(ValueState<FontWeight>? value) {
+    prefixFontWeightState = value;
     _notify;
   }
 
@@ -854,8 +941,18 @@ class TextViewController extends ViewController {
     _notify;
   }
 
-  void setPrefixTextStyle(TextStyle value) {
+  void setPrefixTextSizeState(ValueState<double>? value) {
+    prefixTextSizeState = value;
+    _notify;
+  }
+
+  void setPrefixTextStyle(TextStyle? value) {
     prefixTextStyle = value;
+    _notify;
+  }
+
+  void setPrefixTextStyleState(ValueState<TextStyle>? value) {
+    prefixTextStyleState = value;
     _notify;
   }
 
@@ -884,6 +981,24 @@ class TextViewController extends ViewController {
         _suffixTextColor;
   }
 
+  FontWeight? get suffixFontWeight {
+    return suffixFontWeightState?.activated(activated) ?? _suffixFontWeight;
+  }
+
+  set suffixFontWeight(FontWeight? value) => _suffixFontWeight = value;
+
+  double? get suffixTextSize =>
+      suffixTextSizeState?.activated(activated) ?? _suffixTextSize;
+
+  set suffixTextSize(double? value) => _suffixTextSize = value;
+
+  TextStyle get suffixTextStyle =>
+      suffixTextStyleState?.activated(activated) ??
+      _suffixTextStyle ??
+      const TextStyle();
+
+  set suffixTextStyle(TextStyle? value) => _suffixTextStyle = value;
+
   bool get isAutoSuffix {
     final a = maxCharacters > 0;
     final b = text.length > maxCharacters;
@@ -900,8 +1015,13 @@ class TextViewController extends ViewController {
     _notify;
   }
 
-  void setSuffixFontWeight(FontWeight value) {
+  void setSuffixFontWeight(FontWeight? value) {
     suffixFontWeight = value;
+    _notify;
+  }
+
+  void setSuffixFontWeightState(ValueState<FontWeight>? value) {
+    suffixFontWeightState = value;
     _notify;
   }
 
@@ -955,8 +1075,18 @@ class TextViewController extends ViewController {
     _notify;
   }
 
-  void setSuffixTextStyle(TextStyle value) {
+  void setSuffixTextSizeState(ValueState<double>? value) {
+    suffixTextSizeState = value;
+    _notify;
+  }
+
+  void setSuffixTextStyle(TextStyle? value) {
     suffixTextStyle = value;
+    _notify;
+  }
+
+  void setSuffixTextStyleState(ValueState<TextStyle>? value) {
+    suffixTextStyleState = value;
     _notify;
   }
 
@@ -972,7 +1102,7 @@ class TextViewController extends ViewController {
   /// GENERAL
 
   void setFontWeight(FontWeight value) {
-    fontWeight = value;
+    textFontWeight = value;
     _notify;
   }
 
@@ -1042,7 +1172,7 @@ class TextViewController extends ViewController {
   }
 
   void setTextWeight(FontWeight value) {
-    fontWeight = value;
+    textFontWeight = value;
     _notify;
   }
 

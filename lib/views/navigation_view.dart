@@ -1,13 +1,26 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_androssy/widgets.dart';
+part of '../widgets.dart';
 
-class BottomNavigationContent {
+typedef NavigationViewBuilder = Widget Function(BuildContext, int);
+
+enum NavigationType {
+  fixed,
+  scrollable;
+}
+
+enum NavigationPosition {
+  top,
+  bottom,
+  left,
+  right;
+}
+
+class NavigationContent {
   final dynamic icon;
   final ValueState<dynamic>? iconState;
   final String? title;
   final ValueState<String>? titleState;
 
-  const BottomNavigationContent({
+  const NavigationContent({
     this.icon,
     this.iconState,
     this.title,
@@ -19,7 +32,7 @@ class BottomNavigationContent {
   String? getTitle(bool selected) => titleState?.selected(selected) ?? title;
 }
 
-class BottomNavigationItem extends StatelessWidget {
+class NavigationItem extends StatelessWidget {
   final bool isSelected;
   final bool isVisible;
   final dynamic icon;
@@ -50,7 +63,7 @@ class BottomNavigationItem extends StatelessWidget {
   final double? paddingY;
   final OnViewClickListener? onClick;
 
-  const BottomNavigationItem({
+  const NavigationItem({
     super.key,
     this.isSelected = false,
     this.isVisible = true,
@@ -132,7 +145,7 @@ class BottomNavigationItem extends StatelessWidget {
   }
 }
 
-class BottomNavigationView extends YMRView<BottomNavigationViewController> {
+class NavigationView extends YMRView<NavigationViewController> {
   final int? currentIndex;
   final double? iconSize;
   final ValueState<double>? iconSizeState;
@@ -157,9 +170,10 @@ class BottomNavigationView extends YMRView<BottomNavigationViewController> {
   final double? itemPaddingX;
   final double? itemPaddingY;
 
-  final List<BottomNavigationContent> items;
+  final List<NavigationContent> items;
+  final NavigationViewBuilder builder;
 
-  const BottomNavigationView({
+  const NavigationView({
     super.key,
     super.absorbMode,
     super.activated,
@@ -267,36 +281,107 @@ class BottomNavigationView extends YMRView<BottomNavigationViewController> {
     this.itemPaddingX,
     this.itemPaddingY,
     required this.items,
+    required this.builder,
   });
 
   @override
-  BottomNavigationViewController initController() {
-    return BottomNavigationViewController();
+  ViewRoots initRootProperties() => const ViewRoots(position: false);
+
+  @override
+  NavigationViewController initController() => NavigationViewController();
+
+  @override
+  NavigationViewController attachController(
+    NavigationViewController controller,
+  ) {
+    return controller.fromNavigationView(this);
   }
 
   @override
-  BottomNavigationViewController attachController(
-    BottomNavigationViewController controller,
+  Widget root(
+    BuildContext context,
+    NavigationViewController controller,
+    Widget parent,
   ) {
-    return controller.fromBNView(this);
+    var isMargin = controller.marginAll > 0;
+    var type = controller.positionType;
+
+    if (isMargin) {
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          builder(context, controller.currentIndex),
+          Positioned(
+            left: type.position.left,
+            right: type.position.right,
+            top: type.position.top,
+            bottom: type.position.bottom,
+            child: parent,
+          ),
+        ],
+      );
+    } else {
+      if (controller.positionType.isYMode) {
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (controller.positionType.isTopMode) parent,
+            builder(context, controller.currentIndex),
+            if (controller.positionType.isBottomMode) parent,
+          ],
+        );
+      } else {
+        return Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (controller.positionType.isLeftMode) parent,
+            builder(context, controller.currentIndex),
+            if (controller.positionType.isRightMode) parent,
+          ],
+        );
+      }
+    }
   }
 
   @override
   Widget? attach(
     BuildContext context,
-    BottomNavigationViewController controller,
+    NavigationViewController controller,
   ) {
-    var length = items.length;
-    var type = controller.navigationType;
-    var isFixedNav = type == BottomNavigationType.fixed;
+    switch (controller.navigationType) {
+      case NavigationType.scrollable:
+        return SingleChildScrollView(
+          scrollDirection: controller.navDirection,
+          child: _NVChild(controller: controller),
+        );
+      default:
+        return _NVChild(controller: controller);
+    }
+  }
+}
 
-    var parent = Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: List.generate(length, (index) {
-        var item = items[index];
+class _NVChild extends StatelessWidget {
+  final NavigationViewController controller;
+
+  const _NVChild({
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Flex(
+      direction: controller.navDirection,
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: controller.navCrossDirection,
+      mainAxisAlignment: controller.navMainDirection,
+      children: List.generate(controller.length, (index) {
+        var item = controller.items[index];
         var selected = index == controller.currentIndex;
-        var child = BottomNavigationItem(
+        var child = NavigationItem(
           isSelected: selected,
           icon: item.icon,
           iconState: item.iconState,
@@ -314,6 +399,10 @@ class BottomNavigationView extends YMRView<BottomNavigationViewController> {
           spaceBetweenState: controller.spaceBetweenState,
           background: controller.background,
           backgroundState: controller.backgroundState,
+          maxWidth: controller.itemMaxWidth,
+          minWidth: controller.itemMinWidth,
+          maxHeight: controller.itemMaxHeight,
+          minHeight: controller.itemMinHeight,
           margin: controller.itemMargin,
           marginX: controller.itemMarginX,
           marginY: controller.itemMarginY,
@@ -322,32 +411,17 @@ class BottomNavigationView extends YMRView<BottomNavigationViewController> {
           paddingY: controller.itemPaddingY,
           onClick: (context) => controller.onNotify(index),
         );
-        if (isFixedNav) {
+        if (controller.navigationType == NavigationType.fixed) {
           return Expanded(child: child);
         } else {
           return child;
         }
       }),
     );
-
-    switch (type) {
-      case BottomNavigationType.scrollable:
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: parent,
-        );
-      default:
-        return parent;
-    }
   }
 }
 
-enum BottomNavigationType {
-  fixed,
-  scrollable;
-}
-
-class BottomNavigationViewController extends ViewController {
+class NavigationViewController extends ViewController {
   int currentIndex = 0;
   double? iconSize;
   ValueState<double>? iconSizeState;
@@ -357,7 +431,7 @@ class BottomNavigationViewController extends ViewController {
   ValueState<Color>? titleColorState;
   double? titleSize;
   ValueState<double>? titleSizeState;
-  List<BottomNavigationContent> items = [];
+  List<NavigationContent> items = [];
   double spaceBetween = 2;
   ValueState<double>? spaceBetweenState;
 
@@ -376,15 +450,95 @@ class BottomNavigationViewController extends ViewController {
 
   int get length => items.length;
 
-  BottomNavigationType get navigationType {
-    if (length > 4) {
-      return BottomNavigationType.scrollable;
-    } else {
-      return BottomNavigationType.fixed;
+  Axis get navDirection {
+    return positionType.isYMode ? Axis.horizontal : Axis.vertical;
+  }
+
+  MainAxisAlignment get navMainDirection {
+    switch (positionType) {
+      case ViewPositionType.center:
+      case ViewPositionType.centerFlexX:
+      case ViewPositionType.centerFlexY:
+      case ViewPositionType.centerFill:
+        return MainAxisAlignment.center;
+      case ViewPositionType.left:
+      case ViewPositionType.leftFlex:
+        return MainAxisAlignment.spaceAround;
+      case ViewPositionType.leftTop:
+        return MainAxisAlignment.start;
+      case ViewPositionType.leftBottom:
+        return MainAxisAlignment.end;
+      case ViewPositionType.right:
+      case ViewPositionType.rightFlex:
+        return MainAxisAlignment.spaceAround;
+      case ViewPositionType.rightTop:
+        return MainAxisAlignment.start;
+      case ViewPositionType.rightBottom:
+        return MainAxisAlignment.end;
+      case ViewPositionType.top:
+      case ViewPositionType.topFlex:
+        return MainAxisAlignment.spaceAround;
+      case ViewPositionType.topLeft:
+        return MainAxisAlignment.start;
+      case ViewPositionType.topRight:
+        return MainAxisAlignment.end;
+      case ViewPositionType.bottom:
+      case ViewPositionType.bottomFlex:
+        return MainAxisAlignment.spaceAround;
+      case ViewPositionType.bottomLeft:
+        return MainAxisAlignment.start;
+      case ViewPositionType.bottomRight:
+        return MainAxisAlignment.end;
     }
   }
 
-  BottomNavigationViewController fromBNView(BottomNavigationView view) {
+  CrossAxisAlignment get navCrossDirection {
+    switch (positionType) {
+      case ViewPositionType.center:
+      case ViewPositionType.centerFlexX:
+      case ViewPositionType.centerFlexY:
+      case ViewPositionType.centerFill:
+        return CrossAxisAlignment.center;
+      case ViewPositionType.left:
+      case ViewPositionType.leftFlex:
+        return CrossAxisAlignment.center;
+      case ViewPositionType.leftTop:
+        return CrossAxisAlignment.start;
+      case ViewPositionType.leftBottom:
+        return CrossAxisAlignment.end;
+      case ViewPositionType.right:
+      case ViewPositionType.rightFlex:
+        return CrossAxisAlignment.center;
+      case ViewPositionType.rightTop:
+        return CrossAxisAlignment.start;
+      case ViewPositionType.rightBottom:
+        return CrossAxisAlignment.end;
+      case ViewPositionType.top:
+      case ViewPositionType.topFlex:
+        return CrossAxisAlignment.center;
+      case ViewPositionType.topLeft:
+        return CrossAxisAlignment.start;
+      case ViewPositionType.topRight:
+        return CrossAxisAlignment.end;
+      case ViewPositionType.bottom:
+      case ViewPositionType.bottomFlex:
+        return CrossAxisAlignment.center;
+      case ViewPositionType.bottomLeft:
+        return CrossAxisAlignment.start;
+      case ViewPositionType.bottomRight:
+        return CrossAxisAlignment.end;
+    }
+  }
+
+  NavigationType get navigationType {
+    if (length < 5) {
+      return NavigationType.fixed;
+    } else {
+      return NavigationType.scrollable;
+    }
+  }
+
+  NavigationViewController fromNavigationView(NavigationView view) {
     super.fromView(view);
     currentIndex = view.currentIndex ?? 0;
     iconSize = view.iconSize;

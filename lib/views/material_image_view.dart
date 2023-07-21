@@ -590,7 +590,7 @@ class _MIVMultiLayer<T> extends StatelessWidget {
                           text: "+${controller.invisibleItemSize}",
                           textColor: Colors.white,
                           textSize: 24,
-                          fontWeight: FontWeight.bold,
+                          textFontWeight: FontWeight.bold,
                           background: Colors.black.withOpacity(0.35),
                         ),
                       ],

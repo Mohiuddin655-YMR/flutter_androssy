@@ -35,6 +35,8 @@ part 'views/button.dart';
 
 part 'views/category_view.dart';
 
+part 'views/chooser_view.dart';
+
 part 'views/content_view.dart';
 
 part 'views/countdown_view.dart';
@@ -61,6 +63,8 @@ part 'views/material_edit_text.dart';
 
 part 'views/material_image_view.dart';
 
+part 'views/navigation_view.dart';
+
 part 'views/recycler_view.dart';
 
 part 'views/slide_image_view.dart';
@@ -74,6 +78,8 @@ part 'views/tab_layout.dart';
 part 'views/tab_view.dart';
 
 part 'views/text_view.dart';
+
+part 'views/toggle_builder.dart';
 
 part 'views/view.dart';
 

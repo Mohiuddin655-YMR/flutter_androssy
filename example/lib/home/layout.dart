@@ -24,7 +24,7 @@ class _HomeLayoutState extends State<HomeLayout> {
           text: "Home",
           textColor: Colors.black,
           textSize: 24,
-          fontWeight: FontWeight.bold,
+          textFontWeight: FontWeight.bold,
         )
       ],
     );

@@ -118,9 +118,12 @@ class CategoryView extends YMRView<CategoryViewController> {
   @override
   Widget? attach(BuildContext context, CategoryViewController controller) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             TextView(
@@ -128,7 +131,7 @@ class CategoryView extends YMRView<CategoryViewController> {
               text: controller.categoryText,
               textColor: Colors.black,
               textSize: 16,
-              fontWeight: FontWeight.w600,
+              textFontWeight: FontWeight.w600,
             ),
             if (controller.isButtonVisible)
               TextView(
@@ -138,7 +141,7 @@ class CategoryView extends YMRView<CategoryViewController> {
                 borderRadius: 8,
                 text: controller.buttonText,
                 textSize: 16,
-                fontWeight: FontWeight.w600,
+                textFontWeight: FontWeight.w600,
                 onClick: controller.onButtonClick,
               ),
           ],

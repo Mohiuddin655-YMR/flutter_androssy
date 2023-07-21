@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_androssy/widgets.dart';
+part of '../widgets.dart';
 
 class ChooserView<T> extends YMRView<ChooserViewController> {
   final int? currentIndex;

@@ -99,7 +99,7 @@ class Button extends TextView<ButtonController> {
     super.onToggle,
     super.text,
     super.textSize,
-    super.fontWeight,
+    super.textFontWeight,
     super.textStyle,
     super.textAllCaps,
     super.textColor,
@@ -176,7 +176,7 @@ class _Text extends StatelessWidget {
       textAlign: TextAlign.center,
       textColor: controller.color,
       textSize: controller.textSize,
-      fontWeight: controller.fontWeight,
+      textFontWeight: controller.textFontWeight,
       textStyle: controller.textStyle,
     );
   }
@@ -204,8 +204,8 @@ class _Icon extends StatelessWidget {
           : null,
       positionType: controller.isCenterText
           ? controller.isEndIconVisible
-              ? ViewPositionType.centerEnd
-              : ViewPositionType.centerStart
+              ? ViewPositionType.left
+              : ViewPositionType.right
           : null,
       icon: controller.icon,
       tint: controller.iconTint,
@@ -248,7 +248,7 @@ class ButtonController extends TextViewController {
   double get iconSize =>
       iconSizeState?.activated(activated, enabled) ??
       _iconSize ??
-      textSize * 1.2;
+      (textSize ?? 0) * 1.2;
 
   Color? get iconTint => iconTintEnabled
       ? iconTintState?.activated(activated, enabled) ?? _iconTint ?? color

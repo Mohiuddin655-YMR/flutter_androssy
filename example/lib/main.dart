@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/widgets.dart';
 
@@ -37,144 +35,48 @@ class _ExampleState extends State<Example> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
-        title: const Text("TextView"),
+        title: const Text("BottomNavigationView"),
       ),
-      body: LinearLayout(
-        padding: 24,
-        scrollable: true,
-        paddingBottom: 40,
-        children: [
-          TextView(
-            ellipsis: "###",
-            text: "Main ",
-            textColor: Colors.grey,
-            prefixText: "Prefix ",
-            maxLines: 2,
-            textOverflow: TextOverflow.ellipsis,
-            suffixText: "Suffix",
-            textSpans: const [
-              TextSpan(text: "Middle-1 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-              TextSpan(text: "Middle-2 "),
-            ],
-            prefixTextColor: Colors.red,
-            prefixFontWeight: FontWeight.w500,
-            onClick: (context) => log("onClick"),
-            onPrefixClick: (context) => log("onPrefixClick"),
-            onSuffixClick: (context) => log("onSuffixClick"),
+      body: NavigationView(
+        positionType: ViewPositionType.top,
+        background: Colors.white,
+        iconTint: Colors.grey,
+        iconTintState: ValueState.active(
+          activated: Colors.black,
+          inactivated: Colors.grey,
+        ),
+        titleColor: Colors.black,
+        titleColorState: ValueState.active(
+          activated: Colors.black,
+          inactivated: Colors.grey,
+        ),
+        paddingVertical: 12,
+        items: const [
+          NavigationContent(
+            title: "Home",
+            icon: Icons.home,
           ),
-          // CountdownView(
-          //   initialStartMode: false,
-          //   controller: controller,
-          //   builder: (context, timer) {
-          //     return TextView(
-          //       text: "${timer.minutes.x2D}:${timer.seconds.x2D}",
-          //     );
-          //   },
-          // ),
-          // EditForm(
-          //   marginTop: 24,
-          //   onValid: button.setEnabled,
-          //   children: [
-          //     EditText(
-          //       marginTop: 24,
-          //       id: "email",
-          //       hint: "Email",
-          //       inputType: TextInputType.emailAddress,
-          //       background: context.primaryColor.withAlpha(50),
-          //       paddingHorizontal: 24,
-          //       paddingVertical: 0,
-          //       borderRadius: 12,
-          //       onValidator: (v) {
-          //         return v.contains("a");
-          //       },
-          //     ),
-          //     EditText(
-          //       marginTop: 24,
-          //       id: "password",
-          //       hint: "Password",
-          //       inputType: TextInputType.datetime,
-          //       onValidator: (v) {
-          //         return v.contains("1");
-          //       },
-          //     ),
-          //   ],
-          // ),
-          // MaterialEditForm(
-          //   marginTop: 24,
-          //   onValid: button.setEnabled,
-          //   children: [
-          //     MaterialEditText(
-          //       marginTop: 24,
-          //       id: "email",
-          //       autoFocus: true,
-          //       primary: Colors.blue,
-          //       hint: "Email",
-          //       drawablePadding: 24,
-          //       maxCharacters: 15,
-          //       minCharacters: 10,
-          //       counterVisible: true,
-          //       helperText: "abc@gmail.com",
-          //       textSize: 18,
-          //       floatingLabelVisible: true,
-          //       inputType: TextInputType.emailAddress,
-          //       onValidator: (v) {
-          //         return v.contains("abc@gmail.com");
-          //       },
-          //       onError: (v) {
-          //         return v.isEmpty ? "" : "Not matched by abc@gmail.com";
-          //       },
-          //     ),
-          //     MaterialEditText(
-          //       marginTop: 24,
-          //       id: "password",
-          //       autoFocus: true,
-          //       counterVisible: true,
-          //       primary: Colors.blue,
-          //       hint: "Password",
-          //       drawablePadding: 24,
-          //       textSize: 18,
-          //       floatingLabelVisible: true,
-          //       inputType: TextInputType.visiblePassword,
-          //       onValidator: (v) {
-          //         return v.contains("123456");
-          //       },
-          //       onError: (v) {
-          //         return v.isEmpty ? "" : "Not matched by 123456";
-          //       },
-          //     ),
-          //   ],
-          // ),
-          // Button(
-          //   width: double.infinity,
-          //   marginTop: 24,
-          //   controller: button,
-          //   text: "Sign in",
-          //   enabled: true,
-          //   onToggle: (value) {
-          //     if (value) {
-          //       controller.onStart();
-          //     } else {
-          //       controller.onStop();
-          //     }
-          //   },
-          // ),
+          NavigationContent(
+            title: "Dashboard",
+            icon: Icons.dashboard,
+          ),
+          NavigationContent(
+            title: "Profile",
+            icon: Icons.person,
+          ),
         ],
+        builder: (context, index) {
+          return TextView(
+            flex: 1,
+            background: Colors.red.withAlpha(50),
+            text: "$index",
+            textColor: Colors.black,
+            textSize: 32,
+            gravity: Alignment.center,
+          );
+        },
       ),
     );
   }

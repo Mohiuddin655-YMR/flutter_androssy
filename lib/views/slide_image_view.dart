@@ -279,7 +279,7 @@ class SlideImageViewController<T> extends ViewController {
   ImageType placeholderType = ImageType.detect;
   SIVChangedHandler<T>? changedHandler;
   SIVCounterBuilder<T>? counterBuilder;
-  ViewPositionType counterPosition = ViewPositionType.topEnd;
+  ViewPositionType counterPosition = ViewPositionType.topRight;
   bool counterVisibility = true;
   int selectionIndex = 0;
   SIVIndexing<T>? selectionIndexBuilder;
@@ -305,7 +305,7 @@ class SlideImageViewController<T> extends ViewController {
   }) {
     this.changedHandler = changedHandler;
     this.counterBuilder = counterBuilder;
-    this.counterPosition = counterPosition ?? ViewPositionType.topEnd;
+    this.counterPosition = counterPosition ?? ViewPositionType.topRight;
     this.counterVisibility = counterVisibility ?? true;
     this.frameRatio = frameRatio;
     this.itemBackground = itemBackground;

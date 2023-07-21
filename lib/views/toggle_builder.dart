@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_androssy/widgets.dart';
+part of '../widgets.dart';
 
 class ToggleBuilder extends YMRView<ToggleBuilderController> {
   final Widget Function(BuildContext context, bool value) builder;
