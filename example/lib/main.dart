@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/widgets.dart';
 
@@ -36,12 +37,10 @@ class _ExampleState extends State<Example> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        title: const Text("BottomNavigationView"),
-      ),
       body: NavigationView(
-        positionType: ViewPositionType.top,
+        positionType: ViewPositionType.bottom,
         background: Colors.white,
+        paddingVertical: 12,
         iconTint: Colors.grey,
         iconTintState: ValueState.active(
           activated: Colors.black,
@@ -52,29 +51,29 @@ class _ExampleState extends State<Example> {
           activated: Colors.black,
           inactivated: Colors.grey,
         ),
-        paddingVertical: 12,
         items: const [
-          NavigationContent(
+          NavigationItem(
             title: "Home",
             icon: Icons.home,
           ),
-          NavigationContent(
-            title: "Dashboard",
-            icon: Icons.dashboard,
+          NavigationItem(
+            title: "Notification",
+            icon: Icons.notifications,
           ),
-          NavigationContent(
+          NavigationItem(
             title: "Profile",
             icon: Icons.person,
           ),
         ],
         builder: (context, index) {
-          return TextView(
-            flex: 1,
-            background: Colors.red.withAlpha(50),
-            text: "$index",
-            textColor: Colors.black,
-            textSize: 32,
-            gravity: Alignment.center,
+          return NullableView(
+            icon: CupertinoIcons.conversation_bubble,
+            iconTint: context.primaryColor,
+            header: "No results yet",
+            body: "Currently no results available.",
+            buttonText: "Add to new",
+            buttonVisible: true,
+            onButtonClick: (context) {},
           );
         },
       ),

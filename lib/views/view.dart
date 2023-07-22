@@ -2104,4 +2104,10 @@ class ViewController {
   }
 
   void onNotify() => _notify;
+
+  void onNotifyWithCallback(VoidCallback callback) {
+    if (_onNotifier != null) {
+      _onNotifier?.call(callback);
+    }
+  }
 }

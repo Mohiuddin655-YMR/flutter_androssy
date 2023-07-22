@@ -7,31 +7,6 @@ enum NavigationType {
   scrollable;
 }
 
-enum NavigationPosition {
-  top,
-  bottom,
-  left,
-  right;
-}
-
-class NavigationContent {
-  final dynamic icon;
-  final ValueState<dynamic>? iconState;
-  final String? title;
-  final ValueState<String>? titleState;
-
-  const NavigationContent({
-    this.icon,
-    this.iconState,
-    this.title,
-    this.titleState,
-  });
-
-  String? getIcon(bool selected) => iconState?.selected(selected) ?? icon;
-
-  String? getTitle(bool selected) => titleState?.selected(selected) ?? title;
-}
-
 class NavigationItem extends StatelessWidget {
   final bool isSelected;
   final bool isVisible;
@@ -170,7 +145,7 @@ class NavigationView extends YMRView<NavigationViewController> {
   final double? itemPaddingX;
   final double? itemPaddingY;
 
-  final List<NavigationContent> items;
+  final List<NavigationItem> items;
   final NavigationViewBuilder builder;
 
   const NavigationView({
@@ -294,6 +269,7 @@ class NavigationView extends YMRView<NavigationViewController> {
   NavigationViewController attachController(
     NavigationViewController controller,
   ) {
+    log("attachController");
     return controller.fromNavigationView(this);
   }
 
@@ -303,6 +279,7 @@ class NavigationView extends YMRView<NavigationViewController> {
     NavigationViewController controller,
     Widget parent,
   ) {
+    log("root");
     var isMargin = controller.marginAll > 0;
     var type = controller.positionType;
 
@@ -310,7 +287,7 @@ class NavigationView extends YMRView<NavigationViewController> {
       return Stack(
         alignment: Alignment.center,
         children: [
-          builder(context, controller.currentIndex),
+          Expanded(child: builder(context, controller.currentIndex)),
           Positioned(
             left: type.position.left,
             right: type.position.right,
@@ -328,7 +305,7 @@ class NavigationView extends YMRView<NavigationViewController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (controller.positionType.isTopMode) parent,
-            builder(context, controller.currentIndex),
+            Expanded(child: builder(context, controller.currentIndex)),
             if (controller.positionType.isBottomMode) parent,
           ],
         );
@@ -339,7 +316,7 @@ class NavigationView extends YMRView<NavigationViewController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (controller.positionType.isLeftMode) parent,
-            builder(context, controller.currentIndex),
+            Expanded(child: builder(context, controller.currentIndex)),
             if (controller.positionType.isRightMode) parent,
           ],
         );
@@ -352,22 +329,23 @@ class NavigationView extends YMRView<NavigationViewController> {
     BuildContext context,
     NavigationViewController controller,
   ) {
+    log("attach");
     switch (controller.navigationType) {
       case NavigationType.scrollable:
         return SingleChildScrollView(
           scrollDirection: controller.navDirection,
-          child: _NVChild(controller: controller),
+          child: _NavigationViewChild(controller: controller),
         );
       default:
-        return _NVChild(controller: controller);
+        return _NavigationViewChild(controller: controller);
     }
   }
 }
 
-class _NVChild extends StatelessWidget {
+class _NavigationViewChild extends StatelessWidget {
   final NavigationViewController controller;
 
-  const _NVChild({
+  const _NavigationViewChild({
     required this.controller,
   });
 
@@ -382,34 +360,40 @@ class _NVChild extends StatelessWidget {
         var item = controller.items[index];
         var selected = index == controller.currentIndex;
         var child = NavigationItem(
-          isSelected: selected,
+          key: item.key,
+          isSelected: item.isSelected ? true : selected,
+          isVisible: item.isVisible,
           icon: item.icon,
           iconState: item.iconState,
-          iconSize: controller.iconSize,
-          iconSizeState: controller.iconSizeState,
-          iconTint: controller.iconTint,
-          iconTintState: controller.iconTintState,
+          iconSize: item.iconSize ?? controller.iconSize,
+          iconSizeState: item.iconSizeState ?? controller.iconSizeState,
+          iconTint: item.iconTint ?? controller.iconTint,
+          iconTintState: item.iconTintState ?? controller.iconTintState,
           title: item.title,
           titleState: item.titleState,
-          titleColor: controller.titleColor,
-          titleColorState: controller.titleColorState,
-          titleSize: controller.titleSize,
-          titleSizeState: controller.titleSizeState,
-          spaceBetween: controller.spaceBetween,
-          spaceBetweenState: controller.spaceBetweenState,
-          background: controller.background,
-          backgroundState: controller.backgroundState,
-          maxWidth: controller.itemMaxWidth,
-          minWidth: controller.itemMinWidth,
-          maxHeight: controller.itemMaxHeight,
-          minHeight: controller.itemMinHeight,
-          margin: controller.itemMargin,
-          marginX: controller.itemMarginX,
-          marginY: controller.itemMarginY,
-          padding: controller.itemPadding,
-          paddingX: controller.itemPaddingX,
-          paddingY: controller.itemPaddingY,
-          onClick: (context) => controller.onNotify(index),
+          titleColor: item.titleColor ?? controller.titleColor,
+          titleColorState: item.titleColorState ?? controller.titleColorState,
+          titleSize: item.titleSize ?? controller.titleSize,
+          titleSizeState: item.titleSizeState ?? controller.titleSizeState,
+          background: item.background ?? controller.background,
+          backgroundState: item.backgroundState ?? controller.backgroundState,
+          maxWidth: item.maxWidth ?? controller.itemMaxWidth,
+          minWidth: item.minWidth ?? controller.itemMinWidth,
+          maxHeight: item.maxHeight ?? controller.itemMaxHeight,
+          minHeight: item.minHeight ?? controller.itemMinHeight,
+          margin: item.margin ?? controller.itemMargin,
+          marginX: item.marginX ?? controller.itemMarginX,
+          marginY: item.marginY ?? controller.itemMarginY,
+          padding: item.padding ?? controller.itemPadding,
+          paddingX: item.paddingX ?? controller.itemPaddingX,
+          paddingY: item.paddingY ?? controller.itemPaddingY,
+          spaceBetween: item.spaceBetween ?? controller.spaceBetween,
+          spaceBetweenState:
+              item.spaceBetweenState ?? controller.spaceBetweenState,
+          onClick: (context) {
+            if (item.onClick != null) item.onClick?.call(context);
+            controller.onNotify(index);
+          },
         );
         if (controller.navigationType == NavigationType.fixed) {
           return Expanded(child: child);
@@ -423,15 +407,15 @@ class _NVChild extends StatelessWidget {
 
 class NavigationViewController extends ViewController {
   int currentIndex = 0;
-  double? iconSize;
+  double iconSize = 24;
   ValueState<double>? iconSizeState;
   Color? iconTint;
   ValueState<Color>? iconTintState;
   Color? titleColor;
   ValueState<Color>? titleColorState;
-  double? titleSize;
+  double titleSize = 12;
   ValueState<double>? titleSizeState;
-  List<NavigationContent> items = [];
+  List<NavigationItem> items = [];
   double spaceBetween = 2;
   ValueState<double>? spaceBetweenState;
 
@@ -541,13 +525,13 @@ class NavigationViewController extends ViewController {
   NavigationViewController fromNavigationView(NavigationView view) {
     super.fromView(view);
     currentIndex = view.currentIndex ?? 0;
-    iconSize = view.iconSize;
+    iconSize = view.iconSize ?? 24;
     iconSizeState = view.iconSizeState;
     iconTint = view.iconTint;
     iconTintState = view.iconTintState;
     titleColor = view.titleColor;
     titleColorState = view.titleColorState;
-    titleSize = view.titleSize;
+    titleSize = view.titleSize ?? 12;
     titleSizeState = view.titleSizeState;
     spaceBetween = view.spaceBetween ?? 2;
     spaceBetweenState = view.spaceBetweenState;
@@ -567,11 +551,14 @@ class NavigationViewController extends ViewController {
     return this;
   }
 
+  NavigationItem getItem(int index) => items[index];
+
   @override
   void onNotify([int index = 0]) {
-    if (currentIndex != index) {
-      currentIndex = index;
-      super.onNotify();
-    }
+    super.onNotifyWithCallback(() {
+      if (currentIndex != index) {
+        currentIndex = index;
+      }
+    });
   }
 }

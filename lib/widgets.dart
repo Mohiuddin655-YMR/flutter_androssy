@@ -1,6 +1,7 @@
 library widgets;
 
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:math' show max, min;
 import 'dart:ui';
@@ -65,6 +66,8 @@ part 'views/material_image_view.dart';
 
 part 'views/navigation_view.dart';
 
+part 'views/nullable_view.dart';
+
 part 'views/recycler_view.dart';
 
 part 'views/slide_image_view.dart';
@@ -80,6 +83,8 @@ part 'views/tab_view.dart';
 part 'views/text_view.dart';
 
 part 'views/toggle_builder.dart';
+
+part 'views/toolbar_view.dart';
 
 part 'views/view.dart';
 

@@ -66,8 +66,12 @@ extension _ImageType on String {
 class ImageView<T extends ImageViewController> extends YMRView<T> {
   final bool? cacheMode;
   final dynamic image;
+  final Color? tint;
+  final BlendMode? tintMode;
   final ImageType? imageType;
   final dynamic placeholder;
+  final Color? placeholderTint;
+  final BlendMode? placeholderTintMode;
   final ImageType? placeholderType;
   final BoxFit? scaleType;
 
@@ -98,7 +102,6 @@ class ImageView<T extends ImageViewController> extends YMRView<T> {
     super.borderRadiusBR,
     super.borderRadiusTL,
     super.borderRadiusTR,
-    super.child,
     super.clipBehavior,
     super.controller,
     super.dimensionRatio,
@@ -157,28 +160,22 @@ class ImageView<T extends ImageViewController> extends YMRView<T> {
     super.onLongClick,
     super.onToggle,
     this.cacheMode,
+    this.image,
+    this.tint,
+    this.tintMode,
+    this.imageType,
     this.placeholder,
+    this.placeholderTint,
+    this.placeholderTintMode,
     this.placeholderType,
     this.scaleType,
-    this.image,
-    this.imageType,
   });
 
   @override
-  T initController() {
-    return ImageViewController() as T;
-  }
+  T initController() => ImageViewController() as T;
 
   @override
-  T attachController(T controller) => controller.fromView(
-        this,
-        cacheMode: cacheMode,
-        placeholder: placeholder,
-        placeholderType: placeholderType,
-        scaleType: scaleType,
-        image: image,
-        imageType: imageType,
-      ) as T;
+  T attachController(T controller) => controller.fromView(this) as T;
 
   @override
   Widget? attach(BuildContext context, T controller) => RawImageView(
@@ -186,6 +183,8 @@ class ImageView<T extends ImageViewController> extends YMRView<T> {
         height: controller.height,
         cacheMode: controller.cacheMode,
         image: controller.image,
+        tint: controller.imageTint,
+        tintMode: controller.imageTintMode,
         imageType: controller.type,
         scaleType: controller.scaleType,
       );
@@ -194,28 +193,27 @@ class ImageView<T extends ImageViewController> extends YMRView<T> {
 class ImageViewController extends ViewController {
   bool cacheMode = true;
   dynamic _image;
+  Color? imageTint;
+  BlendMode? imageTintMode;
   ImageType _imageType = ImageType.detect;
   dynamic placeholder;
+  Color? placeholderTint;
+  BlendMode? placeholderTintMode;
   ImageType _placeholderType = ImageType.detect;
   BoxFit? scaleType;
 
-  @override
-  ImageViewController fromView(
-    YMRView<ViewController> view, {
-    bool? cacheMode,
-    dynamic image,
-    ImageType? imageType,
-    dynamic placeholder,
-    ImageType? placeholderType,
-    BoxFit? scaleType,
-  }) {
+  ImageViewController fromImageView(ImageView view) {
     super.fromView(view);
-    this.cacheMode = cacheMode ?? true;
-    this.placeholder = placeholder;
-    this.scaleType = scaleType;
-    _image = image;
-    _imageType = imageType ?? ImageType.detect;
-    _placeholderType = placeholderType ?? ImageType.detect;
+    cacheMode = view.cacheMode ?? true;
+    placeholder = view.placeholder;
+    placeholderTint = view.placeholderTint;
+    placeholderTintMode = view.placeholderTintMode;
+    scaleType = view.scaleType;
+    _image = view.image;
+    imageTint = view.tint;
+    imageTintMode = view.tintMode;
+    _imageType = view.imageType ?? ImageType.detect;
+    _placeholderType = view.placeholderType ?? ImageType.detect;
     return this;
   }
 
@@ -242,6 +240,8 @@ class RawImageView extends StatelessWidget {
   final double? width, height;
   final BoxFit? scaleType;
   final bool cacheMode;
+  final Color? tint;
+  final BlendMode? tintMode;
 
   const RawImageView({
     Key? key,
@@ -251,6 +251,8 @@ class RawImageView extends StatelessWidget {
     this.image,
     this.imageType = ImageType.detect,
     this.scaleType,
+    this.tint,
+    this.tintMode,
   }) : super(key: key);
 
   @override
@@ -262,6 +264,8 @@ class RawImageView extends StatelessWidget {
         width: width,
         height: height,
         fit: scaleType,
+        color: tint,
+        colorBlendMode: tintMode,
       );
     } else if (type == ImageType.network) {
       if (cacheMode) {
@@ -270,6 +274,8 @@ class RawImageView extends StatelessWidget {
           width: width,
           height: height,
           fit: scaleType,
+          color: tint,
+          colorBlendMode: tintMode,
         );
       } else {
         return Image.network(
@@ -277,6 +283,8 @@ class RawImageView extends StatelessWidget {
           width: width,
           height: height,
           fit: scaleType,
+          color: tint,
+          colorBlendMode: tintMode,
         );
       }
     } else if (type == ImageType.file) {
@@ -285,6 +293,8 @@ class RawImageView extends StatelessWidget {
         width: width,
         height: height,
         fit: scaleType,
+        color: tint,
+        colorBlendMode: tintMode,
       );
     } else if (type == ImageType.memory) {
       return Image.memory(
@@ -292,6 +302,8 @@ class RawImageView extends StatelessWidget {
         width: width,
         height: height,
         fit: scaleType,
+        color: tint,
+        colorBlendMode: tintMode,
       );
     } else if (type == ImageType.svg) {
       return SvgPicture.asset(
@@ -299,6 +311,15 @@ class RawImageView extends StatelessWidget {
         width: width,
         height: height,
         fit: scaleType ?? BoxFit.contain,
+        colorFilter: tint != null
+            ? ColorFilter.mode(
+                tint!,
+                tintMode ?? BlendMode.srcIn,
+              )
+            : null,
+        theme: SvgTheme(
+          currentColor: tint ?? const Color(0xFF808080),
+        ),
       );
     } else if (type == ImageType.svgNetwork) {
       return SvgPicture.network(
@@ -306,6 +327,15 @@ class RawImageView extends StatelessWidget {
         width: width,
         height: height,
         fit: scaleType ?? BoxFit.contain,
+        colorFilter: tint != null
+            ? ColorFilter.mode(
+                tint!,
+                tintMode ?? BlendMode.srcIn,
+              )
+            : null,
+        theme: SvgTheme(
+          currentColor: tint ?? const Color(0xFF808080),
+        ),
       );
     } else if (type == ImageType.svgCode) {
       return SvgPicture.string(
@@ -313,6 +343,15 @@ class RawImageView extends StatelessWidget {
         width: width,
         height: height,
         fit: scaleType ?? BoxFit.contain,
+        colorFilter: tint != null
+            ? ColorFilter.mode(
+                tint!,
+                tintMode ?? BlendMode.srcIn,
+              )
+            : null,
+        theme: SvgTheme(
+          currentColor: tint ?? const Color(0xFF808080),
+        ),
       );
     } else {
       return SizedBox(
