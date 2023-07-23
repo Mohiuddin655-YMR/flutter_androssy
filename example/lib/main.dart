@@ -12,6 +12,7 @@ class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Androssy',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -66,14 +67,48 @@ class _ExampleState extends State<Example> {
           ),
         ],
         builder: (context, index) {
-          return NullableView(
-            icon: CupertinoIcons.conversation_bubble,
-            iconTint: context.primaryColor,
-            header: "No results yet",
-            body: "Currently no results available.",
-            buttonText: "Add to new",
-            buttonVisible: true,
-            onButtonClick: (context) {},
+          return LinearLayout(
+            children: [
+              ToolbarView(
+                titleSpacing: 8,
+                paddingHorizontal: 16,
+                paddingStart: 24,
+                elevation: 2,
+                titleCustom: const TextView(
+                  text: "My Appointment",
+                  textSize: 16,
+                  textFontWeight: FontWeight.w600,
+                  marginBottom: 2,
+                ),
+                leading: IconView(
+                  icon: Icons.add,
+                  tint: context.primaryColor,
+                ),
+                leadingSize: 24,
+                actions: const [
+                  IconView(
+                    icon: Icons.search,
+                    size: 24,
+                  ),
+                ],
+              ),
+              LinearLayout(
+                flex: 1,
+                gravity: Alignment.center,
+                children: [
+                  NullableView(
+                    flex: 1,
+                    icon: CupertinoIcons.conversation_bubble,
+                    iconTint: context.primaryColor,
+                    header: "No results yet",
+                    body: "Currently no results available.",
+                    buttonText: "Add to new",
+                    buttonVisible: true,
+                    onButtonClick: (context) {},
+                  ),
+                ],
+              ),
+            ],
           );
         },
       ),

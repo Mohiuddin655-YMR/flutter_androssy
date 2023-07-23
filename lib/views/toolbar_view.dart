@@ -196,6 +196,7 @@ class ToolbarView extends YMRView<ToolbarViewController> {
               ],
             ),
       leadingWidth: controller.leadingSize,
+      systemOverlayStyle: controller.statusBarStyle,
       title: controller.titleCustom != null
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -220,7 +221,7 @@ class ToolbarViewController extends ViewController {
   Color? elevationColor;
   IconThemeData? iconTheme;
 
-  bool get isElevated => elevation > 0 && elevationColor != null;
+  bool get isElevated => elevation > 0;
 
   ///LEADING
   Widget? leading;
@@ -237,7 +238,7 @@ class ToolbarViewController extends ViewController {
   Brightness statusBarBrightness = Brightness.dark;
   Brightness? _statusBarIconBrightness;
 
-  Color? get statusBarColor => _statusBarColor ?? background;
+  Color? get statusBarColor => _statusBarColor ?? Colors.transparent;
 
   set statusBarColor(Color? value) => _statusBarColor = value;
 

@@ -133,108 +133,106 @@ class MaterialEditText extends YMRView<MaterialEditTextController> {
           ),
         ),
         GestureDetector(
-          onTap: () => controller._requestFocus,
-          child: AbsorbPointer(
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(top: 5, bottom: 8),
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      if (controller.drawableStart != null)
-                        _METDrawable(
-                          icon: controller.drawableStart!,
-                          size: 24,
-                          focused: controller.isFocused,
-                          tint: drawableTint,
-                          padding: EdgeInsets.only(
-                            right: controller.drawablePadding,
-                          ),
-                        ),
-                      Expanded(
-                        child: Stack(
-                          alignment: Alignment.centerLeft,
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                controller.hint,
-                                textAlign: controller.textAlign,
-                                style: style.copyWith(
-                                  color: controller.text.isNotEmpty
-                                      ? Colors.transparent
-                                      : controller.hintColor ?? secondaryColor,
-                                  fontFamily: "",
-                                ),
-                              ),
-                            ),
-                            EditableText(
-                              textAlign: controller.textAlign,
-                              keyboardType: controller.inputType,
-                              controller: controller._editable,
-                              focusNode: controller._node,
-                              autofocus: controller.autoFocus,
-                              style: style,
-                              cursorColor: primaryColor,
-                              obscureText: controller.obscureText,
-                              backgroundCursorColor: primaryColor,
-                              onChanged: controller._handleEditingChange,
-                              inputFormatters: controller.formatter,
-                            ),
-                          ],
+          onTap: () => controller.showKeyboard(context),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(top: 5, bottom: 8),
+                width: double.infinity,
+                child: Row(
+                  children: [
+                    if (controller.drawableStart != null)
+                      _METDrawable(
+                        icon: controller.drawableStart!,
+                        size: 24,
+                        focused: controller.isFocused,
+                        tint: drawableTint,
+                        padding: EdgeInsets.only(
+                          right: controller.drawablePadding,
                         ),
                       ),
-                      if (!controller._initial)
-                        isValid && controller.onExecute != null
-                            ? _METLoading(
-                                value: controller.text,
-                                onLoading: controller.onExecute,
-                                builder: (value) {
-                                  return _METDrawable(
-                                    icon: controller.drawableEnd!,
-                                    size: 24,
-                                    focused: controller.isFocused,
-                                    selected: isValid,
-                                    tint: drawableTint,
-                                    padding: EdgeInsets.only(
-                                      left: controller.drawablePadding / 2,
-                                    ),
-                                    visible: value,
-                                  );
-                                },
-                              )
-                            : controller.drawableEnd != null
-                                ? _METDrawable(
-                                    icon: controller.drawableEnd!,
-                                    size: 24,
-                                    focused: controller.isFocused,
-                                    selected: isValid,
-                                    tint: drawableTint,
-                                    visible: isValid,
-                                    padding: EdgeInsets.only(
-                                      left: controller.drawablePadding / 2,
-                                    ),
-                                  )
-                                : const SizedBox(),
-                    ],
-                  ),
+                    Expanded(
+                      child: Stack(
+                        alignment: Alignment.centerLeft,
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              controller.hint,
+                              textAlign: controller.textAlign,
+                              style: style.copyWith(
+                                color: controller.text.isNotEmpty
+                                    ? Colors.transparent
+                                    : controller.hintColor ?? secondaryColor,
+                                fontFamily: "",
+                              ),
+                            ),
+                          ),
+                          EditableText(
+                            textAlign: controller.textAlign,
+                            keyboardType: controller.inputType,
+                            controller: controller._editable,
+                            focusNode: controller._node,
+                            autofocus: controller.autoFocus,
+                            style: style,
+                            cursorColor: primaryColor,
+                            obscureText: controller.obscureText,
+                            backgroundCursorColor: primaryColor,
+                            onChanged: controller._handleEditingChange,
+                            inputFormatters: controller.formatter,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (!controller._initial)
+                      isValid && controller.onExecute != null
+                          ? _METLoading(
+                        value: controller.text,
+                        onLoading: controller.onExecute,
+                        builder: (value) {
+                          return _METDrawable(
+                            icon: controller.drawableEnd!,
+                            size: 24,
+                            focused: controller.isFocused,
+                            selected: isValid,
+                            tint: drawableTint,
+                            padding: EdgeInsets.only(
+                              left: controller.drawablePadding / 2,
+                            ),
+                            visible: value,
+                          );
+                        },
+                      )
+                          : controller.drawableEnd != null
+                          ? _METDrawable(
+                        icon: controller.drawableEnd!,
+                        size: 24,
+                        focused: controller.isFocused,
+                        selected: isValid,
+                        tint: drawableTint,
+                        visible: isValid,
+                        padding: EdgeInsets.only(
+                          left: controller.drawablePadding / 2,
+                        ),
+                      )
+                          : const SizedBox(),
+                  ],
                 ),
-                _METUnderline(
-                  focused: controller.isFocused,
-                  enabled: controller.enabled,
-                  error: hasError,
-                  height: 1,
+              ),
+              _METUnderline(
+                focused: controller.isFocused,
+                enabled: controller.enabled,
+                error: hasError,
+                height: 1,
+                primary: primaryColor,
+                colorState: ValueState.state(
                   primary: primaryColor,
-                  colorState: ValueState.state(
-                    primary: primaryColor,
-                    secondary: underlineColor,
-                    error: controller.errorColor,
-                    disable: underlineColor,
-                  ),
+                  secondary: underlineColor,
+                  error: controller.errorColor,
+                  disable: underlineColor,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         SizedBox(
@@ -378,7 +376,7 @@ class MaterialEditTextController extends ViewController {
 
   dynamic get iEnd => drawableEnd?.drawable(isFocused);
 
-  void get _requestFocus async {
+  void showKeyboard(BuildContext context) async {
     if (_node.hasFocus) {
       _node.unfocus();
       await Future.delayed(const Duration(milliseconds: 100)).then((value) {
@@ -388,6 +386,8 @@ class MaterialEditTextController extends ViewController {
       FocusScope.of(context).requestFocus(_node);
     }
   }
+
+  void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
 
   void _handleFocusChange() {
     if (_node.hasFocus != _focused) {

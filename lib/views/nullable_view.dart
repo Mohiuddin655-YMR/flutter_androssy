@@ -278,12 +278,6 @@ class NullableViewController extends ViewController {
   bool get buttonVisible => (buttonText ?? "").isNotEmpty && _buttonVisible;
 
   @override
-  double get width => super.width ?? double.infinity;
-
-  @override
-  double get height => super.height ?? double.infinity;
-
-  @override
   double get paddingHorizontal => super.paddingHorizontal ?? 24;
 
   @override

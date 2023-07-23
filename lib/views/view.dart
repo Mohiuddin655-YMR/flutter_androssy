@@ -1196,11 +1196,11 @@ class ViewController {
     return this;
   }
 
-  late BuildContext context;
+  BuildContext? context;
 
   ViewRoots roots = const ViewRoots();
 
-  ThemeData get theme => Theme.of(context);
+  ThemeData get theme => context != null ? Theme.of(context!) : ThemeData();
 
   bool expandable = false;
   bool scrollable = false;
