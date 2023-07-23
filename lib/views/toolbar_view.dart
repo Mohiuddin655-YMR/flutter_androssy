@@ -2,7 +2,7 @@ part of '../widgets.dart';
 
 class ToolbarView extends YMRView<ToolbarViewController> {
   final List<Widget>? actions;
-  final Color? elevationColor;
+  final Color elevationColor;
   final IconThemeData? iconTheme;
 
   ///LEADING
@@ -107,7 +107,7 @@ class ToolbarView extends YMRView<ToolbarViewController> {
     super.widthMin,
     super.visibility,
     this.actions,
-    this.elevationColor,
+    this.elevationColor = Colors.black12,
     this.iconTheme,
 
     ///LEADING
@@ -218,7 +218,7 @@ class ToolbarView extends YMRView<ToolbarViewController> {
 
 class ToolbarViewController extends ViewController {
   List<Widget>? actions;
-  Color? elevationColor;
+  Color elevationColor = Colors.black12;
   IconThemeData? iconTheme;
 
   bool get isElevated => elevation > 0;

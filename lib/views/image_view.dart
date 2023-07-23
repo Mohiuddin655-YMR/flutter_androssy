@@ -44,7 +44,7 @@ enum ImageType {
   }
 }
 
-extension _ImageType on String {
+extension ImageTypeExtension on String {
   bool get isAsset {
     return startsWith('assets/') || startsWith('asset/');
   }
@@ -175,7 +175,7 @@ class ImageView<T extends ImageViewController> extends YMRView<T> {
   T initController() => ImageViewController() as T;
 
   @override
-  T attachController(T controller) => controller.fromView(this) as T;
+  T attachController(T controller) => controller.fromImageView(this) as T;
 
   @override
   Widget? attach(BuildContext context, T controller) => RawImageView(
