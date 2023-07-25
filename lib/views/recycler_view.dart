@@ -3,6 +3,20 @@ part of '../widgets.dart';
 typedef RecyclerViewItemBuilder<T> = Widget Function(int index, T item);
 
 class RecyclerViewController<T> extends ViewController {
+  int rowIndex = 0;
+
+  int get rowEndingIndex => rowIndex + (snapCount);
+
+  int get gridColumnEndingIndex => (itemCount / snapCount).ceil();
+
+  void get incrementRowIndex => rowIndex++;
+
+  Iterable<_RecyclerItem<T>> get _gridColumnItems =>
+      _gridItems.getRange(0, gridColumnEndingIndex);
+
+  Iterable<_RecyclerItem<T>> get _gridRowItems =>
+      _gridItems.getRange(rowIndex, rowEndingIndex);
+
   List<T> items = [];
   int? _itemCount;
   int snapCount = 1;
@@ -239,6 +253,24 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
   });
 
   @override
+  void onInit(RecyclerViewController<T> controller) {
+    controller.rowIndex = 0;
+  }
+
+  @override
+  void onUpdateWidget(RecyclerViewController<T> controller, oldWidget) {
+    controller.rowIndex = 0;
+  }
+
+  @override
+  void onChangeDependencies(RecyclerViewController<T> controller) {
+    controller.rowIndex = 0;
+  }
+
+  @override
+  void onDispose(RecyclerViewController<T> controller) => controller._dispose();
+
+  @override
   RecyclerViewController<T> initController() => RecyclerViewController<T>();
 
   @override
@@ -250,139 +282,54 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
 
   @override
   Widget? attach(BuildContext context, RecyclerViewController<T> controller) {
-    return controller.layoutType == RecyclerLayoutType.grid
-        ? _Grid<T>(
-            controller: controller,
-            items: controller._gridItems,
-            builder: builder,
-            itemCount: controller.itemCount,
-            snapCount: controller.snapCount,
-          )
-        : _Linear(controller: controller, builder: builder);
-  }
-
-  @override
-  void onDispose(RecyclerViewController<T> controller) => controller._dispose();
-}
-
-class _Linear<T> extends StatelessWidget {
-  final RecyclerViewController<T> controller;
-  final Widget Function(int index, T item) builder;
-
-  const _Linear({
-    Key? key,
-    required this.controller,
-    required this.builder,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
     return Flex(
       direction: controller.orientation,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: List.generate(controller.itemCount, (index) {
-        var item = controller.items[index];
-        if (controller.isSeparator) {
-          return Flex(
-            direction: controller.orientation,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              builder(index, item),
-              if (controller.lastItem != item)
-                SizedBox(
-                  width: controller.isVerticalMode ? 0 : controller.separator,
-                  height: controller.isVerticalMode ? controller.separator : 0,
-                ),
-            ],
-          );
-        } else {
-          return builder(index, item);
-        }
-      }),
-    );
-  }
-}
+      children: controller.layoutType == RecyclerLayoutType.grid
+          ? controller._gridColumnItems.map((item) {
+              return Flex(
+                direction: controller.reverseOrientation,
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: controller._gridRowItems.map((item) {
+                  controller.incrementRowIndex;
+                  var child = !item.temporary && item.data != null
+                      ? builder(controller.rowIndex, item.data as T)
+                      : const SizedBox();
+                  if (controller.isVerticalMode) {
+                    child = Expanded(child: child);
+                  }
 
-class _Grid<T> extends StatefulWidget {
-  final RecyclerViewController controller;
-  final List<_RecyclerItem<T>> items;
-  final int itemCount;
-  final int snapCount;
-
-  final Widget Function(int index, T item) builder;
-
-  const _Grid({
-    Key? key,
-    required this.controller,
-    required this.items,
-    required this.builder,
-    required this.itemCount,
-    required this.snapCount,
-  }) : super(key: key);
-
-  @override
-  State<_Grid<T>> createState() => _GridState<T>();
-}
-
-class _GridState<T> extends State<_Grid<T>> {
-  late int itemCount = widget.controller.itemCount;
-  late int snapCount = widget.controller.snapCount;
-  late int endIndex = (itemCount / snapCount).ceil();
-  int rawNumber = 0;
-
-  @override
-  void initState() {
-    rawNumber = 0;
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant _Grid<T> oldWidget) {
-    rawNumber = 0;
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void didChangeDependencies() {
-    rawNumber = 0;
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    rawNumber = 0;
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Flex(
-      direction: widget.controller.orientation,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: widget.items.getRange(0, endIndex).map((item) {
-        final end = rawNumber + (snapCount);
-        return Flex(
-          direction: widget.controller.reverseOrientation,
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: widget.items.getRange(rawNumber, end).map((item) {
-            rawNumber++;
-            var child = !item.temporary && item.data != null
-                ? widget.builder(rawNumber, item.data as T)
-                : const SizedBox();
-            if (widget.controller.isVerticalMode) {
-              return Expanded(child: child);
-            } else {
-              return child;
-            }
-          }).toList(),
-        );
-      }).toList(),
+                  return child;
+                }).toList(),
+              );
+            }).toList()
+          : List.generate(controller.itemCount, (index) {
+              var item = controller.items[index];
+              if (controller.isSeparator) {
+                return Flex(
+                  direction: controller.orientation,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    builder(index, item),
+                    if (controller.lastItem != item)
+                      SizedBox(
+                        width: controller.isVerticalMode
+                            ? 0
+                            : controller.separator,
+                        height: controller.isVerticalMode
+                            ? controller.separator
+                            : 0,
+                      ),
+                  ],
+                );
+              } else {
+                return builder(index, item);
+              }
+            }),
     );
   }
 }
