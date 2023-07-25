@@ -45,6 +45,10 @@ class RecyclerViewController<T> extends ViewController {
 
   int get itemCount => min(_itemCount ?? (items.length + 1), size);
 
+  bool get isGridMode => layoutType == RecyclerLayoutType.grid && snapCount > 1;
+
+  bool get isValidItemCountingOrSnapping => itemCount > 0 && snapCount > 0;
+
   bool get isVerticalMode => orientation == Axis.vertical;
 
   bool get isSeparator => separator > 0;
@@ -294,55 +298,57 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
 
   @override
   Widget? attach(BuildContext context, RecyclerViewController<T> controller) {
-    return Flex(
-      direction: controller.orientation,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: controller.layoutType == RecyclerLayoutType.grid
-          ? controller._gcItems.map((item) {
-              return Flex(
-                direction: controller._orientationAsInverse,
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: controller._grItems.map((item) {
-                  controller._griIncrement();
-                  var child = !item.temporary && item.data != null
-                      ? builder(controller._gri, item.data as T)
-                      : const SizedBox();
-                  if (controller.isVerticalMode) {
-                    child = Expanded(child: child);
-                  }
+    return controller.isValidItemCountingOrSnapping
+        ? Flex(
+            direction: controller.orientation,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: controller.isGridMode
+                ? controller._gcItems.map((item) {
+                    return Flex(
+                      direction: controller._orientationAsInverse,
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: controller._grItems.map((item) {
+                        controller._griIncrement();
+                        var child = !item.temporary && item.data != null
+                            ? builder(controller._gri, item.data as T)
+                            : const SizedBox();
+                        if (controller.isVerticalMode) {
+                          child = Expanded(child: child);
+                        }
 
-                  return child;
-                }).toList(),
-              );
-            }).toList()
-          : List.generate(controller.itemCount, (index) {
-              var item = controller.items[index];
-              if (controller.isSeparator) {
-                return Flex(
-                  direction: controller.orientation,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    builder(index, item),
-                    if (controller.lastItem != item)
-                      SizedBox(
-                        width: controller.isVerticalMode
-                            ? 0
-                            : controller.separator,
-                        height: controller.isVerticalMode
-                            ? controller.separator
-                            : 0,
-                      ),
-                  ],
-                );
-              } else {
-                return builder(index, item);
-              }
-            }),
-    );
+                        return child;
+                      }).toList(),
+                    );
+                  }).toList()
+                : List.generate(controller.itemCount, (index) {
+                    var item = controller.items[index];
+                    if (controller.isSeparator) {
+                      return Flex(
+                        direction: controller.orientation,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          builder(index, item),
+                          if (controller.lastItem != item)
+                            SizedBox(
+                              width: controller.isVerticalMode
+                                  ? 0
+                                  : controller.separator,
+                              height: controller.isVerticalMode
+                                  ? controller.separator
+                                  : 0,
+                            ),
+                        ],
+                      );
+                    } else {
+                      return builder(index, item);
+                    }
+                  }),
+          )
+        : null;
   }
 }
 
