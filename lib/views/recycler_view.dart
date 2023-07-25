@@ -45,7 +45,7 @@ class RecyclerViewController<T> extends ViewController {
 
   int get itemCount => min(_itemCount ?? (items.length + 1), size);
 
-  bool get isGridMode => layoutType == RecyclerLayoutType.grid && snapCount > 1;
+  bool get isGridMode => layoutType == RecyclerLayoutType.grid || snapCount > 1;
 
   bool get isValidItemCountingOrSnapping => itemCount > 0 && snapCount > 0;
 
