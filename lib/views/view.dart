@@ -3,6 +3,7 @@ part of '../widgets.dart';
 typedef OnViewBuilder<T> = Widget Function(BuildContext context, T? controller);
 typedef OnViewChangeListener = Function(dynamic value);
 typedef OnViewClickListener = Function(BuildContext context);
+typedef OnViewItemClickListener<T> = void Function(BuildContext contex, T item);
 typedef OnViewErrorListener = String? Function(ViewError error);
 typedef OnViewToggleListener = Function(bool value);
 typedef OnViewValidListener = Function(bool value);
@@ -314,41 +315,43 @@ class ViewRecognizer {
   const ViewRecognizer.of(this.context);
 
   GestureRecognizer? onClick(OnViewClickListener? callback) {
-    return context.onClick(callback);
+    if (callback != null) {
+      return TapGestureRecognizer()..onTap = () => callback(context);
+    } else {
+      return null;
+    }
   }
 
   GestureRecognizer? onDoubleClick(OnViewClickListener? callback) {
-    return context.onDoubleClick(callback);
+    if (callback != null) {
+      return DoubleTapGestureRecognizer()
+        ..onDoubleTap = () => callback(context);
+    } else {
+      return null;
+    }
   }
 
   GestureRecognizer? onLongClick(OnViewClickListener? callback) {
-    return context.onLongClick(callback);
+    if (callback != null) {
+      return LongPressGestureRecognizer()
+        ..onLongPress = () => callback(context);
+    } else {
+      return null;
+    }
   }
 }
 
 extension ViewRecognizerExtension on BuildContext {
   GestureRecognizer? onClick(OnViewClickListener? callback) {
-    if (callback != null) {
-      return TapGestureRecognizer()..onTap = () => callback(this);
-    } else {
-      return null;
-    }
+    return ViewRecognizer.of(this).onClick(callback);
   }
 
   GestureRecognizer? onDoubleClick(OnViewClickListener? callback) {
-    if (callback != null) {
-      return DoubleTapGestureRecognizer()..onDoubleTap = () => callback(this);
-    } else {
-      return null;
-    }
+    return ViewRecognizer.of(this).onDoubleClick(callback);
   }
 
   GestureRecognizer? onLongClick(OnViewClickListener? callback) {
-    if (callback != null) {
-      return LongPressGestureRecognizer()..onLongPress = () => callback(this);
-    } else {
-      return null;
-    }
+    return ViewRecognizer.of(this).onLongClick(callback);
   }
 }
 

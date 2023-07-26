@@ -17,26 +17,33 @@ class _RVGItem<T> {
 }
 
 class RecyclerViewController<T> extends ViewController {
+  List<T> items = [];
+  int? _itemCount;
+  double spaceBetween = 0;
+  RecyclerLayoutType layoutType = RecyclerLayoutType.linear;
+  OnViewChangeListener? onPagingListener;
+
   RecyclerViewController<T> fromRecyclerView(RecyclerView<T> view) {
     super.fromView(view);
     _itemCount = view.itemCount;
     this.items = view.items;
     this.layoutType = view.layoutType;
-    this.separator = view.separator;
+    this.spaceBetween = view.spaceBetween;
     this.onPagingListener = view.onPagingListener;
-
-    /// GRID PROPERTIES
     this.snapCount = view.snapCount;
 
     return this;
   }
 
-  List<T> items = [];
-  int? _itemCount;
-  double separator = 0;
-  RecyclerLayoutType layoutType = RecyclerLayoutType.linear;
-  OnViewChangeListener? onPagingListener;
+  bool get isGridMode => layoutType == RecyclerLayoutType.grid || snapCount > 1;
 
+  bool get isValidItemCountingOrSnapping => itemCount > 0 && snapCount > 0;
+
+  bool get isVerticalMode => orientation == Axis.vertical;
+
+  bool get isSpacer => spaceBetween > 0;
+
+  /// Items properties
   T get firstItem => items.first;
 
   T get lastItem => items.last;
@@ -45,77 +52,78 @@ class RecyclerViewController<T> extends ViewController {
 
   int get itemCount => min(_itemCount ?? (items.length + 1), size);
 
-  bool get isGridMode => layoutType == RecyclerLayoutType.grid || snapCount > 1;
-
-  bool get isValidItemCountingOrSnapping => itemCount > 0 && snapCount > 0;
-
-  bool get isVerticalMode => orientation == Axis.vertical;
-
-  bool get isSeparator => separator > 0;
-
-  @override
-  ScrollController get scrollController {
-    if (onPagingListener != null) {
-      return super
-          .scrollController
-          .paging(onListen: onPagingListener ?? (v) {});
-    } else {
-      return super.scrollController;
-    }
-  }
-
-  ScrollController paging({required Function() func}) {
-    scrollController.addListener(() {
-      if (scrollController.position.atEdge) {
-        if (scrollController.position.pixels != 0) {
-          func();
-        }
-      }
-    });
-    return scrollController;
-  }
-
   T? getItem(int index) => size > 0 && size > index ? items[index] : null;
 
-  void setItem(T value, [int? index]) {
-    if (index != null && items.length >= index) {
-      items.insert(index, value);
-    } else {
-      items.add(value);
-    }
+  void setItem(T item, [int? index]) {
+    super.onNotifyWithCallback(() {
+      var list = List<T>.from(items);
+      if (index != null && itemCount >= index) {
+        list.insert(index, item);
+      } else {
+        list.add(item);
+      }
+      items = list;
+    });
   }
 
-  void removeItem(T? item) {
-    if (item != null) {
-      items.remove(item);
-      _notify;
-    }
+  void setItemAsFirst(T item) => setItem(item, 0);
+
+  void setItemAsMiddle(T item) => setItem(item, itemCount ~/ 2);
+
+  void setItemAsLast(T item) => setItem(item, itemCount);
+
+  void setItems(List<T> items, [bool insertable = true]) {
+    super.onNotifyWithCallback(() {
+      if (insertable) {
+        var list = List<T>.from(this.items);
+        list.addAll(items);
+        this.items = list;
+      } else {
+        this.items = items;
+      }
+    });
   }
 
-  void removeAt(int index) {
-    if (index >= 0 && index < items.length) {
-      items.removeAt(index);
-      _notify;
-    }
+  void setItemsAt(List<T> items, int index) {
+    super.onNotifyWithCallback(() {
+      var list = List<T>.from(this.items);
+      if (itemCount >= index) {
+        list.insertAll(index, items);
+      } else {
+        list.addAll(items);
+      }
+      this.items = list;
+    });
   }
 
-  void setItems(List<T> value) {
-    items = value;
-    _notify;
-  }
+  void setItemsAsFirst(List<T> items) => setItemsAt(items, 0);
+
+  void setItemsAsMiddle(List<T> items) => setItemsAt(items, itemCount ~/ 2);
+
+  void setItemsAsLast(List<T> items) => setItemsAt(items, itemCount);
 
   void setItemCount(int value) {
-    _itemCount = value;
-    _notify;
+    super.onNotifyWithCallback(() {
+      _itemCount = value;
+    });
   }
 
-  void setRecyclerType(RecyclerLayoutType value) {
-    layoutType = value;
-    _notify;
+  void removeItem(T item) {
+    super.onNotifyWithCallback(() {
+      var list = List<T>.from(items);
+      list.remove(item);
+      items = list;
+    });
   }
 
-  void _dispose() {
-    scrollController.dispose();
+  void removeItemAt(int index) {
+    super.onNotifyWithCallback(() {
+      if (index >= 0 && index < itemCount) {
+        var list = List<T>.from(items);
+        list.removeAt(index);
+        items = list;
+      }
+    });
   }
 
   /// GRID PROPERTIES
@@ -159,16 +167,51 @@ class RecyclerViewController<T> extends ViewController {
   void _griIncrement() => _gri++;
 
   void setSnapCount(int value) {
-    snapCount = value;
-    _notify;
+    super.onNotifyWithCallback(() {
+      snapCount = value;
+    });
   }
+
+  /// DEFAULT PROPERTIES
+
+  @override
+  ScrollController get scrollController {
+    if (onPagingListener != null) {
+      return super
+          .scrollController
+          .paging(onListen: onPagingListener ?? (v) {});
+    } else {
+      return super.scrollController;
+    }
+  }
+
+  ScrollController paging({required VoidCallback callback}) {
+    scrollController.addListener(() {
+      if (scrollController.position.atEdge) {
+        if (scrollController.position.pixels != 0) {
+          callback.call();
+        }
+      }
+    });
+    return scrollController;
+  }
+
+  void setRecyclerType(RecyclerLayoutType value) {
+    super.onNotifyWithCallback(() => layoutType = value);
+  }
+
+  void setSpaceBetween(double value) {
+    super.onNotifyWithCallback(() => spaceBetween = value);
+  }
+
+  void _dispose() => scrollController.dispose();
 }
 
 class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
   final List<T> items;
   final int? itemCount;
   final int snapCount;
-  final double separator;
+  final double spaceBetween;
   final OnViewChangeListener? onPagingListener;
 
   final RecyclerLayoutType layoutType;
@@ -176,7 +219,6 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
 
   const RecyclerView({
     super.key,
-    super.absorbMode,
     super.activated,
     super.animation,
     super.animationType,
@@ -206,7 +248,6 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
     super.dimensionRatio,
     super.enabled,
     super.elevation,
-    super.expandable,
     super.foreground,
     super.foregroundBlendMode,
     super.foregroundGradient,
@@ -255,15 +296,11 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
     super.widthMax,
     super.widthMin,
     super.visibility,
-    super.onClick,
-    super.onDoubleClick,
-    super.onLongClick,
-    super.onToggle,
     required this.items,
     required this.builder,
     this.itemCount,
     this.snapCount = 1,
-    this.separator = 0,
+    this.spaceBetween = 0,
     this.layoutType = RecyclerLayoutType.linear,
     this.onPagingListener,
   });
@@ -326,25 +363,26 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
                   }).toList()
                 : List.generate(controller.itemCount, (index) {
                     var item = controller.items[index];
-                    if (controller.isSeparator) {
+                    var child = builder(index, item);
+                    if (controller.isSpacer &&
+                        controller.itemCount - 1 != index) {
                       return Flex(
                         direction: controller.orientation,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          builder(index, item),
-                          if (controller.lastItem != item)
-                            SizedBox(
-                              width: controller.isVerticalMode
-                                  ? 0
-                                  : controller.separator,
-                              height: controller.isVerticalMode
-                                  ? controller.separator
-                                  : 0,
-                            ),
+                          child,
+                          SizedBox(
+                            width: controller.isVerticalMode
+                                ? null
+                                : controller.spaceBetween,
+                            height: controller.isVerticalMode
+                                ? controller.spaceBetween
+                                : null,
+                          ),
                         ],
                       );
                     } else {
-                      return builder(index, item);
+                      return child;
                     }
                   }),
           )
