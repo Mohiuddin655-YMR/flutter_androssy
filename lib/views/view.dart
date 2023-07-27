@@ -687,19 +687,16 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
                   controller: controller,
                   attachView: _ViewListener(
                     controller: controller,
-                    attachView: _ViewScroller(
+                    attachView: _ViewChild(
                       controller: controller,
-                      attachView: _ViewChild(
-                        controller: controller,
-                        attach: widget.attach(context, controller),
-                        builder: (context, view) {
-                          return widget.build(
-                            context,
-                            controller,
-                            view,
-                          );
-                        },
-                      ),
+                      attach: widget.attach(context, controller),
+                      builder: (context, view) {
+                        return widget.build(
+                          context,
+                          controller,
+                          view,
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -875,30 +872,6 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
   }
 }
 
-class _ViewScroller extends StatelessWidget {
-  final ViewController controller;
-  final Widget attachView;
-
-  const _ViewScroller({
-    Key? key,
-    required this.controller,
-    required this.attachView,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return controller.isScrollable
-        ? SingleChildScrollView(
-            controller: controller.scrollController,
-            physics: controller.scrollingType.physics,
-            scrollDirection: controller.orientation,
-            padding: controller.padding,
-            child: attachView,
-          )
-        : attachView;
-  }
-}
-
 class _ViewChild extends StatelessWidget {
   final ViewController controller;
   final Widget? attach;
@@ -919,9 +892,6 @@ class _ViewChild extends StatelessWidget {
     final isRadius = controller.isBorderRadius;
     final isRippled = controller.isRippled;
     final isMargin = controller.isMargin;
-    final isPadding = controller.isPadding;
-    final isBorder = controller.isBorder;
-    final isScrollable = controller.isScrollable;
     final isShadow = controller.isShadow;
     final isConstraints = controller.isConstraints;
 
@@ -931,12 +901,21 @@ class _ViewChild extends StatelessWidget {
             ? controller.borderRadiusF
             : null;
 
+    var child = controller.isScrollable
+        ? SingleChildScrollView(
+            controller: controller.scrollController,
+            physics: controller.scrollingType.physics,
+            scrollDirection: controller.orientation,
+            padding: controller.padding,
+            child: attach,
+          )
+        : attach;
     return controller.visible
         ? builder(
             context,
             controller.roots.view
                 ? Container(
-                    alignment: isBorder ? null : controller.gravity,
+                    alignment: controller.gravity,
                     clipBehavior: root.decoration && !isRippled
                         ? controller.clipBehavior
                         : Clip.none,
@@ -955,15 +934,13 @@ class _ViewChild extends StatelessWidget {
                     decoration: root.decoration && !isRippled
                         ? BoxDecoration(
                             backgroundBlendMode: controller.backgroundBlendMode,
-                            borderRadius: borderRadius,
-                            color: root.background
-                                ? isBorder
-                                    ? controller.borderColor
-                                    : controller.background
+                            border: controller.isBorder
+                                ? controller.boxBorder
                                 : null,
-                            gradient: isBorder
-                                ? controller.borderGradient
-                                : controller.backgroundGradient,
+                            borderRadius: isCircular ? null : borderRadius,
+                            color:
+                                root.background ? controller.background : null,
+                            gradient: controller.backgroundGradient,
                             image: controller.backgroundImage,
                             boxShadow: isShadow
                                 ? [
@@ -1013,60 +990,15 @@ class _ViewChild extends StatelessWidget {
                                 : BoxShape.rectangle,
                           )
                         : null,
-                    margin: isMargin && !isRippled && !isScrollable
-                        ? controller.margin
+                    margin: isMargin && !isRippled ? controller.margin : null,
+                    padding: controller.isPadding && !controller.isScrollable
+                        ? controller.padding
                         : null,
-                    padding: isScrollable
-                        ? null
-                        : isBorder
-                            ? controller.border
-                            : isPadding
-                                ? controller.padding
-                                : null,
-                    child: isBorder
-                        ? _ViewBorder(
-                            controller: controller,
-                            isCircular: isCircular,
-                            isPadding: isPadding && !isScrollable,
-                            isRadius: isRadius,
-                            child: attach,
-                          )
-                        : attach,
+                    child: child,
                   )
                 : const SizedBox(),
           )
         : null;
-  }
-}
-
-class _ViewBorder extends StatelessWidget {
-  final ViewController controller;
-  final bool isCircular, isPadding, isRadius;
-  final Widget? child;
-
-  const _ViewBorder({
-    Key? key,
-    required this.controller,
-    required this.isCircular,
-    required this.isPadding,
-    required this.isRadius,
-    this.child,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: controller.gravity,
-      clipBehavior:
-          controller.roots.decoration ? controller.clipBehavior : Clip.none,
-      padding: isPadding ? controller.padding : null,
-      decoration: BoxDecoration(
-        color: controller.background,
-        shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
-        borderRadius: isRadius ? controller.borderRadius : null,
-      ),
-      child: child,
-    );
   }
 }
 
@@ -1318,6 +1250,25 @@ class ViewController {
   double? _borderEnd;
 
   double? get borderEnd => _borderEnd ?? borderHorizontal ?? _border;
+
+  BoxBorder? get boxBorder => Border(
+        top: BorderSide(
+          color: borderColor ?? Colors.black,
+          width: border.top,
+        ),
+        bottom: BorderSide(
+          color: borderColor ?? Colors.black,
+          width: border.bottom,
+        ),
+        left: BorderSide(
+          color: borderColor ?? Colors.black,
+          width: border.left,
+        ),
+        right: BorderSide(
+          color: borderColor ?? Colors.black,
+          width: border.right,
+        ),
+      );
 
   bool get isBorder => roots.border && borderAll > 0;
 
@@ -1789,7 +1740,7 @@ class ViewController {
     _notify;
   }
 
-  void setBorderColor(Color? value) {
+  void setBorderColor(Color value) {
     borderColor = value;
     _notify;
   }
