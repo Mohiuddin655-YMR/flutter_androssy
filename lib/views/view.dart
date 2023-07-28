@@ -6,6 +6,7 @@ typedef OnViewClickListener = Function(BuildContext context);
 typedef OnViewItemClickListener<T> = void Function(BuildContext contex, T item);
 typedef OnViewErrorListener = String? Function(ViewError error);
 typedef OnViewToggleListener = Function(bool value);
+typedef OnViewHoverListener = Function(bool value);
 typedef OnViewValidListener = Function(bool value);
 typedef OnViewValidatorListener = bool Function(String value);
 
@@ -26,144 +27,79 @@ typedef OnViewNotifier = void Function(VoidCallback fn);
 typedef OnViewNotifyListener<T extends ViewController> = Function(T controller);
 
 class ValueState<T> {
-  final T _primary;
-  final T _secondary;
-  final T _ternary;
-  final T? _activated;
-  final T? _disabled;
-  final T? _error;
-  final T? _focused;
-  final T? _selected;
+  final T? primary;
+  final T? secondary;
+  final T? ternary;
+  final T? activate;
+  final T? disable;
+  final T? error;
+  final T? hover;
 
-  const ValueState._({
-    required T primary,
-    T? secondary,
-    T? ternary,
-    T? activated,
-    T? disabled,
-    T? error,
-    T? focused,
-    T? selected,
-  })  : _primary = primary,
-        _secondary = secondary ?? primary,
-        _ternary = ternary ?? secondary ?? primary,
-        _activated = activated,
-        _disabled = disabled,
-        _error = error,
-        _focused = focused,
-        _selected = selected;
+  const ValueState({
+    this.primary,
+    this.secondary,
+    this.ternary,
+    this.activate,
+    this.disable,
+    this.error,
+    this.hover,
+  });
 
-  T get primaryValue => _primary;
-
-  T? get activatedValue => _activated;
-
-  T? get disabledValue => _disabled;
-
-  T? get errorValue => _error;
-
-  T? get focusedValue => _focused;
-
-  T? get selectedValue => _selected;
-
-  factory ValueState.active({
-    required T activated,
-    required T inactivated,
-    T? disabled,
+  T? detect(
+    bool activated, {
+    bool enabled = true,
+    bool error = false,
+    bool hover = false,
   }) {
-    return ValueState._(
-      primary: inactivated,
-      activated: activated,
-      disabled: disabled,
-    );
-  }
-
-  factory ValueState.focus({
-    required T focused,
-    required T unfocused,
-    T? disabled,
-  }) {
-    return ValueState._(
-      primary: unfocused,
-      focused: focused,
-      disabled: disabled,
-    );
-  }
-
-  factory ValueState.select({
-    required T selected,
-    required T unselected,
-    T? disabled,
-  }) {
-    return ValueState._(
-      primary: unselected,
-      activated: selected,
-      selected: selected,
-      disabled: disabled,
-    );
-  }
-
-  factory ValueState.state({
-    required T primary,
-    T? secondary,
-    T? ternary,
-    T? error,
-    T? disable,
-  }) {
-    return ValueState._(
-      primary: primary,
-      secondary: secondary,
-      ternary: ternary,
-      error: error,
-      disabled: disable,
-    );
-  }
-
-  T? activated(bool activated, [bool enabled = true]) {
     if (enabled) {
-      return activated ? _activated : _primary;
+      if (hover) {
+        return this.hover ?? secondary ?? primary;
+      } else if (error) {
+        return this.error ?? ternary ?? primary;
+      } else if (activated) {
+        return activate ?? secondary ?? primary;
+      } else {
+        return primary;
+      }
     } else {
-      return _disabled;
+      return disable ?? ternary ?? primary;
     }
   }
 
-  T? focused(bool focused, [bool enabled = true]) {
-    if (enabled) {
-      return focused ? _focused : _primary;
-    } else {
-      return _disabled;
-    }
+  T? fromController(ViewController controller) {
+    return detect(
+      controller.activated,
+      enabled: controller.enabled,
+      error: controller.error,
+      hover: controller.hover,
+    );
   }
 
-  T? selected(bool selected, [bool enabled = true]) {
-    if (enabled) {
-      return selected ? _selected ?? _activated : _primary;
-    } else {
-      return _disabled;
-    }
-  }
-
-  T? error(bool error, [bool enabled = true]) {
-    if (enabled) {
-      return error ? _error : _primary;
-    } else {
-      return _disabled;
-    }
-  }
-
-  T? from(ViewState state) {
+  T? fromType(ValueStateType state) {
     switch (state) {
-      case ViewState.secondary:
-        return _secondary;
-      case ViewState.ternary:
-        return _ternary;
-      case ViewState.error:
-        return _error;
-      case ViewState.disabled:
-        return _disabled;
+      case ValueStateType.secondary:
+        return secondary ?? primary;
+      case ValueStateType.ternary:
+        return ternary ?? primary;
+      case ValueStateType.disabled:
+        return disable ?? primary;
+      case ValueStateType.error:
+        return error ?? primary;
+      case ValueStateType.hover:
+        return hover ?? primary;
       default:
-        return _primary;
+        return primary;
     }
   }
+}
+
+enum ValueStateType {
+  primary,
+  secondary,
+  ternary,
+  disabled,
+  error,
+  hover,
 }
 
 enum ViewError {
@@ -432,583 +368,13 @@ enum ViewShadowType { overlay, none }
 
 enum ViewShape { circular, rectangular, squire }
 
-enum ViewState {
-  primary,
-  secondary,
-  ternary,
-  error,
-  disabled,
-}
-
-class YMRView<T extends ViewController> extends StatefulWidget {
-  final T? controller;
-
-  final int? flex;
-  final bool? absorbMode, activated, enabled, expandable, scrollable;
-
-  final int? animation;
-  final Curve? animationType;
-
-  final double? elevation;
-  final double? dimensionRatio;
-  final double? ripple;
-
-  final double? width, widthMax, widthMin;
-  final double? height, heightMax, heightMin;
-
-  final double? margin;
-  final double? marginHorizontal, marginVertical;
-  final double? marginTop, marginBottom, marginStart, marginEnd;
-
-  final double? padding;
-  final double? paddingHorizontal, paddingVertical;
-  final double? paddingTop, paddingBottom, paddingStart, paddingEnd;
-
-  final double? border;
-  final double? borderHorizontal, borderVertical;
-  final double? borderTop, borderBottom, borderStart, borderEnd;
-
-  final double? borderRadius;
-  final double? borderRadiusBL, borderRadiusBR, borderRadiusTL, borderRadiusTR;
-
-  final double? shadow;
-  final double? shadowBlurRadius, shadowSpreadRadius;
-  final double? shadowHorizontal, shadowVertical;
-  final double? shadowStart, shadowEnd, shadowTop, shadowBottom;
-
-  final Color? background, borderColor, foreground, shadowColor;
-  final Color? hoverColor, pressedColor, rippleColor;
-
-  final DecorationImage? backgroundImage, foregroundImage;
-  final Gradient? backgroundGradient, foregroundGradient, borderGradient;
-  final Matrix4? transform;
-
-  final Alignment? gravity, transformGravity;
-  final BlendMode? backgroundBlendMode, foregroundBlendMode;
-  final BlurStyle? shadowBlurStyle;
-  final Clip? clipBehavior;
-
-  final ValueState<Color>? backgroundState;
-  final ValueState<Gradient>? backgroundGradientState;
-  final ValueState<DecorationImage>? backgroundImageState;
-
-  final Axis? orientation;
-  final ViewScrollingType? scrollingType;
-  final ScrollController? scrollController;
-
-  final ViewShadowType? shadowType;
-  final ViewPosition? position;
-  final ViewPositionType? positionType;
-  final ViewShape? shape;
-  final bool? visibility;
-
-  final Widget? child;
-
-  final OnViewClickListener? onClick, onDoubleClick, onLongClick;
-  final OnViewNotifyListener<T>? onClickHandler;
-  final OnViewNotifyListener<T>? onDoubleClickHandler;
-  final OnViewNotifyListener<T>? onLongClickHandler;
-  final OnViewToggleListener? onToggle;
-  final OnViewChangeListener? onChange;
-  final OnViewErrorListener? onError;
-  final OnViewValidListener? onValid;
-  final OnViewValidatorListener? onValidator;
-
-  const YMRView({
-    Key? key,
-    this.controller,
-    this.flex,
-    this.absorbMode,
-    this.activated,
-    this.enabled,
-    this.expandable,
-    this.visibility,
-    this.animation,
-    this.animationType,
-    this.elevation,
-    this.dimensionRatio,
-    this.ripple,
-    this.width,
-    this.widthMax,
-    this.widthMin,
-    this.height,
-    this.heightMax,
-    this.heightMin,
-    this.margin,
-    this.marginHorizontal,
-    this.marginVertical,
-    this.marginTop,
-    this.marginBottom,
-    this.marginStart,
-    this.marginEnd,
-    this.padding,
-    this.paddingHorizontal,
-    this.paddingVertical,
-    this.paddingTop,
-    this.paddingBottom,
-    this.paddingStart,
-    this.paddingEnd,
-    this.border,
-    this.borderHorizontal,
-    this.borderVertical,
-    this.borderTop,
-    this.borderBottom,
-    this.borderStart,
-    this.borderEnd,
-    this.borderRadius,
-    this.borderRadiusBL,
-    this.borderRadiusBR,
-    this.borderRadiusTL,
-    this.borderRadiusTR,
-    this.orientation,
-    this.scrollable,
-    this.scrollController,
-    this.scrollingType,
-    this.shadow,
-    this.shadowBlurRadius,
-    this.shadowSpreadRadius,
-    this.shadowHorizontal,
-    this.shadowVertical,
-    this.shadowStart,
-    this.shadowEnd,
-    this.shadowTop,
-    this.shadowBottom,
-    this.background,
-    this.borderColor,
-    this.foreground,
-    this.hoverColor,
-    this.pressedColor,
-    this.shadowColor,
-    this.rippleColor,
-    this.gravity,
-    this.transformGravity,
-    this.backgroundBlendMode,
-    this.foregroundBlendMode,
-    this.backgroundImage,
-    this.foregroundImage,
-    this.backgroundGradient,
-    this.foregroundGradient,
-    this.borderGradient,
-    this.transform,
-    this.shadowBlurStyle,
-    this.clipBehavior,
-    this.shadowType,
-    this.position,
-    this.positionType,
-    this.shape,
-    this.child,
-    this.backgroundState,
-    this.backgroundGradientState,
-    this.backgroundImageState,
-    this.onClick,
-    this.onDoubleClick,
-    this.onLongClick,
-    this.onClickHandler,
-    this.onDoubleClickHandler,
-    this.onLongClickHandler,
-    this.onToggle,
-    this.onChange,
-    this.onError,
-    this.onValid,
-    this.onValidator,
-  }) : super(key: key);
-
-  T initController() => ViewController() as T;
-
-  T attachController(T controller) => controller.fromView(this) as T;
-
-  void onViewCreated(BuildContext context, T controller) {}
-
-  void onToggleHandler(BuildContext context, T controller) {}
-
-  Widget root(BuildContext context, T controller, Widget parent) => parent;
-
-  Widget build(BuildContext context, T controller, Widget parent) => parent;
-
-  Widget? attach(BuildContext context, T controller) => controller.child;
-
-  ViewRoots initRootProperties() => const ViewRoots();
-
-  void onInit(T controller) {}
-
-  void onUpdateWidget(T controller, dynamic oldWidget) {}
-
-  void onChangeDependencies(T controller) {}
-
-  void onDispose(T controller) {}
-
-  @override
-  State<YMRView<T>> createState() => _YMRViewState<T>();
-}
-
-class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
-  late T controller;
-
-  @override
-  void initState() {
-    controller = widget.controller ?? widget.initController();
-    controller._setNotifier(setState);
-    controller = widget.attachController(controller);
-    widget.onInit(controller);
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant YMRView<T> oldWidget) {
-    controller = widget.attachController(controller);
-    widget.onUpdateWidget(controller, oldWidget);
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void didChangeDependencies() {
-    widget.onChangeDependencies(controller);
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    widget.onDispose(controller);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    controller.context = context;
-    return controller.visible
-        ? widget.root(
-            context,
-            controller,
-            _ViewPosition(
-              controller: controller,
-              attachView: _ViewFlex(
-                controller: controller,
-                attachView: _ViewDimension(
-                  controller: controller,
-                  attachView: _ViewListener(
-                    controller: controller,
-                    attachView: _ViewChild(
-                      controller: controller,
-                      attach: widget.attach(context, controller),
-                      builder: (context, view) {
-                        return widget.build(
-                          context,
-                          controller,
-                          view,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          )
-        : const SizedBox();
-  }
-}
-
-class _ViewPosition extends StatelessWidget {
-  final ViewController controller;
-  final Widget attachView;
-
-  const _ViewPosition({
-    Key? key,
-    required this.controller,
-    required this.attachView,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return controller.isPositional
-        ? Positioned(
-            top: controller.position.top,
-            bottom: controller.position.bottom,
-            left: controller.position.left,
-            right: controller.position.right,
-            child: attachView,
-          )
-        : attachView;
-  }
-}
-
-class _ViewFlex extends StatelessWidget {
-  final ViewController controller;
-  final Widget attachView;
-
-  const _ViewFlex({
-    Key? key,
-    required this.controller,
-    required this.attachView,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return controller.isExpendable
-        ? Expanded(
-            flex: controller.flex,
-            child: attachView,
-          )
-        : attachView;
-  }
-}
-
-class _ViewDimension extends StatelessWidget {
-  final ViewController controller;
-  final Widget attachView;
-
-  const _ViewDimension({
-    Key? key,
-    required this.controller,
-    required this.attachView,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return controller.isDimensional
-        ? AspectRatio(
-            aspectRatio: controller.dimensionRatio,
-            child: attachView,
-          )
-        : attachView;
-  }
-}
-
-class _ViewListener<T extends ViewController> extends StatelessWidget {
-  final T controller;
-  final Widget attachView;
-
-  const _ViewListener({
-    Key? key,
-    required this.controller,
-    required this.attachView,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return controller.isObservable
-        ? controller.isRippled
-            ? Padding(
-                padding:
-                    controller.isMargin ? controller.margin : EdgeInsets.zero,
-                child: Material(
-                  elevation: controller.elevation,
-                  borderRadius: controller.isRippled
-                      ? controller.isCircular
-                          ? BorderRadius.circular(controller.maxSize)
-                          : controller.borderRadiusF
-                      : null,
-                  color: controller.isBorder
-                      ? controller.borderColor
-                      : controller.background,
-                  clipBehavior: controller.clipBehavior,
-                  child: InkWell(
-                    splashColor: controller.rippleColor,
-                    hoverColor: controller.hoverColor,
-                    highlightColor: controller.pressedColor,
-                    onTap: controller.isClickable
-                        ? () {
-                            if (controller.isToggleClickable) {
-                              controller.onToggleNotify();
-                            } else {
-                              controller.onClickHandler != null
-                                  ? controller.onClickHandler?.call(controller)
-                                  : controller.onClick?.call(context);
-                            }
-                          }
-                        : null,
-                    onDoubleTap: controller.isDoubleClickable
-                        ? () {
-                            controller.onDoubleClickHandler != null
-                                ? controller.onDoubleClickHandler
-                                    ?.call(controller)
-                                : controller.onDoubleClick?.call(context);
-                          }
-                        : null,
-                    onLongPress: controller.isLongClickable
-                        ? () {
-                            controller.onLongClickHandler != null
-                                ? controller.onLongClickHandler
-                                    ?.call(controller)
-                                : controller.onLongClick?.call(context);
-                          }
-                        : null,
-                    child: controller.absorbMode
-                        ? AbsorbPointer(child: attachView)
-                        : attachView,
-                  ),
-                ),
-              )
-            : GestureDetector(
-                onTap: controller.isClickable
-                    ? () {
-                        if (controller.isToggleClickable) {
-                          controller.onToggleNotify();
-                        } else {
-                          controller.onClickHandler != null
-                              ? controller.onClickHandler?.call(controller)
-                              : controller.onClick?.call(context);
-                        }
-                      }
-                    : null,
-                onDoubleTap: controller.isDoubleClickable
-                    ? () {
-                        controller.onDoubleClickHandler != null
-                            ? controller.onDoubleClickHandler?.call(controller)
-                            : controller.onDoubleClick?.call(context);
-                      }
-                    : null,
-                onLongPress: controller.isLongClickable
-                    ? () {
-                        controller.onLongClickHandler != null
-                            ? controller.onLongClickHandler?.call(controller)
-                            : controller.onLongClick?.call(context);
-                      }
-                    : null,
-                child: controller.absorbMode
-                    ? AbsorbPointer(child: attachView)
-                    : attachView,
-              )
-        : attachView;
-  }
-}
-
-class _ViewChild extends StatelessWidget {
-  final ViewController controller;
-  final Widget? attach;
-  final Function(BuildContext context, Widget child) builder;
-
-  const _ViewChild({
-    Key? key,
-    required this.controller,
-    required this.attach,
-    required this.builder,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final root = controller.roots;
-    final isOverlayShadow = controller.isOverlayShadow;
-    final isCircular = controller.isCircular;
-    final isRadius = controller.isBorderRadius;
-    final isRippled = controller.isRippled;
-    final isMargin = controller.isMargin;
-    final isShadow = controller.isShadow;
-    final isConstraints = controller.isConstraints;
-
-    final borderRadius = isRippled
-        ? null
-        : isRadius && !isCircular
-            ? controller.borderRadiusF
-            : null;
-
-    var child = controller.isScrollable
-        ? SingleChildScrollView(
-            controller: controller.scrollController,
-            physics: controller.scrollingType.physics,
-            scrollDirection: controller.orientation,
-            padding: controller.padding,
-            child: attach,
-          )
-        : attach;
-    return controller.visible
-        ? builder(
-            context,
-            controller.roots.view
-                ? Container(
-                    alignment: controller.gravity,
-                    clipBehavior: root.decoration && !isRippled
-                        ? controller.clipBehavior
-                        : Clip.none,
-                    width: controller.width,
-                    height: controller.height,
-                    transform: controller.transform,
-                    transformAlignment: controller.transformGravity,
-                    constraints: isConstraints
-                        ? BoxConstraints(
-                            maxWidth: controller.widthMax,
-                            minWidth: controller.widthMin,
-                            maxHeight: controller.heightMax,
-                            minHeight: controller.heightMin,
-                          )
-                        : null,
-                    decoration: root.decoration && !isRippled
-                        ? BoxDecoration(
-                            backgroundBlendMode: controller.backgroundBlendMode,
-                            border: controller.isBorder
-                                ? controller.boxBorder
-                                : null,
-                            borderRadius: isCircular ? null : borderRadius,
-                            color:
-                                root.background ? controller.background : null,
-                            gradient: controller.backgroundGradient,
-                            image: controller.backgroundImage,
-                            boxShadow: isShadow
-                                ? [
-                                    BoxShadow(
-                                      color: controller.shadowColor ??
-                                          Colors.black45,
-                                      blurRadius: controller.shadowBlurRadius,
-                                      offset: isOverlayShadow
-                                          ? Offset.zero
-                                          : Offset(
-                                              -controller.shadowStart,
-                                              -controller.shadowTop,
-                                            ),
-                                      blurStyle: controller.shadowBlurStyle,
-                                      spreadRadius:
-                                          controller.shadowSpreadRadius,
-                                    ),
-                                    if (!isOverlayShadow)
-                                      BoxShadow(
-                                        color: controller.shadowColor ??
-                                            Colors.black45,
-                                        blurRadius: controller.shadowBlurRadius,
-                                        offset: Offset(
-                                          controller.shadowEnd,
-                                          controller.shadowBottom,
-                                        ),
-                                        blurStyle: controller.shadowBlurStyle,
-                                        spreadRadius:
-                                            controller.shadowSpreadRadius,
-                                      ),
-                                  ]
-                                : null,
-                            shape: isCircular
-                                ? BoxShape.circle
-                                : BoxShape.rectangle,
-                          )
-                        : null,
-                    foregroundDecoration: root.decoration
-                        ? BoxDecoration(
-                            backgroundBlendMode: controller.foregroundBlendMode,
-                            borderRadius: borderRadius,
-                            color: controller.foreground,
-                            gradient: controller.foregroundGradient,
-                            image: controller.foregroundImage,
-                            shape: isCircular
-                                ? BoxShape.circle
-                                : BoxShape.rectangle,
-                          )
-                        : null,
-                    margin: isMargin && !isRippled ? controller.margin : null,
-                    padding: controller.isPadding && !controller.isScrollable
-                        ? controller.padding
-                        : null,
-                    child: child,
-                  )
-                : const SizedBox(),
-          )
-        : null;
-  }
-}
-
 class ViewController {
   @mustCallSuper
   ViewController fromView(YMRView view) {
     hoverColor = view.hoverColor;
     pressedColor = view.pressedColor;
     _ripple = view.ripple ?? 0;
-    rippleColor = view.rippleColor ?? Colors.white;
+    rippleColor = view.rippleColor ?? Colors.black45;
 
     // VIEW CONDITIONAL PROPERTIES
     absorbMode = view.absorbMode ?? false;
@@ -1025,9 +391,11 @@ class ViewController {
     _dimensionRatio = view.dimensionRatio;
     elevation = view.elevation ?? 0;
     _width = view.width;
+    widthState = view.widthState;
     _widthMax = view.widthMax;
     _widthMin = view.widthMin;
     _height = view.height;
+    heightState = view.heightState;
     _heightMax = view.heightMax;
     _heightMin = view.heightMin;
 
@@ -1052,7 +420,7 @@ class ViewController {
     // VIEW BORDER PROPERTIES
     borderColor = view.borderColor;
     borderGradient = view.borderGradient;
-    _border = view.border ?? 0;
+    _borderSize = view.border ?? 0;
     _borderStart = view.borderStart;
     _borderEnd = view.borderEnd;
     _borderTop = view.borderTop;
@@ -1125,6 +493,7 @@ class ViewController {
     //VIEW DATA LISTENER PROPERTIES
     onChange = view.onChange;
     onError = view.onError;
+    onHover = view.onHover;
     onValid = view.onValid;
     onValidator = view.onValidator;
 
@@ -1146,7 +515,7 @@ class ViewController {
   Color? _background;
   Color? hoverColor;
   Color? pressedColor;
-  Color _rippleColor = Colors.white;
+  Color _rippleColor = Colors.black45;
 
   BlendMode? backgroundBlendMode;
   Gradient? _backgroundGradient;
@@ -1168,9 +537,7 @@ class ViewController {
     }
   }
 
-  Color get rippleColor {
-    return _rippleColor.withOpacity(ripple / 100);
-  }
+  Color get rippleColor => _rippleColor.withOpacity(ripple / 100);
 
   set rippleColor(Color value) => _rippleColor = value;
 
@@ -1180,15 +547,28 @@ class ViewController {
 
   set backgroundImage(DecorationImage? value) => _backgroundImage = value;
 
-  Color? get background =>
-      backgroundState?.activated(activated, enabled) ?? _background;
+  Color? get background {
+    var bg = backgroundState?.detect(activated, enabled: enabled, hover: hover);
+    return bg ?? _background;
+  }
 
-  Gradient? get backgroundGradient =>
-      backgroundGradientState?.activated(activated, enabled) ??
-      _backgroundGradient;
+  Gradient? get backgroundGradient {
+    var bg = backgroundGradientState?.detect(
+      activated,
+      enabled: enabled,
+      hover: hover,
+    );
+    return bg ?? _backgroundGradient;
+  }
 
-  DecorationImage? get backgroundImage =>
-      backgroundImageState?.activated(activated, enabled) ?? _backgroundImage;
+  DecorationImage? get backgroundImage {
+    var value = backgroundImageState?.detect(
+      activated,
+      enabled: enabled,
+      hover: hover,
+    );
+    return value ?? _backgroundImage;
+  }
 
   bool absorbMode = false;
 
@@ -1218,7 +598,7 @@ class ViewController {
 
   DecorationImage? foregroundImage;
 
-  double? _border;
+  double? _borderSize;
 
   EdgeInsets get border {
     return EdgeInsets.only(
@@ -1237,19 +617,19 @@ class ViewController {
 
   double? _borderTop;
 
-  double? get borderTop => _borderTop ?? borderVertical ?? _border;
+  double? get borderTop => _borderTop ?? borderVertical ?? _borderSize;
 
   double? _borderBottom;
 
-  double? get borderBottom => _borderBottom ?? borderVertical ?? _border;
+  double? get borderBottom => _borderBottom ?? borderVertical ?? _borderSize;
 
   double? _borderStart;
 
-  double? get borderStart => _borderStart ?? borderHorizontal ?? _border;
+  double? get borderStart => _borderStart ?? borderHorizontal ?? _borderSize;
 
   double? _borderEnd;
 
-  double? get borderEnd => _borderEnd ?? borderHorizontal ?? _border;
+  double? get borderEnd => _borderEnd ?? borderHorizontal ?? _borderSize;
 
   BoxBorder? get boxBorder => Border(
         top: BorderSide(
@@ -1353,11 +733,20 @@ class ViewController {
 
   bool enabled = true;
 
+  bool error = false;
+
   int flex = 0;
 
+  bool hover = false;
+
+  /// width properties
   double? _width;
 
-  double? get width => isSquire || isCircular ? maxSize : _width;
+  ValueState<double>? widthState;
+
+  double? get width => isSquire || isCircular
+      ? maxSize
+      : widthState?.fromController(this) ?? _width;
 
   double? _widthMax;
 
@@ -1367,9 +756,14 @@ class ViewController {
 
   double get widthMin => _widthMin ?? 0.0;
 
+  /// height properties
   double? _height;
 
-  double? get height => isSquire || isCircular ? maxSize : _height;
+  ValueState<double>? heightState;
+
+  double? get height => isSquire || isCircular
+      ? maxSize
+      : heightState?.fromController(this) ?? _height;
 
   double? _heightMax;
 
@@ -1379,6 +773,7 @@ class ViewController {
 
   double get heightMin => _heightMin ?? 0.0;
 
+  /// margin properties
   double? _margin;
 
   EdgeInsets get margin {
@@ -1419,8 +814,6 @@ class ViewController {
   bool get isMarginX => roots.margin && (margin.left + margin.right) > 0;
 
   bool get isMarginY => roots.margin && (margin.top + margin.bottom) > 0;
-
-  Axis orientation = Axis.vertical;
 
   double? _padding;
 
@@ -1472,21 +865,47 @@ class ViewController {
     return roots.padding && ((paddingTop ?? 0) + (paddingBottom ?? 0)) > 0;
   }
 
+  /// positional properties
+
   ViewPosition? _position;
 
   ViewPosition get position => _position ?? positionType.position;
 
   ViewPositionType positionType = ViewPositionType.center;
 
+  /// scroll properties
+  Axis orientation = Axis.vertical;
+
   ScrollController scrollController = ScrollController();
 
   ViewScrollingType scrollingType = ViewScrollingType.none;
 
-  Matrix4? transform;
-
-  Alignment? transformGravity;
-
+  /// Shadow properties
   double shadow = 0;
+
+  List<BoxShadow>? get shadows {
+    return isShadow
+        ? [
+            BoxShadow(
+              color: shadowColor ?? Colors.black12,
+              blurRadius: shadowBlurRadius,
+              offset: isOverlayShadow
+                  ? Offset.zero
+                  : Offset(-shadowStart, -shadowTop),
+              blurStyle: shadowBlurStyle,
+              spreadRadius: shadowSpreadRadius,
+            ),
+            if (!isOverlayShadow)
+              BoxShadow(
+                color: shadowColor ?? Colors.black12,
+                blurRadius: shadowBlurRadius,
+                offset: Offset(shadowEnd, shadowBottom),
+                blurStyle: shadowBlurStyle,
+                spreadRadius: shadowSpreadRadius,
+              ),
+          ]
+        : null;
+  }
 
   bool get isShadow {
     final x = shadowStart + shadowEnd + shadowTop + shadowBottom;
@@ -1525,68 +944,15 @@ class ViewController {
 
   ViewShape shape = ViewShape.rectangular;
 
+  Matrix4? transform;
+
+  Alignment? transformGravity;
+
+  /// default properties
   bool visible = true;
 
-  OnViewClickListener? _onClick;
-
-  OnViewClickListener? get onClick => enabled ? _onClick : null;
-
-  set onClick(OnViewClickListener? listener) => _onClick ??= listener;
-
-  OnViewClickListener? _onDoubleClick;
-
-  OnViewClickListener? get onDoubleClick => enabled ? _onDoubleClick : null;
-
-  set onDoubleClick(OnViewClickListener? listener) =>
-      _onDoubleClick ??= listener;
-
-  OnViewClickListener? _onLongClick;
-
-  OnViewClickListener? get onLongClick => enabled ? _onLongClick : null;
-
-  set onLongClick(OnViewClickListener? listener) => _onLongClick ??= listener;
-
-  OnViewToggleListener? _onToggleClick;
-
-  OnViewToggleListener? get onToggle => enabled ? _onToggleClick : null;
-
-  set onToggle(OnViewToggleListener? listener) => _onToggleClick ??= listener;
-
-  OnViewChangeListener? _onChange;
-
-  OnViewChangeListener? get onChange => enabled ? _onChange : null;
-
-  set onChange(OnViewChangeListener? listener) => _onChange ??= listener;
-
-  OnViewErrorListener? _onError;
-
-  OnViewErrorListener? get onError => enabled ? _onError : null;
-
-  set onError(OnViewErrorListener? listener) => _onError ??= listener;
-
-  OnViewValidListener? _onValid;
-
-  OnViewValidListener? get onValid => enabled ? _onValid : null;
-
-  set onValid(OnViewValidListener? listener) => _onValid ??= listener;
-
-  OnViewValidatorListener? _onValidator;
-
-  OnViewValidatorListener? get onValidator => enabled ? _onValidator : null;
-
-  set onValidator(OnViewValidatorListener? listener) =>
-      _onValidator ??= listener;
-
-  OnViewNotifyListener? onClickHandler,
-      onDoubleClickHandler,
-      onLongClickHandler;
-
-  OnViewNotifier? _onNotifier;
-
+  /// custom properties
   bool get isCircular => roots.shape && shape == ViewShape.circular;
-
-  bool get isClickable =>
-      onClick != null || onClickHandler != null || isToggleClickable;
 
   bool get isConstraints =>
       roots.constraints &&
@@ -1597,21 +963,11 @@ class ViewController {
 
   bool get isDimensional => roots.ratio && dimensionRatio > 0;
 
-  bool get isDoubleClickable =>
-      onDoubleClick != null || onDoubleClickHandler != null;
-
   bool get isExpendable {
     return roots.flex && flex > 0;
   }
 
   bool get isHeight => height != null;
-
-  bool get isLongClickable => onLongClick != null || onLongClickHandler != null;
-
-  bool get isObservable {
-    return roots.observer &&
-        (isClickable || isDoubleClickable || isLongClickable);
-  }
 
   bool get isOverlayShadow =>
       roots.shadow && shadowType == ViewShadowType.overlay;
@@ -1639,12 +995,7 @@ class ViewController {
     return min(_width ?? 0, _height ?? 0);
   }
 
-  void get _notify {
-    if (_onNotifier != null) {
-      _onNotifier?.call(() {});
-    }
-  }
-
+  /// Boolean properties
   void setAbsorbMode(bool value) {
     absorbMode = value;
     _notify;
@@ -1655,11 +1006,27 @@ class ViewController {
     _notify;
   }
 
-  void setAlignment(Alignment? value) {
-    gravity = value;
+  void setEnabled(bool value) {
+    enabled = value;
     _notify;
   }
 
+  void setError(bool value) {
+    error = value;
+    _notify;
+  }
+
+  void setHover(bool value) {
+    hover = value;
+    _notify;
+  }
+
+  void setVisibility(bool value) {
+    visible = value;
+    _notify;
+  }
+
+  /// Animation properties
   void setAnimation(int value) {
     animation = value;
     _notify;
@@ -1667,6 +1034,12 @@ class ViewController {
 
   void setAnimationType(Curve value) {
     animationType = value;
+    _notify;
+  }
+
+  /// Base properties
+  void setAlignment(Alignment? value) {
+    gravity = value;
     _notify;
   }
 
@@ -1705,41 +1078,6 @@ class ViewController {
     _notify;
   }
 
-  void setClipBehavior(Clip value) {
-    clipBehavior = value;
-    _notify;
-  }
-
-  void setDimensionRatio(double? value) {
-    _dimensionRatio = value;
-    _notify;
-  }
-
-  void setElevation(double value) {
-    elevation = value;
-    _notify;
-  }
-
-  void setForeground(Color? value) {
-    foreground = value;
-    _notify;
-  }
-
-  void setForegroundGradient(Gradient? value) {
-    foregroundGradient = value;
-    _notify;
-  }
-
-  void setForegroundBlendMode(BlendMode? value) {
-    foregroundBlendMode = value;
-    _notify;
-  }
-
-  void setForegroundImage(DecorationImage? value) {
-    foregroundImage = value;
-    _notify;
-  }
-
   void setBorderColor(Color value) {
     borderColor = value;
     _notify;
@@ -1751,7 +1089,7 @@ class ViewController {
   }
 
   void setBorder(double value) {
-    _border = value;
+    _borderSize = value;
     _notify;
   }
 
@@ -1810,13 +1148,43 @@ class ViewController {
     _notify;
   }
 
-  void setChild(Widget? value) {
-    child = value;
+  void setClipBehavior(Clip value) {
+    clipBehavior = value;
     _notify;
   }
 
-  void setEnabled(bool value) {
-    enabled = value;
+  void setDimensionRatio(double? value) {
+    _dimensionRatio = value;
+    _notify;
+  }
+
+  void setElevation(double value) {
+    elevation = value;
+    _notify;
+  }
+
+  void setForeground(Color? value) {
+    foreground = value;
+    _notify;
+  }
+
+  void setForegroundGradient(Gradient? value) {
+    foregroundGradient = value;
+    _notify;
+  }
+
+  void setForegroundBlendMode(BlendMode? value) {
+    foregroundBlendMode = value;
+    _notify;
+  }
+
+  void setForegroundImage(DecorationImage? value) {
+    foregroundImage = value;
+    _notify;
+  }
+
+  void setChild(Widget? value) {
+    child = value;
     _notify;
   }
 
@@ -2010,58 +1378,627 @@ class ViewController {
     _notify;
   }
 
-  void setVisibility(bool value) {
-    visible = value;
-    _notify;
+  /// observable properties
+  bool get isClickable =>
+      onClick != null || onClickHandler != null || isToggleClickable;
+
+  bool get isDoubleClickable =>
+      onDoubleClick != null || onDoubleClickHandler != null;
+
+  bool get isLongClickable => onLongClick != null || onLongClickHandler != null;
+
+  bool get isObservable =>
+      roots.observer && (isClickable || isDoubleClickable || isLongClickable);
+
+  OnViewClickListener? _onClick;
+
+  OnViewClickListener? get onClick => enabled ? _onClick : null;
+
+  set onClick(OnViewClickListener? listener) => _onClick ??= listener;
+
+  OnViewClickListener? _onDoubleClick;
+
+  OnViewClickListener? get onDoubleClick => enabled ? _onDoubleClick : null;
+
+  set onDoubleClick(OnViewClickListener? listener) =>
+      _onDoubleClick ??= listener;
+
+  OnViewClickListener? _onLongClick;
+
+  OnViewClickListener? get onLongClick => enabled ? _onLongClick : null;
+
+  set onLongClick(OnViewClickListener? listener) => _onLongClick ??= listener;
+
+  OnViewToggleListener? _onToggleClick;
+
+  OnViewToggleListener? get onToggle => enabled ? _onToggleClick : null;
+
+  set onToggle(OnViewToggleListener? listener) => _onToggleClick ??= listener;
+
+  OnViewChangeListener? _onChange;
+
+  OnViewChangeListener? get onChange => enabled ? _onChange : null;
+
+  set onChange(OnViewChangeListener? listener) => _onChange ??= listener;
+
+  OnViewHoverListener? _onHover;
+
+  OnViewHoverListener? get onHover => enabled ? _onHover : null;
+
+  set onHover(OnViewHoverListener? listener) => _onHover ??= listener;
+
+  OnViewErrorListener? _onError;
+
+  OnViewErrorListener? get onError => enabled ? _onError : null;
+
+  set onError(OnViewErrorListener? listener) => _onError ??= listener;
+
+  OnViewValidListener? _onValid;
+
+  OnViewValidListener? get onValid => enabled ? _onValid : null;
+
+  set onValid(OnViewValidListener? listener) => _onValid ??= listener;
+
+  OnViewValidatorListener? _onValidator;
+
+  OnViewValidatorListener? get onValidator => enabled ? _onValidator : null;
+
+  set onValidator(OnViewValidatorListener? listener) =>
+      _onValidator ??= listener;
+
+  OnViewNotifyListener? onClickHandler,
+      onDoubleClickHandler,
+      onLongClickHandler;
+
+  void setOnClickListener(OnViewClickListener listener) => _onClick = listener;
+
+  void setOnDoubleClickListener(OnViewClickListener listener) =>
+      _onDoubleClick = listener;
+
+  void setOnLongClickListener(OnViewClickListener listener) =>
+      _onLongClick = listener;
+
+  void setOnToggleClickListener(OnViewToggleListener listener) =>
+      _onToggleClick = listener;
+
+  void setOnChangeListener(OnViewChangeListener listener) =>
+      _onChange = listener;
+
+  void setOnHoverListener(OnViewHoverListener listener) => _onHover = listener;
+
+  void setOnErrorListener(OnViewErrorListener listener) => _onError = listener;
+
+  void setOnValidListener(OnViewValidListener listener) => _onValid = listener;
+
+  void setOnValidatorListener(OnViewValidatorListener listener) =>
+      _onValidator = listener;
+
+  /// notifier properties
+
+  OnViewNotifier? _notifier;
+
+  void get _notify {
+    if (_notifier != null) {
+      _notifier?.call(() {});
+    }
   }
 
-  void setOnClickListener(OnViewClickListener listener) {
-    _onClick = listener;
-  }
-
-  void setOnDoubleClickListener(OnViewClickListener listener) {
-    _onDoubleClick = listener;
-  }
-
-  void setOnLongClickListener(OnViewClickListener listener) {
-    _onLongClick = listener;
-  }
-
-  void setOnToggleClickListener(OnViewToggleListener listener) {
-    _onToggleClick = listener;
-  }
-
-  void setOnChangeListener(OnViewChangeListener listener) {
-    _onChange = listener;
-  }
-
-  void setOnErrorListener(OnViewErrorListener listener) {
-    _onError = listener;
-  }
-
-  void setOnValidListener(OnViewValidListener listener) {
-    _onValid = listener;
-  }
-
-  void setOnValidatorListener(OnViewValidatorListener listener) {
-    _onValidator = listener;
-  }
-
-  void _setNotifier(OnViewNotifier? notifier) {
-    _onNotifier = notifier;
-  }
-
-  void onToggleNotify() {
-    activated = !activated;
-    onToggle?.call(activated);
-    _notify;
-  }
+  void _setNotifier(OnViewNotifier? notifier) => _notifier = notifier;
 
   void onNotify() => _notify;
 
   void onNotifyWithCallback(VoidCallback callback) {
-    if (_onNotifier != null) {
-      _onNotifier?.call(callback);
+    if (_notifier != null) {
+      _notifier?.call(callback);
     }
+  }
+
+  void onNotifyHover(bool status) {
+    hover = status;
+    onHover?.call(hover);
+    _notify;
+  }
+
+  void onNotifyToggle() {
+    activated = !activated;
+    onToggle?.call(activated);
+    _notify;
+  }
+}
+
+class YMRView<T extends ViewController> extends StatefulWidget {
+  final T? controller;
+
+  final int? flex;
+  final bool? absorbMode, activated, enabled, expandable, scrollable;
+
+  final int? animation;
+  final Curve? animationType;
+
+  final double? elevation;
+  final double? dimensionRatio;
+  final double? ripple;
+
+  final double? width, widthMax, widthMin;
+  final ValueState<double>? widthState;
+  final double? height, heightMax, heightMin;
+  final ValueState<double>? heightState;
+
+  final double? margin;
+  final double? marginHorizontal, marginVertical;
+  final double? marginTop, marginBottom, marginStart, marginEnd;
+
+  final double? padding;
+  final double? paddingHorizontal, paddingVertical;
+  final double? paddingTop, paddingBottom, paddingStart, paddingEnd;
+
+  final double? border;
+  final double? borderHorizontal, borderVertical;
+  final double? borderTop, borderBottom, borderStart, borderEnd;
+
+  final double? borderRadius;
+  final double? borderRadiusBL, borderRadiusBR, borderRadiusTL, borderRadiusTR;
+
+  final double? shadow;
+  final double? shadowBlurRadius, shadowSpreadRadius;
+  final double? shadowHorizontal, shadowVertical;
+  final double? shadowStart, shadowEnd, shadowTop, shadowBottom;
+
+  final Color? background, borderColor, foreground, shadowColor;
+  final Color? hoverColor, pressedColor, rippleColor;
+
+  final DecorationImage? backgroundImage, foregroundImage;
+  final Gradient? backgroundGradient, foregroundGradient, borderGradient;
+  final Matrix4? transform;
+
+  final Alignment? gravity, transformGravity;
+  final BlendMode? backgroundBlendMode, foregroundBlendMode;
+  final BlurStyle? shadowBlurStyle;
+  final Clip? clipBehavior;
+
+  final ValueState<Color>? backgroundState;
+  final ValueState<Gradient>? backgroundGradientState;
+  final ValueState<DecorationImage>? backgroundImageState;
+
+  final Axis? orientation;
+  final ViewScrollingType? scrollingType;
+  final ScrollController? scrollController;
+
+  final ViewShadowType? shadowType;
+  final ViewPosition? position;
+  final ViewPositionType? positionType;
+  final ViewShape? shape;
+  final bool? visibility;
+
+  final Widget? child;
+
+  final OnViewClickListener? onClick, onDoubleClick, onLongClick;
+  final OnViewNotifyListener<T>? onClickHandler;
+  final OnViewNotifyListener<T>? onDoubleClickHandler;
+  final OnViewNotifyListener<T>? onLongClickHandler;
+  final OnViewToggleListener? onToggle;
+  final OnViewChangeListener? onChange;
+  final OnViewErrorListener? onError;
+  final OnViewHoverListener? onHover;
+  final OnViewValidListener? onValid;
+  final OnViewValidatorListener? onValidator;
+
+  const YMRView({
+    Key? key,
+    this.controller,
+    this.flex,
+    this.absorbMode,
+    this.activated,
+    this.enabled,
+    this.expandable,
+    this.visibility,
+    this.animation,
+    this.animationType,
+    this.elevation,
+    this.dimensionRatio,
+    this.ripple,
+    this.width,
+    this.widthState,
+    this.widthMax,
+    this.widthMin,
+    this.height,
+    this.heightState,
+    this.heightMax,
+    this.heightMin,
+    this.margin,
+    this.marginHorizontal,
+    this.marginVertical,
+    this.marginTop,
+    this.marginBottom,
+    this.marginStart,
+    this.marginEnd,
+    this.padding,
+    this.paddingHorizontal,
+    this.paddingVertical,
+    this.paddingTop,
+    this.paddingBottom,
+    this.paddingStart,
+    this.paddingEnd,
+    this.border,
+    this.borderHorizontal,
+    this.borderVertical,
+    this.borderTop,
+    this.borderBottom,
+    this.borderStart,
+    this.borderEnd,
+    this.borderRadius,
+    this.borderRadiusBL,
+    this.borderRadiusBR,
+    this.borderRadiusTL,
+    this.borderRadiusTR,
+    this.orientation,
+    this.scrollable,
+    this.scrollController,
+    this.scrollingType,
+    this.shadow,
+    this.shadowBlurRadius,
+    this.shadowSpreadRadius,
+    this.shadowHorizontal,
+    this.shadowVertical,
+    this.shadowStart,
+    this.shadowEnd,
+    this.shadowTop,
+    this.shadowBottom,
+    this.background,
+    this.borderColor,
+    this.foreground,
+    this.hoverColor,
+    this.pressedColor,
+    this.shadowColor,
+    this.rippleColor,
+    this.gravity,
+    this.transformGravity,
+    this.backgroundBlendMode,
+    this.foregroundBlendMode,
+    this.backgroundImage,
+    this.foregroundImage,
+    this.backgroundGradient,
+    this.foregroundGradient,
+    this.borderGradient,
+    this.transform,
+    this.shadowBlurStyle,
+    this.clipBehavior,
+    this.shadowType,
+    this.position,
+    this.positionType,
+    this.shape,
+    this.child,
+    this.backgroundState,
+    this.backgroundGradientState,
+    this.backgroundImageState,
+    this.onClick,
+    this.onDoubleClick,
+    this.onLongClick,
+    this.onClickHandler,
+    this.onDoubleClickHandler,
+    this.onLongClickHandler,
+    this.onToggle,
+    this.onChange,
+    this.onError,
+    this.onHover,
+    this.onValid,
+    this.onValidator,
+  }) : super(key: key);
+
+  T initController() => ViewController() as T;
+
+  T attachController(T controller) => controller.fromView(this) as T;
+
+  void onViewCreated(BuildContext context, T controller) {}
+
+  void onToggleHandler(BuildContext context, T controller) {}
+
+  Widget root(BuildContext context, T controller, Widget parent) => parent;
+
+  Widget build(BuildContext context, T controller, Widget parent) => parent;
+
+  Widget? attach(BuildContext context, T controller) => controller.child;
+
+  ViewRoots initRootProperties() => const ViewRoots();
+
+  void onInit(T controller) {}
+
+  void onUpdateWidget(T controller, dynamic oldWidget) {}
+
+  void onChangeDependencies(T controller) {}
+
+  void onDispose(T controller) {}
+
+  @override
+  State<YMRView<T>> createState() => _YMRViewState<T>();
+}
+
+class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
+  late T controller;
+
+  @override
+  void initState() {
+    controller = widget.controller ?? widget.initController();
+    controller._setNotifier(setState);
+    controller = widget.attachController(controller);
+    widget.onInit(controller);
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant YMRView<T> oldWidget) {
+    controller = widget.attachController(controller);
+    widget.onUpdateWidget(controller, oldWidget);
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void didChangeDependencies() {
+    widget.onChangeDependencies(controller);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    widget.onDispose(controller);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    controller.context = context;
+    return controller.visible
+        ? widget.root(
+            context,
+            controller,
+            _ViewPosition(
+              controller: controller,
+              attachView: _ViewFlex(
+                controller: controller,
+                attachView: _ViewDimension(
+                  controller: controller,
+                  attachView: _ViewListener(
+                    controller: controller,
+                    attachView: _ViewBuilder(
+                      controller: controller,
+                      attach: widget.attach(context, controller),
+                      builder: (context, view) {
+                        return widget.build(
+                          context,
+                          controller,
+                          view,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        : const SizedBox();
+  }
+}
+
+class _ViewPosition extends StatelessWidget {
+  final ViewController controller;
+  final Widget attachView;
+
+  const _ViewPosition({
+    Key? key,
+    required this.controller,
+    required this.attachView,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return controller.isPositional
+        ? Positioned(
+            top: controller.position.top,
+            bottom: controller.position.bottom,
+            left: controller.position.left,
+            right: controller.position.right,
+            child: attachView,
+          )
+        : attachView;
+  }
+}
+
+class _ViewFlex extends StatelessWidget {
+  final ViewController controller;
+  final Widget attachView;
+
+  const _ViewFlex({
+    Key? key,
+    required this.controller,
+    required this.attachView,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return controller.isExpendable
+        ? Expanded(
+            flex: controller.flex,
+            child: attachView,
+          )
+        : attachView;
+  }
+}
+
+class _ViewDimension extends StatelessWidget {
+  final ViewController controller;
+  final Widget attachView;
+
+  const _ViewDimension({
+    Key? key,
+    required this.controller,
+    required this.attachView,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return controller.isDimensional
+        ? AspectRatio(
+            aspectRatio: controller.dimensionRatio,
+            child: attachView,
+          )
+        : attachView;
+  }
+}
+
+class _ViewListener<T extends ViewController> extends StatelessWidget {
+  final T controller;
+  final Widget attachView;
+
+  const _ViewListener({
+    Key? key,
+    required this.controller,
+    required this.attachView,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var child = attachView;
+    if (controller.isObservable) {
+      child = Material(
+        elevation: controller.elevation,
+        borderRadius: controller.isRippled
+            ? controller.isCircular
+                ? BorderRadius.circular(controller.maxSize)
+                : controller.borderRadiusF
+            : null,
+        color: controller.isBorder
+            ? controller.borderColor
+            : controller.background,
+        clipBehavior: controller.clipBehavior,
+        child: InkWell(
+          splashColor: controller.rippleColor,
+          hoverColor: controller.hoverColor,
+          highlightColor: controller.pressedColor,
+          onHover: controller.onNotifyHover,
+          onTap: controller.isClickable
+              ? () {
+                  if (controller.isToggleClickable) {
+                    controller.onNotifyToggle();
+                  } else {
+                    controller.onClickHandler != null
+                        ? controller.onClickHandler?.call(controller)
+                        : controller.onClick?.call(context);
+                  }
+                }
+              : null,
+          onDoubleTap: controller.isDoubleClickable
+              ? () {
+                  controller.onDoubleClickHandler != null
+                      ? controller.onDoubleClickHandler?.call(controller)
+                      : controller.onDoubleClick?.call(context);
+                }
+              : null,
+          onLongPress: controller.isLongClickable
+              ? () {
+                  controller.onLongClickHandler != null
+                      ? controller.onLongClickHandler?.call(controller)
+                      : controller.onLongClick?.call(context);
+                }
+              : null,
+          child: controller.absorbMode
+              ? AbsorbPointer(child: attachView)
+              : attachView,
+        ),
+      );
+
+      if (controller.isMargin) {
+        child = Padding(
+          padding: controller.isMargin ? controller.margin : EdgeInsets.zero,
+          child: child,
+        );
+      }
+    }
+    return child;
+  }
+}
+
+class _ViewBuilder extends StatelessWidget {
+  final ViewController controller;
+  final Widget? attach;
+  final Function(BuildContext context, Widget child) builder;
+
+  const _ViewBuilder({
+    required this.controller,
+    required this.attach,
+    required this.builder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final root = controller.roots;
+    final isCircular = controller.isCircular;
+    final isRadius = controller.isBorderRadius;
+    final isRippled = controller.isRippled;
+    final isMargin = controller.isMargin;
+    final isConstraints = controller.isConstraints;
+
+    final borderRadius = isRippled
+        ? null
+        : isRadius && !isCircular
+            ? controller.borderRadiusF
+            : null;
+
+    var child = controller.roots.view
+        ? Container(
+            alignment: controller.gravity,
+            clipBehavior: root.decoration && !isRippled
+                ? controller.clipBehavior
+                : Clip.none,
+            width: controller.width,
+            height: controller.height,
+            transform: controller.transform,
+            transformAlignment: controller.transformGravity,
+            constraints: isConstraints
+                ? BoxConstraints(
+                    maxWidth: controller.widthMax,
+                    minWidth: controller.widthMin,
+                    maxHeight: controller.heightMax,
+                    minHeight: controller.heightMin,
+                  )
+                : null,
+            decoration: root.decoration && !isRippled
+                ? BoxDecoration(
+                    backgroundBlendMode: controller.backgroundBlendMode,
+                    border: controller.isBorder ? controller.boxBorder : null,
+                    borderRadius: isCircular ? null : borderRadius,
+                    color: root.background ? controller.background : null,
+                    gradient: controller.backgroundGradient,
+                    image: controller.backgroundImage,
+                    boxShadow: controller.shadows,
+                    shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+                  )
+                : null,
+            foregroundDecoration: root.decoration
+                ? BoxDecoration(
+                    backgroundBlendMode: controller.foregroundBlendMode,
+                    borderRadius: borderRadius,
+                    color: controller.foreground,
+                    gradient: controller.foregroundGradient,
+                    image: controller.foregroundImage,
+                    shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+                  )
+                : null,
+            margin: isMargin && !isRippled ? controller.margin : null,
+            padding: controller.isPadding && !controller.isScrollable
+                ? controller.padding
+                : null,
+            child: controller.isScrollable
+                ? SingleChildScrollView(
+                    controller: controller.scrollController,
+                    physics: controller.scrollingType.physics,
+                    scrollDirection: controller.orientation,
+                    padding: controller.padding,
+                    child: attach,
+                  )
+                : attach,
+          )
+        : const SizedBox();
+
+    return controller.visible ? builder(context, child) : null;
   }
 }

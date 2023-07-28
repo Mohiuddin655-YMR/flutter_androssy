@@ -108,9 +108,9 @@ class MaterialEditText extends YMRView<MaterialEditTextController> {
     const secondaryColor = Color(0xffbbbbbb);
     const underlineColor = Color(0xffe1e1e1);
     var drawableTint = controller.drawableTint ??
-        ValueState<Color>.focus(
-          focused: primaryColor,
-          unfocused: secondaryColor,
+        ValueState<Color>(
+          activate: primaryColor,
+          primary: secondaryColor,
         );
     var style = TextStyle(
       color: controller.textColor ?? Colors.black,
@@ -187,35 +187,35 @@ class MaterialEditText extends YMRView<MaterialEditTextController> {
                     if (!controller._initial)
                       isValid && controller.onExecute != null
                           ? _METLoading(
-                        value: controller.text,
-                        onLoading: controller.onExecute,
-                        builder: (value) {
-                          return _METDrawable(
-                            icon: controller.drawableEnd!,
-                            size: 24,
-                            focused: controller.isFocused,
-                            selected: isValid,
-                            tint: drawableTint,
-                            padding: EdgeInsets.only(
-                              left: controller.drawablePadding / 2,
-                            ),
-                            visible: value,
-                          );
-                        },
-                      )
+                              value: controller.text,
+                              onLoading: controller.onExecute,
+                              builder: (value) {
+                                return _METDrawable(
+                                  icon: controller.drawableEnd!,
+                                  size: 24,
+                                  focused: controller.isFocused,
+                                  selected: isValid,
+                                  tint: drawableTint,
+                                  padding: EdgeInsets.only(
+                                    left: controller.drawablePadding / 2,
+                                  ),
+                                  visible: value,
+                                );
+                              },
+                            )
                           : controller.drawableEnd != null
-                          ? _METDrawable(
-                        icon: controller.drawableEnd!,
-                        size: 24,
-                        focused: controller.isFocused,
-                        selected: isValid,
-                        tint: drawableTint,
-                        visible: isValid,
-                        padding: EdgeInsets.only(
-                          left: controller.drawablePadding / 2,
-                        ),
-                      )
-                          : const SizedBox(),
+                              ? _METDrawable(
+                                  icon: controller.drawableEnd!,
+                                  size: 24,
+                                  focused: controller.isFocused,
+                                  selected: isValid,
+                                  tint: drawableTint,
+                                  visible: isValid,
+                                  padding: EdgeInsets.only(
+                                    left: controller.drawablePadding / 2,
+                                  ),
+                                )
+                              : const SizedBox(),
                   ],
                 ),
               ),
@@ -225,7 +225,7 @@ class MaterialEditText extends YMRView<MaterialEditTextController> {
                 error: hasError,
                 height: 1,
                 primary: primaryColor,
-                colorState: ValueState.state(
+                colorState: ValueState(
                   primary: primaryColor,
                   secondary: underlineColor,
                   error: controller.errorColor,
@@ -516,14 +516,14 @@ class _METUnderline extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: colorState.from(
+            color: colorState.fromType(
               enabled
                   ? error
-                      ? ViewState.error
+                      ? ValueStateType.error
                       : focused
-                          ? ViewState.primary
-                          : ViewState.secondary
-                  : ViewState.disabled,
+                          ? ValueStateType.primary
+                          : ValueStateType.secondary
+                  : ValueStateType.disabled,
             ),
           ),
           height: focused ? height * 2 : height,
@@ -559,9 +559,9 @@ class _METDrawable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = tint ??
-        ValueState.focus(
-          focused: Theme.of(context).primaryColor,
-          unfocused: Colors.grey,
+        ValueState(
+          primary: Colors.grey,
+          activate: Theme.of(context).primaryColor,
         );
     final drawable = icon.drawable(selected ?? focused);
     return Visibility(
@@ -573,7 +573,7 @@ class _METDrawable extends StatelessWidget {
         child: FittedBox(
           child: RawIconView(
             icon: drawable,
-            tint: color.focused(focused),
+            tint: color.detect(focused),
           ),
         ),
       ),

@@ -386,7 +386,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
             error: hasError,
             height: 1,
             primary: primaryColor,
-            colorState: ValueState.state(
+            colorState: ValueState(
               primary: primaryColor,
               secondary: underlineColor,
               error: controller.errorColor,
@@ -703,14 +703,14 @@ class _ETUnderline extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: colorState.from(
+              color: colorState.fromType(
                 enabled
                     ? error
-                        ? ViewState.error
+                        ? ValueStateType.error
                         : focused
-                            ? ViewState.primary
-                            : ViewState.secondary
-                    : ViewState.disabled,
+                            ? ValueStateType.primary
+                            : ValueStateType.secondary
+                    : ValueStateType.disabled,
               ),
             ),
             height: focused ? height * 2 : height,

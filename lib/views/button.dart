@@ -52,6 +52,7 @@ class Button extends TextView<ButtonController> {
     super.flex,
     super.gravity,
     super.height,
+    super.heightState,
     super.heightMax,
     super.heightMin,
     super.hoverColor,
@@ -90,12 +91,14 @@ class Button extends TextView<ButtonController> {
     super.transform,
     super.transformGravity,
     super.width,
+    super.widthState,
     super.widthMax,
     super.widthMin,
     super.visibility,
     super.onClick,
     super.onDoubleClick,
     super.onLongClick,
+    super.onHover,
     super.onToggle,
     super.text,
     super.textSize,
@@ -243,15 +246,13 @@ class ButtonController extends TextViewController {
     return this;
   }
 
-  dynamic get icon => iconState?.activated(activated, enabled) ?? _icon;
+  dynamic get icon => iconState?.fromController(this) ?? _icon;
 
   double get iconSize =>
-      iconSizeState?.activated(activated, enabled) ??
-      _iconSize ??
-      (textSize ?? 0) * 1.2;
+      iconSizeState?.fromController(this) ?? _iconSize ?? (textSize ?? 0) * 1.2;
 
   Color? get iconTint => iconTintEnabled
-      ? iconTintState?.activated(activated, enabled) ?? _iconTint ?? color
+      ? iconTintState?.fromController(this) ?? _iconTint ?? color
       : null;
 
   bool get isCenterText => centerText;
@@ -265,7 +266,7 @@ class ButtonController extends TextViewController {
   bool get isEndIconFlex => isEndIconVisible && expended;
 
   Color? get color {
-    var I = textColorState?.activated(activated, enabled) ?? textColor;
+    var I = textColorState?.fromController(this) ?? textColor;
     if (I == null) {
       return enabled && isObservable
           ? activated

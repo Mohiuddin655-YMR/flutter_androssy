@@ -403,6 +403,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.flex,
     super.gravity,
     super.height,
+    super.heightState,
     super.heightMax,
     super.heightMin,
     super.hoverColor,
@@ -445,12 +446,14 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.transform,
     super.transformGravity,
     super.width,
+    super.widthState,
     super.widthMax,
     super.widthMin,
     super.visibility,
     super.onClick,
     super.onDoubleClick,
     super.onLongClick,
+    super.onHover,
     super.onToggle,
     super.onChange,
     super.onError,
@@ -793,7 +796,7 @@ class TextViewController extends ViewController {
   set text(String? value) => _text = value;
 
   String get text {
-    final value = textState?.activated(activated, enabled) ?? _text ?? "";
+    final value = textState?.fromController(this) ?? _text ?? "";
     if (maxCharacters > 0 && !activated) {
       return value.substring(
         0,
@@ -812,22 +815,20 @@ class TextViewController extends ViewController {
 
   set textColor(Color? value) => _textColor = value;
 
-  Color? get textColor {
-    return textColorState?.activated(activated, enabled) ?? _textColor;
-  }
+  Color? get textColor => textColorState?.fromController(this) ?? _textColor;
 
   FontWeight? get textFontWeight {
-    return textFontWeightState?.activated(activated) ?? _textFontWeight;
+    return textFontWeightState?.fromController(this) ?? _textFontWeight;
   }
 
   set textFontWeight(FontWeight? value) => _textFontWeight = value;
 
-  double? get textSize => textSizeState?.activated(activated) ?? _textSize;
+  double? get textSize => textSizeState?.fromController(this) ?? _textSize;
 
   set textSize(double? value) => _textSize = value;
 
   TextStyle get textStyle =>
-      textStyleState?.activated(activated) ?? _textStyle ?? const TextStyle();
+      textStyleState?.fromController(this) ?? _textStyle ?? const TextStyle();
 
   set textStyle(TextStyle? value) => _textStyle = value;
 
@@ -836,30 +837,28 @@ class TextViewController extends ViewController {
   set prefixText(String? value) => _prefixText = value;
 
   String? get prefixText {
-    final value = prefixTextState?.activated(activated, enabled) ?? _prefixText;
+    final value = prefixTextState?.fromController(this) ?? _prefixText;
     return prefixTextAllCaps ? value?.toUpperCase() : value;
   }
 
   set prefixTextColor(Color? value) => _prefixTextColor = value;
 
-  Color? get prefixTextColor {
-    return prefixTextColorState?.activated(activated, enabled) ??
-        _prefixTextColor;
-  }
+  Color? get prefixTextColor =>
+      prefixTextColorState?.fromController(this) ?? _prefixTextColor;
 
   FontWeight? get prefixFontWeight {
-    return prefixFontWeightState?.activated(activated) ?? _prefixFontWeight;
+    return prefixFontWeightState?.fromController(this) ?? _prefixFontWeight;
   }
 
   set prefixFontWeight(FontWeight? value) => _prefixFontWeight = value;
 
   double? get prefixTextSize =>
-      prefixTextSizeState?.activated(activated) ?? _prefixTextSize;
+      prefixTextSizeState?.fromController(this) ?? _prefixTextSize;
 
   set prefixTextSize(double? value) => _prefixTextSize = value;
 
   TextStyle get prefixTextStyle =>
-      prefixTextStyleState?.activated(activated) ??
+      prefixTextStyleState?.fromController(this) ??
       _prefixTextStyle ??
       const TextStyle();
 
@@ -970,30 +969,28 @@ class TextViewController extends ViewController {
   set suffixText(String? value) => _suffixText = value;
 
   String? get suffixText {
-    final value = suffixTextState?.activated(activated, enabled) ?? _suffixText;
+    final value = suffixTextState?.fromController(this) ?? _suffixText;
     return suffixTextAllCaps ? value?.toUpperCase() : value;
   }
 
   set suffixTextColor(Color? value) => _suffixTextColor = value;
 
-  Color? get suffixTextColor {
-    return suffixTextColorState?.activated(activated, enabled) ??
-        _suffixTextColor;
-  }
+  Color? get suffixTextColor =>
+      suffixTextColorState?.fromController(this) ?? _suffixTextColor;
 
   FontWeight? get suffixFontWeight {
-    return suffixFontWeightState?.activated(activated) ?? _suffixFontWeight;
+    return suffixFontWeightState?.fromController(this) ?? _suffixFontWeight;
   }
 
   set suffixFontWeight(FontWeight? value) => _suffixFontWeight = value;
 
   double? get suffixTextSize =>
-      suffixTextSizeState?.activated(activated) ?? _suffixTextSize;
+      suffixTextSizeState?.fromController(this) ?? _suffixTextSize;
 
   set suffixTextSize(double? value) => _suffixTextSize = value;
 
   TextStyle get suffixTextStyle =>
-      suffixTextStyleState?.activated(activated) ??
+      suffixTextStyleState?.fromController(this) ??
       _suffixTextStyle ??
       const TextStyle();
 

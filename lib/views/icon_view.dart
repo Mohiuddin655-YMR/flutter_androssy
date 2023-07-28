@@ -224,11 +224,11 @@ class IconViewController extends ViewController {
   @override
   double get _borderRadius => super._borderRadius ?? size;
 
-  dynamic get icon => iconState?.selected(activated) ?? _icon;
+  dynamic get icon => iconState?.fromController(this) ?? _icon;
 
-  double get size => iconSizeState?.selected(activated) ?? _size;
+  double get size => iconSizeState?.fromController(this) ?? _size;
 
-  Color? get tint => tintState?.selected(activated) ?? _tint;
+  Color? get tint => tintState?.fromController(this) ?? _tint;
 
   void setIcon(dynamic value) {
     _icon = value;

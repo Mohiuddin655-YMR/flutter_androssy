@@ -73,9 +73,9 @@ class NavigationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var ic = iconState?.activated(isSelected) ?? icon;
-    var text = titleState?.activated(isSelected) ?? title ?? "";
-    var spacer = spaceBetweenState?.activated(isSelected) ?? spaceBetween ?? 2;
+    var ic = iconState?.detect(isSelected) ?? icon;
+    var text = titleState?.detect(isSelected) ?? title ?? "";
+    var spacer = spaceBetweenState?.detect(isSelected) ?? spaceBetween ?? 2;
     return LinearLayout(
       widthMax: maxWidth,
       widthMin: minWidth,

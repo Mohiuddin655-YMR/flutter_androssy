@@ -306,21 +306,21 @@ class TabViewController extends ViewController {
   }
 
   Color? get contentColor =>
-      contentColorState?.selected(activated) ?? _contentColor;
+      contentColorState?.fromController(this) ?? _contentColor;
 
-  String get title => titleState?.selected(activated) ?? _title ?? "";
+  String get title => titleState?.fromController(this) ?? _title ?? "";
 
-  double get titleSize => titleSizeState?.selected(activated) ?? _titleSize;
+  double get titleSize => titleSizeState?.fromController(this) ?? _titleSize;
 
   FontWeight? get titleWeight =>
-      titleWeightState?.selected(activated) ?? _titleWeight;
+      titleWeightState?.fromController(this) ?? _titleWeight;
 
-  dynamic get icon => iconState?.selected(activated) ?? _icon;
+  dynamic get icon => iconState?.fromController(this) ?? _icon;
 
   Color? get iconTint =>
-      iconTintState?.selected(activated) ?? _iconTint ?? contentColor;
+      iconTintState?.fromController(this) ?? _iconTint ?? contentColor;
 
-  double get iconSize => iconSizeState?.selected(activated) ?? _iconSize;
+  double get iconSize => iconSizeState?.fromController(this) ?? _iconSize;
 
   double get _iconSpacingX => inline && titleVisible ? iconSpace : 0;
 

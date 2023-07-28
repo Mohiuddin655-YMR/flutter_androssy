@@ -132,7 +132,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.1.8-alpha1"
+    version: "0.1.8-alpha7"
   flutter_blurhash:
     dependency: transitive
     description:
