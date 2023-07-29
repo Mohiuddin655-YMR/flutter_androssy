@@ -65,7 +65,6 @@ class StackLayout extends YMRView<StackLayoutController> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.shadow,
     super.shadowBlurRadius,

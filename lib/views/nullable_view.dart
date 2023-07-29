@@ -215,7 +215,6 @@ class NullableView extends YMRView<NullableViewController> {
           widthMin: controller.buttonMinWidth,
           paddingHorizontal: controller.buttonPaddingX,
           paddingVertical: controller.buttonPaddingY,
-          ripple: 10,
           rippleColor: Colors.black26,
           pressedColor: Colors.black26,
           borderRadius: 50,

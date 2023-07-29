@@ -68,7 +68,6 @@ class ExpendableTextView extends TextView {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.shadow,
     super.shadowBlurRadius,

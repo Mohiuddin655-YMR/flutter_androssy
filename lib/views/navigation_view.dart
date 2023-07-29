@@ -208,7 +208,6 @@ class NavigationView extends YMRView<NavigationViewController> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.scrollable,
     super.scrollController,

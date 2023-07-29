@@ -71,7 +71,6 @@ class AvatarView extends YMRView<AvatarViewController> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.shadow,
     super.shadowBlurRadius,

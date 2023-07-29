@@ -86,7 +86,6 @@ class SlideImageView<T> extends YMRView<SlideImageViewController<T>> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.shadow,
     super.shadowBlurRadius,

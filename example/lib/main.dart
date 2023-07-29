@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/widgets.dart';
 
@@ -30,26 +28,36 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Button(
-          paddingHorizontal: 50,
-          paddingVertical: 50,
-          borderRadius: 24,
-          ripple: 50,
-          margin: 24,
-          text: "Click",
-          textSize: 14,
-          onClick: (c){},
-          widthState: ValueState(
-            primary: 100,
-            hover: 200,
+      body: LinearLayout(
+        width: double.infinity,
+        height: double.infinity,
+        gravity: Alignment.center,
+        layoutGravity: LayoutGravity.center,
+        paddingHorizontal: 24,
+        paddingVertical: 24,
+        children: [
+          YMRView(
+            borderRadius: 24,
+            marginTop: 24,
+            width: 200,
+            height: 200,
+            background: context.primaryColor,
+            rippleColor: Colors.black.withOpacity(0.2),
+            pressedColor: Colors.black.withOpacity(0.2),
+            onClick: (context){},
           ),
-          backgroundState: ValueState(
-            primary: Colors.green,
-            hover: context.primaryColor,
-            activate: Colors.black,
+          YMRView(
+            borderRadius: 24,
+            marginTop: 24,
+            width: 200,
+            height: 200,
+            borderColor: context.primaryColor,
+            border: 2,
+            rippleColor: Colors.black.withOpacity(0.2),
+            pressedColor: Colors.black.withOpacity(0.2),
+            onClick: (context){},
           ),
-        ),
+        ],
       ),
     );
   }

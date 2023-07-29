@@ -67,7 +67,6 @@ class IconView extends YMRView<IconViewController> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.shadow,
     super.shadowBlurRadius,

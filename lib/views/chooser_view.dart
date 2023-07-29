@@ -75,7 +75,6 @@ class ChooserView<T> extends YMRView<ChooserViewController> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.scrollable,
     super.scrollController,

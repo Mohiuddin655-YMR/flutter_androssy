@@ -134,7 +134,6 @@ class ImageView<T extends ImageViewController> extends YMRView<T> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.shadow,
     super.shadowBlurRadius,

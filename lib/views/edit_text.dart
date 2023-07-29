@@ -140,7 +140,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.scrollable,
     super.scrollController,

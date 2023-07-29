@@ -1,3 +1,3 @@
-## 0.1.8-alpha8
+## 0.1.8
 
-* Alpha version
+* Border and ripple bug fixed

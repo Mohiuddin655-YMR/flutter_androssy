@@ -68,7 +68,6 @@ class CategoryView extends YMRView<CategoryViewController> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.scrollable,
     super.scrollController,
@@ -137,7 +136,6 @@ class CategoryView extends YMRView<CategoryViewController> {
               TextView(
                 paddingHorizontal: 12,
                 paddingVertical: 8,
-                ripple: 10,
                 borderRadius: 8,
                 text: controller.buttonText,
                 textSize: 16,

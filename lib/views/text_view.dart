@@ -425,7 +425,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.scrollable,
     super.scrollController,

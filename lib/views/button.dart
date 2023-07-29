@@ -73,7 +73,6 @@ class Button extends TextView<ButtonController> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.shadow,
     super.shadowBlurRadius,

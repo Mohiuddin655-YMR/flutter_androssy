@@ -106,7 +106,6 @@ class ContentView extends YMRView<ContentViewController> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.scrollable = true,
     super.scrollController,

@@ -292,14 +292,12 @@ extension ViewRecognizerExtension on BuildContext {
 }
 
 class ViewRoots {
-  final bool ripple;
   final bool scrollable;
   final bool position, flex, ratio, observer;
   final bool view, constraints, margin, padding;
   final bool decoration, shadow, shape, radius, border, background;
 
   const ViewRoots({
-    this.ripple = true,
     this.scrollable = true,
     this.position = true,
     this.flex = true,
@@ -335,7 +333,6 @@ class ViewRoots {
     bool? background,
   }) {
     return ViewRoots(
-      ripple: ripple ?? this.ripple,
       position: position ?? this.position,
       flex: flex ?? this.flex,
       ratio: ratio ?? this.ratio,
@@ -373,8 +370,7 @@ class ViewController {
   ViewController fromView(YMRView view) {
     hoverColor = view.hoverColor;
     pressedColor = view.pressedColor;
-    _ripple = view.ripple ?? 0;
-    rippleColor = view.rippleColor ?? Colors.black45;
+    rippleColor = view.rippleColor;
 
     // VIEW CONDITIONAL PROPERTIES
     absorbMode = view.absorbMode ?? false;
@@ -510,12 +506,19 @@ class ViewController {
   bool scrollable = false;
 
   double elevation = 0;
-  double _ripple = 0;
 
   Color? _background;
-  Color? hoverColor;
-  Color? pressedColor;
-  Color _rippleColor = Colors.black45;
+  Color hoverColor = Colors.transparent;
+  Color pressedColor = Colors.transparent;
+  Color rippleColor = Colors.transparent;
+
+  bool get isHovered => onHover != null || hoverColor != Colors.transparent;
+
+  bool get isPressed => pressedColor != Colors.transparent;
+
+  bool get isRippled => rippleColor != Colors.transparent;
+
+  bool get isInkWellMode => !isBorder && (isHovered || isPressed || isRippled);
 
   BlendMode? backgroundBlendMode;
   Gradient? _backgroundGradient;
@@ -524,22 +527,6 @@ class ViewController {
   ValueState<Color>? backgroundState;
   ValueState<Gradient>? backgroundGradientState;
   ValueState<DecorationImage>? backgroundImageState;
-
-  double get ripple {
-    if (_ripple > 0) {
-      if (_ripple > 100) {
-        return 100;
-      } else {
-        return _ripple;
-      }
-    } else {
-      return 0;
-    }
-  }
-
-  Color get rippleColor => _rippleColor.withOpacity(ripple / 100);
-
-  set rippleColor(Color value) => _rippleColor = value;
 
   set background(Color? value) => _background = value;
 
@@ -976,8 +963,6 @@ class ViewController {
     return roots.position &&
         (_position != null || positionType != ViewPositionType.center);
   }
-
-  bool get isRippled => roots.ripple && _ripple > 0 && isObservable;
 
   bool get isScrollable => roots.scrollable && scrollable;
 
@@ -1517,7 +1502,6 @@ class YMRView<T extends ViewController> extends StatefulWidget {
 
   final double? elevation;
   final double? dimensionRatio;
-  final double? ripple;
 
   final double? width, widthMax, widthMin;
   final ValueState<double>? widthState;
@@ -1545,7 +1529,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final double? shadowStart, shadowEnd, shadowTop, shadowBottom;
 
   final Color? background, borderColor, foreground, shadowColor;
-  final Color? hoverColor, pressedColor, rippleColor;
+  final Color hoverColor, pressedColor, rippleColor;
 
   final DecorationImage? backgroundImage, foregroundImage;
   final Gradient? backgroundGradient, foregroundGradient, borderGradient;
@@ -1596,7 +1580,6 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.animationType,
     this.elevation,
     this.dimensionRatio,
-    this.ripple,
     this.width,
     this.widthState,
     this.widthMax,
@@ -1647,10 +1630,10 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.background,
     this.borderColor,
     this.foreground,
-    this.hoverColor,
-    this.pressedColor,
+    this.hoverColor = Colors.transparent,
+    this.pressedColor = Colors.transparent,
     this.shadowColor,
-    this.rippleColor,
+    this.rippleColor = Colors.transparent,
     this.gravity,
     this.transformGravity,
     this.backgroundBlendMode,
@@ -1857,20 +1840,55 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var child = attachView;
     if (controller.isObservable) {
-      child = Material(
-        elevation: controller.elevation,
-        borderRadius: controller.isCircular
-            ? BorderRadius.circular(controller.maxSize)
-            : controller.borderRadiusF,
-        color: controller.background,
-        clipBehavior: controller.clipBehavior,
-        child: InkWell(
-          splashColor: controller.rippleColor,
-          hoverColor: controller.hoverColor,
-          highlightColor: controller.pressedColor,
-          onHover: controller.onNotifyHover,
+      if (controller.isInkWellMode) {
+        return Padding(
+          padding: controller.isMargin ? controller.margin : EdgeInsets.zero,
+          child: Material(
+            elevation: controller.elevation,
+            borderRadius: controller.isCircular
+                ? BorderRadius.circular(controller.maxSize)
+                : controller.borderRadius,
+            color: controller.background,
+            clipBehavior: controller.clipBehavior,
+            child: InkWell(
+              splashColor: controller.rippleColor,
+              hoverColor: controller.hoverColor,
+              highlightColor: controller.pressedColor,
+              onHover: controller.onNotifyHover,
+              onTap: controller.isClickable
+                  ? () {
+                      if (controller.isToggleClickable) {
+                        controller.onNotifyToggle();
+                      } else {
+                        controller.onClickHandler != null
+                            ? controller.onClickHandler?.call(controller)
+                            : controller.onClick?.call(context);
+                      }
+                    }
+                  : null,
+              onDoubleTap: controller.isDoubleClickable
+                  ? () {
+                      controller.onDoubleClickHandler != null
+                          ? controller.onDoubleClickHandler?.call(controller)
+                          : controller.onDoubleClick?.call(context);
+                    }
+                  : null,
+              onLongPress: controller.isLongClickable
+                  ? () {
+                      controller.onLongClickHandler != null
+                          ? controller.onLongClickHandler?.call(controller)
+                          : controller.onLongClick?.call(context);
+                    }
+                  : null,
+              child: controller.absorbMode
+                  ? AbsorbPointer(child: attachView)
+                  : attachView,
+            ),
+          ),
+        );
+      } else {
+        return GestureDetector(
           onTap: controller.isClickable
               ? () {
                   if (controller.isToggleClickable) {
@@ -1899,17 +1917,11 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
           child: controller.absorbMode
               ? AbsorbPointer(child: attachView)
               : attachView,
-        ),
-      );
-
-      if (controller.isMargin) {
-        child = Padding(
-          padding: controller.isMargin ? controller.margin : EdgeInsets.zero,
-          child: child,
         );
       }
+    } else {
+      return attachView;
     }
-    return child;
   }
 }
 
@@ -1929,20 +1941,18 @@ class _ViewBuilder extends StatelessWidget {
     final root = controller.roots;
     final isCircular = controller.isCircular;
     final isRadius = controller.isBorderRadius;
-    final isRippled = controller.isRippled;
+    final isRippleMode = controller.isInkWellMode;
     final isMargin = controller.isMargin;
     final isConstraints = controller.isConstraints;
 
-    final borderRadius = isRippled
-        ? null
-        : isRadius && !isCircular
-            ? controller.borderRadiusF
-            : null;
+    final borderRadius = !isRippleMode && isRadius && !isCircular
+        ? controller.borderRadius
+        : null;
 
     var child = controller.roots.view
         ? Container(
             alignment: controller.gravity,
-            clipBehavior: root.decoration && !isRippled
+            clipBehavior: root.decoration && !isRippleMode
                 ? controller.clipBehavior
                 : Clip.none,
             width: controller.width,
@@ -1957,12 +1967,14 @@ class _ViewBuilder extends StatelessWidget {
                     minHeight: controller.heightMin,
                   )
                 : null,
-            decoration: root.decoration && !isRippled
+            decoration: root.decoration
                 ? BoxDecoration(
                     backgroundBlendMode: controller.backgroundBlendMode,
                     border: controller.isBorder ? controller.boxBorder : null,
                     borderRadius: isCircular ? null : borderRadius,
-                    color: root.background ? controller.background : null,
+                    color: root.background && !isRippleMode
+                        ? controller.background
+                        : null,
                     gradient: controller.backgroundGradient,
                     image: controller.backgroundImage,
                     boxShadow: controller.shadows,
@@ -1979,7 +1991,7 @@ class _ViewBuilder extends StatelessWidget {
                     shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
                   )
                 : null,
-            margin: isMargin && !isRippled ? controller.margin : null,
+            margin: isMargin && !isRippleMode ? controller.margin : null,
             padding: controller.isPadding && !controller.isScrollable
                 ? controller.padding
                 : null,

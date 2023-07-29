@@ -68,7 +68,6 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.scrollable,
     super.scrollingType,

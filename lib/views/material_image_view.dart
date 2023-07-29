@@ -101,7 +101,6 @@ class MaterialImageView<T extends Object>
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.shadow,
     super.shadowBlurRadius,

@@ -76,7 +76,6 @@ class ExpensiveScrollView extends YMRView<ExpensiveScrollViewController> {
     super.position,
     super.positionType,
     super.pressedColor,
-    super.ripple,
     super.rippleColor,
     super.orientation,
     super.scrollable,

@@ -236,4 +236,3 @@ enum ToggleButtonState {
   disable,
   none,
 }
-
