@@ -41,6 +41,7 @@ class Example extends StatelessWidget {
             marginTop: 24,
             width: 200,
             height: 200,
+            enabled: true,
             background: context.primaryColor,
             rippleColor: Colors.black.withOpacity(0.2),
             pressedColor: Colors.black.withOpacity(0.2),

@@ -535,26 +535,15 @@ class ViewController {
   set backgroundImage(DecorationImage? value) => _backgroundImage = value;
 
   Color? get background {
-    var bg = backgroundState?.detect(activated, enabled: enabled, hover: hover);
-    return bg ?? _background;
+    return backgroundState?.fromController(this) ?? _background;
   }
 
   Gradient? get backgroundGradient {
-    var bg = backgroundGradientState?.detect(
-      activated,
-      enabled: enabled,
-      hover: hover,
-    );
-    return bg ?? _backgroundGradient;
+    return backgroundGradientState?.fromController(this) ?? _backgroundGradient;
   }
 
   DecorationImage? get backgroundImage {
-    var value = backgroundImageState?.detect(
-      activated,
-      enabled: enabled,
-      hover: hover,
-    );
-    return value ?? _backgroundImage;
+    return backgroundImageState?.fromController(this) ?? _backgroundImage;
   }
 
   bool absorbMode = false;
@@ -1373,7 +1362,8 @@ class ViewController {
   bool get isLongClickable => onLongClick != null || onLongClickHandler != null;
 
   bool get isObservable =>
-      roots.observer && (isClickable || isDoubleClickable || isLongClickable);
+      roots.observer &&
+      (isClickable || isDoubleClickable || isLongClickable || isInkWellMode);
 
   OnViewClickListener? _onClick;
 
