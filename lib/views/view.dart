@@ -1861,14 +1861,10 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
     if (controller.isObservable) {
       child = Material(
         elevation: controller.elevation,
-        borderRadius: controller.isRippled
-            ? controller.isCircular
-                ? BorderRadius.circular(controller.maxSize)
-                : controller.borderRadiusF
-            : null,
-        color: controller.isBorder
-            ? controller.borderColor
-            : controller.background,
+        borderRadius: controller.isCircular
+            ? BorderRadius.circular(controller.maxSize)
+            : controller.borderRadiusF,
+        color: controller.background,
         clipBehavior: controller.clipBehavior,
         child: InkWell(
           splashColor: controller.rippleColor,
