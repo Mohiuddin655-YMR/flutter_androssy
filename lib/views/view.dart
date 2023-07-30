@@ -106,6 +106,7 @@ enum ViewError {
   none,
   empty,
   invalid,
+  alreadyFound,
   maximum,
   minimum,
   unmodified,
@@ -119,6 +120,8 @@ extension ViewErrorExtension on ViewError {
   bool get isMaximum => this == ViewError.maximum;
 
   bool get isMinimum => this == ViewError.minimum;
+
+  bool get isUnavailable => this == ViewError.alreadyFound;
 
   bool get isUnmodified => this == ViewError.unmodified;
 }

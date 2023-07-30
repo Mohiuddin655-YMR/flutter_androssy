@@ -1,3 +1,4 @@
+import 'package:example/ex_edit_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/widgets.dart';
 
@@ -29,37 +30,38 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: LinearLayout(
-        width: double.infinity,
-        height: double.infinity,
-        gravity: Alignment.center,
         layoutGravity: LayoutGravity.center,
         paddingHorizontal: 24,
         paddingVertical: 24,
         children: [
-          YMRView(
-            borderRadius: 24,
-            marginTop: 24,
-            width: 200,
-            height: 200,
-            enabled: true,
-            background: context.primaryColor,
-            rippleColor: Colors.black.withOpacity(0.2),
-            pressedColor: Colors.black.withOpacity(0.2),
-            onClick: (context){},
+          ExEditText(
+            hint: 'Email',
+            drawableStart: MaterialIconData(
+              active: Icons.email,
+              inactive: Icons.email_outlined,
+            ),
+            onExecute: isAvailable,
+            onValidator: (v) {
+              return v.contains("123");
+            },
           ),
-          YMRView(
-            borderRadius: 24,
-            marginTop: 24,
-            width: 200,
-            height: 200,
-            borderColor: context.primaryColor,
-            border: 2,
-            rippleColor: Colors.black.withOpacity(0.2),
-            pressedColor: Colors.black.withOpacity(0.2),
-            onClick: (context){},
+          SizedBox(
+            height: 24,
+          ),
+          ExEditText(
+            hint: 'Password',
+            drawableStart: MaterialIconData(
+              active: Icons.lock,
+              inactive: Icons.lock_outline,
+            ),
           ),
         ],
       ),
     );
+  }
+
+  Future<bool> isAvailable(String v) async {
+    return Future.delayed(const Duration(seconds: 3))
+        .then((value) => v.contains("123456"));
   }
 }
