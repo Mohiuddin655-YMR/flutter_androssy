@@ -2,182 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_androssy/widgets.dart';
 
-class ExEditTextController extends ViewController {
-  late TextEditingController _editable;
-  late FocusNode _node;
-  bool? _focused;
-  bool _initial = true;
-  String _error = "";
-
-  String? id;
-  bool autoFocus = false;
-  Color? primary;
-  double textSize = 18;
-  Color? textColor;
-  String hint = "";
-  Color? hintColor;
-  String helperText = "";
-  Color? helperTextColor;
-  Color? floatingLabelColor;
-  double floatingLabelSize = 12;
-  bool floatingLabelVisible = false;
-  TextAlign textAlign = TextAlign.start;
-  bool errorVisible = false;
-  Color? errorColor = const Color(0xFFF44336);
-  bool counterVisible = false;
-  String? digits;
-  MaterialIconData? drawableStart;
-  MaterialIconData? drawableEnd;
-  double drawablePadding = 24;
-  ValueState<Color>? drawableTint;
-  TextInputType inputType = TextInputType.text;
-  int maxCharacters = 0;
-  int minCharacters = 0;
-  bool obscureText = false;
-
-  late Function(String tag, bool valid)? onChecked;
-  late Future<bool> Function(String)? onExecute;
-
-  ExEditTextController() {
-    _editable = TextEditingController();
-    _node = FocusNode();
-    _node.addListener(_handleFocusChange);
-  }
-
-  ExEditTextController fromMaterialEditText(ExEditText widget) {
-    super.fromView(widget);
-    _editable.text = widget.text ?? "";
-    id = widget.id;
-    autoFocus = widget.autoFocus;
-    primary = widget.primary;
-    textSize = widget.textSize;
-    textColor = widget.textColor;
-    hint = widget.hint;
-    hintColor = widget.hintColor;
-    helperText = widget.helperText;
-    helperTextColor = widget.helperTextColor;
-    floatingLabelColor = widget.floatingLabelColor;
-    floatingLabelSize = widget.floatingLabelSize;
-    floatingLabelVisible = widget.floatingLabelVisible;
-    textAlign = widget.textAlign;
-    errorVisible = widget.errorVisible;
-    errorColor = widget.errorColor;
-    counterVisible = widget.counterVisible;
-    digits = widget.digits;
-    drawableStart = widget.drawableStart;
-    drawableEnd = widget.drawableEnd;
-    drawablePadding = widget.drawablePadding;
-    drawableTint = widget.drawableTint;
-    inputType = widget.inputType;
-    maxCharacters = widget.maxCharacters;
-    minCharacters = widget.minCharacters;
-    obscureText = widget.obscureText;
-    onChecked = widget.onChecked;
-    onChange = widget.onChange;
-    onError = widget.onError;
-    onExecute = widget.onExecute;
-    onValidator = widget.onValidator;
-    return this;
-  }
-
-  bool get isFocused => _focused ?? false;
-
-  set text(String? value) => _editable.text = value ?? "";
-
-  String get text => _editable.text;
-
-  bool get hasError => !isValid && _error.isNotEmpty;
-
-  dynamic get iStart => drawableStart?.drawable(isFocused);
-
-  dynamic get iEnd => drawableEnd?.drawable(isFocused);
-
-  void showKeyboard(BuildContext context) async {
-    if (_node.hasFocus) {
-      _node.unfocus();
-      await Future.delayed(const Duration(milliseconds: 100)).then((value) {
-        FocusScope.of(context).requestFocus(_node);
-      });
-    } else {
-      FocusScope.of(context).requestFocus(_node);
-    }
-  }
-
-  void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
-
-  void _handleFocusChange() {
-    if (_node.hasFocus != _focused) {
-      onNotifyWithCallback(() {
-        _focused = _node.hasFocus;
-      });
-    }
-  }
-
-  var isValid = false;
-
-  var isLoading = false;
-
-  void _handleEditingChange(String value) async {
-    _initial = false;
-    isValid = onValidator?.call(value) ?? true;
-    onValid?.call(isValid);
-    onChange?.call(value);
-    onChecked?.call(id ?? "$hashCode", isValid);
-    if (onExecute != null && !_initial && isValid) {
-      var
-      var isAvailable = await onExecute?.call(value) ?? false;
-      if (isAvailable) {
-        _error = onError?.call(ViewError.alreadyFound) ?? "";
-      }
-    } else {
-      _error = onError?.call(errorType(value)) ?? "";
-    }
-    onNotify();
-  }
-
-  ViewError errorType(String text) {
-    if (text.isEmpty && !_initial) {
-      return ViewError.empty;
-    } else if (!isValid) {
-      final length = text.length;
-      if (maxCharacters > 0 && maxCharacters < length) {
-        return ViewError.maximum;
-      } else if (minCharacters > 0 && minCharacters > length) {
-        return ViewError.minimum;
-      } else {
-        return ViewError.invalid;
-      }
-    } else {
-      return ViewError.none;
-    }
-  }
-
-  String get counter {
-    var currentLength = text.length;
-    final maxLength = maxCharacters;
-    return maxLength > 0
-        ? '$currentLength / $maxLength'
-        : currentLength > 0
-            ? "$currentLength"
-            : "";
-  }
-
-  List<TextInputFormatter>? get formatter {
-    final digit = digits ?? "";
-    if (digit.isNotEmpty) {
-      return [
-        FilteringTextInputFormatter.allow(RegExp("[$digit]")),
-      ];
-    }
-    return null;
-  }
-
-  void _dispose() {
-    _editable.dispose();
-    _node.dispose();
-  }
-}
-
 class ExEditText extends YMRView<ExEditTextController> {
   final String? id;
   final bool autoFocus;
@@ -266,9 +90,7 @@ class ExEditText extends YMRView<ExEditTextController> {
   });
 
   @override
-  ExEditTextController initController() {
-    return ExEditTextController();
-  }
+  ExEditTextController initController() => ExEditTextController();
 
   @override
   ExEditTextController attachController(
@@ -293,13 +115,13 @@ class ExEditText extends YMRView<ExEditTextController> {
       fontSize: controller.textSize,
     );
 
-    final isValid = controller.isValid;
     final hasError = controller.hasError;
 
     return LinearLayout(
       children: [
-        /// FLOATING TEXT
+        /// Highlight Text
         TextView(
+          controller: controller.tvHighlight,
           width: double.infinity,
           visibility: controller.floatingLabelVisible,
           paddingVertical: 4,
@@ -312,80 +134,44 @@ class ExEditText extends YMRView<ExEditTextController> {
           textFontWeight: FontWeight.w500,
         ),
 
-        /// EDIT FIELD
-        LinearLayout(
-          orientation: Axis.horizontal,
-          width: double.infinity,
+        /// Edit field
+        StackLayout(
           paddingTop: 5,
           paddingBottom: 8,
+          width: double.infinity,
+          gravity: Alignment.centerLeft,
           children: [
-            _METDrawable(
-              icon: controller.drawableStart,
-              focused: controller.isFocused,
-              tint: drawableTint,
-              padding: EdgeInsets.only(
-                right: controller.drawablePadding,
+            TextView(
+              activated: controller.text.isNotEmpty,
+              controller: controller.tvHint,
+              width: double.infinity,
+              text: controller.hint,
+              textAlign: controller.textAlign,
+              textStyle: style,
+              textColorState: ValueState(
+                primary: controller.hintColor ?? secondaryColor,
+                secondary: Colors.transparent,
               ),
             ),
-            StackLayout(
-              flex: 1,
-              gravity: Alignment.centerLeft,
-              children: [
-                TextView(
-                  width: double.infinity,
-                  text: controller.hint,
-                  textAlign: controller.textAlign,
-                  textStyle: style,
-                  textColor: controller.text.isNotEmpty
-                      ? Colors.transparent
-                      : controller.hintColor ?? secondaryColor,
-                ),
-                EditableText(
-                  textAlign: controller.textAlign,
-                  keyboardType: controller.inputType,
-                  controller: controller._editable,
-                  focusNode: controller._node,
-                  autofocus: controller.autoFocus,
-                  style: style,
-                  cursorColor: primaryColor,
-                  obscureText: controller.obscureText,
-                  backgroundCursorColor: primaryColor,
-                  onChanged: controller._handleEditingChange,
-                  inputFormatters: controller.formatter,
-                ),
-              ],
-            ),
-            FutureBuilder(
-              future: onExecute?.call(controller.text),
-              builder: (context, task) {
-                var loading = task.connectionState == ConnectionState.waiting;
-                var isAvailable = task.data ?? false;
-                if (loading && !controller._initial && isValid) {
-                  return Container(
-                    width: 24,
-                    height: 24,
-                    padding: const EdgeInsets.all(3),
-                    child: const CircularProgressIndicator(strokeWidth: 2),
-                  );
-                } else {
-                  return _METDrawable(
-                    icon: controller.drawableEnd,
-                    focused: controller.isFocused,
-                    selected: isValid,
-                    tint: drawableTint,
-                    visible: !isAvailable,
-                    padding: EdgeInsets.only(
-                      left: controller.drawablePadding / 2,
-                    ),
-                  );
-                }
-              },
+            EditableText(
+              textAlign: controller.textAlign,
+              keyboardType: controller.inputType,
+              controller: controller._editable,
+              focusNode: controller._node,
+              autofocus: controller.autoFocus,
+              style: style,
+              cursorColor: primaryColor,
+              obscureText: controller.obscureText,
+              backgroundCursorColor: primaryColor,
+              onChanged: controller._handleEditingChange,
+              inputFormatters: controller.formatter,
             ),
           ],
         ),
 
         /// UNDERLINE
         YMRView(
+          controller: controller.underline,
           orientation: Axis.vertical,
           marginBottom: controller.isFocused ? 0 : 1,
           height: controller.isFocused ? 2 : 1,
@@ -407,6 +193,7 @@ class ExEditText extends YMRView<ExEditTextController> {
 
         /// BOTTOM
         LinearLayout(
+          controller: controller.llBottom,
           width: double.infinity,
           orientation: Axis.horizontal,
           crossGravity: CrossAxisAlignment.center,
@@ -414,6 +201,7 @@ class ExEditText extends YMRView<ExEditTextController> {
           children: [
             TextView(
               flex: 1,
+              controller: controller.tvHelper,
               visibility: hasError || controller.helperText.isNotEmpty,
               paddingVertical: 4,
               text: hasError ? controller._error : controller.helperText,
@@ -425,6 +213,7 @@ class ExEditText extends YMRView<ExEditTextController> {
               textFontWeight: FontWeight.w500,
             ),
             TextView(
+              controller: controller.tvCounter,
               visibility: controller.counterVisible,
               paddingVertical: 4,
               text: controller.counter,
@@ -442,6 +231,193 @@ class ExEditText extends YMRView<ExEditTextController> {
   @override
   void onDispose(ExEditTextController controller) {
     controller._dispose();
+  }
+}
+
+class ExEditTextController extends ViewController {
+  late TextEditingController _editable;
+  late FocusNode _node;
+  late ViewController underline;
+  late TextViewController tvCounter, tvHelper, tvHighlight, tvHint;
+  late ProgressViewController _loader;
+  late LinearLayoutController llBottom;
+  bool? _focused;
+  bool _initial = true;
+  String _error = "";
+
+  String? id;
+  bool autoFocus = false;
+  Color? primary;
+  double textSize = 18;
+  Color? textColor;
+  String hint = "";
+  Color? hintColor;
+  String helperText = "";
+  Color? helperTextColor;
+  Color? floatingLabelColor;
+  double floatingLabelSize = 12;
+  bool floatingLabelVisible = false;
+  TextAlign textAlign = TextAlign.start;
+  bool errorVisible = false;
+  Color? errorColor = const Color(0xFFF44336);
+  bool counterVisible = false;
+  String? digits;
+  MaterialIconData? drawableStart;
+  MaterialIconData? drawableEnd;
+  double drawablePadding = 24;
+  ValueState<Color>? drawableTint;
+  TextInputType inputType = TextInputType.text;
+  int maxCharacters = 0;
+  int minCharacters = 0;
+  bool obscureText = false;
+
+  late Function(String tag, bool valid)? onChecked;
+  late Future<bool> Function(String)? onExecute;
+
+  ExEditTextController() {
+    _editable = TextEditingController();
+    _node = FocusNode();
+    _node.addListener(_handleFocusChange);
+    _loader = ProgressViewController();
+    underline = ViewController();
+    tvCounter = TextViewController();
+    tvHelper = TextViewController();
+    tvHighlight = TextViewController();
+    tvHint = TextViewController();
+    llBottom = LinearLayoutController();
+  }
+
+  ExEditTextController fromMaterialEditText(ExEditText widget) {
+    super.fromView(widget);
+    _editable.text = widget.text ?? "";
+    id = widget.id;
+    autoFocus = widget.autoFocus;
+    primary = widget.primary;
+    textSize = widget.textSize;
+    textColor = widget.textColor;
+    hint = widget.hint;
+    hintColor = widget.hintColor;
+    helperText = widget.helperText;
+    helperTextColor = widget.helperTextColor;
+    floatingLabelColor = widget.floatingLabelColor;
+    floatingLabelSize = widget.floatingLabelSize;
+    floatingLabelVisible = widget.floatingLabelVisible;
+    textAlign = widget.textAlign;
+    errorVisible = widget.errorVisible;
+    errorColor = widget.errorColor;
+    counterVisible = widget.counterVisible;
+    digits = widget.digits;
+    drawableStart = widget.drawableStart;
+    drawableEnd = widget.drawableEnd;
+    drawablePadding = widget.drawablePadding;
+    drawableTint = widget.drawableTint;
+    inputType = widget.inputType;
+    maxCharacters = widget.maxCharacters;
+    minCharacters = widget.minCharacters;
+    obscureText = widget.obscureText;
+    onChecked = widget.onChecked;
+    onChange = widget.onChange;
+    onError = widget.onError;
+    onExecute = widget.onExecute;
+    onValidator = widget.onValidator;
+    return this;
+  }
+
+  bool get isFocused => _focused ?? false;
+
+  set text(String? value) => _editable.text = value ?? "";
+
+  String get text => _editable.text;
+
+  bool get hasError => !isValid && _error.isNotEmpty;
+
+  dynamic get iStart => drawableStart?.drawable(isFocused);
+
+  dynamic get iEnd => drawableEnd?.drawable(isFocused);
+
+  void showKeyboard(BuildContext context) async {
+    if (_node.hasFocus) {
+      _node.unfocus();
+      await Future.delayed(const Duration(milliseconds: 100)).then((value) {
+        FocusScope.of(context).requestFocus(_node);
+      });
+    } else {
+      FocusScope.of(context).requestFocus(_node);
+    }
+  }
+
+  void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
+
+  void _handleFocusChange() {
+    tvHint.setActivated(text.isNotEmpty);
+    if (_node.hasFocus != _focused) {
+      onNotifyWithCallback(() {
+        _focused = _node.hasFocus;
+      });
+    }
+  }
+
+  var isValid = false;
+
+  void _handleEditingChange(String value) async {
+    _initial = false;
+    tvHint.setActivated(text.isNotEmpty);
+    isValid = onValidator?.call(value) ?? true;
+    onValid?.call(isValid);
+    onChange?.call(value);
+    onChecked?.call(id ?? "$hashCode", isValid);
+    if (onExecute != null && !_initial && isValid) {
+      _loader.show();
+      var isAvailable = await onExecute?.call(value) ?? false;
+      _loader.hide();
+      if (isAvailable) {
+        _error = onError?.call(ViewError.alreadyFound) ?? "";
+      }
+    } else {
+      _error = onError?.call(errorType(value)) ?? "";
+    }
+  }
+
+  ViewError errorType(String text) {
+    if (text.isEmpty && !_initial) {
+      return ViewError.empty;
+    } else if (!isValid) {
+      final length = text.length;
+      if (maxCharacters > 0 && maxCharacters < length) {
+        return ViewError.maximum;
+      } else if (minCharacters > 0 && minCharacters > length) {
+        return ViewError.minimum;
+      } else {
+        return ViewError.invalid;
+      }
+    } else {
+      return ViewError.none;
+    }
+  }
+
+  String get counter {
+    var currentLength = text.length;
+    final maxLength = maxCharacters;
+    return maxLength > 0
+        ? '$currentLength / $maxLength'
+        : currentLength > 0
+            ? "$currentLength"
+            : "";
+  }
+
+  List<TextInputFormatter>? get formatter {
+    final digit = digits ?? "";
+    if (digit.isNotEmpty) {
+      return [
+        FilteringTextInputFormatter.allow(RegExp("[$digit]")),
+      ];
+    }
+    return null;
+  }
+
+  void _dispose() {
+    _editable.dispose();
+    _node.dispose();
   }
 }
 

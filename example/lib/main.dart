@@ -1,3 +1,4 @@
+import 'package:example/et.dart';
 import 'package:example/ex_edit_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/widgets.dart';
@@ -34,6 +35,12 @@ class Example extends StatelessWidget {
         paddingHorizontal: 24,
         paddingVertical: 24,
         children: [
+          ET(
+            hint: "Email",
+            paddingVertical: 12,
+            enabled: true,
+            paddingHorizontal: 16,
+          ),
           ExEditText(
             hint: 'Email',
             drawableStart: MaterialIconData(
@@ -48,7 +55,7 @@ class Example extends StatelessWidget {
           SizedBox(
             height: 24,
           ),
-          ExEditText(
+          MaterialEditText(
             hint: 'Password',
             drawableStart: MaterialIconData(
               active: Icons.lock,
@@ -61,7 +68,7 @@ class Example extends StatelessWidget {
   }
 
   Future<bool> isAvailable(String v) async {
-    return Future.delayed(const Duration(seconds: 3))
-        .then((value) => v.contains("123456"));
+    await Future.delayed(const Duration(seconds: 3));
+    return true;
   }
 }
