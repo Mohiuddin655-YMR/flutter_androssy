@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/widgets.dart';
 
@@ -14,7 +15,9 @@ class HomeActivity extends Activity {
 
   @override
   Widget onCreate(BuildContext context) {
-    print("onCreate");
+    if (kDebugMode) {
+      print("onCreate");
+    }
     return const HomeLayout();
   }
 
@@ -50,53 +53,73 @@ class HomeActivity extends Activity {
 
   @override
   void onInit() {
-    print("onInit");
+    if (kDebugMode) {
+      print("onInit");
+    }
   }
 
   @override
   void onStart() {
-    print("onStart");
+    if (kDebugMode) {
+      print("onStart");
+    }
   }
 
   @override
   void onRestart() {
-    print("onRestart");
+    if (kDebugMode) {
+      print("onRestart");
+    }
   }
 
   @override
   void onListener() {
-    print("onListener");
+    if (kDebugMode) {
+      print("onListener");
+    }
   }
 
   @override
   void onPause() {
-    print("onPause");
+    if (kDebugMode) {
+      print("onPause");
+    }
   }
 
   @override
   void onResume() {
-    print("onResume");
+    if (kDebugMode) {
+      print("onResume");
+    }
   }
 
   @override
   void onStop() {
-    print("onStop");
+    if (kDebugMode) {
+      print("onStop");
+    }
   }
 
   @override
   Future<bool> onBackPressed() async {
-    print("onBackPressed");
+    if (kDebugMode) {
+      print("onBackPressed");
+    }
     return false;
   }
 
   @override
   void onDetached() {
-    print("onDetached");
+    if (kDebugMode) {
+      print("onDetached");
+    }
   }
 
   @override
   void onDestroy() {
-    print("onDestroy");
+    if (kDebugMode) {
+      print("onDestroy");
+    }
   }
 
   @override

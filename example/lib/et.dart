@@ -33,7 +33,9 @@ class ET<T extends ETC> extends TextView<T> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.width,
     super.text,
+    super.flex,
 
     /// BOOLEAN PROPERTIES
     this.autoFocus = false,
@@ -52,9 +54,7 @@ class ET<T extends ETC> extends TextView<T> {
   });
 
   @override
-  ViewRoots initRootProperties() {
-    return const ViewRoots(padding: false);
-  }
+  ViewRoots initRootProperties() => const ViewRoots(observer: false);
 
   @override
   T initController() => ETC() as T;
@@ -63,79 +63,79 @@ class ET<T extends ETC> extends TextView<T> {
   T attachController(T controller) => controller.fromEditText(this) as T;
 
   @override
-  void onDispose(T controller) {
-    controller._dispose();
+  void onDispose(T controller) => controller._dispose();
+
+  @override
+  Widget build(BuildContext context, T controller, Widget parent) {
+    final primaryColor = controller.primary ?? context.primaryColor;
+    const underlineColor = Color(0xffe1e1e1);
+    return GestureDetector(
+      onTap: () => controller.showKeyboard(context),
+      child: controller.isUnderlineHide
+          ? parent
+          : Column(
+              children: [
+                parent,
+                UnderlineView(
+                  visible: controller.background == null &&
+                      controller.borderAll <= 0,
+                  focused: controller.isFocused,
+                  enabled: controller.enabled,
+                  error: controller.error,
+                  height: 1,
+                  primary: primaryColor,
+                  colorState: ValueState(
+                    primary: primaryColor,
+                    secondary: underlineColor,
+                    error: Colors.red,
+                    disable: underlineColor,
+                  ),
+                ),
+              ],
+            ),
+    );
   }
 
   @override
   Widget? attach(BuildContext context, T controller) {
     final primaryColor = controller.primary ?? context.primaryColor;
     const secondaryColor = Color(0xffbbbbbb);
-    const underlineColor = Color(0xffe1e1e1);
     var style = TextStyle(
       color: controller.textColor ?? Colors.black,
-      fontSize: controller.textSize,
+      fontSize: controller.textSize ?? 18,
     );
-    return GestureDetector(
-      onTap: () {
-        log("message");
-        controller.keyboardVisibility(context, true);
-      },
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            alignment: Alignment.centerLeft,
-            padding: controller.padding,
-            child: Stack(
-              alignment: Alignment.topLeft,
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    controller.hint,
-                    textAlign: controller.textAlign,
-                    style: style.copyWith(
-                      fontFamily: "",
-                      color: controller.text.isNotEmpty
-                          ? Colors.transparent
-                          : controller.hintColor ?? secondaryColor,
-                    ),
-                  ),
-                ),
-                EditableText(
-                  readOnly: controller.isReadMode,
-                  textAlign: controller.textAlign ?? TextAlign.start,
-                  keyboardType: controller.inputType,
-                  controller: controller._editable,
-                  focusNode: controller._node,
-                  autofocus: controller.autoFocus,
-                  style: style,
-                  cursorColor: primaryColor,
-                  obscureText: controller.obscureText,
-                  backgroundCursorColor: primaryColor,
-                  onChanged: controller._handleEditingChange,
-                  inputFormatters: controller.formatter,
-                ),
-              ],
+    return Stack(
+      alignment: controller.gravity ?? Alignment.centerLeft,
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: Text(
+            controller.hint,
+            textAlign: controller.textAlign ?? TextAlign.start,
+            style: style.copyWith(
+              fontFamily: "",
+              color: controller.text.isNotEmpty
+                  ? Colors.transparent
+                  : controller.hintColor ?? secondaryColor,
             ),
           ),
-          _ETUnderline(
-            visible: controller.background == null && controller.borderAll <= 0,
-            focused: controller.isFocused,
-            enabled: controller.enabled,
-            error: controller.error,
-            height: 1,
-            primary: primaryColor,
-            colorState: ValueState(
-              primary: primaryColor,
-              secondary: underlineColor,
-              error: Colors.red,
-              disable: underlineColor,
-            ),
-          ),
-        ],
-      ),
+        ),
+        EditableText(
+          controller: controller._editable,
+          readOnly: controller.isReadMode,
+          textAlign: controller.textAlign ?? TextAlign.start,
+          maxLines: null,
+          focusNode: controller._node,
+          autofocus: controller.autoFocus,
+          style: style,
+          cursorColor: primaryColor,
+          obscureText: controller.obscureText,
+          backgroundCursorColor: primaryColor,
+          keyboardType: controller.inputType ?? TextInputType.multiline,
+          onChanged: controller._handleEditingChange,
+          inputFormatters: controller.formatter,
+        ),
+      ],
     );
   }
 }
@@ -169,6 +169,8 @@ class ETC extends TextViewController {
   bool get isFocused => _focused;
 
   bool get isReadMode => !enabled;
+
+  bool get isUnderlineHide => background != null || borderAll > 0;
 
   List<TextInputFormatter>? get formatter {
     if (digits.isNotEmpty) {
@@ -223,20 +225,19 @@ class ETC extends TextViewController {
     });
   }
 
-  void keyboardVisibility(BuildContext context, bool value) async {
-    if (value) {
-      if (_node.hasFocus) {
-        _node.unfocus();
-        await Future.delayed(const Duration(milliseconds: 100)).then((value) {
-          FocusScope.of(context).requestFocus(_node);
-        });
-      } else {
+  void showKeyboard(BuildContext context) async {
+    log("show_keyboard");
+    if (_node.hasFocus) {
+      _node.unfocus();
+      await Future.delayed(const Duration(milliseconds: 100)).then((value) {
         FocusScope.of(context).requestFocus(_node);
-      }
+      });
     } else {
-      FocusScope.of(context).unfocus();
+      FocusScope.of(context).requestFocus(_node);
     }
   }
+
+  void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
 
   void _dispose() {
     _editable.dispose();
@@ -244,7 +245,7 @@ class ETC extends TextViewController {
   }
 }
 
-class _ETUnderline extends StatelessWidget {
+class UnderlineView extends StatelessWidget {
   final Color? primary;
   final bool visible;
   final bool enabled;
@@ -253,7 +254,7 @@ class _ETUnderline extends StatelessWidget {
   final double height;
   final ValueState<Color> colorState;
 
-  const _ETUnderline({
+  const UnderlineView({
     Key? key,
     this.primary,
     this.visible = true,

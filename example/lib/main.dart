@@ -35,12 +35,24 @@ class Example extends StatelessWidget {
         paddingHorizontal: 24,
         paddingVertical: 24,
         children: [
-          ET(
-            hint: "Email",
-            paddingVertical: 12,
-            enabled: true,
-            paddingHorizontal: 16,
+          LinearLayout(
+            orientation: Axis.horizontal,
+            children: [
+              ET(
+                flex: 1,
+                hint: "Email",
+                paddingVertical: 12,
+              ),
+              SizedBox(width: 24),
+              ET(
+                flex: 1,
+                hint: "Password",
+                paddingVertical: 12,
+                background: Colors.red.withOpacity(0.1),
+              ),
+            ],
           ),
+          SizedBox(height: 24),
           ExEditText(
             hint: 'Email',
             drawableStart: MaterialIconData(
@@ -51,16 +63,6 @@ class Example extends StatelessWidget {
             onValidator: (v) {
               return v.contains("123");
             },
-          ),
-          SizedBox(
-            height: 24,
-          ),
-          MaterialEditText(
-            hint: 'Password',
-            drawableStart: MaterialIconData(
-              active: Icons.lock,
-              inactive: Icons.lock_outline,
-            ),
           ),
         ],
       ),

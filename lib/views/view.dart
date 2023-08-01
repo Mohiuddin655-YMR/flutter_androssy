@@ -1738,13 +1738,7 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
                     attachView: _ViewBuilder(
                       controller: controller,
                       attach: widget.attach(context, controller),
-                      builder: (context, view) {
-                        return widget.build(
-                          context,
-                          controller,
-                          view,
-                        );
-                      },
+                      builder: widget.build,
                     ),
                   ),
                 ),
@@ -1918,10 +1912,10 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
   }
 }
 
-class _ViewBuilder extends StatelessWidget {
-  final ViewController controller;
+class _ViewBuilder<T extends ViewController> extends StatelessWidget {
+  final T controller;
   final Widget? attach;
-  final Function(BuildContext context, Widget child) builder;
+  final OnViewModifyBuilder<T> builder;
 
   const _ViewBuilder({
     required this.controller,
@@ -2000,6 +1994,8 @@ class _ViewBuilder extends StatelessWidget {
           )
         : const SizedBox();
 
-    return controller.visible ? builder(context, child) : null;
+    return controller.visible
+        ? builder(context, controller, child)
+        : const SizedBox();
   }
 }
