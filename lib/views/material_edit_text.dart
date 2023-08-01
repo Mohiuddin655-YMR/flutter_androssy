@@ -109,8 +109,8 @@ class MaterialEditText extends YMRView<MaterialEditTextController> {
     const underlineColor = Color(0xffe1e1e1);
     var drawableTint = controller.drawableTint ??
         ValueState<Color>(
-          activate: primaryColor,
           primary: secondaryColor,
+          secondary: primaryColor,
         );
     var style = TextStyle(
       color: controller.textColor ?? Colors.black,
@@ -561,7 +561,7 @@ class _METDrawable extends StatelessWidget {
     final color = tint ??
         ValueState(
           primary: Colors.grey,
-          activate: Theme.of(context).primaryColor,
+          secondary: Theme.of(context).primaryColor,
         );
     final drawable = icon.drawable(selected ?? focused);
     return Visibility(

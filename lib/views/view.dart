@@ -30,7 +30,6 @@ class ValueState<T> {
   final T? primary;
   final T? secondary;
   final T? ternary;
-  final T? activate;
   final T? disable;
   final T? error;
   final T? hover;
@@ -39,7 +38,6 @@ class ValueState<T> {
     this.primary,
     this.secondary,
     this.ternary,
-    this.activate,
     this.disable,
     this.error,
     this.hover,
@@ -57,12 +55,52 @@ class ValueState<T> {
       } else if (error) {
         return this.error ?? ternary ?? primary;
       } else if (activated) {
-        return activate ?? secondary ?? primary;
+        return secondary ?? primary;
       } else {
         return primary;
       }
     } else {
       return disable ?? ternary ?? primary;
+    }
+  }
+
+  factory ValueState.activation({
+    T? activated,
+    T? unactivated,
+    T? disabled,
+  }) {
+    return ValueState<T>(
+      primary: unactivated,
+      secondary: activated,
+      disable: disabled,
+    );
+  }
+
+  T? activator(bool activated, [bool enabled = true]) {
+    if (enabled) {
+      return activated ? secondary : primary;
+    } else {
+      return disable ?? primary;
+    }
+  }
+
+  factory ValueState.selection({
+    T? selected,
+    T? unselected,
+    T? disabled,
+  }) {
+    return ValueState<T>(
+      primary: unselected,
+      secondary: selected,
+      disable: disabled,
+    );
+  }
+
+  T? selector(bool selected, [bool enabled = true]) {
+    if (enabled) {
+      return selected ? secondary : primary;
+    } else {
+      return disable ?? primary;
     }
   }
 
@@ -375,17 +413,17 @@ class ViewController {
     pressedColor = view.pressedColor;
     rippleColor = view.rippleColor;
 
-    // VIEW CONDITIONAL PROPERTIES
+    /// VIEW CONDITIONAL PROPERTIES
     absorbMode = view.absorbMode ?? false;
     activated = view.activated ?? false;
     enabled = view.enabled ?? true;
     expandable = view.expandable ?? false;
 
-    // ANIMATION PROPERTIES
+    /// ANIMATION PROPERTIES
     animation = view.animation ?? 0;
     animationType = view.animationType ?? Curves.linear;
 
-    // VIEW SIZE PROPERTIES
+    /// VIEW SIZE PROPERTIES
     flex = view.flex ?? 0;
     _dimensionRatio = view.dimensionRatio;
     elevation = view.elevation ?? 0;
@@ -398,7 +436,7 @@ class ViewController {
     _heightMax = view.heightMax;
     _heightMin = view.heightMin;
 
-    // VIEW MARGIN PROPERTIES
+    /// VIEW MARGIN PROPERTIES
     _margin = view.margin ?? 0;
     marginVertical = view.marginVertical;
     _marginStart = view.marginStart;
@@ -407,7 +445,7 @@ class ViewController {
     _marginBottom = view.marginBottom;
     marginHorizontal = view.marginHorizontal;
 
-    // VIEW PADDING PROPERTIES
+    /// VIEW PADDING PROPERTIES
     _padding = view.padding ?? 0;
     _paddingStart = view.paddingStart;
     _paddingEnd = view.paddingEnd;
@@ -416,7 +454,7 @@ class ViewController {
     paddingHorizontal = view.paddingHorizontal;
     paddingVertical = view.paddingVertical;
 
-    // VIEW BORDER PROPERTIES
+    /// VIEW BORDER PROPERTIES
     borderColor = view.borderColor;
     borderGradient = view.borderGradient;
     _borderSize = view.border ?? 0;
@@ -427,14 +465,14 @@ class ViewController {
     borderHorizontal = view.borderHorizontal;
     borderVertical = view.borderVertical;
 
-    // VIEW BORDER RADIUS PROPERTIES
+    /// VIEW BORDER RADIUS PROPERTIES
     _borderRadius = view.borderRadius ?? 0;
     _borderRadiusBL = view.borderRadiusBL;
     _borderRadiusBR = view.borderRadiusBR;
     _borderRadiusTL = view.borderRadiusTL;
     _borderRadiusTR = view.borderRadiusTR;
 
-    // VIEW SHADOW PROPERTIES
+    /// VIEW SHADOW PROPERTIES
     shadowColor = view.shadowColor;
     shadow = view.shadow ?? 0;
     _shadowStart = view.shadowStart;
@@ -448,7 +486,7 @@ class ViewController {
     shadowSpreadRadius = view.shadowSpreadRadius ?? 0;
     shadowType = view.shadowType ?? ViewShadowType.none;
 
-    // VIEW DECORATION PROPERTIES
+    /// VIEW DECORATION PROPERTIES
     _background = view.background;
     foreground = view.foreground;
     backgroundBlendMode = view.backgroundBlendMode;
@@ -471,16 +509,16 @@ class ViewController {
     visible = view.visibility ?? true;
     child = view.child;
 
-    // Properties
+    /// Properties
     roots = view.initRootProperties();
     scrollable = view.scrollable ?? false;
 
-    // Value States
+    /// Value States
     backgroundState = view.backgroundState;
     backgroundImageState = view.backgroundImageState;
     backgroundGradientState = view.backgroundGradientState;
 
-    // VIEW LISTENER PROPERTIES
+    /// VIEW LISTENER PROPERTIES
     onClick = view.onClick;
     onDoubleClick = view.onDoubleClick;
     onLongClick = view.onLongClick;
@@ -489,7 +527,7 @@ class ViewController {
     onLongClickHandler = view.onLongClickHandler;
     onToggle = view.onToggle;
 
-    //VIEW DATA LISTENER PROPERTIES
+    /// VIEW DATA LISTENER PROPERTIES
     onChange = view.onChange;
     onError = view.onError;
     onHover = view.onHover;

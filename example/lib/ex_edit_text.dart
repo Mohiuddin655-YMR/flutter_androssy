@@ -1,36 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_androssy/widgets.dart';
 
-class ExEditText extends YMRView<ExEditTextController> {
-  final String? id;
-  final bool autoFocus;
-  final Color? primary;
-  final String? text;
-  final double textSize;
-  final Color? textColor;
-  final String hint;
-  final Color? hintColor;
+class ExEditText extends EditText<ExEditTextController> {
   final String helperText;
   final Color? helperTextColor;
   final Color? floatingLabelColor;
   final double floatingLabelSize;
   final bool floatingLabelVisible;
-  final TextAlign textAlign;
   final bool errorVisible;
   final Color? errorColor;
   final bool counterVisible;
-  final String? digits;
-  final MaterialIconData? drawableStart;
-  final MaterialIconData? drawableEnd;
   final double drawablePadding;
   final ValueState<Color>? drawableTint;
-  final TextInputType inputType;
-  final int maxCharacters;
-  final int minCharacters;
-  final bool obscureText;
 
-  final Function(String tag, bool value)? onChecked;
   final Future<bool> Function(String)? onExecute;
 
   const ExEditText({
@@ -59,34 +41,34 @@ class ExEditText extends YMRView<ExEditTextController> {
     super.onError,
     super.onValid,
     super.onValidator,
-    required this.hint,
-    this.id,
-    this.autoFocus = false,
-    this.hintColor,
+    super.hint,
+    super.id,
+    super.autoFocus = false,
+    super.hintColor,
     this.helperText = "",
     this.helperTextColor,
     this.floatingLabelColor,
     this.floatingLabelSize = 12,
     this.floatingLabelVisible = false,
-    this.primary,
-    this.text,
-    this.textAlign = TextAlign.start,
-    this.textColor,
-    this.textSize = 18,
+    super.primary,
+    super.text,
+    super.textAlign = TextAlign.start,
+    super.textColor,
+    super.textSize = 18,
     this.errorColor = const Color(0xFFF44336),
     this.errorVisible = true,
     this.counterVisible = false,
-    this.digits,
-    this.drawableStart,
-    this.drawableEnd,
+    super.digits,
+    super.drawableStart,
+    super.drawableEnd,
     this.drawablePadding = 24,
     this.drawableTint,
-    this.inputType = TextInputType.text,
-    this.maxCharacters = 0,
-    this.minCharacters = 0,
-    this.obscureText = false,
+    super.inputType = TextInputType.text,
+    super.maxCharacters = 0,
+    super.minCharacters = 0,
+    super.obscureText = false,
     this.onExecute,
-    this.onChecked,
+    super.onChecked,
   });
 
   @override
@@ -104,17 +86,6 @@ class ExEditText extends YMRView<ExEditTextController> {
     final theme = Theme.of(context);
     final primaryColor = controller.primary ?? theme.primaryColor;
     const secondaryColor = Color(0xffbbbbbb);
-    const underlineColor = Color(0xffe1e1e1);
-    var drawableTint = controller.drawableTint ??
-        ValueState<Color>(
-          activate: primaryColor,
-          primary: secondaryColor,
-        );
-    var style = TextStyle(
-      color: controller.textColor ?? Colors.black,
-      fontSize: controller.textSize,
-    );
-
     final hasError = controller.hasError;
 
     return LinearLayout(
@@ -135,60 +106,9 @@ class ExEditText extends YMRView<ExEditTextController> {
         ),
 
         /// Edit field
-        StackLayout(
-          paddingTop: 5,
-          paddingBottom: 8,
-          width: double.infinity,
-          gravity: Alignment.centerLeft,
-          children: [
-            TextView(
-              activated: controller.text.isNotEmpty,
-              controller: controller.tvHint,
-              width: double.infinity,
-              text: controller.hint,
-              textAlign: controller.textAlign,
-              textStyle: style,
-              textColorState: ValueState(
-                primary: controller.hintColor ?? secondaryColor,
-                secondary: Colors.transparent,
-              ),
-            ),
-            EditableText(
-              textAlign: controller.textAlign,
-              keyboardType: controller.inputType,
-              controller: controller._editable,
-              focusNode: controller._node,
-              autofocus: controller.autoFocus,
-              style: style,
-              cursorColor: primaryColor,
-              obscureText: controller.obscureText,
-              backgroundCursorColor: primaryColor,
-              onChanged: controller._handleEditingChange,
-              inputFormatters: controller.formatter,
-            ),
-          ],
-        ),
-
-        /// UNDERLINE
-        YMRView(
-          controller: controller.underline,
-          orientation: Axis.vertical,
-          marginBottom: controller.isFocused ? 0 : 1,
-          height: controller.isFocused ? 2 : 1,
-          background: ValueState(
-            primary: primaryColor,
-            secondary: underlineColor,
-            error: controller.errorColor,
-            disable: underlineColor,
-          ).fromType(
-            controller.enabled
-                ? hasError
-                    ? ValueStateType.error
-                    : controller.isFocused
-                        ? ValueStateType.primary
-                        : ValueStateType.secondary
-                : ValueStateType.disabled,
-          ),
+        EditText(
+          controller: controller,
+          hint: controller.hint,
         ),
 
         /// BOTTOM
@@ -227,58 +147,28 @@ class ExEditText extends YMRView<ExEditTextController> {
       ],
     );
   }
-
-  @override
-  void onDispose(ExEditTextController controller) {
-    controller._dispose();
-  }
 }
 
-class ExEditTextController extends ViewController {
-  late TextEditingController _editable;
-  late FocusNode _node;
+class ExEditTextController extends EditTextController {
   late ViewController underline;
   late TextViewController tvCounter, tvHelper, tvHighlight, tvHint;
-  late ProgressViewController _loader;
   late LinearLayoutController llBottom;
-  bool? _focused;
-  bool _initial = true;
-  String _error = "";
+  final String _error = "";
 
-  String? id;
-  bool autoFocus = false;
-  Color? primary;
-  double textSize = 18;
-  Color? textColor;
-  String hint = "";
-  Color? hintColor;
   String helperText = "";
   Color? helperTextColor;
   Color? floatingLabelColor;
   double floatingLabelSize = 12;
   bool floatingLabelVisible = false;
-  TextAlign textAlign = TextAlign.start;
   bool errorVisible = false;
   Color? errorColor = const Color(0xFFF44336);
   bool counterVisible = false;
-  String? digits;
-  MaterialIconData? drawableStart;
-  MaterialIconData? drawableEnd;
   double drawablePadding = 24;
   ValueState<Color>? drawableTint;
-  TextInputType inputType = TextInputType.text;
-  int maxCharacters = 0;
-  int minCharacters = 0;
-  bool obscureText = false;
 
-  late Function(String tag, bool valid)? onChecked;
   late Future<bool> Function(String)? onExecute;
 
   ExEditTextController() {
-    _editable = TextEditingController();
-    _node = FocusNode();
-    _node.addListener(_handleFocusChange);
-    _loader = ProgressViewController();
     underline = ViewController();
     tvCounter = TextViewController();
     tvHelper = TextViewController();
@@ -287,47 +177,20 @@ class ExEditTextController extends ViewController {
     llBottom = LinearLayoutController();
   }
 
-  ExEditTextController fromMaterialEditText(ExEditText widget) {
-    super.fromView(widget);
-    _editable.text = widget.text ?? "";
-    id = widget.id;
-    autoFocus = widget.autoFocus;
-    primary = widget.primary;
-    textSize = widget.textSize;
-    textColor = widget.textColor;
-    hint = widget.hint;
-    hintColor = widget.hintColor;
-    helperText = widget.helperText;
-    helperTextColor = widget.helperTextColor;
-    floatingLabelColor = widget.floatingLabelColor;
-    floatingLabelSize = widget.floatingLabelSize;
-    floatingLabelVisible = widget.floatingLabelVisible;
-    textAlign = widget.textAlign;
-    errorVisible = widget.errorVisible;
-    errorColor = widget.errorColor;
-    counterVisible = widget.counterVisible;
-    digits = widget.digits;
-    drawableStart = widget.drawableStart;
-    drawableEnd = widget.drawableEnd;
-    drawablePadding = widget.drawablePadding;
-    drawableTint = widget.drawableTint;
-    inputType = widget.inputType;
-    maxCharacters = widget.maxCharacters;
-    minCharacters = widget.minCharacters;
-    obscureText = widget.obscureText;
-    onChecked = widget.onChecked;
-    onChange = widget.onChange;
-    onError = widget.onError;
-    onExecute = widget.onExecute;
-    onValidator = widget.onValidator;
+  ExEditTextController fromMaterialEditText(ExEditText view) {
+    super.fromEditText(view);
+    helperText = view.helperText;
+    helperTextColor = view.helperTextColor;
+    floatingLabelColor = view.floatingLabelColor;
+    floatingLabelSize = view.floatingLabelSize;
+    floatingLabelVisible = view.floatingLabelVisible;
+    errorVisible = view.errorVisible;
+    errorColor = view.errorColor;
+    counterVisible = view.counterVisible;
+    onError = view.onError;
+    onExecute = view.onExecute;
     return this;
   }
-
-  bool get isFocused => _focused ?? false;
-
-  set text(String? value) => _editable.text = value ?? "";
-
-  String get text => _editable.text;
 
   bool get hasError => !isValid && _error.isNotEmpty;
 
@@ -335,51 +198,10 @@ class ExEditTextController extends ViewController {
 
   dynamic get iEnd => drawableEnd?.drawable(isFocused);
 
-  void showKeyboard(BuildContext context) async {
-    if (_node.hasFocus) {
-      _node.unfocus();
-      await Future.delayed(const Duration(milliseconds: 100)).then((value) {
-        FocusScope.of(context).requestFocus(_node);
-      });
-    } else {
-      FocusScope.of(context).requestFocus(_node);
-    }
-  }
-
-  void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
-
-  void _handleFocusChange() {
-    tvHint.setActivated(text.isNotEmpty);
-    if (_node.hasFocus != _focused) {
-      onNotifyWithCallback(() {
-        _focused = _node.hasFocus;
-      });
-    }
-  }
-
   var isValid = false;
 
-  void _handleEditingChange(String value) async {
-    _initial = false;
-    tvHint.setActivated(text.isNotEmpty);
-    isValid = onValidator?.call(value) ?? true;
-    onValid?.call(isValid);
-    onChange?.call(value);
-    onChecked?.call(id ?? "$hashCode", isValid);
-    if (onExecute != null && !_initial && isValid) {
-      _loader.show();
-      var isAvailable = await onExecute?.call(value) ?? false;
-      _loader.hide();
-      if (isAvailable) {
-        _error = onError?.call(ViewError.alreadyFound) ?? "";
-      }
-    } else {
-      _error = onError?.call(errorType(value)) ?? "";
-    }
-  }
-
   ViewError errorType(String text) {
-    if (text.isEmpty && !_initial) {
+    if (text.isEmpty && !isInitial) {
       return ViewError.empty;
     } else if (!isValid) {
       final length = text.length;
@@ -405,102 +227,6 @@ class ExEditTextController extends ViewController {
             : "";
   }
 
-  List<TextInputFormatter>? get formatter {
-    final digit = digits ?? "";
-    if (digit.isNotEmpty) {
-      return [
-        FilteringTextInputFormatter.allow(RegExp("[$digit]")),
-      ];
-    }
-    return null;
-  }
-
-  void _dispose() {
-    _editable.dispose();
-    _node.dispose();
-  }
-}
-
-class _METDrawable extends StatelessWidget {
-  final bool focused;
-  final bool? selected;
-  final MaterialIconData? icon;
-  final ValueState<Color>? tint;
-  final EdgeInsetsGeometry? padding;
-  final bool visible;
-
-  const _METDrawable({
-    Key? key,
-    this.icon,
-    this.focused = false,
-    this.selected,
-    this.tint,
-    this.padding,
-    this.visible = true,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    if (icon != null) {
-      final color = tint ??
-          ValueState(
-            primary: Colors.grey,
-            activate: Theme.of(context).primaryColor,
-          );
-      final drawable = icon?.drawable(selected ?? focused);
-      return Visibility(
-        visible: visible,
-        child: Container(
-          margin: padding,
-          width: 24,
-          height: 24,
-          child: FittedBox(
-            child: RawIconView(
-              icon: drawable,
-              tint: color.detect(focused),
-            ),
-          ),
-        ),
-      );
-    } else {
-      return const SizedBox();
-    }
-  }
-}
-
-class METUnderline extends StatelessWidget {
-  final Color? primary;
-  final bool enabled;
-  final bool focused;
-  final bool error;
-  final double height;
-  final ValueState<Color> colorState;
-
-  const METUnderline({
-    Key? key,
-    this.primary,
-    this.enabled = true,
-    this.focused = false,
-    this.error = false,
-    required this.colorState,
-    this.height = 1,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return YMRView(
-      orientation: Axis.vertical,
-      marginBottom: focused ? 0 : height,
-      height: focused ? height * 2 : height,
-      background: colorState.fromType(
-        enabled
-            ? error
-                ? ValueStateType.error
-                : focused
-                    ? ValueStateType.primary
-                    : ValueStateType.secondary
-            : ValueStateType.disabled,
-      ),
-    );
-  }
+  int get minCharacters => super.minCharacters ?? 0;
 }
