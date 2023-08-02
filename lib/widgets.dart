@@ -43,6 +43,8 @@ part 'views/content_view.dart';
 
 part 'views/countdown_view.dart';
 
+part 'views/dropdown_view.dart';
+
 part 'views/edit_form.dart';
 
 part 'views/edit_text.dart';
@@ -86,6 +88,8 @@ part 'views/tab_layout.dart';
 part 'views/tab_view.dart';
 
 part 'views/text_view.dart';
+
+part 'views/titled_view.dart';
 
 part 'views/toggle_builder.dart';
 
