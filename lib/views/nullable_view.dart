@@ -1,8 +1,14 @@
 part of '../widgets.dart';
 
+typedef NullableViewBuilder = Widget Function(
+  BuildContext context,
+  Widget parent,
+);
+
 class NullableView extends YMRView<NullableViewController> {
   ///IMAGE
   final dynamic icon;
+  final NullableViewBuilder? iconBuilder;
   final Color? iconTint;
   final BlendMode iconTintMode;
   final double iconSize;
@@ -12,6 +18,7 @@ class NullableView extends YMRView<NullableViewController> {
 
   ///HEADER
   final String? header;
+  final NullableViewBuilder? headerBuilder;
   final Color headerColor;
   final String? headerFontFamily;
   final FontWeight headerFontWeight;
@@ -21,6 +28,7 @@ class NullableView extends YMRView<NullableViewController> {
 
   ///BODY
   final String? body;
+  final NullableViewBuilder? bodyBuilder;
   final Color bodyColor;
   final String? bodyFontFamily;
   final FontWeight bodyFontWeight;
@@ -29,22 +37,44 @@ class NullableView extends YMRView<NullableViewController> {
   final bool bodyVisible;
   final TextViewController? bodyController;
 
-  ///BUTTON
+  /// BUTTON
   final Color? buttonBackground;
+  final NullableViewBuilder? buttonBuilder;
   final double buttonMinWidth;
   final double buttonPaddingX;
   final double buttonPaddingY;
   final String? buttonText;
-  final Color buttonTextColor;
+  final Color? buttonTextColor;
   final String? buttonTextFontFamily;
   final FontWeight buttonTextFontWeight;
   final double buttonTextSize;
+  final double buttonBorderRadius;
+  final Color? buttonRippleColor;
   final double buttonSpacing;
   final bool buttonVisible;
   final ButtonController? buttonController;
   final OnViewClickListener? onButtonClick;
 
+  /// SECONDARY BUTTON
+  final Color? secondaryButtonBackground;
+  final NullableViewBuilder? secondaryButtonBuilder;
+  final double? secondaryButtonMinWidth;
+  final double? secondaryButtonPaddingX;
+  final double? secondaryButtonPaddingY;
+  final String secondaryButtonText;
+  final Color? secondaryButtonTextColor;
+  final String? secondaryButtonTextFontFamily;
+  final FontWeight? secondaryButtonTextFontWeight;
+  final double? secondaryButtonTextSize;
+  final double? secondaryButtonBorderRadius;
+  final Color? secondaryButtonRippleColor;
+  final double secondaryButtonSpacing;
+  final bool secondaryButtonVisible;
+  final ButtonController? secondaryButtonController;
+  final OnViewClickListener? onSecondaryButtonClick;
+
   const NullableView({
+    /// SUPER PROPERTIES
     super.key,
     super.absorbMode,
     super.activated,
@@ -121,21 +151,30 @@ class NullableView extends YMRView<NullableViewController> {
     super.widthMax,
     super.widthMin,
     super.visibility,
+
+    /// ICON PROPERTIES
     this.icon,
+    this.iconBuilder,
     this.iconTint,
     this.iconTintMode = BlendMode.srcIn,
     this.iconSize = 50,
     this.iconSpacing = 24,
     this.iconVisible = true,
     this.iconController,
+
+    /// HEADER PROPERTIES
     this.header,
+    this.headerBuilder,
     this.headerColor = Colors.black,
     this.headerFontFamily,
     this.headerFontWeight = FontWeight.w500,
     this.headerSize = 24,
     this.headerVisible = true,
     this.headerController,
+
+    /// BODY PROPERTIES
     this.body,
+    this.bodyBuilder,
     this.bodyColor = const Color(0xff808080),
     this.bodyFontFamily,
     this.bodyFontWeight = FontWeight.normal,
@@ -143,12 +182,17 @@ class NullableView extends YMRView<NullableViewController> {
     this.bodySpacing = 12,
     this.bodyVisible = true,
     this.bodyController,
+
+    /// BUTTON PROPERTIES
     this.buttonBackground,
+    this.buttonBorderRadius = 50,
+    this.buttonBuilder,
     this.buttonMinWidth = 180,
     this.buttonPaddingX = 24,
     this.buttonPaddingY = 12,
+    this.buttonRippleColor,
     this.buttonText,
-    this.buttonTextColor = Colors.white,
+    this.buttonTextColor,
     this.buttonTextFontFamily,
     this.buttonTextFontWeight = FontWeight.w500,
     this.buttonTextSize = 16,
@@ -156,6 +200,24 @@ class NullableView extends YMRView<NullableViewController> {
     this.buttonVisible = true,
     this.buttonController,
     this.onButtonClick,
+
+    /// SECONDARY BUTTON PROPERTIES
+    this.secondaryButtonBackground,
+    this.secondaryButtonBorderRadius,
+    this.secondaryButtonBuilder,
+    this.secondaryButtonMinWidth,
+    this.secondaryButtonPaddingX,
+    this.secondaryButtonPaddingY,
+    this.secondaryButtonRippleColor,
+    this.secondaryButtonText = "",
+    this.secondaryButtonTextColor,
+    this.secondaryButtonTextFontFamily,
+    this.secondaryButtonTextFontWeight,
+    this.secondaryButtonTextSize,
+    this.secondaryButtonSpacing = 24,
+    this.secondaryButtonVisible = true,
+    this.secondaryButtonController,
+    this.onSecondaryButtonClick,
   });
 
   @override
@@ -168,69 +230,99 @@ class NullableView extends YMRView<NullableViewController> {
 
   @override
   Widget? attach(BuildContext context, NullableViewController controller) {
+    var mIcon = IconView(
+      controller: iconController,
+      visibility: controller.iconVisible,
+      marginBottom: controller.iconSpacing,
+      icon: controller.icon,
+      size: controller.iconSize,
+      tint: controller.iconTint,
+      tintMode: controller.iconTintMode,
+    );
+    var mHeader = TextView(
+      controller: headerController,
+      visibility: controller.headerVisible,
+      width: double.infinity,
+      gravity: Alignment.center,
+      text: controller.header,
+      textColor: controller.headerColor,
+      textAlign: TextAlign.center,
+      textFontFamily: controller.headerFontFamily,
+      textFontWeight: controller.headerFontWeight,
+      textSize: controller.headerSize,
+    );
+    var mBody = TextView(
+      controller: bodyController,
+      visibility: controller.bodyVisible,
+      width: double.infinity,
+      gravity: Alignment.center,
+      marginTop: controller.bodySpacing,
+      text: controller.body,
+      textAlign: TextAlign.center,
+      textColor: controller.bodyColor,
+      textFontFamily: controller.bodyFontFamily,
+      textFontWeight: controller.bodyFontWeight,
+      textSize: controller.bodySize,
+    );
+    var mButton = Button(
+      controller: buttonController,
+      visibility: controller.buttonVisible,
+      marginTop: controller.buttonSpacing,
+      background: controller.buttonBackground ?? context.primaryColor,
+      widthMin: controller.buttonMinWidth,
+      paddingHorizontal: controller.buttonPaddingX,
+      paddingVertical: controller.buttonPaddingY,
+      rippleColor: controller.buttonRippleColor ?? Colors.black26,
+      pressedColor: Colors.black12,
+      borderRadius: controller.buttonBorderRadius,
+      text: controller.buttonText,
+      textColor: controller.buttonTextColor ?? Colors.white,
+      textFontWeight: controller.buttonTextFontWeight,
+      textSize: controller.buttonTextSize,
+      onClick: onButtonClick,
+    );
+    var mSecondaryButton = Button(
+      controller: secondaryButtonController,
+      visibility: controller.secondaryButtonVisible,
+      marginTop: controller.secondaryButtonSpacing,
+      background: controller.secondaryButtonBackground ??
+          (controller.buttonBackground ?? context.primaryColor)
+              .withOpacity(0.1),
+      widthMin: controller.secondaryButtonMinWidth,
+      paddingHorizontal: controller.secondaryButtonPaddingX,
+      paddingVertical: controller.secondaryButtonPaddingY,
+      rippleColor: controller.secondaryButtonRippleColor ??
+          (controller.buttonRippleColor ?? Colors.black26).withOpacity(0.2),
+      pressedColor: Colors.black12,
+      borderRadius: controller.secondaryButtonBorderRadius ??
+          controller.buttonBorderRadius,
+      text: controller.secondaryButtonText,
+      textColor: controller.secondaryButtonTextColor ??
+          controller.buttonBackground ??
+          context.primaryColor,
+      textFontWeight: controller.secondaryButtonTextFontWeight ??
+          controller.buttonTextFontWeight,
+      textSize: controller.secondaryButtonTextSize ?? controller.buttonTextSize,
+      onClick: onSecondaryButtonClick,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
-        IconView(
-          controller: iconController,
-          visibility: controller.iconVisible,
-          marginBottom: controller.iconSpacing,
-          icon: controller.icon,
-          size: controller.iconSize,
-          tint: controller.iconTint,
-          tintMode: controller.iconTintMode,
-        ),
-        TextView(
-          controller: headerController,
-          visibility: controller.headerVisible,
-          width: double.infinity,
-          gravity: Alignment.center,
-          text: controller.header,
-          textColor: controller.headerColor,
-          textAlign: TextAlign.center,
-          textFontFamily: controller.headerFontFamily,
-          textFontWeight: controller.headerFontWeight,
-          textSize: controller.headerSize,
-        ),
-        TextView(
-          controller: bodyController,
-          visibility: controller.bodyVisible,
-          width: double.infinity,
-          gravity: Alignment.center,
-          marginTop: controller.bodySpacing,
-          text: controller.body,
-          textAlign: TextAlign.center,
-          textColor: controller.bodyColor,
-          textFontFamily: controller.bodyFontFamily,
-          textFontWeight: controller.bodyFontWeight,
-          textSize: controller.bodySize,
-        ),
-        Button(
-          controller: buttonController,
-          visibility: controller.buttonVisible,
-          marginTop: controller.buttonSpacing,
-          background: controller.buttonBackground ?? context.primaryColor,
-          widthMin: controller.buttonMinWidth,
-          paddingHorizontal: controller.buttonPaddingX,
-          paddingVertical: controller.buttonPaddingY,
-          rippleColor: Colors.black26,
-          pressedColor: Colors.black26,
-          borderRadius: 50,
-          text: controller.buttonText,
-          textColor: controller.buttonTextColor,
-          textFontWeight: controller.buttonTextFontWeight,
-          textSize: controller.buttonTextSize,
-          onClick: onButtonClick,
-        ),
+        iconBuilder?.call(context, mIcon) ?? mIcon,
+        headerBuilder?.call(context, mHeader) ?? mHeader,
+        bodyBuilder?.call(context, mBody) ?? mBody,
+        buttonBuilder?.call(context, mButton) ?? mButton,
+        secondaryButtonBuilder?.call(context, mSecondaryButton) ??
+            mSecondaryButton,
       ],
     );
   }
 }
 
 class NullableViewController extends ViewController {
-  ///IMAGE
+  /// ICON
   dynamic icon;
   Color? iconTint;
   BlendMode? iconTintMode = BlendMode.srcIn;
@@ -240,7 +332,7 @@ class NullableViewController extends ViewController {
 
   bool get iconVisible => icon != null && _iconVisible;
 
-  ///HEADER
+  /// HEADER
   String? header;
   Color headerColor = Colors.black;
   String? headerFontFamily;
@@ -250,7 +342,7 @@ class NullableViewController extends ViewController {
 
   bool get headerVisible => (header ?? "").isNotEmpty && _headerVisible;
 
-  ///BODY
+  /// BODY
   String? body;
   Color bodyColor = const Color(0xff808080);
   String? bodyFontFamily;
@@ -261,21 +353,43 @@ class NullableViewController extends ViewController {
 
   bool get bodyVisible => (body ?? "").isNotEmpty && _bodyVisible;
 
-  ///BUTTON
+  /// BUTTON
   Color? buttonBackground;
+  double buttonBorderRadius = 50;
   double buttonMinWidth = 180;
   double buttonPaddingX = 24;
   double buttonPaddingY = 12;
   String? buttonText;
-  Color buttonTextColor = Colors.white;
+  Color? buttonTextColor;
   String? buttonTextFontFamily;
   FontWeight buttonTextFontWeight = FontWeight.w500;
   double buttonTextSize = 16;
+  Color? buttonRippleColor;
   double buttonSpacing = 24;
   bool _buttonVisible = false;
 
   bool get buttonVisible => (buttonText ?? "").isNotEmpty && _buttonVisible;
 
+  /// SECONDARY BUTTON
+  Color? secondaryButtonBackground;
+  double? secondaryButtonBorderRadius;
+  double? secondaryButtonMinWidth;
+  double? secondaryButtonPaddingX;
+  double? secondaryButtonPaddingY;
+  String? secondaryButtonText;
+  Color? secondaryButtonTextColor;
+  String? secondaryButtonTextFontFamily;
+  FontWeight? secondaryButtonTextFontWeight;
+  double? secondaryButtonTextSize;
+  Color? secondaryButtonRippleColor;
+  double secondaryButtonSpacing = 24;
+  bool _secondaryButtonVisible = false;
+
+  bool get secondaryButtonVisible {
+    return (secondaryButtonText ?? "").isNotEmpty && _secondaryButtonVisible;
+  }
+
+  /// SUPER PROPERTIES
   @override
   double get paddingHorizontal => super.paddingHorizontal ?? 24;
 
@@ -315,9 +429,11 @@ class NullableViewController extends ViewController {
 
     ///BUTTON
     buttonBackground = view.buttonBackground;
+    buttonBorderRadius = view.buttonBorderRadius;
     buttonMinWidth = view.buttonMinWidth;
     buttonPaddingX = view.buttonPaddingX;
     buttonPaddingY = view.buttonPaddingY;
+    buttonRippleColor = view.buttonRippleColor;
     buttonText = view.buttonText;
     buttonTextColor = view.buttonTextColor;
     buttonTextFontFamily = view.buttonTextFontFamily;
@@ -325,6 +441,21 @@ class NullableViewController extends ViewController {
     buttonTextSize = view.buttonTextSize;
     buttonSpacing = view.buttonSpacing;
     _buttonVisible = view.buttonVisible;
+
+    ///SECONDARY BUTTON
+    secondaryButtonBackground = view.secondaryButtonBackground;
+    secondaryButtonBorderRadius = view.secondaryButtonBorderRadius;
+    secondaryButtonMinWidth = view.secondaryButtonMinWidth;
+    secondaryButtonPaddingX = view.secondaryButtonPaddingX;
+    secondaryButtonPaddingY = view.secondaryButtonPaddingY;
+    secondaryButtonRippleColor = view.secondaryButtonRippleColor;
+    secondaryButtonText = view.secondaryButtonText;
+    secondaryButtonTextColor = view.secondaryButtonTextColor;
+    secondaryButtonTextFontFamily = view.secondaryButtonTextFontFamily;
+    secondaryButtonTextFontWeight = view.secondaryButtonTextFontWeight;
+    secondaryButtonTextSize = view.secondaryButtonTextSize;
+    secondaryButtonSpacing = view.secondaryButtonSpacing;
+    _secondaryButtonVisible = view.secondaryButtonVisible;
     return this;
   }
 }
