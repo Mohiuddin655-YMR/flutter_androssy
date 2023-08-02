@@ -4,7 +4,7 @@ typedef DropdownDrawableBuilder = Widget Function(BuildContext context);
 typedef DropdownItemSelectedListener<T extends Object> = void Function(T? item);
 
 class DropdownView<T extends Object>
-    extends YMRView<DropdownViewController<T>> {
+    extends TextView<DropdownViewController<T>> {
   final int selectedIndex;
   final List<DropdownItem<T>> items;
 
@@ -63,7 +63,6 @@ class DropdownView<T extends Object>
     super.borderRadiusBR,
     super.borderRadiusTL,
     super.borderRadiusTR,
-    super.child,
     super.clipBehavior,
     super.controller,
     super.dimensionRatio,
@@ -113,6 +112,9 @@ class DropdownView<T extends Object>
     super.widthMax,
     super.widthMin,
     super.visibility,
+
+    /// TEXT SUPER PROPERTIES
+    super.textStyle,
     this.selectedIndex = 0,
     required this.items,
 
@@ -144,14 +146,15 @@ class DropdownView<T extends Object>
 
     /// LISTENERS
     this.onItemSelected,
-  });
+  }) : super(text: "");
 
   @override
   DropdownViewController<T> initController() => DropdownViewController();
 
   @override
   DropdownViewController<T> attachController(
-      DropdownViewController<T> controller) {
+    DropdownViewController<T> controller,
+  ) {
     return controller.fromDropdownView(this);
   }
 
@@ -162,6 +165,7 @@ class DropdownView<T extends Object>
         return DropdownMenu<T>(
           width: constraints.maxWidth,
           initialSelection: controller.selectedItem,
+          textStyle: controller.textStyle,
           leadingIcon: controller.leadingIconVisible
               ? Builder(
                   builder: (context) {
@@ -236,7 +240,7 @@ class DropdownView<T extends Object>
   }
 }
 
-class DropdownViewController<T extends Object> extends ViewController {
+class DropdownViewController<T extends Object> extends TextViewController {
   int _selectedIndex = 0;
   List<DropdownItem<T>> items = const [];
 
@@ -247,7 +251,7 @@ class DropdownViewController<T extends Object> extends ViewController {
   T? get selectedItem => items.isNotEmpty ? items[selectedIndex].value : null;
 
   DropdownViewController<T> fromDropdownView(DropdownView<T> view) {
-    super.fromView(view);
+    super.fromTextView(view);
     selectedIndex = view.selectedIndex;
     items = view.items;
 
