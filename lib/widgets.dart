@@ -61,6 +61,8 @@ part 'views/image_view.dart';
 
 part 'views/linear_layout.dart';
 
+part 'views/loader_view.dart';
+
 part 'views/material_edit_form.dart';
 
 part 'views/material_edit_text.dart';
@@ -96,6 +98,8 @@ part 'views/toggle_builder.dart';
 part 'views/toolbar_view.dart';
 
 part 'views/view.dart';
+
+part 'views/view_builder.dart';
 
 part 'views/view_pager.dart';
 

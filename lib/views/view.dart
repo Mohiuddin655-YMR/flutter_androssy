@@ -9,7 +9,10 @@ typedef OnViewToggleListener = Function(bool value);
 typedef OnViewHoverListener = Function(bool value);
 typedef OnViewValidListener = Function(bool value);
 typedef OnViewValidatorListener = bool Function(String value);
-
+typedef OnViewIndexBuilder = Widget Function(
+  BuildContext context,
+  int index,
+);
 typedef OnViewToggleHandler<T extends ViewController> = Function(
   BuildContext context,
   T controller,
