@@ -4,6 +4,10 @@ typedef OnViewBuilder<T> = Widget Function(BuildContext context, T? controller);
 typedef OnViewChangeListener = Function(dynamic value);
 typedef OnViewClickListener = Function(BuildContext context);
 typedef OnViewItemClickListener<T> = void Function(BuildContext contex, T item);
+typedef OnViewItemChangeListener<T> = void Function(
+  BuildContext context,
+  T item,
+);
 typedef OnViewErrorListener = String? Function(ViewError error);
 typedef OnViewToggleListener = Function(bool value);
 typedef OnViewHoverListener = Function(bool value);
@@ -165,6 +169,66 @@ extension ViewErrorExtension on ViewError {
   bool get isUnavailable => this == ViewError.alreadyFound;
 
   bool get isUnmodified => this == ViewError.unmodified;
+}
+
+class ViewCornerRadius {
+  final double topLeft;
+  final double topRight;
+  final double bottomLeft;
+  final double bottomRight;
+
+  const ViewCornerRadius({
+    this.topLeft = 0,
+    this.topRight = 0,
+    this.bottomLeft = 0,
+    this.bottomRight = 0,
+  });
+
+  const ViewCornerRadius.all(double value)
+      : topLeft = value,
+        topRight = value,
+        bottomLeft = value,
+        bottomRight = value;
+
+  const ViewCornerRadius.topAll(double value)
+      : topLeft = value,
+        topRight = value,
+        bottomLeft = 0,
+        bottomRight = 0;
+
+  const ViewCornerRadius.bottomAll(double value)
+      : topLeft = 0,
+        topRight = 0,
+        bottomLeft = value,
+        bottomRight = value;
+
+  const ViewCornerRadius.leftAll(double value)
+      : topLeft = value,
+        topRight = 0,
+        bottomLeft = value,
+        bottomRight = 0;
+
+  const ViewCornerRadius.rightAll(double value)
+      : topLeft = 0,
+        topRight = value,
+        bottomLeft = 0,
+        bottomRight = value;
+
+  double get all {
+    var radius = topLeft;
+    if (radius < topRight) {
+      radius = topRight;
+    }
+    if (radius < bottomLeft) {
+      radius = bottomLeft;
+    }
+    if (radius < bottomRight) {
+      radius = bottomRight;
+    }
+    return radius;
+  }
+
+  double get average => (topLeft + topRight + bottomLeft + bottomRight) / 4;
 }
 
 class ViewPosition {

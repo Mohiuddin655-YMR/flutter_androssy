@@ -135,9 +135,7 @@ class ChooserView<T> extends YMRView<ChooserViewController> {
       children: List.generate(items.length, (index) {
         return GestureDetector(
           onTap: () => controller.onNotify(index),
-          child: AbsorbPointer(
-            child: builder(context, index, controller.currentIndex),
-          ),
+          child: builder(context, index, controller.currentIndex),
         );
       }),
     );

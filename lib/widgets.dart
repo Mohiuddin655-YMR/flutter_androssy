@@ -77,6 +77,8 @@ part 'views/option_view_builder.dart';
 
 part 'views/progress_view.dart';
 
+part 'views/radio_group.dart';
+
 part 'views/recycler_view.dart';
 
 part 'views/slide_image_view.dart';
