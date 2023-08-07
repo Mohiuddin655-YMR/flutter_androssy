@@ -13,6 +13,7 @@ class ChooserView<T> extends YMRView<ChooserViewController> {
   final double? itemSpace;
 
   final List<T> items;
+  final OnViewItemClickListener<T>? onItemClick;
   final Widget Function(BuildContext, int current, int selected) builder;
 
   const ChooserView({
@@ -108,6 +109,7 @@ class ChooserView<T> extends YMRView<ChooserViewController> {
     this.itemVerticalDirection,
     this.itemRunSpace,
     this.itemSpace,
+    this.onItemClick,
     required this.items,
     required this.builder,
   });
@@ -134,8 +136,19 @@ class ChooserView<T> extends YMRView<ChooserViewController> {
       verticalDirection: controller.itemVerticalDirection,
       children: List.generate(items.length, (index) {
         return GestureDetector(
-          onTap: () => controller.onNotify(index),
-          child: builder(context, index, controller.currentIndex),
+          onTap: () {
+            if (onItemClick != null) {
+              controller.onNotifyWithCallback(
+                () => onItemClick!(context, items[index]),
+                index,
+              );
+            } else {
+              controller.onNotify(index);
+            }
+          },
+          child: AbsorbPointer(
+            child: builder(context, index, controller.currentIndex),
+          ),
         );
       }),
     );
@@ -180,6 +193,14 @@ class ChooserViewController extends ViewController {
     if (currentIndex != index) {
       currentIndex = index;
       super.onNotify();
+    }
+  }
+
+  @override
+  void onNotifyWithCallback(VoidCallback callback, [int index = 0]) {
+    if (currentIndex != index) {
+      currentIndex = index;
+      super.onNotifyWithCallback(callback);
     }
   }
 }
