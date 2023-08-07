@@ -17,6 +17,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'factories/calendar/raw_calendar.dart';
+import 'factories/calendar/src/shared/utils.dart';
+
 part 'builders/activity.dart';
 
 part 'builders/fragment.dart';
@@ -34,6 +37,8 @@ part 'builders/widget_wrapper.dart';
 part 'views/avatar_view.dart';
 
 part 'views/button.dart';
+
+part 'views/calendar_view.dart';
 
 part 'views/category_view.dart';
 

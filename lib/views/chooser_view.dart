@@ -1,16 +1,16 @@
 part of '../widgets.dart';
 
-class ChooserView<T> extends YMRView<ChooserViewController> {
-  final int? currentIndex;
-  final WrapAlignment? itemAlignment;
-  final Clip? itemClipBehavior;
-  final WrapCrossAlignment? itemCrossAlignment;
-  final WrapAlignment? itemFlowAlignment;
-  final Axis? itemDirection;
-  final TextDirection? itemTextDirection;
-  final VerticalDirection? itemVerticalDirection;
-  final double? itemRunSpace;
-  final double? itemSpace;
+class ChooserView<T> extends YMRView<ChooserViewController<T>> {
+  final int currentIndex;
+  final WrapAlignment itemAlignment;
+  final Clip itemClipBehavior;
+  final WrapCrossAlignment itemCrossAlignment;
+  final WrapAlignment itemFlowAlignment;
+  final Axis itemDirection;
+  final TextDirection itemTextDirection;
+  final VerticalDirection itemVerticalDirection;
+  final double itemRunSpace;
+  final double itemSpace;
 
   final List<T> items;
   final OnViewItemClickListener<T>? onItemClick;
@@ -99,31 +99,33 @@ class ChooserView<T> extends YMRView<ChooserViewController> {
     super.widthMax,
     super.widthMin,
     super.visibility,
-    this.currentIndex,
-    this.itemAlignment,
-    this.itemClipBehavior,
-    this.itemCrossAlignment,
-    this.itemDirection,
-    this.itemFlowAlignment,
-    this.itemTextDirection,
-    this.itemVerticalDirection,
-    this.itemRunSpace,
-    this.itemSpace,
+    this.currentIndex = 0,
+    this.itemAlignment = WrapAlignment.start,
+    this.itemClipBehavior = Clip.none,
+    this.itemCrossAlignment = WrapCrossAlignment.start,
+    this.itemDirection = Axis.horizontal,
+    this.itemFlowAlignment = WrapAlignment.start,
+    this.itemTextDirection = TextDirection.ltr,
+    this.itemVerticalDirection = VerticalDirection.down,
+    this.itemRunSpace = 12,
+    this.itemSpace = 8,
     this.onItemClick,
     required this.items,
     required this.builder,
   });
 
   @override
-  ChooserViewController initController() => ChooserViewController();
+  ChooserViewController<T> initController() => ChooserViewController<T>();
 
   @override
-  ChooserViewController attachController(ChooserViewController controller) {
+  ChooserViewController<T> attachController(
+    ChooserViewController<T> controller,
+  ) {
     return controller.fromChooserView(this);
   }
 
   @override
-  Widget? attach(BuildContext context, ChooserViewController controller) {
+  Widget? attach(BuildContext context, ChooserViewController<T> controller) {
     return Wrap(
       alignment: controller.itemAlignment,
       clipBehavior: controller.itemClipBehavior,
@@ -134,12 +136,12 @@ class ChooserView<T> extends YMRView<ChooserViewController> {
       spacing: controller.itemSpace,
       textDirection: controller.itemTextDirection,
       verticalDirection: controller.itemVerticalDirection,
-      children: List.generate(items.length, (index) {
+      children: List.generate(controller.size, (index) {
         return GestureDetector(
           onTap: () {
             if (onItemClick != null) {
               controller.onNotifyWithCallback(
-                () => onItemClick!(context, items[index]),
+                () => onItemClick!(context, controller.currentItem),
                 index,
               );
             } else {
@@ -155,8 +157,42 @@ class ChooserView<T> extends YMRView<ChooserViewController> {
   }
 }
 
-class ChooserViewController extends ViewController {
+class ChooserViewController<T> extends ViewController {
+  ChooserViewController<T> fromChooserView(ChooserView<T> view) {
+    super.fromView(view);
+    currentIndex = view.currentIndex;
+    items = view.items;
+    itemAlignment = view.itemAlignment;
+    itemClipBehavior = view.itemClipBehavior;
+    itemCrossAlignment = view.itemCrossAlignment;
+    itemDirection = view.itemDirection;
+    itemFlowAlignment = view.itemFlowAlignment;
+    itemTextDirection = view.itemTextDirection;
+    itemVerticalDirection = view.itemVerticalDirection;
+    itemRunSpace = view.itemRunSpace;
+    itemSpace = view.itemSpace;
+    return this;
+  }
+
+  /// CUSTOMIZATIONS
+
+  int get size => items.length;
+
+  int get _i {
+    if (currentIndex < 0) {
+      return 0;
+    }
+    if (currentIndex > size) {
+      return size - 1;
+    }
+    return currentIndex;
+  }
+
+  T get currentItem => items[_i];
+
+  /// BASE PROPERTIES
   int currentIndex = 0;
+  List<T> items = [];
   WrapAlignment itemAlignment = WrapAlignment.start;
   Clip itemClipBehavior = Clip.none;
   WrapCrossAlignment itemCrossAlignment = WrapCrossAlignment.start;
@@ -167,22 +203,7 @@ class ChooserViewController extends ViewController {
   double itemRunSpace = 12;
   double itemSpace = 8;
 
-  ChooserViewController fromChooserView(ChooserView view) {
-    super.fromView(view);
-    currentIndex = view.currentIndex ?? 0;
-    itemAlignment = view.itemAlignment ?? WrapAlignment.start;
-    itemClipBehavior = view.itemClipBehavior ?? Clip.none;
-    itemCrossAlignment = view.itemCrossAlignment ?? WrapCrossAlignment.start;
-    itemDirection = view.itemDirection ?? Axis.horizontal;
-    itemFlowAlignment = view.itemFlowAlignment ?? WrapAlignment.start;
-    itemTextDirection = view.itemTextDirection;
-    itemVerticalDirection =
-        view.itemVerticalDirection ?? VerticalDirection.down;
-    itemRunSpace = view.itemRunSpace ?? 12;
-    itemSpace = view.itemSpace ?? 8;
-    return this;
-  }
-
+  /// SUPER PROPERTIES
   @override
   Axis get orientation {
     return itemDirection == Axis.vertical ? Axis.horizontal : Axis.vertical;
