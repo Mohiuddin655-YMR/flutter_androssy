@@ -216,6 +216,7 @@ class RatingViewController extends ViewController {
     super.fromView(view);
 
     /// BASE PROPERTIES
+    currentRating = view.initialRating;
     allowHalfRating = view.allowHalfRating;
     draggable = view.draggable;
     ignoreGestures = view.ignoreGestures;
