@@ -205,7 +205,7 @@ class RatingView extends YMRView<RatingViewController> {
             tint: controller.unratedColor ?? mRC.withOpacity(0.5),
           ),
         ),
-        onRatingChange: controller.onRatingChange,
+        onRatingChange: controller._changeRating,
       );
     }
   }
@@ -246,6 +246,13 @@ class RatingViewController extends ViewController {
 
   /// CUSTOMIZATIONS
   double currentRating = 0.0;
+
+  void _changeRating(double rating) {
+    currentRating = rating;
+    if (onRatingChange != null) {
+      onRatingChange?.call(currentRating);
+    }
+  }
 
   void setRating(double rating) {
     onNotifyWithCallback(() => currentRating = rating);
