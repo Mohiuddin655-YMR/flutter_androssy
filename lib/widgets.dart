@@ -111,6 +111,8 @@ part 'views/view_builder.dart';
 
 part 'views/view_pager.dart';
 
+part 'views/wrapper_view.dart';
+
 part 'widgets/badge_button.dart';
 
 part 'widgets/border_button.dart';

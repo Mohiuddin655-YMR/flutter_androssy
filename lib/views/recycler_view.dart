@@ -2,220 +2,15 @@ part of '../widgets.dart';
 
 typedef RecyclerViewItemBuilder<T> = Widget Function(int index, T item);
 
-class _RVGItem<T> {
-  final T? data;
-  final bool temporary;
-
-  const _RVGItem(
-    this.data, [
-    this.temporary = false,
-  ]);
-
-  const _RVGItem.temp([T? value])
-      : data = value,
-        temporary = true;
-}
-
-class RecyclerViewController<T> extends ViewController {
-  List<T> items = [];
-  int? _itemCount;
-  double spaceBetween = 0;
-  RecyclerLayoutType layoutType = RecyclerLayoutType.linear;
-  OnViewChangeListener? onPagingListener;
-
-  RecyclerViewController<T> fromRecyclerView(RecyclerView<T> view) {
-    super.fromView(view);
-    _itemCount = view.itemCount;
-    this.items = view.items;
-    this.layoutType = view.layoutType;
-    this.spaceBetween = view.spaceBetween;
-    this.onPagingListener = view.onPagingListener;
-    this.snapCount = view.snapCount;
-
-    return this;
-  }
-
-  bool get isGridMode => layoutType == RecyclerLayoutType.grid || snapCount > 1;
-
-  bool get isValidItemCountingOrSnapping => itemCount > 0 && snapCount > 0;
-
-  bool get isVerticalMode => orientation == Axis.vertical;
-
-  bool get isSpacer => spaceBetween > 0;
-
-  /// Items properties
-  T get firstItem => items.first;
-
-  T get lastItem => items.last;
-
-  int get size => items.length;
-
-  int get itemCount => min(_itemCount ?? (items.length + 1), size);
-
-  T? getItem(int index) => size > 0 && size > index ? items[index] : null;
-
-  void setItem(T item, [int? index]) {
-    super.onNotifyWithCallback(() {
-      var list = List<T>.from(items);
-      if (index != null && itemCount >= index) {
-        list.insert(index, item);
-      } else {
-        list.add(item);
-      }
-      items = list;
-    });
-  }
-
-  void setItemAsFirst(T item) => setItem(item, 0);
-
-  void setItemAsMiddle(T item) => setItem(item, itemCount ~/ 2);
-
-  void setItemAsLast(T item) => setItem(item, itemCount);
-
-  void setItems(List<T> items, [bool insertable = true]) {
-    super.onNotifyWithCallback(() {
-      if (insertable) {
-        var list = List<T>.from(this.items);
-        list.addAll(items);
-        this.items = list;
-      } else {
-        this.items = items;
-      }
-    });
-  }
-
-  void setItemsAt(List<T> items, int index) {
-    super.onNotifyWithCallback(() {
-      var list = List<T>.from(this.items);
-      if (itemCount >= index) {
-        list.insertAll(index, items);
-      } else {
-        list.addAll(items);
-      }
-      this.items = list;
-    });
-  }
-
-  void setItemsAsFirst(List<T> items) => setItemsAt(items, 0);
-
-  void setItemsAsMiddle(List<T> items) => setItemsAt(items, itemCount ~/ 2);
-
-  void setItemsAsLast(List<T> items) => setItemsAt(items, itemCount);
-
-  void setItemCount(int value) {
-    super.onNotifyWithCallback(() {
-      _itemCount = value;
-    });
-  }
-
-  void removeItem(T item) {
-    super.onNotifyWithCallback(() {
-      var list = List<T>.from(items);
-      list.remove(item);
-      items = list;
-    });
-  }
-
-  void removeItemAt(int index) {
-    super.onNotifyWithCallback(() {
-      if (index >= 0 && index < itemCount) {
-        var list = List<T>.from(items);
-        list.removeAt(index);
-        items = list;
-      }
-    });
-  }
-
-  /// GRID PROPERTIES
-  int snapCount = 1;
-
-  int _gri = 0;
-
-  int get _griEnding => _gri + (snapCount);
-
-  int get _gciEnding => (itemCount / snapCount).ceil();
-
-  Axis get _orientationAsInverse =>
-      isVerticalMode ? Axis.horizontal : Axis.vertical;
-
-  int get _gmc {
-    final line = (itemCount / snapCount).ceil();
-    final require = line * snapCount;
-    final missing = require - itemCount;
-    return missing.abs();
-  }
-
-  List<_RVGItem<T>> get _gis {
-    List<_RVGItem<T>> list = [];
-    if (items.isNotEmpty) {
-      list = items.getRange(0, itemCount).map((e) => _RVGItem(e)).toList();
-      if (_gmc > 0) {
-        for (int i = 0; i < _gmc; i++) {
-          list.add(_RVGItem<T>.temp());
-        }
-      }
-    }
-    return list;
-  }
-
-  Iterable<_RVGItem<T>> get _gcItems => _gis.getRange(0, _gciEnding);
-
-  Iterable<_RVGItem<T>> get _grItems => _gis.getRange(_gri, _griEnding);
-
-  void _griClear() => _gri = 0;
-
-  void _griIncrement() => _gri++;
-
-  void setSnapCount(int value) {
-    super.onNotifyWithCallback(() {
-      snapCount = value;
-    });
-  }
-
-  /// DEFAULT PROPERTIES
-
-  @override
-  ScrollController get scrollController {
-    if (onPagingListener != null) {
-      return super
-          .scrollController
-          .paging(onListen: onPagingListener ?? (v) {});
-    } else {
-      return super.scrollController;
-    }
-  }
-
-  ScrollController paging({required VoidCallback callback}) {
-    scrollController.addListener(() {
-      if (scrollController.position.atEdge) {
-        if (scrollController.position.pixels != 0) {
-          callback.call();
-        }
-      }
-    });
-    return scrollController;
-  }
-
-  void setRecyclerType(RecyclerLayoutType value) {
-    super.onNotifyWithCallback(() => layoutType = value);
-  }
-
-  void setSpaceBetween(double value) {
-    super.onNotifyWithCallback(() => spaceBetween = value);
-  }
-
-  void _dispose() => scrollController.dispose();
-}
-
 class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
   final List<T> items;
   final int? itemCount;
   final int snapCount;
-  final double spaceBetween;
-  final OnViewChangeListener? onPagingListener;
 
+  final double spaceBetween;
   final RecyclerLayoutType layoutType;
   final RecyclerViewItemBuilder<T> builder;
+  final OnViewChangeListener? onPagingListener;
 
   const RecyclerView({
     super.key,
@@ -295,6 +90,7 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
     super.width,
     super.widthMax,
     super.widthMin,
+    super.wrapper,
     super.visibility,
     required this.items,
     required this.builder,
@@ -306,25 +102,13 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
   });
 
   @override
-  void onInit(RecyclerViewController<T> controller) {
-    controller._griClear();
-  }
-
-  @override
-  void onUpdateWidget(RecyclerViewController<T> controller, oldWidget) {
-    controller._griClear();
-  }
-
-  @override
-  void onChangeDependencies(RecyclerViewController<T> controller) {
-    controller._griClear();
-  }
-
-  @override
   void onDispose(RecyclerViewController<T> controller) => controller._dispose();
 
   @override
-  RecyclerViewController<T> initController() => RecyclerViewController<T>();
+  ViewRoots initRootProperties() => const ViewRoots(wrapper: false);
+
+  @override
+  RecyclerViewController<T> initController() => RecyclerViewController();
 
   @override
   RecyclerViewController<T> attachController(
@@ -342,25 +126,38 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: controller.isGridMode
-                ? controller._gcItems.map((item) {
-                    return Flex(
-                      direction: controller._orientationAsInverse,
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: controller._grItems.map((item) {
-                        controller._griIncrement();
-                        var child = !item.temporary && item.data != null
-                            ? builder(controller._gri, item.data as T)
-                            : const SizedBox();
-                        if (controller.isVerticalMode) {
-                          child = Expanded(child: child);
-                        }
+                ? List.generate(controller.rowCount, (row) {
+                    final startIndex = controller.startIndex(row);
+                    final endIndex = controller.endIndex(startIndex);
+                    return WrapperView(
+                      wrapper: controller.wrapper,
+                      child: Flex(
+                        direction: controller._orientationAsInverse,
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: List.generate(controller.snapCount, (column) {
+                          final itemIndex = startIndex + column;
+                          final item = controller.getItem(itemIndex);
+                          final isBuildMode = itemIndex < endIndex;
 
-                        return child;
-                      }).toList(),
+                          Widget child;
+
+                          if (isBuildMode && item != null) {
+                            child = builder(itemIndex, item);
+                          } else {
+                            child = const SizedBox();
+                          }
+
+                          if (controller.isVerticalMode) {
+                            child = Expanded(child: child);
+                          }
+
+                          return child;
+                        }),
+                      ),
                     );
-                  }).toList()
+                  })
                 : List.generate(controller.itemCount, (index) {
                     var item = controller.items[index];
                     var child = builder(index, item);
@@ -388,6 +185,179 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
           )
         : null;
   }
+}
+
+class RecyclerViewController<T> extends ViewController {
+  /// BASE PROPERTIES
+  List<T> items = [];
+  int? _itemCount;
+  int snapCount = 1;
+
+  double spaceBetween = 0;
+  RecyclerLayoutType layoutType = RecyclerLayoutType.linear;
+  OnViewChangeListener? onPagingListener;
+
+  /// ROOT START
+  set itemCount(int? value) => _itemCount = value;
+
+  int get itemCount => _itemCount ?? items.length;
+
+  int get rowCount => (itemCount / snapCount).ceil();
+
+  int startIndex(int rowIndex) => rowIndex * snapCount;
+
+  int endIndex(int startIndex) {
+    var si = startIndex + snapCount;
+    return si < itemCount ? si : itemCount;
+  }
+
+  ///END
+  RecyclerViewController<T> fromRecyclerView(RecyclerView<T> view) {
+    super.fromView(view);
+
+    /// BASE PROPERTIES
+    items = view.items;
+    itemCount = view.itemCount;
+    snapCount = view.snapCount;
+    layoutType = view.layoutType;
+    spaceBetween = view.spaceBetween;
+    onPagingListener = view.onPagingListener;
+
+    return this;
+  }
+
+  bool get isGridMode => layoutType == RecyclerLayoutType.grid || snapCount > 1;
+
+  bool get isValidItemCountingOrSnapping => itemCount > 0 && snapCount > 0;
+
+  bool get isVerticalMode => orientation == Axis.vertical;
+
+  bool get isSpacer => spaceBetween > 0;
+
+  /// Items properties
+  T get firstItem => items.first;
+
+  T get lastItem => items.last;
+
+  int get size => items.length;
+
+  T? getItem(int index) => size > 0 && size > index ? items[index] : null;
+
+  void setItem(T item, [int? index]) {
+    super.onNotifyWithCallback(() {
+      var list = List<T>.from(items);
+      if (index != null && itemCount >= index) {
+        list.insert(index, item);
+      } else {
+        list.add(item);
+      }
+      items = list;
+    });
+  }
+
+  void setItemAsFirst(T item) => setItem(item, 0);
+
+  void setItemAsMiddle(T item) => setItem(item, itemCount ~/ 2);
+
+  void setItemAsLast(T item) => setItem(item, itemCount);
+
+  void setItems(List<T> items, [bool insertable = true]) {
+    super.onNotifyWithCallback(() {
+      if (insertable) {
+        var list = List<T>.from(this.items);
+        list.addAll(items);
+        this.items = list;
+      } else {
+        this.items = items;
+      }
+    });
+  }
+
+  void setItemsAt(List<T> items, int index) {
+    super.onNotifyWithCallback(() {
+      var list = List<T>.from(this.items);
+      if (itemCount >= index) {
+        list.insertAll(index, items);
+      } else {
+        list.addAll(items);
+      }
+      this.items = list;
+    });
+  }
+
+  void setItemsAsFirst(List<T> items) => setItemsAt(items, 0);
+
+  void setItemsAsMiddle(List<T> items) => setItemsAt(items, itemCount ~/ 2);
+
+  void setItemsAsLast(List<T> items) => setItemsAt(items, itemCount);
+
+  void setItemCount(int value) {
+    super.onNotifyWithCallback(() {
+      _itemCount = value;
+    });
+  }
+
+  void removeItem(T item) {
+    super.onNotifyWithCallback(() {
+      var list = List<T>.from(items);
+      list.remove(item);
+      items = list;
+    });
+  }
+
+  void removeItemAt(int index) {
+    super.onNotifyWithCallback(() {
+      if (index >= 0 && index < itemCount) {
+        var list = List<T>.from(items);
+        list.removeAt(index);
+        items = list;
+      }
+    });
+  }
+
+  Axis get _orientationAsInverse =>
+      isVerticalMode ? Axis.horizontal : Axis.vertical;
+
+  void setSnapCount(int value) {
+    super.onNotifyWithCallback(() {
+      snapCount = value;
+    });
+  }
+
+  /// SUPER PROPERTIES
+
+  @override
+  ScrollController get scrollController {
+    if (onPagingListener != null) {
+      return scrollController;
+      // return super
+      //     .scrollController
+      //     .paging(onListen: onPagingListener ?? (v) {});
+    } else {
+      return super.scrollController;
+    }
+  }
+
+  ScrollController paging({required VoidCallback callback}) {
+    scrollController.addListener(() {
+      if (scrollController.position.atEdge) {
+        if (scrollController.position.pixels != 0) {
+          callback.call();
+        }
+      }
+    });
+    return scrollController;
+  }
+
+  void setRecyclerType(RecyclerLayoutType value) {
+    super.onNotifyWithCallback(() => layoutType = value);
+  }
+
+  void setSpaceBetween(double value) {
+    super.onNotifyWithCallback(() => spaceBetween = value);
+  }
+
+  void _dispose() => scrollController.dispose();
 }
 
 enum RecyclerLayoutType { linear, grid }

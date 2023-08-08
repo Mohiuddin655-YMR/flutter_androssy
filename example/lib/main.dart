@@ -1,4 +1,3 @@
-import 'package:example/ex_edit_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/widgets.dart';
 
@@ -36,21 +35,22 @@ class _ExampleState extends State<Example> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LinearLayout(
-        layoutGravity: LayoutGravity.center,
-        paddingHorizontal: 24,
-        paddingVertical: 24,
-        children: [
-          EditText(
-            autoFocus: true,
-            hint: "Email",
-          ),
-          const SizedBox(height: 24),
-          ExEditText(
-            hint: "Password",
-            hintColor: Colors.redAccent,
-          ),
-        ],
+      body: RecyclerView(
+        orientation: Axis.vertical,
+        padding: 24,
+        scrollable: true,
+        wrapper: true,
+        items: List.generate(150, (index) => "Item $index"),
+        snapCount: 7,
+        builder: (index, item) {
+          return TextView(
+            padding: 40,
+            gravity: Alignment.center,
+            background: index.isEven? context.primaryColor : Colors.red,
+            text: item,
+            paddingVertical: 3,
+          );
+        },
       ),
     );
   }

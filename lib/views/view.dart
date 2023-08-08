@@ -401,7 +401,7 @@ extension ViewRecognizerExtension on BuildContext {
 
 class ViewRoots {
   final bool scrollable;
-  final bool position, flex, ratio, observer;
+  final bool position, flex, ratio, observer, wrapper;
   final bool view, constraints, margin, padding;
   final bool decoration, shadow, shape, radius, border, background;
 
@@ -412,6 +412,7 @@ class ViewRoots {
     this.ratio = true,
     this.observer = true,
     this.view = true,
+    this.wrapper = true,
     this.constraints = true,
     this.margin = true,
     this.padding = true,
@@ -485,6 +486,9 @@ class ViewController {
     activated = view.activated ?? false;
     enabled = view.enabled ?? true;
     expandable = view.expandable ?? false;
+    scrollable = view.scrollable ?? false;
+    visible = view.visibility ?? true;
+    wrapper = view.wrapper ?? false;
 
     /// ANIMATION PROPERTIES
     animation = view.animation ?? 0;
@@ -573,12 +577,10 @@ class ViewController {
     transform = view.transform;
     transformGravity = view.transformGravity;
     transform = view.transform;
-    visible = view.visibility ?? true;
     child = view.child;
 
     /// Properties
     roots = view.initRootProperties();
-    scrollable = view.scrollable ?? false;
 
     /// Value States
     backgroundState = view.backgroundState;
@@ -612,6 +614,7 @@ class ViewController {
 
   bool expandable = false;
   bool scrollable = false;
+  bool wrapper = false;
 
   double elevation = 0;
 
@@ -621,6 +624,8 @@ class ViewController {
   Color rippleColor = Colors.transparent;
 
   bool get isHovered => onHover != null || hoverColor != Colors.transparent;
+
+  bool get isWrapper => roots.wrapper && wrapper;
 
   bool get isPressed => pressedColor != Colors.transparent;
 
@@ -828,6 +833,8 @@ class ViewController {
 
   ValueState<double>? widthState;
 
+  set width(double? value) => _width = value;
+
   double? get width => isSquire || isCircular
       ? maxSize
       : widthState?.fromController(this) ?? _width;
@@ -844,6 +851,8 @@ class ViewController {
   double? _height;
 
   ValueState<double>? heightState;
+
+  set height(double? value) => _height = value;
 
   double? get height => isSquire || isCircular
       ? maxSize
@@ -1582,6 +1591,12 @@ class ViewController {
     _notify;
   }
 
+  void onNotifyWrapper(Size size) {
+    width = size.width;
+    height = size.height;
+    _notify;
+  }
+
   void onNotifyToggle() {
     activated = !activated;
     onToggle?.call(activated);
@@ -1593,7 +1608,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final T? controller;
 
   final int? flex;
-  final bool? absorbMode, activated, enabled, expandable, scrollable;
+  final bool? absorbMode, activated, enabled, expandable, scrollable, wrapper;
 
   final int? animation;
   final Curve? animationType;
@@ -1674,6 +1689,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.enabled,
     this.expandable,
     this.visibility,
+    this.wrapper,
     this.animation,
     this.animationType,
     this.elevation,
@@ -1828,6 +1844,7 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
   @override
   Widget build(BuildContext context) {
     controller.context = context;
+
     return controller.visible
         ? widget.root(
             context,
@@ -1840,10 +1857,13 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
                   controller: controller,
                   attachView: _ViewListener(
                     controller: controller,
-                    attachView: _ViewBuilder(
+                    attachView: _ViewWrapper(
                       controller: controller,
-                      attach: widget.attach(context, controller),
-                      builder: widget.build,
+                      attachView: _ViewBuilder(
+                        controller: controller,
+                        attach: widget.attach(context, controller),
+                        builder: widget.build,
+                      ),
                     ),
                   ),
                 ),
@@ -2011,6 +2031,29 @@ class _ViewListener<T extends ViewController> extends StatelessWidget {
               : attachView,
         );
       }
+    } else {
+      return attachView;
+    }
+  }
+}
+
+class _ViewWrapper<T extends ViewController> extends StatelessWidget {
+  final T controller;
+  final Widget attachView;
+
+  const _ViewWrapper({
+    super.key,
+    required this.controller,
+    required this.attachView,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (controller.isWrapper) {
+      return WidgetWrapper(
+        wrapper: controller.onNotifyWrapper,
+        child: attachView,
+      );
     } else {
       return attachView;
     }
