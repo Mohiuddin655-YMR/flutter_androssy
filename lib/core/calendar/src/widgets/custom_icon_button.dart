@@ -1,9 +1,4 @@
-// Copyright 2019 Aleksander Woźniak
-// SPDX-License-Identifier: Apache-2.0
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+part of '../../calendar.dart';
 
 class CustomIconButton extends StatelessWidget {
   final Widget icon;

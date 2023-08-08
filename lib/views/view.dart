@@ -1,7 +1,7 @@
 part of '../widgets.dart';
 
 typedef OnViewBuilder<T> = Widget Function(BuildContext context, T? controller);
-typedef OnViewChangeListener = Function(dynamic value);
+typedef OnViewChangeListener<T> = void Function(T value);
 typedef OnViewClickListener = Function(BuildContext context);
 typedef OnViewItemClickListener<T> = void Function(BuildContext contex, T item);
 typedef OnViewItemChangeListener<T> = void Function(

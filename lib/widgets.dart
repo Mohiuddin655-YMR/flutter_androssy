@@ -17,8 +17,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'factories/calendar/raw_calendar.dart';
-import 'factories/calendar/src/shared/utils.dart';
+import 'core/core.dart';
 
 part 'builders/activity.dart';
 
@@ -83,6 +82,8 @@ part 'views/option_view_builder.dart';
 part 'views/progress_view.dart';
 
 part 'views/radio_group.dart';
+
+part 'views/rating_view.dart';
 
 part 'views/recycler_view.dart';
 

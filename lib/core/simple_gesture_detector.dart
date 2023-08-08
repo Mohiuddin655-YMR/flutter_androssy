@@ -1,43 +1,28 @@
-// Copyright 2019 Aleksander Woźniak
-// SPDX-License-Identifier: Apache-2.0
-
 library simple_gesture_detector;
 
 import 'package:flutter/material.dart';
 
-/// Callback signature for swipe gesture.
-typedef void SwipeCallback(SwipeDirection direction);
+typedef SwipeCallback = void Function(SwipeDirection direction);
 
-/// Possible directions of swipe gesture.
 enum SwipeDirection { left, right, up, down }
 
-/// Easy to use, reliable gesture detection Widget. Exposes simple API for basic gestures.
 class SimpleGestureDetector extends StatefulWidget {
-  /// Widget to be augmented with gesture detection.
   final Widget child;
 
-  /// Configuration for swipe gesture.
   final SimpleSwipeConfig swipeConfig;
 
-  /// Behavior used for hit testing. Set to `HitTestBehavior.deferToChild` by default.
   final HitTestBehavior behavior;
 
-  /// Callback to be run when Widget is swiped vertically. Provides `SwipeDirection`.
   final SwipeCallback? onVerticalSwipe;
 
-  /// Callback to be run when Widget is swiped horizontally. Provides `SwipeDirection`.
   final SwipeCallback? onHorizontalSwipe;
 
-  /// Callback to be run when Widget is tapped;
   final VoidCallback? onTap;
 
-  /// Callback to be run when Widget is double-tapped;
   final VoidCallback? onDoubleTap;
 
-  /// Callback to be run when Widget is long-pressed;
   final VoidCallback? onLongPress;
 
-  /// Creates a [SimpleGestureDetector] widget.
   const SimpleGestureDetector({
     Key? key,
     required this.child,
@@ -51,7 +36,7 @@ class SimpleGestureDetector extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SimpleGestureDetectorState createState() => _SimpleGestureDetectorState();
+  State<SimpleGestureDetector> createState() => _SimpleGestureDetectorState();
 }
 
 class _SimpleGestureDetectorState extends State<SimpleGestureDetector> {
@@ -181,7 +166,6 @@ class _SimpleGestureDetectorState extends State<SimpleGestureDetector> {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: widget.behavior,
-      child: widget.child,
       onTap: widget.onTap,
       onLongPress: widget.onLongPress,
       onDoubleTap: widget.onDoubleTap,
@@ -197,11 +181,11 @@ class _SimpleGestureDetectorState extends State<SimpleGestureDetector> {
           widget.onHorizontalSwipe != null ? _onHorizontalDragUpdate : null,
       onHorizontalDragEnd:
           widget.onHorizontalSwipe != null ? _onHorizontalDragEnd : null,
+      child: widget.child,
     );
   }
 }
 
-/// Behaviors describing swipe gesture detection.
 enum SwipeDetectionBehavior {
   singular,
   singularOnEnd,
@@ -209,25 +193,13 @@ enum SwipeDetectionBehavior {
   continuousDistinct,
 }
 
-/// Configuration class for swipe gesture.
 class SimpleSwipeConfig {
-  /// Amount of offset after which vertical swipes get detected.
   final double verticalThreshold;
 
-  /// Amount of offset after which horizontal swipes get detected.
   final double horizontalThreshold;
 
-  /// Behavior used for swipe gesture detection.
-  /// By default, `SwipeDetectionBehavior.singularOnEnd` is used, which runs callback after swipe is completed.
-  /// Use `SwipeDetectionBehavior.continuous` for most reactive behavior but be careful with threshold values.
-  ///
-  /// * `SwipeDetectionBehavior.singular` - Runs callback a single time - when swipe movement is above set threshold.
-  /// * `SwipeDetectionBehavior.singularOnEnd` - Runs callback a single time - when swipe is fully completed.
-  /// * `SwipeDetectionBehavior.continuous` - Runs callback multiple times - whenever swipe movement is above set threshold. Make sure to set threshold values higher than usual!
-  /// * `SwipeDetectionBehavior.continuousDistinct` - Runs callback multiple times - whenever swipe movement is above set threshold, but only on distinct `SwipeDirection`.
   final SwipeDetectionBehavior swipeDetectionBehavior;
 
-  /// Creates a [SimpleSwipeConfig] object.
   const SimpleSwipeConfig({
     this.verticalThreshold = 50.0,
     this.horizontalThreshold = 50.0,

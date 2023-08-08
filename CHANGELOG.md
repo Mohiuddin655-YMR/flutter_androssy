@@ -1,3 +1,3 @@
-## 0.2.0-alpha3
+## 0.2.0-alpha4
 
 * Alpha version

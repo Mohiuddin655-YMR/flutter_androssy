@@ -1,11 +1,4 @@
-
-import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
-
-import '../customization/header_style.dart';
-import '../shared/utils.dart' show CalendarFormat, DayBuilder;
-import 'custom_icon_button.dart';
-import 'format_button.dart';
+part of '../../calendar.dart';
 
 class CalendarHeader extends StatelessWidget {
   final dynamic locale;

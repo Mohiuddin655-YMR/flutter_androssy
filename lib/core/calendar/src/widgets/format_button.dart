@@ -1,11 +1,4 @@
-// Copyright 2019 Aleksander Woźniak
-// SPDX-License-Identifier: Apache-2.0
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
-import '../shared/utils.dart' show CalendarFormat;
+part of '../../calendar.dart';
 
 class FormatButton extends StatelessWidget {
   final CalendarFormat calendarFormat;
@@ -17,7 +10,7 @@ class FormatButton extends StatelessWidget {
   final Map<CalendarFormat, String> availableCalendarFormats;
 
   const FormatButton({
-    Key? key,
+    super.key,
     required this.calendarFormat,
     required this.onTap,
     required this.textStyle,
@@ -25,7 +18,7 @@ class FormatButton extends StatelessWidget {
     required this.padding,
     required this.showsNextFormat,
     required this.availableCalendarFormats,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

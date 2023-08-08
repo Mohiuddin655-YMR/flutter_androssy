@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../shared/utils.dart';
-import 'calendar_page.dart';
+part of '../../calendar.dart';
 
 typedef OnCalendarPageChanged = void Function(
   int pageIndex,

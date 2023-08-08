@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+part of '../../calendar.dart';
 
 class CalendarPage extends StatelessWidget {
   final Widget Function(BuildContext context, DateTime day)? dowBuilder;
