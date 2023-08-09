@@ -34,29 +34,24 @@ class Example extends StatefulWidget {
 class _ExampleState extends State<Example> {
   @override
   Widget build(BuildContext context) {
+    var a = double.infinity - 8;
+    a.logValue;
     return Scaffold(
-      body: LinearLayout(
-        children: [
-          RecyclerView(
-            controller: RecyclerViewController(),
-            flex: 1,
-            orientation: Axis.vertical,
-            padding: 24,
-            scrollable: true,
-            wrapper: false,
-            items: List.generate(150, (index) => "Item $index"),
-            snapCount: 7,
-            builder: (index, item) {
-              return TextView(
-                padding: 40,
-                gravity: Alignment.center,
-                background: index.isEven ? context.primaryColor : Colors.red,
-                text: item,
-                paddingVertical: 3,
-              );
-            },
-          ),
-        ],
+      body: RecyclerView(
+        orientation: Axis.horizontal,
+        spaceBetween: 8,
+        background: Colors.green.withAlpha(50),
+        wrapper: true,
+        items: List.generate(12, (index) => "Item $index"),
+        snapCount: 3,
+        builder: (index, item) {
+          return TextView(
+            paddingVertical: 24,
+            gravity: Alignment.center,
+            background: index.isEven ? context.primaryColor : Colors.red,
+            text: item,
+          );
+        },
       ),
     );
   }

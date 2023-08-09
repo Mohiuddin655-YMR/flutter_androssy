@@ -69,7 +69,7 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
     super.paddingEnd,
     super.position,
     super.positionType,
-    super.scrollable,
+    super.scrollable = true,
     super.scrollingType,
     super.scrollController,
     super.shadow,
@@ -126,10 +126,11 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: controller.isGridMode
-                ? List.generate(controller.rowCount, (row) {
-                    final startIndex = controller.startIndex(row);
+                ? List.generate(controller.rowCount, (rowIndex) {
+                    final startIndex = controller.startIndex(rowIndex);
                     final endIndex = controller.endIndex(startIndex);
-                    return WrapperView(
+                    final isFlex = controller.isFlexibleMode;
+                    Widget row = WrapperView(
                       wrapper: controller.wrapper,
                       child: Flex(
                         direction: controller._orientationAsInverse,
@@ -149,14 +150,53 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
                             child = const SizedBox();
                           }
 
-                          if (controller.isVerticalMode) {
+                          if (controller.isFlexibleMode) {
                             child = Expanded(child: child);
+                          }
+
+                          if (isFlex && column != controller.snapCount - 1) {
+                            child = Flex(
+                              direction: controller._orientationAsInverse,
+                              children: [
+                                child,
+                                SizedBox(
+                                  width: controller.isVerticalMode
+                                      ? controller.spaceBetween
+                                      : null,
+                                  height: controller.isVerticalMode
+                                      ? null
+                                      : controller.spaceBetween,
+                                ),
+                              ],
+                            );
+                            if (controller.isFlexibleMode) {
+                              child = Expanded(child: child);
+                            }
                           }
 
                           return child;
                         }),
                       ),
                     );
+
+                    if (isFlex && rowIndex != controller.rowCount - 1) {
+                      row = Flex(
+                        direction: controller.orientation,
+                        children: [
+                          row,
+                          SizedBox(
+                            width: controller.isVerticalMode
+                                ? null
+                                : controller.spaceBetween,
+                            height: controller.isVerticalMode
+                                ? controller.spaceBetween
+                                : null,
+                          ),
+                        ],
+                      );
+                    }
+
+                    return row;
                   })
                 : List.generate(controller.itemCount, (index) {
                     var item = controller.items[index];
@@ -227,6 +267,8 @@ class RecyclerViewController<T> extends ViewController {
   }
 
   bool get isGridMode => layoutType == RecyclerLayoutType.grid || snapCount > 1;
+
+  bool get isFlexibleMode => isVerticalMode || (height ?? 0) > 0 || flex > 0;
 
   bool get isValidItemCountingOrSnapping => itemCount > 0 && snapCount > 0;
 
@@ -329,10 +371,9 @@ class RecyclerViewController<T> extends ViewController {
   @override
   ScrollController get scrollController {
     if (onPagingListener != null) {
-      return scrollController;
-      // return super
-      //     .scrollController
-      //     .paging(onListen: onPagingListener ?? (v) {});
+      return super
+          .scrollController
+          .paging(onListen: onPagingListener ?? (v) {});
     } else {
       return super.scrollController;
     }
