@@ -1845,305 +1845,215 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
   Widget build(BuildContext context) {
     controller.context = context;
 
-    return controller.visible
-        ? widget.root(
-            context,
-            controller,
-            _ViewPosition(
-              controller: controller,
-              attachView: _ViewFlex(
-                controller: controller,
-                attachView: _ViewDimension(
-                  controller: controller,
-                  attachView: _ViewListener(
-                    controller: controller,
-                    attachView: _ViewWrapper(
-                      controller: controller,
-                      attachView: _ViewBuilder(
-                        controller: controller,
-                        attach: widget.attach(context, controller),
-                        builder: widget.build,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          )
-        : const SizedBox();
-  }
-}
+    /// INITIAL #1
+    Widget child = const SizedBox();
 
-class _ViewPosition extends StatelessWidget {
-  final ViewController controller;
-  final Widget attachView;
+    /// VISIBILITY
+    if (controller.visible) {
+      /// ATTACH #2
+      child = widget.attach(context, controller) ?? child;
 
-  const _ViewPosition({
-    Key? key,
-    required this.controller,
-    required this.attachView,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return controller.isPositional
-        ? Positioned(
-            top: controller.position.top,
-            bottom: controller.position.bottom,
-            left: controller.position.left,
-            right: controller.position.right,
-            child: attachView,
-          )
-        : attachView;
-  }
-}
-
-class _ViewFlex extends StatelessWidget {
-  final ViewController controller;
-  final Widget attachView;
-
-  const _ViewFlex({
-    Key? key,
-    required this.controller,
-    required this.attachView,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return controller.isExpendable
-        ? Expanded(
-            flex: controller.flex,
-            child: attachView,
-          )
-        : attachView;
-  }
-}
-
-class _ViewDimension extends StatelessWidget {
-  final ViewController controller;
-  final Widget attachView;
-
-  const _ViewDimension({
-    Key? key,
-    required this.controller,
-    required this.attachView,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return controller.isDimensional
-        ? AspectRatio(
-            aspectRatio: controller.dimensionRatio,
-            child: attachView,
-          )
-        : attachView;
-  }
-}
-
-class _ViewListener<T extends ViewController> extends StatelessWidget {
-  final T controller;
-  final Widget attachView;
-
-  const _ViewListener({
-    Key? key,
-    required this.controller,
-    required this.attachView,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    if (controller.isObservable) {
-      if (controller.isInkWellMode) {
-        return Padding(
-          padding: controller.isMargin ? controller.margin : EdgeInsets.zero,
-          child: Material(
-            elevation: controller.elevation,
-            borderRadius: controller.isCircular
-                ? BorderRadius.circular(controller.maxSize)
-                : controller.borderRadius,
-            color: controller.background,
-            clipBehavior: controller.clipBehavior,
-            child: InkWell(
-              splashColor: controller.rippleColor,
-              hoverColor: controller.hoverColor,
-              highlightColor: controller.pressedColor,
-              onHover: controller.onNotifyHover,
-              onTap: controller.isClickable
-                  ? () {
-                      if (controller.isToggleClickable) {
-                        controller.onNotifyToggle();
-                      } else {
-                        controller.onClickHandler != null
-                            ? controller.onClickHandler?.call(controller)
-                            : controller.onClick?.call(context);
-                      }
-                    }
-                  : null,
-              onDoubleTap: controller.isDoubleClickable
-                  ? () {
-                      controller.onDoubleClickHandler != null
-                          ? controller.onDoubleClickHandler?.call(controller)
-                          : controller.onDoubleClick?.call(context);
-                    }
-                  : null,
-              onLongPress: controller.isLongClickable
-                  ? () {
-                      controller.onLongClickHandler != null
-                          ? controller.onLongClickHandler?.call(controller)
-                          : controller.onLongClick?.call(context);
-                    }
-                  : null,
-              child: controller.absorbMode
-                  ? AbsorbPointer(child: attachView)
-                  : attachView,
-            ),
-          ),
-        );
-      } else {
-        return GestureDetector(
-          onTap: controller.isClickable
-              ? () {
-                  if (controller.isToggleClickable) {
-                    controller.onNotifyToggle();
-                  } else {
-                    controller.onClickHandler != null
-                        ? controller.onClickHandler?.call(controller)
-                        : controller.onClick?.call(context);
-                  }
-                }
-              : null,
-          onDoubleTap: controller.isDoubleClickable
-              ? () {
-                  controller.onDoubleClickHandler != null
-                      ? controller.onDoubleClickHandler?.call(controller)
-                      : controller.onDoubleClick?.call(context);
-                }
-              : null,
-          onLongPress: controller.isLongClickable
-              ? () {
-                  controller.onLongClickHandler != null
-                      ? controller.onLongClickHandler?.call(controller)
-                      : controller.onLongClick?.call(context);
-                }
-              : null,
-          child: controller.absorbMode
-              ? AbsorbPointer(child: attachView)
-              : attachView,
+      /// SCROLLER #3
+      if (controller.isScrollable) {
+        child = SingleChildScrollView(
+          controller: controller.scrollController,
+          physics: controller.scrollingType.physics,
+          scrollDirection: controller.orientation,
+          padding: controller.padding,
+          child: child,
         );
       }
-    } else {
-      return attachView;
+
+      /// STYLES #4
+      if (controller.roots.view) {
+        final root = controller.roots;
+        final isCircular = controller.isCircular;
+        final isRadius = controller.isBorderRadius;
+        final isRippleMode = controller.isInkWellMode;
+        final isMargin = controller.isMargin;
+        final isConstraints = controller.isConstraints;
+
+        final borderRadius = !isRippleMode && isRadius && !isCircular
+            ? controller.borderRadius
+            : null;
+
+        child = Container(
+          alignment: controller.gravity,
+          clipBehavior: root.decoration && !isRippleMode
+              ? controller.clipBehavior
+              : Clip.none,
+          width: controller.width,
+          height: controller.height,
+          transform: controller.transform,
+          transformAlignment: controller.transformGravity,
+          constraints: isConstraints
+              ? BoxConstraints(
+                  maxWidth: controller.widthMax,
+                  minWidth: controller.widthMin,
+                  maxHeight: controller.heightMax,
+                  minHeight: controller.heightMin,
+                )
+              : null,
+          decoration: root.decoration
+              ? BoxDecoration(
+                  backgroundBlendMode: controller.backgroundBlendMode,
+                  border: controller.isBorder ? controller.boxBorder : null,
+                  borderRadius: isCircular ? null : borderRadius,
+                  color: root.background && !isRippleMode
+                      ? controller.background
+                      : null,
+                  gradient: controller.backgroundGradient,
+                  image: controller.backgroundImage,
+                  boxShadow: controller.shadows,
+                  shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+                )
+              : null,
+          foregroundDecoration: root.decoration
+              ? BoxDecoration(
+                  backgroundBlendMode: controller.foregroundBlendMode,
+                  borderRadius: borderRadius,
+                  color: controller.foreground,
+                  gradient: controller.foregroundGradient,
+                  image: controller.foregroundImage,
+                  shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+                )
+              : null,
+          margin: isMargin && !isRippleMode ? controller.margin : null,
+          padding: controller.isPadding && !controller.isScrollable
+              ? controller.padding
+              : null,
+          child: child,
+        );
+      }
+
+      /// BUILDER #5
+      child = widget.build(context, controller, child);
+
+      /// WRAPPER #6
+      if (controller.isWrapper) {
+        child = WidgetWrapper(
+          wrapper: controller.onNotifyWrapper,
+          child: child,
+        );
+      }
+
+      /// ABSORBER #7
+      if (controller.absorbMode) {
+        child = AbsorbPointer(child: child);
+      }
+
+      /// CALLBACKS #8
+      if (controller.isObservable) {
+        if (controller.isInkWellMode) {
+          /// RIPPLED MODE #8.1
+          child = Padding(
+            padding: controller.isMargin ? controller.margin : EdgeInsets.zero,
+            child: Material(
+              elevation: controller.elevation,
+              borderRadius: controller.isCircular
+                  ? BorderRadius.circular(controller.maxSize)
+                  : controller.borderRadius,
+              color: controller.background,
+              clipBehavior: controller.clipBehavior,
+              child: InkWell(
+                splashColor: controller.rippleColor,
+                hoverColor: controller.hoverColor,
+                highlightColor: controller.pressedColor,
+                onHover: controller.onNotifyHover,
+                onTap: controller.isClickable
+                    ? () {
+                        if (controller.isToggleClickable) {
+                          controller.onNotifyToggle();
+                        } else {
+                          controller.onClickHandler != null
+                              ? controller.onClickHandler?.call(controller)
+                              : controller.onClick?.call(context);
+                        }
+                      }
+                    : null,
+                onDoubleTap: controller.isDoubleClickable
+                    ? () {
+                        controller.onDoubleClickHandler != null
+                            ? controller.onDoubleClickHandler?.call(controller)
+                            : controller.onDoubleClick?.call(context);
+                      }
+                    : null,
+                onLongPress: controller.isLongClickable
+                    ? () {
+                        controller.onLongClickHandler != null
+                            ? controller.onLongClickHandler?.call(controller)
+                            : controller.onLongClick?.call(context);
+                      }
+                    : null,
+                child: child,
+              ),
+            ),
+          );
+        } else {
+          /// GESTURE MODE #8.2
+          child = GestureDetector(
+            onTap: controller.isClickable
+                ? () {
+                    if (controller.isToggleClickable) {
+                      controller.onNotifyToggle();
+                    } else {
+                      controller.onClickHandler != null
+                          ? controller.onClickHandler?.call(controller)
+                          : controller.onClick?.call(context);
+                    }
+                  }
+                : null,
+            onDoubleTap: controller.isDoubleClickable
+                ? () {
+                    controller.onDoubleClickHandler != null
+                        ? controller.onDoubleClickHandler?.call(controller)
+                        : controller.onDoubleClick?.call(context);
+                  }
+                : null,
+            onLongPress: controller.isLongClickable
+                ? () {
+                    controller.onLongClickHandler != null
+                        ? controller.onLongClickHandler?.call(controller)
+                        : controller.onLongClick?.call(context);
+                  }
+                : null,
+            child: child,
+          );
+        }
+      }
+
+      /// DIMENSION #9
+      if (controller.isDimensional) {
+        child = AspectRatio(
+          aspectRatio: controller.dimensionRatio,
+          child: child,
+        );
+      }
+
+      /// EXPENDABLE #10
+      if (controller.isExpendable) {
+        child = Expanded(
+          flex: controller.flex,
+          child: child,
+        );
+      }
+
+      /// POSITION #11
+      if (controller.isPositional) {
+        child = Positioned(
+          top: controller.position.top,
+          bottom: controller.position.bottom,
+          left: controller.position.left,
+          right: controller.position.right,
+          child: child,
+        );
+      }
+
+      /// ROOT (FINAL)
+      child = widget.root(context, controller, child);
     }
-  }
-}
 
-class _ViewWrapper<T extends ViewController> extends StatelessWidget {
-  final T controller;
-  final Widget attachView;
-
-  const _ViewWrapper({
-    super.key,
-    required this.controller,
-    required this.attachView,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (controller.isWrapper) {
-      return WidgetWrapper(
-        wrapper: controller.onNotifyWrapper,
-        child: attachView,
-      );
-    } else {
-      return attachView;
-    }
-  }
-}
-
-class _ViewBuilder<T extends ViewController> extends StatelessWidget {
-  final T controller;
-  final Widget? attach;
-  final OnViewModifyBuilder<T> builder;
-
-  const _ViewBuilder({
-    required this.controller,
-    required this.attach,
-    required this.builder,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final root = controller.roots;
-    final isCircular = controller.isCircular;
-    final isRadius = controller.isBorderRadius;
-    final isRippleMode = controller.isInkWellMode;
-    final isMargin = controller.isMargin;
-    final isConstraints = controller.isConstraints;
-
-    final borderRadius = !isRippleMode && isRadius && !isCircular
-        ? controller.borderRadius
-        : null;
-
-    var child = controller.roots.view
-        ? Container(
-            alignment: controller.gravity,
-            clipBehavior: root.decoration && !isRippleMode
-                ? controller.clipBehavior
-                : Clip.none,
-            width: controller.width,
-            height: controller.height,
-            transform: controller.transform,
-            transformAlignment: controller.transformGravity,
-            constraints: isConstraints
-                ? BoxConstraints(
-                    maxWidth: controller.widthMax,
-                    minWidth: controller.widthMin,
-                    maxHeight: controller.heightMax,
-                    minHeight: controller.heightMin,
-                  )
-                : null,
-            decoration: root.decoration
-                ? BoxDecoration(
-                    backgroundBlendMode: controller.backgroundBlendMode,
-                    border: controller.isBorder ? controller.boxBorder : null,
-                    borderRadius: isCircular ? null : borderRadius,
-                    color: root.background && !isRippleMode
-                        ? controller.background
-                        : null,
-                    gradient: controller.backgroundGradient,
-                    image: controller.backgroundImage,
-                    boxShadow: controller.shadows,
-                    shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
-                  )
-                : null,
-            foregroundDecoration: root.decoration
-                ? BoxDecoration(
-                    backgroundBlendMode: controller.foregroundBlendMode,
-                    borderRadius: borderRadius,
-                    color: controller.foreground,
-                    gradient: controller.foregroundGradient,
-                    image: controller.foregroundImage,
-                    shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
-                  )
-                : null,
-            margin: isMargin && !isRippleMode ? controller.margin : null,
-            padding: controller.isPadding && !controller.isScrollable
-                ? controller.padding
-                : null,
-            child: controller.isScrollable
-                ? SingleChildScrollView(
-                    controller: controller.scrollController,
-                    physics: controller.scrollingType.physics,
-                    scrollDirection: controller.orientation,
-                    padding: controller.padding,
-                    child: attach,
-                  )
-                : attach,
-          )
-        : const SizedBox();
-
-    return controller.visible
-        ? builder(context, controller, child)
-        : const SizedBox();
+    /// BUILD
+    return child;
   }
 }
