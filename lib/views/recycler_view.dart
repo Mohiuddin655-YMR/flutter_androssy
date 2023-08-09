@@ -10,7 +10,7 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
   final double spaceBetween;
   final RecyclerLayoutType layoutType;
   final RecyclerViewItemBuilder<T> builder;
-  final OnViewChangeListener? onPagingListener;
+  final OnViewChangeListener? onPaging;
 
   const RecyclerView({
     super.key,
@@ -98,7 +98,7 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
     this.snapCount = 1,
     this.spaceBetween = 0,
     this.layoutType = RecyclerLayoutType.linear,
-    this.onPagingListener,
+    this.onPaging,
   });
 
   @override
@@ -261,7 +261,7 @@ class RecyclerViewController<T> extends ViewController {
     snapCount = view.snapCount;
     layoutType = view.layoutType;
     spaceBetween = view.spaceBetween;
-    onPagingListener = view.onPagingListener;
+    onPagingListener = view.onPaging;
 
     return this;
   }
