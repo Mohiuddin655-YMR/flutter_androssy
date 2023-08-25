@@ -2,8 +2,12 @@ part of '../widgets.dart';
 
 class LinearLayout extends YMRView<LinearLayoutController> {
   final LayoutGravity? layoutGravity;
-  final MainAxisAlignment? mainGravity;
   final CrossAxisAlignment? crossGravity;
+  final MainAxisAlignment? mainGravity;
+  final MainAxisSize mainAxisSize;
+  final TextBaseline? textBaseline;
+  final TextDirection? textDirection;
+  final VerticalDirection verticalDirection;
   final OnViewChangeListener? onPagingListener;
 
   final List<Widget>? children;
@@ -97,7 +101,11 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.onToggle,
     this.layoutGravity,
     this.mainGravity,
+    this.mainAxisSize = MainAxisSize.min,
     this.crossGravity,
+    this.textBaseline,
+    this.textDirection,
+    this.verticalDirection = VerticalDirection.down,
     this.onPagingListener,
     this.children,
   });
@@ -142,35 +150,52 @@ class _LLChild extends StatelessWidget {
     return controller.orientation == Axis.vertical
         ? Column(
             mainAxisAlignment: controller.mainGravity,
+            mainAxisSize: controller.mainAxisSize,
             crossAxisAlignment: controller.crossGravity,
+            textBaseline: controller.textBaseline,
+            textDirection: controller.textDirection,
+            verticalDirection: controller.verticalDirection,
             children: controller.children,
           )
         : Row(
             mainAxisAlignment: controller.mainGravity,
+            mainAxisSize: controller.mainAxisSize,
             crossAxisAlignment: controller.crossGravity,
+            textBaseline: controller.textBaseline,
+            textDirection: controller.textDirection,
+            verticalDirection: controller.verticalDirection,
             children: controller.children,
           );
   }
 }
 
 class LinearLayoutController extends ViewController {
-  LayoutGravity layoutGravity = LayoutGravity.start;
-  MainAxisAlignment? _mainGravity;
-  CrossAxisAlignment? _crossGravity;
   ScrollController _scrollController = ScrollController();
+  LayoutGravity layoutGravity = LayoutGravity.start;
+  CrossAxisAlignment? _crossGravity;
+  MainAxisAlignment? _mainGravity;
+  MainAxisSize mainAxisSize = MainAxisSize.min;
+  TextBaseline? textBaseline;
+  TextDirection? textDirection;
+  VerticalDirection verticalDirection = VerticalDirection.down;
   List<Widget> children = [];
 
   OnViewChangeListener? onPagingListener;
 
   LinearLayoutController fromLinearLayout(LinearLayout view) {
     super.fromView(view);
+    _scrollController = view.scrollController ?? ScrollController();
     orientation = view.orientation ?? Axis.vertical;
     layoutGravity = view.layoutGravity ?? LayoutGravity.start;
     _mainGravity = view.mainGravity;
+    mainAxisSize = view.mainAxisSize;
     _crossGravity = view.crossGravity;
     scrollable = view.scrollable ?? false;
     scrollingType = view.scrollingType ?? ViewScrollingType.none;
-    _scrollController = view.scrollController ?? ScrollController();
+    textBaseline = view.textBaseline;
+    textDirection = view.textDirection;
+    verticalDirection = view.verticalDirection;
+
     children = view.children ?? [];
     onPagingListener = view.onPagingListener;
     return this;

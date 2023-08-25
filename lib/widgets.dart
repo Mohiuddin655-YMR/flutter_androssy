@@ -27,13 +27,15 @@ part 'builders/notifier_view.dart';
 
 part 'builders/render_time_builder.dart';
 
-part 'builders/splash_view.dart';
+part 'views/splash_view.dart';
 
 part 'builders/theme.dart';
 
 part 'builders/widget_wrapper.dart';
 
 part 'views/avatar_view.dart';
+
+part 'views/axis_view.dart';
 
 part 'views/button.dart';
 
@@ -58,6 +60,8 @@ part 'views/expendable_text_view.dart';
 part 'views/expensive_scroll_view.dart';
 
 part 'views/flexible_view.dart';
+
+part 'views/graph_view.dart';
 
 part 'views/icon_view.dart';
 

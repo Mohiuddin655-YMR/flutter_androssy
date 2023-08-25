@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_androssy/core/core.dart';
 import 'package:flutter_androssy/widgets.dart';
 
 void main() {
@@ -34,24 +35,26 @@ class Example extends StatefulWidget {
 class _ExampleState extends State<Example> {
   @override
   Widget build(BuildContext context) {
-    var a = double.infinity - 8;
-    a.logValue;
+    var theme = Theme.of(context);
+    var a = theme.textTheme.titleLarge;
+    var b = theme.textTheme.titleSmall;
     return Scaffold(
-      body: RecyclerView(
-        orientation: Axis.horizontal,
-        spaceBetween: 8,
-        background: Colors.green.withAlpha(50),
-        wrapper: true,
-        items: List.generate(12, (index) => "Item $index"),
-        snapCount: 3,
-        builder: (index, item) {
-          return TextView(
-            paddingVertical: 24,
-            gravity: Alignment.center,
-            background: index.isEven ? context.primaryColor : Colors.red,
-            text: item,
-          );
-        },
+      body: SplashView(
+        bodyY: 5,
+        title: "Flutter K",
+        titleColor: a?.color,
+        titleSize: a?.fontSize,
+        subtitle: "This is a flutter app description",
+        subtitleColor: b?.color,
+        logo: "assets/images/img_logo.png",
+        logoRadius: 20,
+        logoSize: 90,
+        //onExecute: () => _loadScreens(context),
+        bottom: const TextView(
+          text: 'Powered by YMR',
+          marginBottom: 40,
+          textColor: Colors.grey,
+        ),
       ),
     );
   }
