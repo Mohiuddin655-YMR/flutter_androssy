@@ -1,6 +1,4 @@
-library simple_gesture_detector;
-
-import 'package:flutter/material.dart';
+part of 'raw.dart';
 
 typedef SwipeCallback = void Function(SwipeDirection direction);
 

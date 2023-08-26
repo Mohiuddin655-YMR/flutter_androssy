@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_androssy/core/core.dart';
 import 'package:flutter_androssy/widgets.dart';
 
 void main() {

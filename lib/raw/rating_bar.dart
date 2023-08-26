@@ -1,4 +1,4 @@
-part of 'core.dart';
+part of 'raw.dart';
 
 class RatingIcon {
   const RatingIcon({
@@ -226,7 +226,7 @@ class _RawRatingViewState extends State<RawRatingView> {
                 (tappedOnFirstHalf && widget.allowHalfRating ? 0.5 : 1.0);
           }
 
-          value = math.max(value, widget.minRating);
+          value = max(value, widget.minRating);
           if (widget.onRatingChange != null) widget.onRatingChange?.call(value);
           _rating = value;
           setState(() {});

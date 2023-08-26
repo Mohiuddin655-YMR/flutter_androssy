@@ -1,11 +1,40 @@
 library core;
 
-import 'dart:math' as math;
+import 'dart:convert';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-export 'calendar/calendar.dart';
+part 'activity.dart';
 
-part 'rating_bar.dart';
-part 'rating_indicator.dart';
-part 'size_extension.dart';
+part 'androssy.dart';
+
+part 'builder.dart';
+
+part 'config.dart';
+
+part 'errors.dart';
+
+part 'fragment.dart';
+
+part 'instance.dart';
+
+part 'localization.dart';
+
+part 'navigation_bar_config.dart';
+
+part 'notifier.dart';
+
+part 'provider.dart';
+
+part 'screen_config.dart';
+
+part 'settings.dart';
+
+part 'status_bar_config.dart';
+
+part 'theme.dart';
+
+part 'user.dart';

@@ -5,18 +5,28 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../simple_gesture_detector.dart';
+import '../raw.dart';
 
 part 'src/customization/calendar_builders.dart';
+
 part 'src/customization/calendar_style.dart';
+
 part 'src/customization/days_of_week_style.dart';
+
 part 'src/customization/header_style.dart';
+
 part 'src/utils/utils.dart';
+
 part 'src/widgets/calendar_core.dart';
+
 part 'src/widgets/calendar_header.dart';
+
 part 'src/widgets/calendar_page.dart';
+
 part 'src/widgets/cell_content.dart';
+
 part 'src/widgets/custom_icon_button.dart';
+
 part 'src/widgets/format_button.dart';
 
 typedef OnDaySelected = void Function(

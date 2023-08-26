@@ -1,9 +1,9 @@
 library widgets;
 
 import 'dart:async';
-import 'dart:developer';
+import 'dart:developer' show log;
 import 'dart:io';
-import 'dart:math' show max, min;
+import 'dart:math' hide log;
 import 'dart:ui';
 
 import 'package:badges/badges.dart' as b;
@@ -17,7 +17,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'core/core.dart';
+import 'extensions/extensions.dart';
+import 'raw/raw.dart';
 
 part 'builders/activity.dart';
 
@@ -26,8 +27,6 @@ part 'builders/fragment.dart';
 part 'builders/notifier_view.dart';
 
 part 'builders/render_time_builder.dart';
-
-part 'views/splash_view.dart';
 
 part 'builders/theme.dart';
 
@@ -92,6 +91,8 @@ part 'views/rating_view.dart';
 part 'views/recycler_view.dart';
 
 part 'views/slide_image_view.dart';
+
+part 'views/splash_view.dart';
 
 part 'views/stack_layout.dart';
 

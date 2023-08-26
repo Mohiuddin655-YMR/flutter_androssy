@@ -1,4 +1,4 @@
-part of 'core.dart';
+part of 'raw.dart';
 
 class RatingIndicator extends StatefulWidget {
   const RatingIndicator({
