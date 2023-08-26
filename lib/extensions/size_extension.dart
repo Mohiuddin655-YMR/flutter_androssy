@@ -1,4 +1,4 @@
-part of 'extensions.dart';
+part of '../extensions.dart';
 
 extension SizeExtension on double? {
   /// UPPER

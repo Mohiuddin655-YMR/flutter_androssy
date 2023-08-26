@@ -1,4 +1,4 @@
-part of 'raw.dart';
+part of '../raw.dart';
 
 typedef SwipeCallback = void Function(SwipeDirection direction);
 

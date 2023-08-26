@@ -1,4 +1,4 @@
-part of 'core.dart';
+part of '../core.dart';
 
 class AndrossyProvider extends InheritedWidget {
   final Androssy androssy;

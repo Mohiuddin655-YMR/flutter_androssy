@@ -1,4 +1,4 @@
-part of 'raw.dart';
+part of '../raw.dart';
 
 class RatingIcon {
   const RatingIcon({

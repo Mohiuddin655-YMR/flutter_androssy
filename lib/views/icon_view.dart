@@ -221,7 +221,7 @@ class IconViewController extends ViewController {
   }
 
   @override
-  double get _borderRadius => super._borderRadius ?? size;
+  double get borderRadiusValue => super.borderRadiusValue ?? size;
 
   dynamic get icon => iconState?.fromController(this) ?? _icon;
 
@@ -230,22 +230,18 @@ class IconViewController extends ViewController {
   Color? get tint => tintState?.fromController(this) ?? _tint;
 
   void setIcon(dynamic value) {
-    _icon = value;
-    _notify;
+    onNotifyWithCallback(() => _icon = value);
   }
 
   void setIconSize(double value) {
-    _size = value;
-    _notify;
+    onNotifyWithCallback(() => _size = value);
   }
 
   void setIconTint(Color value) {
-    _tint = value;
-    _notify;
+    onNotifyWithCallback(() => _tint = value);
   }
 
   void setIconTintState(ValueState<Color>? value) {
-    tintState = value;
-    _notify;
+    onNotifyWithCallback(() => tintState = value);
   }
 }

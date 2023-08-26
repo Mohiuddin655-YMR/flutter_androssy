@@ -392,7 +392,7 @@ class MaterialEditTextController extends ViewController {
   void _handleFocusChange() {
     if (_node.hasFocus != _focused) {
       _focused = _node.hasFocus;
-      _notify;
+      onNotify();
     }
   }
 
@@ -401,7 +401,7 @@ class MaterialEditTextController extends ViewController {
     onChange?.call(value);
     _error = onError?.call(errorType(value)) ?? "";
     onChecked?.call(id ?? "$hashCode", isValid);
-    _notify;
+    onNotify();
   }
 
   ViewError errorType(String text) {

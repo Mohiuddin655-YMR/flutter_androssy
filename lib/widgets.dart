@@ -12,25 +12,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'extensions/extensions.dart';
-import 'raw/raw.dart';
-
-part 'builders/activity.dart';
-
-part 'builders/fragment.dart';
-
-part 'builders/notifier_view.dart';
-
-part 'builders/render_time_builder.dart';
-
-part 'builders/theme.dart';
-
-part 'builders/widget_wrapper.dart';
+import 'extensions.dart';
+import 'raw.dart';
+import 'services.dart';
 
 part 'views/avatar_view.dart';
 

@@ -1,4 +1,4 @@
-part of 'core.dart';
+part of '../core.dart';
 
 String kAndrossyPath = "__androssy__";
 String kAndrossySettingsPath = "settings";

@@ -1,6 +1,7 @@
 part of '../widgets.dart';
 
 typedef NavigationViewBuilder = Widget Function(BuildContext, int);
+typedef OnNavigationIndexChangeListener = void Function(int index);
 
 enum NavigationType {
   fixed,
@@ -147,6 +148,7 @@ class NavigationView extends YMRView<NavigationViewController> {
 
   final List<NavigationItem> items;
   final NavigationViewBuilder builder;
+  final OnNavigationIndexChangeListener? onIndexChanged;
 
   const NavigationView({
     super.key,
@@ -256,6 +258,7 @@ class NavigationView extends YMRView<NavigationViewController> {
     this.itemPaddingY,
     required this.items,
     required this.builder,
+    this.onIndexChanged,
   });
 
   @override
@@ -268,7 +271,6 @@ class NavigationView extends YMRView<NavigationViewController> {
   NavigationViewController attachController(
     NavigationViewController controller,
   ) {
-    log("attachController");
     return controller.fromNavigationView(this);
   }
 
@@ -278,7 +280,6 @@ class NavigationView extends YMRView<NavigationViewController> {
     NavigationViewController controller,
     Widget parent,
   ) {
-    log("root");
     var isMargin = controller.marginAll > 0;
     var type = controller.positionType;
 
@@ -328,29 +329,7 @@ class NavigationView extends YMRView<NavigationViewController> {
     BuildContext context,
     NavigationViewController controller,
   ) {
-    log("attach");
-    switch (controller.navigationType) {
-      case NavigationType.scrollable:
-        return SingleChildScrollView(
-          scrollDirection: controller.navDirection,
-          child: _NavigationViewChild(controller: controller),
-        );
-      default:
-        return _NavigationViewChild(controller: controller);
-    }
-  }
-}
-
-class _NavigationViewChild extends StatelessWidget {
-  final NavigationViewController controller;
-
-  const _NavigationViewChild({
-    required this.controller,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Flex(
+    var child = Flex(
       direction: controller.navDirection,
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: controller.navCrossDirection,
@@ -401,6 +380,15 @@ class _NavigationViewChild extends StatelessWidget {
         }
       }),
     );
+    switch (controller.navigationType) {
+      case NavigationType.scrollable:
+        return SingleChildScrollView(
+          scrollDirection: controller.navDirection,
+          child: child,
+        );
+      default:
+        return child;
+    }
   }
 }
 
@@ -430,6 +418,8 @@ class NavigationViewController extends ViewController {
   double? itemPadding;
   double? itemPaddingX;
   double? itemPaddingY;
+
+  OnNavigationIndexChangeListener? onIndexChanged;
 
   int get length => items.length;
 
@@ -547,6 +537,7 @@ class NavigationViewController extends ViewController {
     itemPaddingX = view.itemPaddingX;
     itemPaddingY = view.itemPaddingY;
     items = view.items;
+    onIndexChanged = view.onIndexChanged;
     return this;
   }
 
@@ -557,6 +548,7 @@ class NavigationViewController extends ViewController {
     super.onNotifyWithCallback(() {
       if (currentIndex != index) {
         currentIndex = index;
+        if (onIndexChanged != null) onIndexChanged?.call(currentIndex);
       }
     });
   }

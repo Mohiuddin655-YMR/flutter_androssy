@@ -1,4 +1,4 @@
-part of 'core.dart';
+part of '../core.dart';
 
 class AndrossyLocalizer {
   final Map<String, Map<String, String>> localizations;
@@ -54,7 +54,8 @@ class AndrossyLocalizer {
   ///  var json = await rootBundle.loadString("assets/contents/localizations.json");
   ///  Localizer localizer = Localizer.fromJson(json);
   ///```
-  AndrossyLocalizer.fromJson(String json) : localizations = _json(jsonDecode(json));
+  AndrossyLocalizer.fromJson(String json)
+      : localizations = _json(jsonDecode(json));
 
   /// ### Example
   /// ```dart
@@ -72,7 +73,8 @@ class AndrossyLocalizer {
   ///   },
   /// )
   ///```
-  AndrossyLocalizer.fromMap(Map<String, Map<String, String>> map) : localizations = map;
+  AndrossyLocalizer.fromMap(Map<String, Map<String, String>> map)
+      : localizations = map;
 
   /// ### Example
   /// ```dart

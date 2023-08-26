@@ -1,4 +1,4 @@
-part of 'core.dart';
+part of '../core.dart';
 
 class AndrossyNotifier<T> extends ValueNotifier<T> {
   AndrossyNotifier(super.value);

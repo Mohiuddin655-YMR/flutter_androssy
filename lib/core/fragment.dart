@@ -1,4 +1,4 @@
-part of 'core.dart';
+part of '../core.dart';
 
 abstract class AndrossyFragment extends StatefulWidget {
   final AndrossyInstance instance;

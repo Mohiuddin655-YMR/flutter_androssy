@@ -1,4 +1,4 @@
-part of 'core.dart';
+part of '../core.dart';
 
 class AndrossyConfigure {
   final Map<Type, dynamic> _proxies;

@@ -152,7 +152,7 @@ class CountdownViewController extends ViewController {
         } else {
           _rt = _rt - decrementTime;
         }
-        _notify;
+        onNotify();
       });
     }
     _isRunning = true;
@@ -168,7 +168,7 @@ class CountdownViewController extends ViewController {
   void onRestart() {
     _cancel();
     _rt = targetTime;
-    _notify;
+    onNotify();
     _continue();
   }
 
@@ -177,7 +177,7 @@ class CountdownViewController extends ViewController {
   void onClear() {
     _cancel();
     _rt = const Duration();
-    _notify;
+    onNotify();
   }
 
   void _dispose() => _cancel();

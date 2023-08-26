@@ -875,88 +875,71 @@ class TextViewController extends ViewController {
       _onPrefixClick ??= listener;
 
   void setPrefixFontStyle(FontStyle? value) {
-    prefixFontStyle = value;
-    _notify;
+    onNotifyWithCallback(() => prefixFontStyle = value);
   }
 
   void setPrefixFontWeight(FontWeight? value) {
-    prefixFontWeight = value;
-    _notify;
+    onNotifyWithCallback(() => prefixFontWeight = value);
   }
 
   void setPrefixFontWeightState(ValueState<FontWeight>? value) {
-    prefixFontWeightState = value;
-    _notify;
+    onNotifyWithCallback(() => prefixFontWeightState = value);
   }
 
   void setPrefixLetterSpace(double? value) {
-    prefixTextLetterSpace = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextLetterSpace = value);
   }
 
   void setPrefixText(String? value) {
-    prefixText = value;
-    _notify;
+    onNotifyWithCallback(() => prefixText = value);
   }
 
   void setPrefixTextState(ValueState<String>? value) {
-    prefixTextState = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextState = value);
   }
 
   void setPrefixTextColor(Color? value) {
-    prefixTextColor = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextColor = value);
   }
 
   void setPrefixTextColorState(ValueState<Color>? value) {
-    prefixTextColorState = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextColorState = value);
   }
 
   void setPrefixTextDecoration(TextDecoration? value) {
-    prefixTextDecoration = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextDecoration = value);
   }
 
   void setPrefixTextDecorationColor(Color? value) {
-    prefixTextDecorationColor = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextDecorationColor = value);
   }
 
   void setPrefixTextDecorationStyle(TextDecorationStyle? value) {
-    prefixTextDecorationStyle = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextDecorationStyle = value);
   }
 
   void setPrefixTextDecorationThickness(double? value) {
-    prefixTextDecorationThickness = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextDecorationThickness = value);
   }
 
   void setPrefixTextSize(double? value) {
-    prefixTextSize = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextSize = value);
   }
 
   void setPrefixTextSizeState(ValueState<double>? value) {
-    prefixTextSizeState = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextSizeState = value);
   }
 
   void setPrefixTextStyle(TextStyle? value) {
-    prefixTextStyle = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextStyle = value);
   }
 
   void setPrefixTextStyleState(ValueState<TextStyle>? value) {
-    prefixTextStyleState = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextStyleState = value);
   }
 
   void setPrefixVisibility(bool value) {
-    prefixTextVisible = value;
-    _notify;
+    onNotifyWithCallback(() => prefixTextVisible = value);
   }
 
   void setOnPrefixClickListener(OnViewClickListener listener) {
@@ -1007,88 +990,71 @@ class TextViewController extends ViewController {
       _onSuffixClick ??= listener;
 
   void setSuffixFontStyle(FontStyle? value) {
-    suffixFontStyle = value;
-    _notify;
+    onNotifyWithCallback(() => suffixFontStyle = value);
   }
 
   void setSuffixFontWeight(FontWeight? value) {
-    suffixFontWeight = value;
-    _notify;
+    onNotifyWithCallback(() => suffixFontWeight = value);
   }
 
   void setSuffixFontWeightState(ValueState<FontWeight>? value) {
-    suffixFontWeightState = value;
-    _notify;
+    onNotifyWithCallback(() => suffixFontWeightState = value);
   }
 
   void setSuffixLetterSpace(double? value) {
-    suffixTextLetterSpace = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextLetterSpace = value);
   }
 
   void setSuffixText(String? value) {
-    suffixText = value;
-    _notify;
+    onNotifyWithCallback(() => suffixText = value);
   }
 
   void setSuffixTextState(ValueState<String>? value) {
-    suffixTextState = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextState = value);
   }
 
   void setSuffixTextColor(Color? value) {
-    suffixTextColor = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextColor = value);
   }
 
   void setSuffixTextColorState(ValueState<Color>? value) {
-    suffixTextColorState = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextColorState = value);
   }
 
   void setSuffixTextDecoration(TextDecoration? value) {
-    suffixTextDecoration = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextDecoration = value);
   }
 
   void setSuffixTextDecorationColor(Color? value) {
-    suffixTextDecorationColor = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextDecorationColor = value);
   }
 
   void setSuffixTextDecorationStyle(TextDecorationStyle? value) {
-    suffixTextDecorationStyle = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextDecorationStyle = value);
   }
 
   void setSuffixTextDecorationThickness(double? value) {
-    suffixTextDecorationThickness = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextDecorationThickness = value);
   }
 
   void setSuffixTextSize(double? value) {
-    suffixTextSize = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextSize = value);
   }
 
   void setSuffixTextSizeState(ValueState<double>? value) {
-    suffixTextSizeState = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextSizeState = value);
   }
 
   void setSuffixTextStyle(TextStyle? value) {
-    suffixTextStyle = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextStyle = value);
   }
 
   void setSuffixTextStyleState(ValueState<TextStyle>? value) {
-    suffixTextStyleState = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextStyleState = value);
   }
 
   void setSuffixVisibility(bool value) {
-    suffixTextVisible = value;
-    _notify;
+    onNotifyWithCallback(() => suffixTextVisible = value);
   }
 
   void setOnSuffixClickListener(OnViewClickListener listener) {
@@ -1098,82 +1064,66 @@ class TextViewController extends ViewController {
   /// GENERAL
 
   void setFontWeight(FontWeight value) {
-    textFontWeight = value;
-    _notify;
+    onNotifyWithCallback(() => textFontWeight = value);
   }
 
   void setLetterSpacing(double value) {
-    letterSpacing = value;
-    _notify;
+    onNotifyWithCallback(() => letterSpacing = value);
   }
 
   void setLineSpacingExtra(double value) {
-    lineSpacingExtra = value;
-    _notify;
+    onNotifyWithCallback(() => lineSpacingExtra = value);
   }
 
   void setMaxLines(int? value) {
-    maxLines = value;
-    _notify;
+    onNotifyWithCallback(() => maxLines = value);
   }
 
   void setText(String value) {
-    text = value;
-    _notify;
+    onNotifyWithCallback(() => text = value);
   }
 
   void setTextState(ValueState<String> value) {
-    textState = value;
-    _notify;
+    onNotifyWithCallback(() => textState = value);
   }
 
   void setTextAlign(TextAlign value) {
-    textAlign = value;
-    _notify;
+    onNotifyWithCallback(() => textAlign = value);
   }
 
   void setTextColor(Color value) {
-    textColor = value;
-    _notify;
+    onNotifyWithCallback(() => textColor = value);
   }
 
   void setTextColorState(ValueState<Color> value) {
-    textColorState = value;
-    _notify;
+    onNotifyWithCallback(() => textColorState = value);
   }
 
   void setTextDirection(TextDirection value) {
-    textDirection = value;
-    _notify;
+    onNotifyWithCallback(() => textDirection = value);
   }
 
   void setTextLength(int value) {
-    maxCharacters = value;
-    _notify;
+    onNotifyWithCallback(() => maxCharacters = value);
   }
 
   void setTextOverflow(TextOverflow value) {
-    textOverflow = value;
-    _notify;
+    onNotifyWithCallback(() => textOverflow = value);
   }
 
   void setTextSize(double value) {
-    textSize = value;
-    _notify;
+    onNotifyWithCallback(() => textSize = value);
   }
 
   void setTextSpans(List<TextSpan> value) {
-    textSpans = value;
-    _notify;
+    onNotifyWithCallback(() => textSpans = value);
   }
 
   void setTextWeight(FontWeight value) {
-    textFontWeight = value;
-    _notify;
+    onNotifyWithCallback(() => textFontWeight = value);
   }
 
   void setWordSpacing(double value) {
-    wordSpacing = value;
-    _notify;
+    onNotifyWithCallback(() => wordSpacing = value);
   }
 }

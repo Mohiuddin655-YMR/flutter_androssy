@@ -140,7 +140,7 @@ class AvatarView extends YMRView<AvatarViewController> {
       visibility: controller.visible,
       width: controller.width,
       height: controller.height,
-      margin: controller._margin,
+      margin: controller.marginValue,
       marginHorizontal: controller.marginHorizontal,
       marginVertical: controller.marginVertical,
       marginTop: controller.marginTop,
@@ -148,7 +148,7 @@ class AvatarView extends YMRView<AvatarViewController> {
       marginStart: controller.marginStart,
       marginEnd: controller.marginEnd,
       border: controller.borderSize,
-      borderRadius: controller._borderRadius,
+      borderRadius: controller.borderRadiusValue,
       shadow: controller.shadow,
       shadowBlurRadius: controller.shadowBlurRadius,
       shadowSpreadRadius: controller.shadowSpreadRadius,
@@ -250,8 +250,8 @@ class AvatarViewController extends ViewController {
   Color get borderColor => super.borderColor ?? Colors.white;
 
   @override
-  double get _borderRadius {
-    return circular ? 0 : super._borderRadius ?? size;
+  double get borderRadiusValue {
+    return circular ? 0 : super.borderRadiusValue ?? size;
   }
 
   @override

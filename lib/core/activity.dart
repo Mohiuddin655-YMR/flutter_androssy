@@ -1,4 +1,4 @@
-part of 'core.dart';
+part of '../core.dart';
 
 abstract class AndrossyActivity extends StatefulWidget {
   final bool statusBar;
