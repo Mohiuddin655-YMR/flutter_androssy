@@ -33,7 +33,7 @@ class AndrossyConfigure {
     if (instance != null) {
       return instance;
     } else {
-      throw UnimplementedError("Global instance not found!");
+      throw UnimplementedError("Instance not found!");
     }
   }
 

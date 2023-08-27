@@ -99,7 +99,7 @@ class Button extends TextView<ButtonController> {
     super.onLongClick,
     super.onHover,
     super.onToggle,
-    super.text,
+    required super.text,
     super.textSize,
     super.textFontWeight,
     super.textStyle,

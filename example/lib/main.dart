@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_androssy/core.dart';
 import 'package:flutter_androssy/widgets.dart';
 
 void main() {
-  runApp(const Application());
+  runApp(AndrossyProvider(
+    child: const Application(),
+  ));
 }
 
 class Application extends StatelessWidget {
@@ -22,44 +25,45 @@ class Application extends StatelessWidget {
   }
 }
 
-class Example extends StatefulWidget {
+class Example extends AndrossyActivity<ExampleController> {
   const Example({
     super.key,
   });
 
   @override
-  State<Example> createState() => _ExampleState();
-}
-
-class _ExampleState extends State<Example> {
-  @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    var a = theme.textTheme.titleLarge;
-    var b = theme.textTheme.titleSmall;
-    return Scaffold(
-      body: SplashView(
-        bodyY: 5,
-        title: "Flutter K",
-        titleColor: a?.color,
-        titleSize: a?.fontSize,
-        subtitle: "This is a flutter app description",
-        subtitleColor: b?.color,
-        logo: "assets/images/img_logo.png",
-        logoRadius: 20,
-        logoSize: 90,
-        //onExecute: () => _loadScreens(context),
-        bottom: const TextView(
-          text: 'Powered by YMR',
-          marginBottom: 40,
-          textColor: Colors.grey,
-        ),
-      ),
-    );
+  ExampleController init(BuildContext context) {
+    return ExampleController();
   }
 
-  Future<bool> isAvailable(String v) async {
-    await Future.delayed(const Duration(seconds: 3));
-    return true;
+  @override
+  Widget onCreate(context, instance) {
+    return LinearLayout(
+      width: double.infinity,
+      height: double.infinity,
+      layoutGravity: LayoutGravity.center,
+      children: [
+        TextView(text: controller.text),
+        Button(
+          marginTop: 24,
+          borderRadius: 24,
+          text: "Click",
+          rippleColor: Colors.black12,
+          onToggle: (value) {
+            controller.setText(controller.text == "Hi" ? "Hello" : "Hi");
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class ExampleController extends AndrossyController {
+  String text = "Hi";
+  Offset offset = Offset.zero;
+
+  void setText(String value) {
+    onNotify(() {
+      text = value;
+    });
   }
 }

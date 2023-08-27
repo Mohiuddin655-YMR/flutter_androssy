@@ -4,7 +4,7 @@ class AndrossyInstance {
   late BuildContext context;
   late Androssy androssy;
   late SharedPreferences preferences;
-  late Map<String, dynamic> initializations = {};
+  late AndrossyController controller;
 
   AndrossyProvider? _provider;
   int index = 0;
@@ -19,12 +19,12 @@ class AndrossyInstance {
     required BuildContext context,
     Androssy? androssy,
     AndrossyProvider? provider,
-    Map<String, dynamic>? initializations,
     SharedPreferences? preferences,
+    AndrossyController? controller,
   }) async {
     this.context = context;
+    this.controller = controller ?? AndrossyController();
     this.androssy = androssy ?? const Androssy();
-    this.initializations = initializations ?? {};
     this.preferences = preferences ?? await SharedPreferences.getInstance();
   }
 
@@ -33,15 +33,8 @@ class AndrossyInstance {
     return _provider ??= context.find();
   }
 
-  I find<I>([String name = ""]) {
-    if (name.isNotEmpty) {
-      var value = initializations[name];
-      if (value != null) {
-        return value;
-      } else {
-        throw UnimplementedError("Local instance not found!");
-      }
-    } else if (provider != null) {
+  I getInstance<I>() {
+    if (provider != null) {
       return provider!.getInstance<I>();
     } else {
       throw UnimplementedError("Global instance not found!");
@@ -49,10 +42,6 @@ class AndrossyInstance {
   }
 
   String translate(String name) => provider?.localize(language, name) ?? name;
-
-  void setNavigationIndex(int index) {
-    this.index = index;
-  }
 
   /// User properties
   AndrossyUser get user => androssy.user;

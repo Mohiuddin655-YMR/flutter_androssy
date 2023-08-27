@@ -1,6 +1,7 @@
 part of '../core.dart';
 
-abstract class AndrossyActivity extends StatefulWidget {
+abstract class AndrossyActivity<T extends AndrossyController>
+    extends StatefulWidget {
   final bool statusBar;
   final Androssy? androssy;
   final SharedPreferences? preferences;
@@ -13,6 +14,10 @@ abstract class AndrossyActivity extends StatefulWidget {
   });
 
   AndrossyInstance get instance => AndrossyInstance.i;
+
+  T get controller => instance.controller as T;
+
+  T init(BuildContext context);
 
   String translate(String name) => instance.translate(name);
 
@@ -40,14 +45,10 @@ abstract class AndrossyActivity extends StatefulWidget {
 
   @protected
   @override
-  State<AndrossyActivity> createState() => AndrossyActivityState();
+  State<AndrossyActivity<T>> createState() => AndrossyActivityState<T>();
 
   @protected
-  Widget onCreate(
-    BuildContext context,
-    ThemeData theme,
-    AndrossyInstance instance,
-  );
+  Widget onCreate(BuildContext context, AndrossyInstance instance);
 
   @protected
   AppBar? onCreateAppbar(BuildContext context) {
@@ -184,9 +185,6 @@ abstract class AndrossyActivity extends StatefulWidget {
   void onEndDrawerChanged(bool isOpened) {}
 
   @protected
-  Map<String, dynamic> init(BuildContext context) => {};
-
-  @protected
   void onListener(BuildContext context) {}
 
   @protected
@@ -216,69 +214,27 @@ abstract class AndrossyActivity extends StatefulWidget {
   void onDestroy(BuildContext context) {}
 }
 
-class AndrossyActivityState extends State<AndrossyActivity>
-    with WidgetsBindingObserver {
-  @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    return WillPopScope(
-      onWillPop: widget.onBackPressed,
-      child: AndrossyBuilder(
-        message: _providerError,
-        builder: (context, value) {
-          var config = widget.config(context);
-          widget.instance.androssy = value;
-          return Scaffold(
-            appBar: widget.onCreateAppbar(context),
-            backgroundColor:
-                config.backgroundColor ?? theme.scaffoldBackgroundColor,
-            body: widget.onCreate(context, theme, widget.instance),
-            bottomNavigationBar: widget.onCreateBottomNavigationBar(context),
-            bottomSheet: widget.onCreateBottomSheet(context),
-            drawer: widget.onCreateDrawer(context),
-            drawerEdgeDragWidth: config.drawerEdgeDragWidth,
-            drawerEnableOpenDragGesture: config.drawerEnableOpenDragGesture,
-            drawerDragStartBehavior: config.drawerDragStartBehavior,
-            drawerScrimColor:
-                config.drawerScrimColor ?? theme.drawerTheme.scrimColor,
-            endDrawer: widget.onCreateEndDrawer(context),
-            endDrawerEnableOpenDragGesture:
-                config.endDrawerEnableOpenDragGesture,
-            extendBody: config.extendBody,
-            extendBodyBehindAppBar: config.extendBodyBehindAppBar,
-            floatingActionButton: widget.onCreateFloatingButton(context),
-            floatingActionButtonAnimator: config.floatingActionButtonAnimator,
-            floatingActionButtonLocation: config.floatingActionButtonLocation,
-            key: widget.key,
-            primary: config.primary,
-            persistentFooterAlignment: config.persistentFooterAlignment,
-            persistentFooterButtons:
-                widget.onCreatePersistentFooterButtons(context),
-            restorationId: config.restorationId,
-            resizeToAvoidBottomInset: config.resizeToAvoidBottomInset,
-            onDrawerChanged: widget.onDrawerChanged,
-            onEndDrawerChanged: widget.onEndDrawerChanged,
-          );
-        },
-      ),
-    );
-  }
+class AndrossyActivityState<T extends AndrossyController>
+    extends State<AndrossyActivity<T>> with WidgetsBindingObserver {
+  late T controller;
 
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    controller = widget.init(context);
+    controller.setNotifier(setState);
     widget.instance.init(
       context: context,
-      initializations: widget.init(context),
       preferences: widget.preferences,
       androssy: widget.androssy,
+      controller: controller,
     );
     widget.onListener(context);
     super.initState();
   }
 
   @override
-  void didUpdateWidget(covariant AndrossyActivity oldWidget) {
+  void didUpdateWidget(covariant AndrossyActivity<T> oldWidget) {
     widget.onRestart(context);
     super.didUpdateWidget(oldWidget);
   }
@@ -319,5 +275,63 @@ class AndrossyActivityState extends State<AndrossyActivity>
         break;
     }
     super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    return WillPopScope(
+      onWillPop: widget.onBackPressed,
+      child: AndrossyBuilder(
+        message: _providerError,
+        builder: (context, value) {
+          var config = widget.config(context);
+          widget.instance.androssy = value;
+          return Scaffold(
+            appBar: widget.onCreateAppbar(context),
+            backgroundColor:
+                config.backgroundColor ?? theme.scaffoldBackgroundColor,
+            body: widget.onCreate(context, widget.instance),
+            bottomNavigationBar: widget.onCreateBottomNavigationBar(context),
+            bottomSheet: widget.onCreateBottomSheet(context),
+            drawer: widget.onCreateDrawer(context),
+            drawerEdgeDragWidth: config.drawerEdgeDragWidth,
+            drawerEnableOpenDragGesture: config.drawerEnableOpenDragGesture,
+            drawerDragStartBehavior: config.drawerDragStartBehavior,
+            drawerScrimColor:
+                config.drawerScrimColor ?? theme.drawerTheme.scrimColor,
+            endDrawer: widget.onCreateEndDrawer(context),
+            endDrawerEnableOpenDragGesture:
+                config.endDrawerEnableOpenDragGesture,
+            extendBody: config.extendBody,
+            extendBodyBehindAppBar: config.extendBodyBehindAppBar,
+            floatingActionButton: widget.onCreateFloatingButton(context),
+            floatingActionButtonAnimator: config.floatingActionButtonAnimator,
+            floatingActionButtonLocation: config.floatingActionButtonLocation,
+            key: widget.key,
+            primary: config.primary,
+            persistentFooterAlignment: config.persistentFooterAlignment,
+            persistentFooterButtons:
+                widget.onCreatePersistentFooterButtons(context),
+            restorationId: config.restorationId,
+            resizeToAvoidBottomInset: config.resizeToAvoidBottomInset,
+            onDrawerChanged: widget.onDrawerChanged,
+            onEndDrawerChanged: widget.onEndDrawerChanged,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class AndrossyController {
+  OnViewNotifier? _notifier;
+
+  void setNotifier(OnViewNotifier? notifier) => _notifier = notifier;
+
+  void onNotify(VoidCallback callback) {
+    if (_notifier != null) {
+      _notifier?.call(callback);
+    }
   }
 }
