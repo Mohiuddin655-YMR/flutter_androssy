@@ -42,13 +42,14 @@ class Example extends AndrossyActivity<ExampleController> {
       height: double.infinity,
       layoutGravity: LayoutGravity.center,
       children: [
-        TextView(text: controller.text),
+        TextView(text: instance.preferences.toString()),
         Button(
           marginTop: 24,
           borderRadius: 24,
           text: "Click",
           rippleColor: Colors.black12,
           onToggle: (value) {
+            instance.preferences.logValue.setString("key", "My name is Omie");
             controller.setText(controller.text == "Hi" ? "Hello" : "Hi");
           },
         ),

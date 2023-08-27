@@ -1,6 +1,7 @@
 part of '../core.dart';
 
-abstract class AndrossyFragment extends StatefulWidget {
+abstract class AndrossyFragment<T extends AndrossyController>
+    extends StatefulWidget {
   final AndrossyInstance instance;
 
   const AndrossyFragment({
@@ -8,91 +9,87 @@ abstract class AndrossyFragment extends StatefulWidget {
     required this.instance,
   });
 
+  T get controller => instance.controller as T;
+
+  T init(BuildContext context);
+
   String translate(String name) => instance.translate(name);
 
   @protected
   @override
-  State<AndrossyFragment> createState() => _AndrossyFragmentState();
+  State<AndrossyFragment<T>> createState() => _AndrossyFragmentState<T>();
 
   @protected
-  Widget onCreate(BuildContext context, AndrossyInstance instance);
-
-  @protected
-  void onInit() {}
-
-  @protected
-  void onListener() {}
-
-  @protected
-  void onPause() {}
-
-  @protected
-  void onRestart() {}
-
-  @protected
-  void onResume() {}
-
-  @protected
-  void onStart() {}
-
-  @protected
-  void onStop() {}
+  Widget onCreate(BuildContext context, T controller);
 
   @protected
   Future<bool> onBackPressed() async => true;
 
   @protected
-  void onDetached() {}
+  void onListener(BuildContext context) {}
 
   @protected
-  void onDestroy() {}
+  void onPause(BuildContext context) {}
+
+  @protected
+  void onRestart(BuildContext context) {}
+
+  @protected
+  void onResume(BuildContext context) {}
+
+  @protected
+  void onStart(BuildContext context) {}
+
+  @protected
+  void onStop(BuildContext context) {}
+
+  @protected
+  void onDetached(BuildContext context) {}
+
+  @protected
+  void onDestroy(BuildContext context) {}
 }
 
-class _AndrossyFragmentState extends State<AndrossyFragment>
-    with WidgetsBindingObserver {
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: widget.onBackPressed,
-      child: AndrossyBuilder(
-          message: _providerError,
-          builder: (context, value) {
-            widget.instance.androssy = value;
-            return widget.onCreate(context, widget.instance);
-          }),
-    );
-  }
+class _AndrossyFragmentState<T extends AndrossyController>
+    extends State<AndrossyFragment<T>> with WidgetsBindingObserver {
+  late T controller;
 
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    widget.onInit();
-    widget.onListener();
+    controller = widget.init(context);
+    controller.setNotifier(setState);
+    widget.instance.logValue;
+    widget.instance.modify(
+      context: context,
+      controller: controller,
+    );
+    widget.onListener(context);
     super.initState();
   }
 
   @override
-  void didUpdateWidget(covariant AndrossyFragment oldWidget) {
-    widget.onRestart();
+  void didUpdateWidget(covariant AndrossyFragment<T> oldWidget) {
+    widget.onRestart(context);
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void activate() {
-    widget.onStart();
+    widget.onStart(context);
     super.activate();
   }
 
   @override
   void deactivate() {
-    widget.onStop();
+    widget.onStop(context);
     super.deactivate();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    widget.onDestroy();
+    widget.onDestroy(context);
     super.dispose();
   }
 
@@ -100,18 +97,32 @@ class _AndrossyFragmentState extends State<AndrossyFragment>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        widget.onResume();
+        widget.onResume(context);
         break;
       case AppLifecycleState.inactive:
-        widget.onStop();
+        widget.onStop(context);
         break;
       case AppLifecycleState.paused:
-        widget.onPause();
+        widget.onPause(context);
         break;
       case AppLifecycleState.detached:
-        widget.onDetached();
+        widget.onDetached(context);
         break;
     }
     super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: widget.onBackPressed,
+      child: AndrossyBuilder(
+        message: _providerError,
+        builder: (context, value) {
+          widget.instance.androssy = value;
+          return widget.onCreate(context, controller);
+        },
+      ),
+    );
   }
 }

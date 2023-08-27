@@ -4,12 +4,10 @@ abstract class AndrossyActivity<T extends AndrossyController>
     extends StatefulWidget {
   final bool statusBar;
   final Androssy? androssy;
-  final SharedPreferences? preferences;
 
   const AndrossyActivity({
     super.key,
     this.androssy,
-    this.preferences,
     this.statusBar = true,
   });
 
@@ -220,16 +218,15 @@ class AndrossyActivityState<T extends AndrossyController>
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     controller = widget.init(context);
     controller.setNotifier(setState);
     widget.instance.init(
       context: context,
-      preferences: widget.preferences,
       androssy: widget.androssy,
       controller: controller,
     );
     widget.onListener(context);
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
@@ -282,56 +279,57 @@ class AndrossyActivityState<T extends AndrossyController>
     var theme = Theme.of(context);
     return WillPopScope(
       onWillPop: widget.onBackPressed,
-      child: AndrossyBuilder(
-        message: _providerError,
-        builder: (context, value) {
-          var config = widget.config(context);
-          widget.instance.androssy = value;
-          return Scaffold(
-            appBar: widget.onCreateAppbar(context),
-            backgroundColor:
-                config.backgroundColor ?? theme.scaffoldBackgroundColor,
-            body: widget.onCreate(context, widget.instance),
-            bottomNavigationBar: widget.onCreateBottomNavigationBar(context),
-            bottomSheet: widget.onCreateBottomSheet(context),
-            drawer: widget.onCreateDrawer(context),
-            drawerEdgeDragWidth: config.drawerEdgeDragWidth,
-            drawerEnableOpenDragGesture: config.drawerEnableOpenDragGesture,
-            drawerDragStartBehavior: config.drawerDragStartBehavior,
-            drawerScrimColor:
-                config.drawerScrimColor ?? theme.drawerTheme.scrimColor,
-            endDrawer: widget.onCreateEndDrawer(context),
-            endDrawerEnableOpenDragGesture:
-                config.endDrawerEnableOpenDragGesture,
-            extendBody: config.extendBody,
-            extendBodyBehindAppBar: config.extendBodyBehindAppBar,
-            floatingActionButton: widget.onCreateFloatingButton(context),
-            floatingActionButtonAnimator: config.floatingActionButtonAnimator,
-            floatingActionButtonLocation: config.floatingActionButtonLocation,
-            key: widget.key,
-            primary: config.primary,
-            persistentFooterAlignment: config.persistentFooterAlignment,
-            persistentFooterButtons:
-                widget.onCreatePersistentFooterButtons(context),
-            restorationId: config.restorationId,
-            resizeToAvoidBottomInset: config.resizeToAvoidBottomInset,
-            onDrawerChanged: widget.onDrawerChanged,
-            onEndDrawerChanged: widget.onEndDrawerChanged,
-          );
+      child: FutureBuilder(
+        future: widget.instance.getPreferences(),
+        builder: (context, snapshot) {
+          if (snapshot.data is SharedPreferences) {
+            return AndrossyBuilder(
+              message: _providerError,
+              builder: (context, value) {
+                var config = widget.config(context);
+                widget.instance.androssy = value;
+                return Scaffold(
+                  appBar: widget.onCreateAppbar(context),
+                  backgroundColor:
+                      config.backgroundColor ?? theme.scaffoldBackgroundColor,
+                  body: widget.onCreate(context, widget.instance),
+                  bottomNavigationBar:
+                      widget.onCreateBottomNavigationBar(context),
+                  bottomSheet: widget.onCreateBottomSheet(context),
+                  drawer: widget.onCreateDrawer(context),
+                  drawerEdgeDragWidth: config.drawerEdgeDragWidth,
+                  drawerEnableOpenDragGesture:
+                      config.drawerEnableOpenDragGesture,
+                  drawerDragStartBehavior: config.drawerDragStartBehavior,
+                  drawerScrimColor:
+                      config.drawerScrimColor ?? theme.drawerTheme.scrimColor,
+                  endDrawer: widget.onCreateEndDrawer(context),
+                  endDrawerEnableOpenDragGesture:
+                      config.endDrawerEnableOpenDragGesture,
+                  extendBody: config.extendBody,
+                  extendBodyBehindAppBar: config.extendBodyBehindAppBar,
+                  floatingActionButton: widget.onCreateFloatingButton(context),
+                  floatingActionButtonAnimator:
+                      config.floatingActionButtonAnimator,
+                  floatingActionButtonLocation:
+                      config.floatingActionButtonLocation,
+                  key: widget.key,
+                  primary: config.primary,
+                  persistentFooterAlignment: config.persistentFooterAlignment,
+                  persistentFooterButtons:
+                      widget.onCreatePersistentFooterButtons(context),
+                  restorationId: config.restorationId,
+                  resizeToAvoidBottomInset: config.resizeToAvoidBottomInset,
+                  onDrawerChanged: widget.onDrawerChanged,
+                  onEndDrawerChanged: widget.onEndDrawerChanged,
+                );
+              },
+            );
+          } else {
+            return const Scaffold();
+          }
         },
       ),
     );
-  }
-}
-
-class AndrossyController {
-  OnViewNotifier? _notifier;
-
-  void setNotifier(OnViewNotifier? notifier) => _notifier = notifier;
-
-  void onNotify(VoidCallback callback) {
-    if (_notifier != null) {
-      _notifier?.call(callback);
-    }
   }
 }

@@ -3,11 +3,10 @@ part of '../core.dart';
 class AndrossyInstance {
   late BuildContext context;
   late Androssy androssy;
-  late SharedPreferences preferences;
   late AndrossyController controller;
+  SharedPreferences? _pref;
 
   AndrossyProvider? _provider;
-  int index = 0;
 
   AndrossyInstance._();
 
@@ -18,19 +17,34 @@ class AndrossyInstance {
   void init({
     required BuildContext context,
     Androssy? androssy,
-    AndrossyProvider? provider,
-    SharedPreferences? preferences,
     AndrossyController? controller,
   }) async {
     this.context = context;
     this.controller = controller ?? AndrossyController();
     this.androssy = androssy ?? const Androssy();
-    this.preferences = preferences ?? await SharedPreferences.getInstance();
+  }
+
+  void modify({
+    required BuildContext context,
+    Androssy? androssy,
+    AndrossyController? controller,
+  }) async {
+    this.context = context;
+    this.controller = controller ?? this.controller;
+    this.androssy = androssy ?? this.androssy;
   }
 
   /// Customization properties
   AndrossyProvider? get provider {
     return _provider ??= context.find();
+  }
+
+  SharedPreferences get preferences => _pref!;
+
+  Future<SharedPreferences> getPreferences([
+    SharedPreferences? preferences,
+  ]) async {
+    return _pref ??= preferences ?? await SharedPreferences.getInstance();
   }
 
   I getInstance<I>() {
@@ -52,9 +66,11 @@ class AndrossyInstance {
   bool get isDarkTheme => androssy.settings.theme == ThemeMode.dark;
 
   void setThemeMode(ThemeMode mode) async {
-    var raw = androssy.copy(theme: mode);
-    var done = await preferences.setString(kAndrossyPath, raw.json);
-    if (done && provider != null) provider!.notify(raw);
+    if (_pref != null) {
+      var raw = androssy.copy(theme: mode);
+      var done = await preferences.setString(kAndrossyPath, raw.json);
+      if (done && provider != null) provider!.notify(raw);
+    }
   }
 
   /// Locale properties
@@ -63,9 +79,11 @@ class AndrossyInstance {
   String get language => androssy.settings.locale?.languageCode ?? "en";
 
   void setLocale(Locale locale) async {
-    var raw = androssy.copy(locale: locale);
-    var done = await preferences.setString(kAndrossyPath, raw.json);
-    if (done && provider != null) provider!.notify(raw);
+    if (_pref != null) {
+      var raw = androssy.copy(locale: locale);
+      var done = await preferences.setString(kAndrossyPath, raw.json);
+      if (done && provider != null) provider!.notify(raw);
+    }
   }
 
   void setLanguage(String language) => setLocale(Locale(language));
@@ -74,10 +92,12 @@ class AndrossyInstance {
 
   /// Settings properties
   void setSettings(Androssy androssy) async {
-    var done = await preferences.setString(
-      kAndrossyPath,
-      androssy.json,
-    );
-    if (done && provider != null) provider!.notify(androssy);
+    if (_pref != null) {
+      var done = await preferences.setString(
+        kAndrossyPath,
+        androssy.json,
+      );
+      if (done && provider != null) provider!.notify(androssy);
+    }
   }
 }
