@@ -59,10 +59,6 @@ part 'views/linear_layout.dart';
 
 part 'views/loader_view.dart';
 
-part 'views/material_edit_form.dart';
-
-part 'views/material_edit_text.dart';
-
 part 'views/material_image_view.dart';
 
 part 'views/navigation_view.dart';

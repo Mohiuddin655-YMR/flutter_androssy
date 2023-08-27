@@ -25,6 +25,22 @@ typedef EditTextSubmitListener = void Function(String value);
 typedef EditTextTapOutsideListener = void Function(PointerDownEvent event);
 
 class EditText<T extends EditTextController> extends TextView<T> {
+  /// HELPER TEXT PROPERTIES
+  final String helperText;
+  final Color? helperTextColor;
+
+  /// FLOATING TEXT PROPERTIES
+  final Color? floatingLabelColor;
+  final double floatingLabelSize;
+  final bool floatingLabelVisible;
+
+  /// ERROR TEXT PROPERTIES
+  final bool errorVisible;
+  final Color? errorColor;
+
+  /// COUNTER TEXT PROPERTIES
+  final bool counterVisible;
+
   /// BASE PROPERTIES
   final String? id;
   final String digits;
@@ -224,6 +240,18 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.onValid,
     super.onValidator,
 
+    /// HELPER TEXT PROPERTIES
+    this.helperText = "",
+    this.helperTextColor,
+    this.floatingLabelColor,
+    this.floatingLabelSize = 12,
+    this.floatingLabelVisible = false,
+
+    /// ERROR TEXT PROPERTIES
+    this.errorColor = const Color(0xFFF44336),
+    this.errorVisible = true,
+    this.counterVisible = false,
+
     /// BASE PROPERTIES
     this.id,
     this.digits = "",
@@ -314,7 +342,10 @@ class EditText<T extends EditTextController> extends TextView<T> {
   });
 
   @override
-  ViewRoots initRootProperties() => const ViewRoots(observer: false);
+  ViewRoots initRootProperties() => const ViewRoots(
+        observer: false,
+        padding: false,
+      );
 
   @override
   T initController() => EditTextController() as T;
@@ -372,40 +403,13 @@ class EditText<T extends EditTextController> extends TextView<T> {
   }
 
   @override
-  Widget build(BuildContext context, T controller, Widget parent) {
-    final primaryColor = controller.primary ?? context.primaryColor;
-    const underlineColor = Color(0xffe1e1e1);
-    return GestureDetector(
-      onTap: () => controller.showKeyboard(context),
-      child: controller.isUnderlineHide
-          ? parent
-          : Column(
-        children: [
-          parent,
-          UnderlineView(
-            visible: controller.background == null &&
-                controller.borderAll <= 0,
-            focused: controller.isFocused,
-            enabled: controller.enabled,
-            error: controller.error,
-            height: 1,
-            primary: primaryColor,
-            colorState: ValueState(
-              primary: primaryColor,
-              secondary: underlineColor,
-              error: Colors.red,
-              disable: underlineColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
   Widget? attach(BuildContext context, T controller) {
-    final primaryColor = controller.primary ?? context.primaryColor;
+    final theme = Theme.of(context);
+    final primaryColor = controller.primary ?? theme.primaryColor;
+    const underlineColor = Color(0xffe1e1e1);
     const secondaryColor = Color(0xffbbbbbb);
+    final hasError = controller.hasError;
+
     var style = TextStyle(
       color: controller.textColor ?? Colors.black,
       fontSize: controller.textSize ?? 18,
@@ -421,129 +425,256 @@ class EditText<T extends EditTextController> extends TextView<T> {
 
     var defaultColor = colors.fromController(controller);
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Builder(
-          builder: (context) {
-            if (drawableStartBuilder != null) {
-              return drawableStartBuilder!(context, controller);
-            } else {
-              return IconView(
-                visibility: controller.drawableStart != null,
-                icon: controller.drawableStart,
-                size: controller.drawableStartSize,
-                tint: controller.drawableStartTint ?? defaultColor,
-                marginEnd: controller.drawableStartPadding ?? 12,
-              );
-            }
-          },
-        ),
-        Expanded(
-          child: TextField(
-            canRequestFocus: true,
-            enabled: controller.enabled,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.zero,
-              isDense: true,
-              isCollapsed: true,
-              hintText: controller.hint,
-              hintStyle: style.copyWith(
-                fontFamily: "",
-                color: controller.text.isNotEmpty
-                    ? Colors.transparent
-                    : controller.hintColor ?? secondaryColor,
-              ),
-            ),
-            autocorrect: controller.autocorrect,
-            autofillHints: controller.autofillHints,
-            autofocus: controller.autoFocus,
-            clipBehavior: controller.clipBehaviorText,
-            controller: controller._editable,
-            cursorColor: controller.cursorColor ?? primaryColor,
-            cursorHeight: controller.cursorHeight,
-            cursorOpacityAnimates: controller.cursorOpacityAnimates,
-            cursorRadius: controller.cursorRadius,
-            cursorWidth: controller.cursorWidth,
-            contentInsertionConfiguration:
-                controller.contentInsertionConfiguration,
-            contextMenuBuilder: controller.contextMenuBuilder,
-            dragStartBehavior: controller.dragStartBehavior,
-            enableIMEPersonalizedLearning:
-                controller.enableIMEPersonalizedLearning,
-            enableInteractiveSelection: controller.enableInteractiveSelection,
-            enableSuggestions: controller.enableSuggestions,
-            expands: controller.expands,
-            focusNode: controller._node,
-            inputFormatters: controller.formatter,
-            keyboardAppearance: controller.keyboardAppearance,
-            keyboardType: controller.inputType,
-            maxLines: controller.maxLines,
-            magnifierConfiguration: controller.magnifierConfiguration,
-            minLines: controller.minLines,
-            mouseCursor: controller.mouseCursor,
-            obscureText: controller.obscureText,
-            obscuringCharacter: controller.obscuringCharacter,
-            onAppPrivateCommand: controller.onAppPrivateCommand,
-            onChanged: controller._handleEditingChange,
-            onEditingComplete: controller.onEditingComplete,
-            onSubmitted: controller.onSubmitted,
-            onTapOutside: controller.onTapOutside,
-            readOnly: controller.isReadMode,
-            restorationId: controller.restorationId,
-            scribbleEnabled: controller.scribbleEnabled,
-            scrollController: controller.scrollControllerText,
-            scrollPadding: controller.scrollPaddingText,
-            scrollPhysics: controller.scrollPhysicsText,
-            selectionControls: controller.selectionControls,
-            selectionHeightStyle: controller.selectionHeightStyle,
-            selectionWidthStyle: controller.selectionWidthStyle,
-            showCursor: controller.showCursor,
-            smartDashesType: controller.smartDashesType,
-            smartQuotesType: controller.smartQuotesType,
-            spellCheckConfiguration: controller.spellCheckConfiguration,
-            strutStyle: controller.strutStyle,
-            style: style,
-            textAlign: controller.textAlign ?? TextAlign.start,
-            textCapitalization: controller.textCapitalization,
-            textDirection: controller.textDirection,
-            textInputAction: controller.textInputAction,
-            undoController: controller.undoController,
+    Widget child = Padding(
+      padding: controller.padding ?? EdgeInsets.zero,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Builder(
+            builder: (context) {
+              if (drawableStartBuilder != null) {
+                return drawableStartBuilder!(context, controller);
+              } else {
+                return IconView(
+                  visibility: controller.drawableStart != null,
+                  icon: controller.drawableStart,
+                  size: controller.drawableStartSize,
+                  tint: controller.drawableStartTint ?? defaultColor,
+                  marginEnd: controller.drawableStartPadding ?? 12,
+                );
+              }
+            },
           ),
-        ),
-        Builder(
-          builder: (context) {
-            if (controller.indicatorVisible) {
-              return Container(
-                width: controller.indicatorSize,
-                height: controller.indicatorSize,
-                padding: EdgeInsets.all(controller.indicatorSize * 0.05),
-                child: CircularProgressIndicator(
-                  strokeWidth: controller.indicatorStroke,
-                  color: controller.indicatorStrokeColor ?? defaultColor,
-                  backgroundColor: controller.indicatorStrokeBackground ??
-                      defaultColor?.withOpacity(0.1),
+          Expanded(
+            child: TextField(
+              canRequestFocus: true,
+              enabled: controller.enabled,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+                isDense: true,
+                isCollapsed: true,
+                hintText: controller.hint,
+                hintStyle: style.copyWith(
+                  fontFamily: "",
+                  color: controller.text.isNotEmpty
+                      ? Colors.transparent
+                      : controller.hintColor ?? secondaryColor,
                 ),
-              );
-            } else if (drawableEndBuilder != null) {
-              return drawableEndBuilder!(context, controller);
-            } else {
-              return IconView(
-                visibility: controller.drawableEnd != null,
-                icon: controller.drawableEnd,
-                size: controller.drawableEndSize,
-                tint: controller.drawableEndTint ?? defaultColor,
-                marginStart: controller.drawableEndPadding ?? 4,
-              );
-            }
-          },
-        ),
-      ],
+              ),
+              autocorrect: controller.autocorrect,
+              autofillHints: controller.autofillHints,
+              autofocus: controller.autoFocus,
+              clipBehavior: controller.clipBehaviorText,
+              controller: controller._editable,
+              cursorColor: controller.cursorColor ?? primaryColor,
+              cursorHeight: controller.cursorHeight,
+              cursorOpacityAnimates: controller.cursorOpacityAnimates,
+              cursorRadius: controller.cursorRadius,
+              cursorWidth: controller.cursorWidth,
+              contentInsertionConfiguration:
+              controller.contentInsertionConfiguration,
+              contextMenuBuilder: controller.contextMenuBuilder,
+              dragStartBehavior: controller.dragStartBehavior,
+              enableIMEPersonalizedLearning:
+              controller.enableIMEPersonalizedLearning,
+              enableInteractiveSelection: controller.enableInteractiveSelection,
+              enableSuggestions: controller.enableSuggestions,
+              expands: controller.expands,
+              focusNode: controller._node,
+              inputFormatters: controller.formatter,
+              keyboardAppearance: controller.keyboardAppearance,
+              keyboardType: controller.inputType,
+              maxLines: controller.maxLines,
+              magnifierConfiguration: controller.magnifierConfiguration,
+              minLines: controller.minLines,
+              mouseCursor: controller.mouseCursor,
+              obscureText: controller.obscureText,
+              obscuringCharacter: controller.obscuringCharacter,
+              onAppPrivateCommand: controller.onAppPrivateCommand,
+              onChanged: controller._handleEditingChange,
+              onEditingComplete: controller.onEditingComplete,
+              onSubmitted: controller.onSubmitted,
+              onTapOutside: controller.onTapOutside,
+              readOnly: controller.isReadMode,
+              restorationId: controller.restorationId,
+              scribbleEnabled: controller.scribbleEnabled,
+              scrollController: controller.scrollControllerText,
+              scrollPadding: controller.scrollPaddingText,
+              scrollPhysics: controller.scrollPhysicsText,
+              selectionControls: controller.selectionControls,
+              selectionHeightStyle: controller.selectionHeightStyle,
+              selectionWidthStyle: controller.selectionWidthStyle,
+              showCursor: controller.showCursor,
+              smartDashesType: controller.smartDashesType,
+              smartQuotesType: controller.smartQuotesType,
+              spellCheckConfiguration: controller.spellCheckConfiguration,
+              strutStyle: controller.strutStyle,
+              style: style,
+              textAlign: controller.textAlign ?? TextAlign.start,
+              textCapitalization: controller.textCapitalization,
+              textDirection: controller.textDirection,
+              textInputAction: controller.textInputAction,
+              undoController: controller.undoController,
+            ),
+          ),
+          Builder(
+            builder: (context) {
+              if (controller.indicatorVisible) {
+                return Container(
+                  width: controller.indicatorSize,
+                  height: controller.indicatorSize,
+                  padding: EdgeInsets.all(controller.indicatorSize * 0.05),
+                  child: CircularProgressIndicator(
+                    strokeWidth: controller.indicatorStroke,
+                    color: controller.indicatorStrokeColor ?? defaultColor,
+                    backgroundColor: controller.indicatorStrokeBackground ??
+                        defaultColor?.withOpacity(0.1),
+                  ),
+                );
+              } else if (drawableEndBuilder != null) {
+                return drawableEndBuilder!(context, controller);
+              } else {
+                return IconView(
+                  visibility: controller.drawableEnd != null,
+                  icon: controller.drawableEnd,
+                  size: controller.drawableEndSize,
+                  tint: controller.drawableEndTint ?? defaultColor,
+                  marginStart: controller.drawableEndPadding ?? 4,
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+
+    return GestureDetector(
+      onTap: () => controller.showKeyboard(context),
+      child: controller.isUnderlineHide
+          ? child
+          : Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: _EditTextHighlightText(
+                    visible: controller.floatingLabelVisible,
+                    valid: controller.text.isNotEmpty,
+                    text: controller.hint,
+                    textAlign: controller.textAlign,
+                    textSize: controller.floatingLabelSize,
+                    textColor: controller.isFocused
+                        ? primaryColor
+                        : controller.floatingLabelColor ?? secondaryColor,
+                  ),
+                ),
+                child,
+                UnderlineView(
+                  visible: controller.background == null &&
+                      controller.borderAll <= 0,
+                  focused: controller.isFocused,
+                  enabled: controller.enabled,
+                  error: controller.error,
+                  height: 1,
+                  primary: primaryColor,
+                  colorState: ValueState(
+                    primary: primaryColor,
+                    secondary: underlineColor,
+                    error: Colors.red,
+                    disable: underlineColor,
+                  ),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _EditTextHighlightText(
+                        text: hasError
+                            ? controller._error
+                            : controller.helperText,
+                        textAlign: TextAlign.start,
+                        textSize: controller.floatingLabelSize,
+                        textColor: !hasError
+                            ? controller.helperTextColor ?? secondaryColor
+                            : controller.errorColor,
+                        valid: hasError || controller.helperText.isNotEmpty,
+                        visible: hasError || controller.helperText.isNotEmpty,
+                        padding: const EdgeInsets.only(
+                          top: 4,
+                          bottom: 4,
+                        ),
+                      ),
+                      _EditTextHighlightText(
+                        text: controller.counter,
+                        textAlign: TextAlign.end,
+                        textSize: controller.floatingLabelSize,
+                        textColor:
+                            hasError ? controller.errorColor : secondaryColor,
+                        valid:
+                            controller.counterVisible && controller.isFocused,
+                        visible: controller.counterVisible,
+                        padding: const EdgeInsets.only(
+                          top: 4,
+                          bottom: 4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }
+
+
+class _EditTextHighlightText extends StatelessWidget {
+  final bool valid;
+  final bool visible;
+  final String text;
+  final TextAlign? textAlign;
+  final Color? textColor;
+  final double textSize;
+  final EdgeInsetsGeometry? padding;
+
+  const _EditTextHighlightText({
+    Key? key,
+    required this.text,
+    this.textAlign,
+    this.textColor,
+    this.textSize = 12,
+    this.valid = false,
+    this.visible = true,
+    this.padding,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: visible,
+      child: Container(
+        padding: padding ??
+            const EdgeInsets.symmetric(
+              vertical: 4,
+            ),
+        child: Text(
+          text,
+          textAlign: textAlign,
+          style: TextStyle(
+            color: valid ? textColor ?? Colors.grey : Colors.transparent,
+            fontFamily: "",
+            fontSize: textSize,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 class EditTextController extends TextViewController {
   late TextEditingController _editable;
@@ -557,6 +688,18 @@ class EditTextController extends TextViewController {
 
   EditTextController fromEditText(EditText view) {
     super.fromTextView(view);
+
+    helperText = view.helperText;
+    helperTextColor = view.helperTextColor;
+    floatingLabelColor = view.floatingLabelColor;
+    floatingLabelSize = view.floatingLabelSize;
+    floatingLabelVisible = view.floatingLabelVisible;
+    errorVisible = view.errorVisible;
+    errorColor = view.errorColor;
+    counterVisible = view.counterVisible;
+    onChange = view.onChange;
+    onError = view.onError;
+    onValidator = view.onValidator;
 
     /// BASE PROPERTIES
     id = view.id;
@@ -649,6 +792,62 @@ class EditTextController extends TextViewController {
     /// CUSTOMIZATIONS
     _editable.text = view.text ?? _editable.text;
     return this;
+  }
+
+  /// HELPER TEXT PROPERTIES
+  String helperText = "";
+  Color? helperTextColor;
+
+  /// FLOATING TEXT PROPERTIES
+  Color? floatingLabelColor;
+  double floatingLabelSize = 12;
+  bool floatingLabelVisible = false;
+
+  /// ERROR TEXT PROPERTIES
+  bool errorVisible = false;
+  String _error = "";
+  Color? errorColor = const Color(0xFFF44336);
+
+  /// COUNTER TEXT PROPERTIES
+  bool counterVisible = false;
+
+  bool get hasError => !isValid && _error.isNotEmpty;
+
+  bool get isValid {
+    final v = onValidator?.call(_editable.text);
+    onValid?.call(v ?? false);
+    return v ?? true;
+  }
+
+  dynamic get iStart => drawableStart?.drawable(isFocused);
+
+  dynamic get iEnd => drawableEnd?.drawable(isFocused);
+
+  ViewError errorType(String text) {
+    if (text.isEmpty && !_initial) {
+      return ViewError.empty;
+    } else if (!isValid) {
+      final length = text.length;
+      if (maxCharacters > 0 && maxCharacters < length) {
+        return ViewError.maximum;
+      } else if ((minCharacters ?? 0) > 0 && (minCharacters ?? 0) > length) {
+        return ViewError.minimum;
+      } else {
+        return ViewError.invalid;
+      }
+    } else {
+      return ViewError.none;
+    }
+  }
+
+  String get counter {
+    var currentLength = text.length;
+    final maxLength = maxCharacters;
+    return maxLength > 0
+        ? '$currentLength / $maxLength'
+        : currentLength > 0
+            ? "$currentLength"
+            : "";
   }
 
   /// CUSTOMIZATIONS
@@ -984,7 +1183,8 @@ class EditTextController extends TextViewController {
   TextInputAction? textInputAction;
   UndoHistoryController? undoController;
 
-  bool get obscureText => _obscureText ?? inputType == TextInputType.visiblePassword;
+  bool get obscureText =>
+      _obscureText ?? inputType == TextInputType.visiblePassword;
 
   /// EDITING CALLBACK & LISTENERS
   EditTextPrivateCommandListener? onAppPrivateCommand;

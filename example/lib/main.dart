@@ -56,8 +56,9 @@ class Example extends AndrossyActivity<ExampleController> {
             primary: Icons.email_outlined,
             secondary: Icons.email,
           ),
+          paddingVertical: 40,
         ),
-        const MaterialEditText(
+        const EditText(
           inputType: TextInputType.visiblePassword,
           marginTop: 24,
           hint: "Password",
