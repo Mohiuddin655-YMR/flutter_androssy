@@ -41,8 +41,38 @@ class Example extends AndrossyActivity<ExampleController> {
       width: double.infinity,
       height: double.infinity,
       layoutGravity: LayoutGravity.center,
+      paddingHorizontal: 24,
       children: [
         TextView(text: instance.preferences.toString()),
+        const EditText(
+          inputType: TextInputType.emailAddress,
+          marginTop: 24,
+          hint: "Email",
+          drawableStartState: ValueState(
+            primary: Icons.email_outlined,
+            secondary: Icons.email,
+          ),
+          drawableEndState: ValueState(
+            primary: Icons.email_outlined,
+            secondary: Icons.email,
+          ),
+        ),
+        const MaterialEditText(
+          inputType: TextInputType.visiblePassword,
+          marginTop: 24,
+          hint: "Password",
+          textSize: 18,
+          drawableStartState: ValueState(
+            primary: Icons.lock_outline,
+            secondary: Icons.lock,
+          ),
+          drawableEndState: ValueState(
+            primary: Icons.lock_outline,
+            secondary: Icons.lock,
+          ),
+          floatingLabelVisible: true,
+          helperText: "Nice",
+        ),
         Button(
           marginTop: 24,
           borderRadius: 24,

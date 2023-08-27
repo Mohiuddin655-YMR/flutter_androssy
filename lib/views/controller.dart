@@ -1,445 +1,4 @@
-part of '../services.dart';
-
-class ValueState<T> {
-  final T? primary;
-  final T? secondary;
-  final T? ternary;
-  final T? disable;
-  final T? error;
-  final T? hover;
-
-  const ValueState({
-    this.primary,
-    this.secondary,
-    this.ternary,
-    this.disable,
-    this.error,
-    this.hover,
-  });
-
-  T? detect(
-    bool activated, {
-    bool enabled = true,
-    bool error = false,
-    bool hover = false,
-  }) {
-    if (enabled) {
-      if (hover) {
-        return this.hover ?? secondary ?? primary;
-      } else if (error) {
-        return this.error ?? ternary ?? primary;
-      } else if (activated) {
-        return secondary ?? primary;
-      } else {
-        return primary;
-      }
-    } else {
-      return disable ?? ternary ?? primary;
-    }
-  }
-
-  factory ValueState.activation({
-    T? activated,
-    T? unactivated,
-    T? disabled,
-  }) {
-    return ValueState<T>(
-      primary: unactivated,
-      secondary: activated,
-      disable: disabled,
-    );
-  }
-
-  T? activator(bool activated, [bool enabled = true]) {
-    if (enabled) {
-      return activated ? secondary : primary;
-    } else {
-      return disable ?? primary;
-    }
-  }
-
-  factory ValueState.selection({
-    T? selected,
-    T? unselected,
-    T? disabled,
-  }) {
-    return ValueState<T>(
-      primary: unselected,
-      secondary: selected,
-      disable: disabled,
-    );
-  }
-
-  T? selector(bool selected, [bool enabled = true]) {
-    if (enabled) {
-      return selected ? secondary : primary;
-    } else {
-      return disable ?? primary;
-    }
-  }
-
-  T? fromController(ViewController controller) {
-    return detect(
-      controller.activated,
-      enabled: controller.enabled,
-      error: controller.error,
-      hover: controller.hover,
-    );
-  }
-
-  T? fromType(ValueStateType state) {
-    switch (state) {
-      case ValueStateType.secondary:
-        return secondary ?? primary;
-      case ValueStateType.ternary:
-        return ternary ?? primary;
-      case ValueStateType.disabled:
-        return disable ?? primary;
-      case ValueStateType.error:
-        return error ?? primary;
-      case ValueStateType.hover:
-        return hover ?? primary;
-      default:
-        return primary;
-    }
-  }
-}
-
-enum ValueStateType {
-  primary,
-  secondary,
-  ternary,
-  disabled,
-  error,
-  hover,
-}
-
-enum ViewError {
-  none,
-  empty,
-  invalid,
-  alreadyFound,
-  maximum,
-  minimum,
-  unmodified,
-}
-
-extension ViewErrorExtension on ViewError {
-  bool get isEmpty => this == ViewError.empty;
-
-  bool get isInvalid => this == ViewError.invalid;
-
-  bool get isMaximum => this == ViewError.maximum;
-
-  bool get isMinimum => this == ViewError.minimum;
-
-  bool get isUnavailable => this == ViewError.alreadyFound;
-
-  bool get isUnmodified => this == ViewError.unmodified;
-}
-
-class ViewCornerRadius {
-  final double topLeft;
-  final double topRight;
-  final double bottomLeft;
-  final double bottomRight;
-
-  const ViewCornerRadius({
-    this.topLeft = 0,
-    this.topRight = 0,
-    this.bottomLeft = 0,
-    this.bottomRight = 0,
-  });
-
-  const ViewCornerRadius.all(double value)
-      : topLeft = value,
-        topRight = value,
-        bottomLeft = value,
-        bottomRight = value;
-
-  const ViewCornerRadius.topAll(double value)
-      : topLeft = value,
-        topRight = value,
-        bottomLeft = 0,
-        bottomRight = 0;
-
-  const ViewCornerRadius.bottomAll(double value)
-      : topLeft = 0,
-        topRight = 0,
-        bottomLeft = value,
-        bottomRight = value;
-
-  const ViewCornerRadius.leftAll(double value)
-      : topLeft = value,
-        topRight = 0,
-        bottomLeft = value,
-        bottomRight = 0;
-
-  const ViewCornerRadius.rightAll(double value)
-      : topLeft = 0,
-        topRight = value,
-        bottomLeft = 0,
-        bottomRight = value;
-
-  double get all {
-    var radius = topLeft;
-    if (radius < topRight) {
-      radius = topRight;
-    }
-    if (radius < bottomLeft) {
-      radius = bottomLeft;
-    }
-    if (radius < bottomRight) {
-      radius = bottomRight;
-    }
-    return radius;
-  }
-
-  double get average => (topLeft + topRight + bottomLeft + bottomRight) / 4;
-}
-
-class ViewPosition {
-  final double? top, bottom, left, right;
-
-  const ViewPosition({
-    this.top,
-    this.bottom,
-    this.left,
-    this.right,
-  });
-}
-
-enum ViewPositionType {
-  /// Left positions
-  left(ViewPosition(left: 0)),
-  leftTop(ViewPosition(left: 0, top: 0)),
-  leftBottom(ViewPosition(left: 0, bottom: 0)),
-  leftFlex(ViewPosition(left: 0, top: 0, bottom: 0)),
-
-  /// Right positions
-  right(ViewPosition(right: 0)),
-  rightTop(ViewPosition(right: 0, top: 0)),
-  rightBottom(ViewPosition(right: 0, bottom: 0)),
-  rightFlex(ViewPosition(right: 0, top: 0, bottom: 0)),
-
-  /// Top positions
-  top(ViewPosition(top: 0)),
-  topLeft(ViewPosition(top: 0, left: 0)),
-  topRight(ViewPosition(top: 0, right: 0)),
-  topFlex(ViewPosition(top: 0, left: 0, right: 0)),
-
-  /// Bottom positions
-  bottom(ViewPosition(bottom: 0)),
-  bottomLeft(ViewPosition(bottom: 0, left: 0)),
-  bottomRight(ViewPosition(bottom: 0, right: 0)),
-  bottomFlex(ViewPosition(bottom: 0, left: 0, right: 0)),
-
-  /// Center positions
-  center,
-  centerFlexX(ViewPosition(left: 0, right: 0)),
-  centerFlexY(ViewPosition(top: 0, bottom: 0)),
-  centerFill(ViewPosition(left: 0, right: 0, top: 0, bottom: 0));
-
-  final ViewPosition position;
-
-  const ViewPositionType([
-    this.position = const ViewPosition(),
-  ]);
-}
-
-extension ViewPositionExtension on ViewPositionType? {
-  ViewPositionType get use => this ?? ViewPositionType.center;
-
-  /// Left positions
-  bool get isLeft => use == ViewPositionType.left;
-
-  bool get isLeftTop => use == ViewPositionType.leftTop;
-
-  bool get isLeftBottom => use == ViewPositionType.leftBottom;
-
-  bool get isLeftFlex => use == ViewPositionType.leftFlex;
-
-  bool get isLeftMode {
-    return isLeft || isLeftTop || isLeftBottom || isLeftFlex;
-  }
-
-  /// Right positions
-  bool get isRight => use == ViewPositionType.right;
-
-  bool get isRightTop => use == ViewPositionType.rightTop;
-
-  bool get isRightBottom => use == ViewPositionType.rightBottom;
-
-  bool get isRightFlex => use == ViewPositionType.rightFlex;
-
-  bool get isRightMode {
-    return isRight || isRightTop || isRightBottom || isRightFlex;
-  }
-
-  bool get isXMode => isLeftMode || isRightMode;
-
-  /// Top positions
-  bool get isTop => use == ViewPositionType.top;
-
-  bool get isTopLeft => use == ViewPositionType.topLeft;
-
-  bool get isTopRight => use == ViewPositionType.topRight;
-
-  bool get isTopFlex => use == ViewPositionType.topFlex;
-
-  bool get isTopMode {
-    return isTop || isTopLeft || isTopRight || isTopFlex;
-  }
-
-  /// Bottom positions
-  bool get isBottom => use == ViewPositionType.bottom;
-
-  bool get isBottomLeft => use == ViewPositionType.bottomLeft;
-
-  bool get isBottomRight => use == ViewPositionType.bottomRight;
-
-  bool get isBottomFlex => use == ViewPositionType.bottomFlex;
-
-  bool get isBottomMode {
-    return isBottom || isBottomLeft || isBottomRight || isBottomFlex;
-  }
-
-  bool get isYMode => isTopMode || isBottomMode;
-
-  /// Center positions
-  bool get isCenter => use == ViewPositionType.center;
-
-  bool get isCenterFlexX => use == ViewPositionType.centerFlexX;
-
-  bool get isCenterFlexY => use == ViewPositionType.centerFlexY;
-
-  bool get isCenterFill => use == ViewPositionType.centerFill;
-
-  bool get isCenterMode {
-    return isCenter || isCenterFlexX || isCenterFlexY || isCenterFill;
-  }
-}
-
-class ViewRecognizer {
-  final BuildContext context;
-
-  const ViewRecognizer.of(this.context);
-
-  GestureRecognizer? onClick(OnViewClickListener? callback) {
-    if (callback != null) {
-      return TapGestureRecognizer()..onTap = () => callback(context);
-    } else {
-      return null;
-    }
-  }
-
-  GestureRecognizer? onDoubleClick(OnViewClickListener? callback) {
-    if (callback != null) {
-      return DoubleTapGestureRecognizer()
-        ..onDoubleTap = () => callback(context);
-    } else {
-      return null;
-    }
-  }
-
-  GestureRecognizer? onLongClick(OnViewClickListener? callback) {
-    if (callback != null) {
-      return LongPressGestureRecognizer()
-        ..onLongPress = () => callback(context);
-    } else {
-      return null;
-    }
-  }
-}
-
-extension ViewRecognizerExtension on BuildContext {
-  GestureRecognizer? onClick(OnViewClickListener? callback) {
-    return ViewRecognizer.of(this).onClick(callback);
-  }
-
-  GestureRecognizer? onDoubleClick(OnViewClickListener? callback) {
-    return ViewRecognizer.of(this).onDoubleClick(callback);
-  }
-
-  GestureRecognizer? onLongClick(OnViewClickListener? callback) {
-    return ViewRecognizer.of(this).onLongClick(callback);
-  }
-}
-
-class ViewRoots {
-  final bool scrollable;
-  final bool position, flex, ratio, observer, wrapper;
-  final bool view, constraints, margin, padding;
-  final bool decoration, shadow, shape, radius, border, background;
-
-  const ViewRoots({
-    this.scrollable = true,
-    this.position = true,
-    this.flex = true,
-    this.ratio = true,
-    this.observer = true,
-    this.view = true,
-    this.wrapper = true,
-    this.constraints = true,
-    this.margin = true,
-    this.padding = true,
-    this.decoration = true,
-    this.shadow = true,
-    this.shape = true,
-    this.radius = true,
-    this.border = true,
-    this.background = true,
-  });
-
-  ViewRoots modify({
-    bool? ripple,
-    bool? position,
-    bool? flex,
-    bool? ratio,
-    bool? observer,
-    bool? view,
-    bool? constraints,
-    bool? margin,
-    bool? padding,
-    bool? decoration,
-    bool? shadow,
-    bool? shape,
-    bool? radius,
-    bool? border,
-    bool? background,
-  }) {
-    return ViewRoots(
-      position: position ?? this.position,
-      flex: flex ?? this.flex,
-      ratio: ratio ?? this.ratio,
-      observer: observer ?? this.observer,
-      view: view ?? this.view,
-      constraints: constraints ?? this.constraints,
-      margin: margin ?? this.margin,
-      padding: padding ?? this.padding,
-      decoration: decoration ?? this.decoration,
-      shadow: shadow ?? this.shadow,
-      shape: shape ?? this.shape,
-      radius: radius ?? this.radius,
-      border: border ?? this.border,
-      background: background ?? this.background,
-    );
-  }
-}
-
-enum ViewScrollingType {
-  bouncing(physics: BouncingScrollPhysics()),
-  page(physics: PageScrollPhysics()),
-  none;
-
-  final ScrollPhysics? physics;
-
-  const ViewScrollingType({this.physics});
-}
-
-enum ViewShadowType { overlay, none }
-
-enum ViewShape { circular, rectangular, squire }
+part of '../widgets.dart';
 
 class ViewController {
   @mustCallSuper
@@ -1570,3 +1129,444 @@ class ViewController {
     _notify;
   }
 }
+
+class ValueState<T> {
+  final T? primary;
+  final T? secondary;
+  final T? ternary;
+  final T? disable;
+  final T? error;
+  final T? hover;
+
+  const ValueState({
+    this.primary,
+    this.secondary,
+    this.ternary,
+    this.disable,
+    this.error,
+    this.hover,
+  });
+
+  T? detect(
+    bool activated, {
+    bool enabled = true,
+    bool error = false,
+    bool hover = false,
+  }) {
+    if (enabled) {
+      if (hover) {
+        return this.hover ?? secondary ?? primary;
+      } else if (error) {
+        return this.error ?? ternary ?? primary;
+      } else if (activated) {
+        return secondary ?? primary;
+      } else {
+        return primary;
+      }
+    } else {
+      return disable ?? ternary ?? primary;
+    }
+  }
+
+  factory ValueState.activation({
+    T? activated,
+    T? unactivated,
+    T? disabled,
+  }) {
+    return ValueState<T>(
+      primary: unactivated,
+      secondary: activated,
+      disable: disabled,
+    );
+  }
+
+  T? activator(bool activated, [bool enabled = true]) {
+    if (enabled) {
+      return activated ? secondary : primary;
+    } else {
+      return disable ?? primary;
+    }
+  }
+
+  factory ValueState.selection({
+    T? selected,
+    T? unselected,
+    T? disabled,
+  }) {
+    return ValueState<T>(
+      primary: unselected,
+      secondary: selected,
+      disable: disabled,
+    );
+  }
+
+  T? selector(bool selected, [bool enabled = true]) {
+    if (enabled) {
+      return selected ? secondary : primary;
+    } else {
+      return disable ?? primary;
+    }
+  }
+
+  T? fromController(ViewController controller) {
+    return detect(
+      controller.activated,
+      enabled: controller.enabled,
+      error: controller.error,
+      hover: controller.hover,
+    );
+  }
+
+  T? fromType(ValueStateType state) {
+    switch (state) {
+      case ValueStateType.secondary:
+        return secondary ?? primary;
+      case ValueStateType.ternary:
+        return ternary ?? primary;
+      case ValueStateType.disabled:
+        return disable ?? primary;
+      case ValueStateType.error:
+        return error ?? primary;
+      case ValueStateType.hover:
+        return hover ?? primary;
+      default:
+        return primary;
+    }
+  }
+}
+
+enum ValueStateType {
+  primary,
+  secondary,
+  ternary,
+  disabled,
+  error,
+  hover,
+}
+
+enum ViewError {
+  none,
+  empty,
+  invalid,
+  alreadyFound,
+  maximum,
+  minimum,
+  unmodified,
+}
+
+extension ViewErrorExtension on ViewError {
+  bool get isEmpty => this == ViewError.empty;
+
+  bool get isInvalid => this == ViewError.invalid;
+
+  bool get isMaximum => this == ViewError.maximum;
+
+  bool get isMinimum => this == ViewError.minimum;
+
+  bool get isUnavailable => this == ViewError.alreadyFound;
+
+  bool get isUnmodified => this == ViewError.unmodified;
+}
+
+class ViewCornerRadius {
+  final double topLeft;
+  final double topRight;
+  final double bottomLeft;
+  final double bottomRight;
+
+  const ViewCornerRadius({
+    this.topLeft = 0,
+    this.topRight = 0,
+    this.bottomLeft = 0,
+    this.bottomRight = 0,
+  });
+
+  const ViewCornerRadius.all(double value)
+      : topLeft = value,
+        topRight = value,
+        bottomLeft = value,
+        bottomRight = value;
+
+  const ViewCornerRadius.topAll(double value)
+      : topLeft = value,
+        topRight = value,
+        bottomLeft = 0,
+        bottomRight = 0;
+
+  const ViewCornerRadius.bottomAll(double value)
+      : topLeft = 0,
+        topRight = 0,
+        bottomLeft = value,
+        bottomRight = value;
+
+  const ViewCornerRadius.leftAll(double value)
+      : topLeft = value,
+        topRight = 0,
+        bottomLeft = value,
+        bottomRight = 0;
+
+  const ViewCornerRadius.rightAll(double value)
+      : topLeft = 0,
+        topRight = value,
+        bottomLeft = 0,
+        bottomRight = value;
+
+  double get all {
+    var radius = topLeft;
+    if (radius < topRight) {
+      radius = topRight;
+    }
+    if (radius < bottomLeft) {
+      radius = bottomLeft;
+    }
+    if (radius < bottomRight) {
+      radius = bottomRight;
+    }
+    return radius;
+  }
+
+  double get average => (topLeft + topRight + bottomLeft + bottomRight) / 4;
+}
+
+class ViewPosition {
+  final double? top, bottom, left, right;
+
+  const ViewPosition({
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+  });
+}
+
+enum ViewPositionType {
+  /// Left positions
+  left(ViewPosition(left: 0)),
+  leftTop(ViewPosition(left: 0, top: 0)),
+  leftBottom(ViewPosition(left: 0, bottom: 0)),
+  leftFlex(ViewPosition(left: 0, top: 0, bottom: 0)),
+
+  /// Right positions
+  right(ViewPosition(right: 0)),
+  rightTop(ViewPosition(right: 0, top: 0)),
+  rightBottom(ViewPosition(right: 0, bottom: 0)),
+  rightFlex(ViewPosition(right: 0, top: 0, bottom: 0)),
+
+  /// Top positions
+  top(ViewPosition(top: 0)),
+  topLeft(ViewPosition(top: 0, left: 0)),
+  topRight(ViewPosition(top: 0, right: 0)),
+  topFlex(ViewPosition(top: 0, left: 0, right: 0)),
+
+  /// Bottom positions
+  bottom(ViewPosition(bottom: 0)),
+  bottomLeft(ViewPosition(bottom: 0, left: 0)),
+  bottomRight(ViewPosition(bottom: 0, right: 0)),
+  bottomFlex(ViewPosition(bottom: 0, left: 0, right: 0)),
+
+  /// Center positions
+  center,
+  centerFlexX(ViewPosition(left: 0, right: 0)),
+  centerFlexY(ViewPosition(top: 0, bottom: 0)),
+  centerFill(ViewPosition(left: 0, right: 0, top: 0, bottom: 0));
+
+  final ViewPosition position;
+
+  const ViewPositionType([
+    this.position = const ViewPosition(),
+  ]);
+}
+
+extension ViewPositionExtension on ViewPositionType? {
+  ViewPositionType get use => this ?? ViewPositionType.center;
+
+  /// Left positions
+  bool get isLeft => use == ViewPositionType.left;
+
+  bool get isLeftTop => use == ViewPositionType.leftTop;
+
+  bool get isLeftBottom => use == ViewPositionType.leftBottom;
+
+  bool get isLeftFlex => use == ViewPositionType.leftFlex;
+
+  bool get isLeftMode {
+    return isLeft || isLeftTop || isLeftBottom || isLeftFlex;
+  }
+
+  /// Right positions
+  bool get isRight => use == ViewPositionType.right;
+
+  bool get isRightTop => use == ViewPositionType.rightTop;
+
+  bool get isRightBottom => use == ViewPositionType.rightBottom;
+
+  bool get isRightFlex => use == ViewPositionType.rightFlex;
+
+  bool get isRightMode {
+    return isRight || isRightTop || isRightBottom || isRightFlex;
+  }
+
+  bool get isXMode => isLeftMode || isRightMode;
+
+  /// Top positions
+  bool get isTop => use == ViewPositionType.top;
+
+  bool get isTopLeft => use == ViewPositionType.topLeft;
+
+  bool get isTopRight => use == ViewPositionType.topRight;
+
+  bool get isTopFlex => use == ViewPositionType.topFlex;
+
+  bool get isTopMode {
+    return isTop || isTopLeft || isTopRight || isTopFlex;
+  }
+
+  /// Bottom positions
+  bool get isBottom => use == ViewPositionType.bottom;
+
+  bool get isBottomLeft => use == ViewPositionType.bottomLeft;
+
+  bool get isBottomRight => use == ViewPositionType.bottomRight;
+
+  bool get isBottomFlex => use == ViewPositionType.bottomFlex;
+
+  bool get isBottomMode {
+    return isBottom || isBottomLeft || isBottomRight || isBottomFlex;
+  }
+
+  bool get isYMode => isTopMode || isBottomMode;
+
+  /// Center positions
+  bool get isCenter => use == ViewPositionType.center;
+
+  bool get isCenterFlexX => use == ViewPositionType.centerFlexX;
+
+  bool get isCenterFlexY => use == ViewPositionType.centerFlexY;
+
+  bool get isCenterFill => use == ViewPositionType.centerFill;
+
+  bool get isCenterMode {
+    return isCenter || isCenterFlexX || isCenterFlexY || isCenterFill;
+  }
+}
+
+class ViewRecognizer {
+  final BuildContext context;
+
+  const ViewRecognizer.of(this.context);
+
+  GestureRecognizer? onClick(OnViewClickListener? callback) {
+    if (callback != null) {
+      return TapGestureRecognizer()..onTap = () => callback(context);
+    } else {
+      return null;
+    }
+  }
+
+  GestureRecognizer? onDoubleClick(OnViewClickListener? callback) {
+    if (callback != null) {
+      return DoubleTapGestureRecognizer()
+        ..onDoubleTap = () => callback(context);
+    } else {
+      return null;
+    }
+  }
+
+  GestureRecognizer? onLongClick(OnViewClickListener? callback) {
+    if (callback != null) {
+      return LongPressGestureRecognizer()
+        ..onLongPress = () => callback(context);
+    } else {
+      return null;
+    }
+  }
+}
+
+extension ViewRecognizerExtension on BuildContext {
+  GestureRecognizer? onClick(OnViewClickListener? callback) {
+    return ViewRecognizer.of(this).onClick(callback);
+  }
+
+  GestureRecognizer? onDoubleClick(OnViewClickListener? callback) {
+    return ViewRecognizer.of(this).onDoubleClick(callback);
+  }
+
+  GestureRecognizer? onLongClick(OnViewClickListener? callback) {
+    return ViewRecognizer.of(this).onLongClick(callback);
+  }
+}
+
+class ViewRoots {
+  final bool scrollable;
+  final bool position, flex, ratio, observer, wrapper;
+  final bool view, constraints, margin, padding;
+  final bool decoration, shadow, shape, radius, border, background;
+
+  const ViewRoots({
+    this.scrollable = true,
+    this.position = true,
+    this.flex = true,
+    this.ratio = true,
+    this.observer = true,
+    this.view = true,
+    this.wrapper = true,
+    this.constraints = true,
+    this.margin = true,
+    this.padding = true,
+    this.decoration = true,
+    this.shadow = true,
+    this.shape = true,
+    this.radius = true,
+    this.border = true,
+    this.background = true,
+  });
+
+  ViewRoots modify({
+    bool? ripple,
+    bool? position,
+    bool? flex,
+    bool? ratio,
+    bool? observer,
+    bool? view,
+    bool? constraints,
+    bool? margin,
+    bool? padding,
+    bool? decoration,
+    bool? shadow,
+    bool? shape,
+    bool? radius,
+    bool? border,
+    bool? background,
+  }) {
+    return ViewRoots(
+      position: position ?? this.position,
+      flex: flex ?? this.flex,
+      ratio: ratio ?? this.ratio,
+      observer: observer ?? this.observer,
+      view: view ?? this.view,
+      constraints: constraints ?? this.constraints,
+      margin: margin ?? this.margin,
+      padding: padding ?? this.padding,
+      decoration: decoration ?? this.decoration,
+      shadow: shadow ?? this.shadow,
+      shape: shape ?? this.shape,
+      radius: radius ?? this.radius,
+      border: border ?? this.border,
+      background: background ?? this.background,
+    );
+  }
+}
+
+enum ViewScrollingType {
+  bouncing(physics: BouncingScrollPhysics()),
+  page(physics: PageScrollPhysics()),
+  none;
+
+  final ScrollPhysics? physics;
+
+  const ViewScrollingType({this.physics});
+}
+
+enum ViewShadowType { overlay, none }
+
+enum ViewShape { circular, rectangular, squire }

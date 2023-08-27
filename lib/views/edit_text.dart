@@ -67,15 +67,11 @@ class EditText<T extends EditTextController> extends TextView<T> {
 
   /// EDITING PROPERTIES
   final bool autocorrect;
-  final Color? autocorrectionTextRectColor;
-  final AutofillClient? autofillClient;
   final List<String> autofillHints;
   final bool autoFocus;
-  final Color? backgroundCursorColor;
   final Clip clipBehaviorText;
   final Color? cursorColor;
   final double? cursorHeight;
-  final Offset? cursorOffset;
   final bool cursorOpacityAnimates;
   final Radius? cursorRadius;
   final double cursorWidth;
@@ -86,20 +82,16 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final bool? enableInteractiveSelection;
   final bool enableSuggestions;
   final bool expands;
-  final bool forceLine;
   final TextInputType? inputType;
   final Brightness keyboardAppearance;
   final TextMagnifierConfiguration magnifierConfiguration;
   final int? minLines;
   final MouseCursor? mouseCursor;
-  final bool obscureText;
+  final bool? obscureText;
   final String obscuringCharacter;
-  final bool paintCursorAboveText;
   final bool readOnly;
-  final bool rendererIgnoresPointer;
   final String? restorationId;
   final bool scribbleEnabled;
-  final ScrollBehavior? scrollBehaviorText;
   final ScrollController? scrollControllerText;
   final EdgeInsets scrollPaddingText;
   final ScrollPhysics? scrollPhysicsText;
@@ -107,7 +99,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final BoxHeightStyle selectionHeightStyle;
   final BoxWidthStyle selectionWidthStyle;
   final bool? showCursor;
-  final bool showSelectionHandles;
   final SmartDashesType? smartDashesType;
   final SmartQuotesType? smartQuotesType;
   final SpellCheckConfiguration? spellCheckConfiguration;
@@ -119,8 +110,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final EditTextPrivateCommandListener? onAppPrivateCommand;
   final EditTextCheckingListener? onChecked;
   final EditTextVoidListener? onEditingComplete;
-  final EditTextSelectionChangeListener? onSelectionChanged;
-  final EditTextVoidListener? onSelectionHandleTapped;
   final EditTextSubmitListener? onSubmitted;
   final EditTextTapOutsideListener? onTapOutside;
 
@@ -277,15 +266,11 @@ class EditText<T extends EditTextController> extends TextView<T> {
 
     /// EDITING PROPERTIES
     this.autocorrect = true,
-    this.autocorrectionTextRectColor,
-    this.autofillClient,
     this.autofillHints = const [],
     this.autoFocus = false,
-    this.backgroundCursorColor,
     this.clipBehaviorText = Clip.hardEdge,
     this.cursorColor,
     this.cursorHeight,
-    this.cursorOffset,
     this.cursorOpacityAnimates = false,
     this.cursorRadius,
     this.cursorWidth = 2,
@@ -296,20 +281,16 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.enableInteractiveSelection,
     this.enableSuggestions = true,
     this.expands = false,
-    this.forceLine = true,
     this.inputType,
     this.keyboardAppearance = Brightness.light,
     this.magnifierConfiguration = TextMagnifierConfiguration.disabled,
     this.minLines,
     this.mouseCursor,
-    this.obscureText = false,
+    this.obscureText,
     this.obscuringCharacter = '•',
-    this.paintCursorAboveText = false,
     this.readOnly = false,
-    this.rendererIgnoresPointer = false,
     this.restorationId,
     this.scribbleEnabled = true,
-    this.scrollBehaviorText,
     this.scrollControllerText,
     this.scrollPaddingText = const EdgeInsets.all(20),
     this.scrollPhysicsText,
@@ -317,7 +298,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.selectionHeightStyle = BoxHeightStyle.tight,
     this.selectionWidthStyle = BoxWidthStyle.tight,
     this.showCursor,
-    this.showSelectionHandles = false,
     this.smartDashesType,
     this.smartQuotesType,
     this.spellCheckConfiguration,
@@ -329,8 +309,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.onAppPrivateCommand,
     this.onChecked,
     this.onEditingComplete,
-    this.onSelectionChanged,
-    this.onSelectionHandleTapped,
     this.onSubmitted,
     this.onTapOutside,
   });
@@ -346,37 +324,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
 
   @override
   void onDispose(T controller) => controller._dispose();
-
-  @override
-  Widget build(BuildContext context, T controller, Widget parent) {
-    final primaryColor = controller.primary ?? context.primaryColor;
-    const underlineColor = Color(0xffe1e1e1);
-    return GestureDetector(
-      onTap: () => controller.showKeyboard(context),
-      child: controller.isUnderlineHide
-          ? parent
-          : Column(
-              children: [
-                parent,
-                UnderlineView(
-                  visible: controller.background == null &&
-                      controller.borderAll <= 0,
-                  focused: controller.isFocused,
-                  enabled: controller.enabled,
-                  error: controller.error,
-                  height: 1,
-                  primary: primaryColor,
-                  colorState: ValueState(
-                    primary: primaryColor,
-                    secondary: underlineColor,
-                    error: Colors.red,
-                    disable: underlineColor,
-                  ),
-                ),
-              ],
-            ),
-    );
-  }
 
   static Widget _defaultContextMenuBuilder(
     BuildContext context,
@@ -425,12 +372,44 @@ class EditText<T extends EditTextController> extends TextView<T> {
   }
 
   @override
+  Widget build(BuildContext context, T controller, Widget parent) {
+    final primaryColor = controller.primary ?? context.primaryColor;
+    const underlineColor = Color(0xffe1e1e1);
+    return GestureDetector(
+      onTap: () => controller.showKeyboard(context),
+      child: controller.isUnderlineHide
+          ? parent
+          : Column(
+        children: [
+          parent,
+          UnderlineView(
+            visible: controller.background == null &&
+                controller.borderAll <= 0,
+            focused: controller.isFocused,
+            enabled: controller.enabled,
+            error: controller.error,
+            height: 1,
+            primary: primaryColor,
+            colorState: ValueState(
+              primary: primaryColor,
+              secondary: underlineColor,
+              error: Colors.red,
+              disable: underlineColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
   Widget? attach(BuildContext context, T controller) {
     final primaryColor = controller.primary ?? context.primaryColor;
     const secondaryColor = Color(0xffbbbbbb);
     var style = TextStyle(
       color: controller.textColor ?? Colors.black,
       fontSize: controller.textSize ?? 18,
+      height: 1.2,
     );
     var colors = ValueState(
       primary: secondaryColor,
@@ -462,99 +441,76 @@ class EditText<T extends EditTextController> extends TextView<T> {
           },
         ),
         Expanded(
-          child: Stack(
-            alignment: controller.gravity ?? Alignment.centerLeft,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 2),
-                width: double.infinity,
-                child: Text(
-                  controller.hint,
-                  textAlign: controller.textAlign ?? TextAlign.start,
-                  style: style.copyWith(
-                    fontFamily: "",
-                    color: controller.text.isNotEmpty
-                        ? Colors.transparent
-                        : controller.hintColor ?? secondaryColor,
-                  ),
-                ),
+          child: TextField(
+            canRequestFocus: true,
+            enabled: controller.enabled,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+              isDense: true,
+              isCollapsed: true,
+              hintText: controller.hint,
+              hintStyle: style.copyWith(
+                fontFamily: "",
+                color: controller.text.isNotEmpty
+                    ? Colors.transparent
+                    : controller.hintColor ?? secondaryColor,
               ),
-              EditableText(
-                autocorrect: controller.autocorrect,
-                autocorrectionTextRectColor:
-                    controller.autocorrectionTextRectColor,
-                autofillClient: controller.autofillClient,
-                autofillHints: controller.autofillHints,
-                autofocus: controller.autoFocus,
-                backgroundCursorColor:
-                    controller.backgroundCursorColor ?? primaryColor,
-                clipBehavior: controller.clipBehaviorText,
-                controller: controller._editable,
-                cursorColor: controller.cursorColor ?? primaryColor,
-                cursorHeight: controller.cursorHeight,
-                cursorOffset: controller.cursorOffset,
-                cursorOpacityAnimates: controller.cursorOpacityAnimates,
-                cursorRadius: controller.cursorRadius,
-                cursorWidth: controller.cursorWidth,
-                contentInsertionConfiguration:
-                    controller.contentInsertionConfiguration,
-                contextMenuBuilder: controller.contextMenuBuilder,
-                dragStartBehavior: controller.dragStartBehavior,
-                enableIMEPersonalizedLearning:
-                    controller.enableIMEPersonalizedLearning,
-                enableInteractiveSelection:
-                    controller.enableInteractiveSelection,
-                enableSuggestions: controller.enableSuggestions,
-                expands: controller.expands,
-                focusNode: controller._node,
-                forceLine: controller.forceLine,
-                inputFormatters: controller.formatter,
-                keyboardAppearance: controller.keyboardAppearance,
-                keyboardType: controller.inputType,
-                locale: controller.locale,
-                maxLines: controller.maxLines,
-                magnifierConfiguration: controller.magnifierConfiguration,
-                minLines: controller.minLines,
-                mouseCursor: controller.mouseCursor,
-                obscureText: controller.obscureText,
-                obscuringCharacter: controller.obscuringCharacter,
-                onAppPrivateCommand: controller.onAppPrivateCommand,
-                onChanged: controller._handleEditingChange,
-                onEditingComplete: controller.onEditingComplete,
-                onSelectionChanged: controller.onSelectionChanged,
-                onSelectionHandleTapped: controller.onSelectionHandleTapped,
-                onSubmitted: controller.onSubmitted,
-                onTapOutside: controller.onTapOutside,
-                paintCursorAboveText: controller.paintCursorAboveText,
-                readOnly: controller.isReadMode,
-                rendererIgnoresPointer: controller.rendererIgnoresPointer,
-                restorationId: controller.restorationId,
-                scribbleEnabled: controller.scribbleEnabled,
-                scrollBehavior: controller.scrollBehaviorText,
-                scrollController: controller.scrollControllerText,
-                scrollPadding: controller.scrollPaddingText,
-                scrollPhysics: controller.scrollPhysicsText,
-                selectionColor: controller.selectionColor,
-                selectionControls: controller.selectionControls,
-                selectionHeightStyle: controller.selectionHeightStyle,
-                selectionWidthStyle: controller.selectionWidthStyle,
-                showCursor: controller.showCursor,
-                showSelectionHandles: controller.showSelectionHandles,
-                smartDashesType: controller.smartDashesType,
-                smartQuotesType: controller.smartQuotesType,
-                spellCheckConfiguration: controller.spellCheckConfiguration,
-                strutStyle: controller.strutStyle,
-                style: style,
-                textAlign: controller.textAlign ?? TextAlign.start,
-                textCapitalization: controller.textCapitalization,
-                textDirection: controller.textDirection,
-                textInputAction: controller.textInputAction,
-                textHeightBehavior: controller.textHeightBehavior,
-                textWidthBasis: controller.textWidthBasis,
-                textScaleFactor: controller.textScaleFactor,
-                undoController: controller.undoController,
-              ),
-            ],
+            ),
+            autocorrect: controller.autocorrect,
+            autofillHints: controller.autofillHints,
+            autofocus: controller.autoFocus,
+            clipBehavior: controller.clipBehaviorText,
+            controller: controller._editable,
+            cursorColor: controller.cursorColor ?? primaryColor,
+            cursorHeight: controller.cursorHeight,
+            cursorOpacityAnimates: controller.cursorOpacityAnimates,
+            cursorRadius: controller.cursorRadius,
+            cursorWidth: controller.cursorWidth,
+            contentInsertionConfiguration:
+                controller.contentInsertionConfiguration,
+            contextMenuBuilder: controller.contextMenuBuilder,
+            dragStartBehavior: controller.dragStartBehavior,
+            enableIMEPersonalizedLearning:
+                controller.enableIMEPersonalizedLearning,
+            enableInteractiveSelection: controller.enableInteractiveSelection,
+            enableSuggestions: controller.enableSuggestions,
+            expands: controller.expands,
+            focusNode: controller._node,
+            inputFormatters: controller.formatter,
+            keyboardAppearance: controller.keyboardAppearance,
+            keyboardType: controller.inputType,
+            maxLines: controller.maxLines,
+            magnifierConfiguration: controller.magnifierConfiguration,
+            minLines: controller.minLines,
+            mouseCursor: controller.mouseCursor,
+            obscureText: controller.obscureText,
+            obscuringCharacter: controller.obscuringCharacter,
+            onAppPrivateCommand: controller.onAppPrivateCommand,
+            onChanged: controller._handleEditingChange,
+            onEditingComplete: controller.onEditingComplete,
+            onSubmitted: controller.onSubmitted,
+            onTapOutside: controller.onTapOutside,
+            readOnly: controller.isReadMode,
+            restorationId: controller.restorationId,
+            scribbleEnabled: controller.scribbleEnabled,
+            scrollController: controller.scrollControllerText,
+            scrollPadding: controller.scrollPaddingText,
+            scrollPhysics: controller.scrollPhysicsText,
+            selectionControls: controller.selectionControls,
+            selectionHeightStyle: controller.selectionHeightStyle,
+            selectionWidthStyle: controller.selectionWidthStyle,
+            showCursor: controller.showCursor,
+            smartDashesType: controller.smartDashesType,
+            smartQuotesType: controller.smartQuotesType,
+            spellCheckConfiguration: controller.spellCheckConfiguration,
+            strutStyle: controller.strutStyle,
+            style: style,
+            textAlign: controller.textAlign ?? TextAlign.start,
+            textCapitalization: controller.textCapitalization,
+            textDirection: controller.textDirection,
+            textInputAction: controller.textInputAction,
+            undoController: controller.undoController,
           ),
         ),
         Builder(
@@ -643,15 +599,11 @@ class EditTextController extends TextViewController {
 
     /// EDITING PROPERTIES
     autocorrect = view.autocorrect;
-    autocorrectionTextRectColor = view.autocorrectionTextRectColor;
-    autofillClient = view.autofillClient;
     autofillHints = view.autofillHints;
     autoFocus = view.autoFocus;
-    backgroundCursorColor = view.backgroundCursorColor;
     clipBehaviorText = view.clipBehaviorText;
     cursorColor = view.cursorColor;
     cursorHeight = view.cursorHeight;
-    cursorOffset = view.cursorOffset;
     cursorOpacityAnimates = view.cursorOpacityAnimates;
     cursorRadius = view.cursorRadius;
     cursorWidth = view.cursorWidth;
@@ -662,20 +614,16 @@ class EditTextController extends TextViewController {
     enableInteractiveSelection = view.enableInteractiveSelection;
     enableSuggestions = view.enableSuggestions;
     expands = view.expands;
-    forceLine = view.forceLine;
     keyboardAppearance = view.keyboardAppearance;
     inputType = view.inputType;
     magnifierConfiguration = view.magnifierConfiguration;
     minLines = view.minLines;
     mouseCursor = view.mouseCursor;
-    obscureText = view.obscureText;
+    _obscureText = view.obscureText;
     obscuringCharacter = view.obscuringCharacter;
-    paintCursorAboveText = view.paintCursorAboveText;
     readOnly = view.readOnly;
-    rendererIgnoresPointer = view.rendererIgnoresPointer;
     restorationId = view.restorationId;
     scribbleEnabled = view.scribbleEnabled;
-    scrollBehaviorText = view.scrollBehaviorText;
     scrollControllerText = view.scrollControllerText;
     scrollPaddingText = view.scrollPaddingText;
     scrollPhysicsText = view.scrollPhysicsText;
@@ -683,7 +631,6 @@ class EditTextController extends TextViewController {
     selectionHeightStyle = view.selectionHeightStyle;
     selectionWidthStyle = view.selectionWidthStyle;
     showCursor = view.showCursor;
-    showSelectionHandles = view.showSelectionHandles;
     smartDashesType = view.smartDashesType;
     smartQuotesType = view.smartQuotesType;
     spellCheckConfiguration = view.spellCheckConfiguration;
@@ -696,8 +643,6 @@ class EditTextController extends TextViewController {
     onAppPrivateCommand = view.onAppPrivateCommand;
     onChecked = view.onChecked;
     onEditingComplete = view.onEditingComplete;
-    onSelectionChanged = view.onSelectionChanged;
-    onSelectionHandleTapped = view.onSelectionHandleTapped;
     onSubmitted = view.onSubmitted;
     onTapOutside = view.onTapOutside;
 
@@ -751,15 +696,7 @@ class EditTextController extends TextViewController {
   }
 
   void showKeyboard(BuildContext context) async {
-    var keyboard = WidgetsBinding.instance.window.viewInsets.bottom;
-    if (_node.hasFocus && keyboard <= 0) {
-      _node.unfocus();
-      await Future.delayed(const Duration(milliseconds: 100)).then((value) {
-        FocusScope.of(context).requestFocus(_node);
-      });
-    } else {
-      FocusScope.of(context).requestFocus(_node);
-    }
+    FocusScope.of(context).requestFocus(_node);
   }
 
   void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
@@ -1007,15 +944,11 @@ class EditTextController extends TextViewController {
 
   /// EDITING PROPERTIES
   bool autocorrect = true;
-  Color? autocorrectionTextRectColor;
-  AutofillClient? autofillClient;
   List<String> autofillHints = [];
   bool autoFocus = false;
-  Color? backgroundCursorColor;
   Clip clipBehaviorText = Clip.hardEdge;
   Color? cursorColor;
   double? cursorHeight;
-  Offset? cursorOffset;
   bool cursorOpacityAnimates = false;
   Radius? cursorRadius;
   double cursorWidth = 2.0;
@@ -1026,21 +959,17 @@ class EditTextController extends TextViewController {
   bool? enableInteractiveSelection;
   bool enableSuggestions = true;
   bool expands = false;
-  bool forceLine = true;
   Brightness keyboardAppearance = Brightness.light;
   TextInputType? inputType;
   TextMagnifierConfiguration magnifierConfiguration =
       TextMagnifierConfiguration.disabled;
   int? minLines;
   MouseCursor? mouseCursor;
-  bool obscureText = false;
+  bool? _obscureText;
   String obscuringCharacter = '•';
-  bool paintCursorAboveText = false;
   bool readOnly = false;
-  bool rendererIgnoresPointer = false;
   String? restorationId;
   bool scribbleEnabled = true;
-  ScrollBehavior? scrollBehaviorText;
   ScrollController? scrollControllerText;
   EdgeInsets scrollPaddingText = const EdgeInsets.all(20);
   ScrollPhysics? scrollPhysicsText;
@@ -1048,7 +977,6 @@ class EditTextController extends TextViewController {
   BoxHeightStyle selectionHeightStyle = BoxHeightStyle.tight;
   BoxWidthStyle selectionWidthStyle = BoxWidthStyle.tight;
   bool? showCursor;
-  bool showSelectionHandles = false;
   SmartDashesType? smartDashesType;
   SmartQuotesType? smartQuotesType;
   SpellCheckConfiguration? spellCheckConfiguration;
@@ -1056,12 +984,12 @@ class EditTextController extends TextViewController {
   TextInputAction? textInputAction;
   UndoHistoryController? undoController;
 
+  bool get obscureText => _obscureText ?? inputType == TextInputType.visiblePassword;
+
   /// EDITING CALLBACK & LISTENERS
   EditTextPrivateCommandListener? onAppPrivateCommand;
   EditTextCheckingListener? onChecked;
   EditTextVoidListener? onEditingComplete;
-  EditTextSelectionChangeListener? onSelectionChanged;
-  EditTextVoidListener? onSelectionHandleTapped;
   EditTextSubmitListener? onSubmitted;
   EditTextTapOutsideListener? onTapOutside;
 }

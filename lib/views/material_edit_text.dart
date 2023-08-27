@@ -1,43 +1,69 @@
 part of '../widgets.dart';
 
-class MaterialEditText extends YMRView<MaterialEditTextController> {
-  final String? id;
-  final bool autoFocus;
-  final Color? primary;
-  final String? text;
-  final double textSize;
-  final Color? textColor;
-  final String hint;
-  final Color? hintColor;
+class MaterialEditText extends EditText<MaterialEditTextController> {
+  /// HELPER TEXT PROPERTIES
   final String helperText;
   final Color? helperTextColor;
+
+  /// FLOATING TEXT PROPERTIES
   final Color? floatingLabelColor;
   final double floatingLabelSize;
   final bool floatingLabelVisible;
-  final TextAlign textAlign;
+
+  /// ERROR TEXT PROPERTIES
   final bool errorVisible;
   final Color? errorColor;
-  final bool counterVisible;
-  final String? digits;
-  final MaterialIconData? drawableStart;
-  final MaterialIconData? drawableEnd;
-  final double drawablePadding;
-  final ValueState<Color>? drawableTint;
-  final TextInputType inputType;
-  final int maxCharacters;
-  final int minCharacters;
-  final bool obscureText;
 
-  final Function(String tag, bool value)? onChecked;
+  /// COUNTER TEXT PROPERTIES
+  final bool counterVisible;
+
+  /// INDICATOR PROPERTIES
   final Future<bool> Function(String)? onExecute;
 
   const MaterialEditText({
+    /// SUPER PROPERTIES
     super.key,
+    super.absorbMode,
+    super.activated,
     super.animation,
     super.animationType,
+    super.background,
+    super.backgroundState,
+    super.backgroundBlendMode,
+    super.backgroundGradient,
+    super.backgroundGradientState,
+    super.backgroundImage,
+    super.backgroundImageState,
+    super.border,
+    super.borderHorizontal,
+    super.borderVertical,
+    super.borderTop,
+    super.borderBottom,
+    super.borderStart,
+    super.borderEnd,
+    super.borderColor,
+    super.borderGradient,
+    super.borderRadius,
+    super.borderRadiusBL,
+    super.borderRadiusBR,
+    super.borderRadiusTL,
+    super.borderRadiusTR,
+    super.clipBehavior,
     super.controller,
+    super.dimensionRatio,
+    super.elevation,
     super.enabled,
+    super.expandable,
+    super.foreground,
+    super.foregroundBlendMode,
+    super.foregroundGradient,
+    super.foregroundImage,
     super.flex,
+    super.gravity,
+    super.height,
+    super.heightMax,
+    super.heightMin,
+    super.hoverColor,
     super.margin,
     super.marginHorizontal,
     super.marginVertical,
@@ -45,46 +71,167 @@ class MaterialEditText extends YMRView<MaterialEditTextController> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.orientation,
+    super.padding,
+    super.paddingHorizontal,
+    super.paddingVertical,
+    super.paddingTop,
+    super.paddingBottom,
+    super.paddingStart,
+    super.paddingEnd,
     super.position,
     super.positionType,
+    super.pressedColor,
+    super.rippleColor,
+    super.scrollable,
+    super.scrollController,
+    super.scrollingType,
+    super.shadow,
+    super.shadowBlurRadius,
+    super.shadowBlurStyle,
+    super.shadowColor,
+    super.shadowType,
+    super.shadowSpreadRadius,
+    super.shadowHorizontal,
+    super.shadowVertical,
+    super.shadowStart,
+    super.shadowEnd,
+    super.shadowTop,
+    super.shadowBottom,
+    super.shape,
     super.transform,
     super.transformGravity,
     super.width,
     super.widthMax,
     super.widthMin,
     super.visibility,
+    super.maxCharacters,
+    super.maxLines,
+    super.letterSpacing,
+    super.lineSpacingExtra,
+    super.locale,
+    super.wordSpacing,
+    super.textFontFamily,
+    super.textFontStyle,
+    super.textFontWeight,
+    super.selectionColor,
+    super.strutStyle,
+    super.text,
+    super.textAlign,
+    super.textAllCaps,
+    super.textColor,
+    super.textHeightBehavior,
+    super.textOverflow,
+    super.textScaleFactor,
+    super.textSize,
+    super.textStyle,
+    super.textWidthBasis,
     super.onChange,
     super.onError,
     super.onValid,
     super.onValidator,
-    required this.hint,
-    this.id,
-    this.autoFocus = false,
-    this.hintColor,
+
+    /// SUPER BASE PROPERTIES
+    super.id,
+    super.digits = "",
+    super.hint = "",
+    super.hintColor,
+    super.primary,
+    super.minCharacters,
+
+    /// SUPER DRAWABLE PROPERTIES
+    super.drawableStart,
+    super.drawableStartState,
+    super.drawableStartBuilder,
+    super.drawableStartSize,
+    super.drawableStartSizeState,
+    super.drawableStartPadding,
+    super.drawableStartPaddingState,
+    super.drawableStartTint,
+    super.drawableStartTintState,
+    super.drawableStartVisible = true,
+    super.drawableEnd,
+    super.drawableEndState,
+    super.drawableEndBuilder,
+    super.drawableEndSize,
+    super.drawableEndSizeState,
+    super.drawableEndPadding,
+    super.drawableEndPaddingState,
+    super.drawableEndTint,
+    super.drawableEndTintState,
+    super.drawableEndVisible = true,
+
+    /// SUPER INDICATOR PROPERTIES
+    super.indicator,
+    super.indicatorSize = 24,
+    super.indicatorStrokeColor,
+    super.indicatorStrokeColorState,
+    super.indicatorStroke = 2,
+    super.indicatorStrokeBackground,
+    super.indicatorStrokeBackgroundState,
+    super.indicatorVisible = false,
+
+    /// SUPER EDITING PROPERTIES
+    super.autocorrect = true,
+    super.autofillHints = const [],
+    super.autoFocus = false,
+    super.clipBehaviorText = Clip.hardEdge,
+    super.cursorColor,
+    super.cursorHeight,
+    super.cursorOpacityAnimates = false,
+    super.cursorRadius,
+    super.cursorWidth = 2,
+    super.contentInsertionConfiguration,
+    super.dragStartBehavior = DragStartBehavior.start,
+    super.enableIMEPersonalizedLearning = true,
+    super.enableInteractiveSelection,
+    super.enableSuggestions = true,
+    super.expands = false,
+    super.inputType,
+    super.keyboardAppearance = Brightness.light,
+    super.magnifierConfiguration = TextMagnifierConfiguration.disabled,
+    super.minLines,
+    super.mouseCursor,
+    super.obscureText,
+    super.obscuringCharacter = '•',
+    super.readOnly = false,
+    super.restorationId,
+    super.scribbleEnabled = true,
+    super.scrollControllerText,
+    super.scrollPaddingText = const EdgeInsets.all(20),
+    super.scrollPhysicsText,
+    super.selectionControls,
+    super.selectionHeightStyle = BoxHeightStyle.tight,
+    super.selectionWidthStyle = BoxWidthStyle.tight,
+    super.showCursor,
+    super.smartDashesType,
+    super.smartQuotesType,
+    super.spellCheckConfiguration,
+    super.textCapitalization = TextCapitalization.none,
+    super.textInputAction,
+    super.undoController,
+
+    /// SUPER CALLBACK AND LISTENING PROPERTIES
+    super.onAppPrivateCommand,
+    super.onChecked,
+    super.onEditingComplete,
+    super.onSubmitted,
+    super.onTapOutside,
+
+    /// HELPER TEXT PROPERTIES
     this.helperText = "",
     this.helperTextColor,
     this.floatingLabelColor,
     this.floatingLabelSize = 12,
     this.floatingLabelVisible = false,
-    this.primary,
-    this.text,
-    this.textAlign = TextAlign.start,
-    this.textColor,
-    this.textSize = 18,
+
+    /// ERROR TEXT PROPERTIES
     this.errorColor = const Color(0xFFF44336),
     this.errorVisible = true,
     this.counterVisible = false,
-    this.digits,
-    this.drawableStart,
-    this.drawableEnd,
-    this.drawablePadding = 24,
-    this.drawableTint,
-    this.inputType = TextInputType.text,
-    this.maxCharacters = 0,
-    this.minCharacters = 0,
-    this.obscureText = false,
+
+    /// INDICATOR PROPERTIES
     this.onExecute,
-    this.onChecked,
   });
 
   @override
@@ -100,22 +247,15 @@ class MaterialEditText extends YMRView<MaterialEditTextController> {
   }
 
   @override
-  Widget? attach(BuildContext context, MaterialEditTextController controller) {
-    final isValid = controller.isValid;
+  Widget build(
+    BuildContext context,
+    MaterialEditTextController controller,
+    Widget parent,
+  ) {
     final hasError = controller.hasError;
     final theme = Theme.of(context);
     final primaryColor = controller.primary ?? theme.primaryColor;
     const secondaryColor = Color(0xffbbbbbb);
-    const underlineColor = Color(0xffe1e1e1);
-    var drawableTint = controller.drawableTint ??
-        ValueState<Color>(
-          primary: secondaryColor,
-          secondary: primaryColor,
-        );
-    var style = TextStyle(
-      color: controller.textColor ?? Colors.black,
-      fontSize: controller.textSize,
-    );
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -132,109 +272,7 @@ class MaterialEditText extends YMRView<MaterialEditTextController> {
                 : controller.floatingLabelColor ?? secondaryColor,
           ),
         ),
-        GestureDetector(
-          onTap: () => controller.showKeyboard(context),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(top: 5, bottom: 8),
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    if (controller.drawableStart != null)
-                      _METDrawable(
-                        icon: controller.drawableStart!,
-                        size: 24,
-                        focused: controller.isFocused,
-                        tint: drawableTint,
-                        padding: EdgeInsets.only(
-                          right: controller.drawablePadding,
-                        ),
-                      ),
-                    Expanded(
-                      child: Stack(
-                        alignment: Alignment.centerLeft,
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              controller.hint,
-                              textAlign: controller.textAlign,
-                              style: style.copyWith(
-                                color: controller.text.isNotEmpty
-                                    ? Colors.transparent
-                                    : controller.hintColor ?? secondaryColor,
-                                fontFamily: "",
-                              ),
-                            ),
-                          ),
-                          EditableText(
-                            textAlign: controller.textAlign,
-                            keyboardType: controller.inputType,
-                            controller: controller._editable,
-                            focusNode: controller._node,
-                            autofocus: controller.autoFocus,
-                            style: style,
-                            cursorColor: primaryColor,
-                            obscureText: controller.obscureText,
-                            backgroundCursorColor: primaryColor,
-                            onChanged: controller._handleEditingChange,
-                            inputFormatters: controller.formatter,
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (!controller._initial)
-                      isValid && controller.onExecute != null
-                          ? _METLoading(
-                              value: controller.text,
-                              onLoading: controller.onExecute,
-                              builder: (value) {
-                                return _METDrawable(
-                                  icon: controller.drawableEnd!,
-                                  size: 24,
-                                  focused: controller.isFocused,
-                                  selected: isValid,
-                                  tint: drawableTint,
-                                  padding: EdgeInsets.only(
-                                    left: controller.drawablePadding / 2,
-                                  ),
-                                  visible: value,
-                                );
-                              },
-                            )
-                          : controller.drawableEnd != null
-                              ? _METDrawable(
-                                  icon: controller.drawableEnd!,
-                                  size: 24,
-                                  focused: controller.isFocused,
-                                  selected: isValid,
-                                  tint: drawableTint,
-                                  visible: isValid,
-                                  padding: EdgeInsets.only(
-                                    left: controller.drawablePadding / 2,
-                                  ),
-                                )
-                              : const SizedBox(),
-                  ],
-                ),
-              ),
-              _METUnderline(
-                focused: controller.isFocused,
-                enabled: controller.enabled,
-                error: hasError,
-                height: 1,
-                primary: primaryColor,
-                colorState: ValueState(
-                  primary: primaryColor,
-                  secondary: underlineColor,
-                  error: controller.errorColor,
-                  disable: underlineColor,
-                ),
-              ),
-            ],
-          ),
-        ),
+        super.build(context, controller, parent),
         SizedBox(
           width: double.infinity,
           child: Row(
@@ -280,89 +318,38 @@ class MaterialEditText extends YMRView<MaterialEditTextController> {
   }
 }
 
-class MaterialEditTextController extends ViewController {
-  late TextEditingController _editable;
-  late FocusNode _node;
-  bool? _focused;
-  bool _initial = true;
+class MaterialEditTextController extends EditTextController {
   String _error = "";
 
-  String? id;
-  bool autoFocus = false;
-  Color? primary;
-  double textSize = 18;
-  Color? textColor;
-  String hint = "";
-  Color? hintColor;
   String helperText = "";
   Color? helperTextColor;
   Color? floatingLabelColor;
   double floatingLabelSize = 12;
   bool floatingLabelVisible = false;
-  TextAlign textAlign = TextAlign.start;
   bool errorVisible = false;
   Color? errorColor = const Color(0xFFF44336);
   bool counterVisible = false;
-  String? digits;
-  MaterialIconData? drawableStart;
-  MaterialIconData? drawableEnd;
   double drawablePadding = 24;
   ValueState<Color>? drawableTint;
-  TextInputType inputType = TextInputType.text;
-  int maxCharacters = 0;
-  int minCharacters = 0;
-  bool obscureText = false;
 
-  late Function(String tag, bool valid)? onChecked;
   late Future<bool> Function(String)? onExecute;
 
-  MaterialEditTextController() {
-    _editable = TextEditingController();
-    _node = FocusNode();
-    _node.addListener(_handleFocusChange);
-  }
-
-  MaterialEditTextController fromMaterialEditText(MaterialEditText widget) {
-    super.fromView(widget);
-    _editable.text = widget.text ?? "";
-    id = widget.id;
-    autoFocus = widget.autoFocus;
-    primary = widget.primary;
-    textSize = widget.textSize;
-    textColor = widget.textColor;
-    hint = widget.hint;
-    hintColor = widget.hintColor;
-    helperText = widget.helperText;
-    helperTextColor = widget.helperTextColor;
-    floatingLabelColor = widget.floatingLabelColor;
-    floatingLabelSize = widget.floatingLabelSize;
-    floatingLabelVisible = widget.floatingLabelVisible;
-    textAlign = widget.textAlign;
-    errorVisible = widget.errorVisible;
-    errorColor = widget.errorColor;
-    counterVisible = widget.counterVisible;
-    digits = widget.digits;
-    drawableStart = widget.drawableStart;
-    drawableEnd = widget.drawableEnd;
-    drawablePadding = widget.drawablePadding;
-    drawableTint = widget.drawableTint;
-    inputType = widget.inputType;
-    maxCharacters = widget.maxCharacters;
-    minCharacters = widget.minCharacters;
-    obscureText = widget.obscureText;
-    onChecked = widget.onChecked;
-    onExecute = widget.onExecute;
-    onChange = widget.onChange;
-    onError = widget.onError;
-    onValidator = widget.onValidator;
+  MaterialEditTextController fromMaterialEditText(MaterialEditText view) {
+    super.fromEditText(view);
+    helperText = view.helperText;
+    helperTextColor = view.helperTextColor;
+    floatingLabelColor = view.floatingLabelColor;
+    floatingLabelSize = view.floatingLabelSize;
+    floatingLabelVisible = view.floatingLabelVisible;
+    errorVisible = view.errorVisible;
+    errorColor = view.errorColor;
+    counterVisible = view.counterVisible;
+    onExecute = view.onExecute;
+    onChange = view.onChange;
+    onError = view.onError;
+    onValidator = view.onValidator;
     return this;
   }
-
-  bool get isFocused => _focused ?? false;
-
-  set text(String? value) => _editable.text = value ?? "";
-
-  String get text => _editable.text;
 
   bool get hasError => !isValid && _error.isNotEmpty;
 
@@ -376,34 +363,6 @@ class MaterialEditTextController extends ViewController {
 
   dynamic get iEnd => drawableEnd?.drawable(isFocused);
 
-  void showKeyboard(BuildContext context) async {
-    if (_node.hasFocus) {
-      _node.unfocus();
-      await Future.delayed(const Duration(milliseconds: 100)).then((value) {
-        FocusScope.of(context).requestFocus(_node);
-      });
-    } else {
-      FocusScope.of(context).requestFocus(_node);
-    }
-  }
-
-  void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
-
-  void _handleFocusChange() {
-    if (_node.hasFocus != _focused) {
-      _focused = _node.hasFocus;
-      onNotify();
-    }
-  }
-
-  void _handleEditingChange(String value) {
-    _initial = false;
-    onChange?.call(value);
-    _error = onError?.call(errorType(value)) ?? "";
-    onChecked?.call(id ?? "$hashCode", isValid);
-    onNotify();
-  }
-
   ViewError errorType(String text) {
     if (text.isEmpty && !_initial) {
       return ViewError.empty;
@@ -411,7 +370,7 @@ class MaterialEditTextController extends ViewController {
       final length = text.length;
       if (maxCharacters > 0 && maxCharacters < length) {
         return ViewError.maximum;
-      } else if (minCharacters > 0 && minCharacters > length) {
+      } else if ((minCharacters ?? 0) > 0 && (minCharacters ?? 0) > length) {
         return ViewError.minimum;
       } else {
         return ViewError.invalid;
@@ -429,21 +388,6 @@ class MaterialEditTextController extends ViewController {
         : currentLength > 0
             ? "$currentLength"
             : "";
-  }
-
-  List<TextInputFormatter>? get formatter {
-    final digit = digits ?? "";
-    if (digit.isNotEmpty) {
-      return [
-        FilteringTextInputFormatter.allow(RegExp("[$digit]")),
-      ];
-    }
-    return null;
-  }
-
-  void _dispose() {
-    _editable.dispose();
-    _node.dispose();
   }
 }
 
@@ -487,131 +431,6 @@ class _METText extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _METUnderline extends StatelessWidget {
-  final Color? primary;
-  final bool enabled;
-  final bool focused;
-  final bool error;
-  final double height;
-  final ValueState<Color> colorState;
-
-  const _METUnderline({
-    Key? key,
-    this.primary,
-    this.enabled = true,
-    this.focused = false,
-    this.error = false,
-    required this.colorState,
-    this.height = 1,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: colorState.fromType(
-              enabled
-                  ? error
-                      ? ValueStateType.error
-                      : focused
-                          ? ValueStateType.primary
-                          : ValueStateType.secondary
-                  : ValueStateType.disabled,
-            ),
-          ),
-          height: focused ? height * 2 : height,
-        ),
-        SizedBox(
-          height: focused ? 0 : height,
-        ),
-      ],
-    );
-  }
-}
-
-class _METDrawable extends StatelessWidget {
-  final bool focused;
-  final bool? selected;
-  final MaterialIconData icon;
-  final double size;
-  final ValueState<Color>? tint;
-  final EdgeInsetsGeometry? padding;
-  final bool visible;
-
-  const _METDrawable({
-    Key? key,
-    required this.icon,
-    this.focused = false,
-    this.selected,
-    this.size = 24,
-    this.tint,
-    this.padding,
-    this.visible = true,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final color = tint ??
-        ValueState(
-          primary: Colors.grey,
-          secondary: Theme.of(context).primaryColor,
-        );
-    final drawable = icon.drawable(selected ?? focused);
-    return Visibility(
-      visible: visible,
-      child: Container(
-        margin: padding,
-        width: size,
-        height: size,
-        child: FittedBox(
-          child: RawIconView(
-            icon: drawable,
-            tint: color.detect(focused),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _METLoading extends StatelessWidget {
-  final String value;
-  final Widget Function(bool value) builder;
-  final Future<bool> Function(String value)? onLoading;
-
-  const _METLoading({
-    Key? key,
-    required this.builder,
-    this.value = "",
-    this.onLoading,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: onLoading?.call(value),
-      builder: (context, state) {
-        switch (state.connectionState) {
-          case ConnectionState.done:
-          case ConnectionState.none:
-          case ConnectionState.active:
-            return builder.call(state.data ?? false);
-          case ConnectionState.waiting:
-            return Container(
-              width: 24,
-              height: 24,
-              padding: const EdgeInsets.all(3),
-              child: const CircularProgressIndicator(strokeWidth: 2),
-            );
-        }
-      },
     );
   }
 }

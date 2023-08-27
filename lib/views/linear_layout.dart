@@ -116,37 +116,12 @@ class LinearLayout extends YMRView<LinearLayoutController> {
   }
 
   @override
-  ViewRoots initRootProperties() {
-    return const ViewRoots(scrollable: false);
-  }
-
-  @override
   LinearLayoutController attachController(LinearLayoutController controller) {
     return controller.fromLinearLayout(this);
   }
 
   @override
   Widget? attach(BuildContext context, LinearLayoutController controller) {
-    return controller.scrollable
-        ? SingleChildScrollView(
-            controller: controller.scrollController,
-            physics: controller.scrollingType.physics,
-            scrollDirection: controller.orientation,
-            child: _LLChild(controller: controller),
-          )
-        : _LLChild(controller: controller);
-  }
-}
-
-class _LLChild extends StatelessWidget {
-  final LinearLayoutController controller;
-
-  const _LLChild({
-    required this.controller,
-  });
-
-  @override
-  Widget build(BuildContext context) {
     return controller.orientation == Axis.vertical
         ? Column(
             mainAxisAlignment: controller.mainGravity,

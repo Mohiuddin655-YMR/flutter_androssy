@@ -23,6 +23,8 @@ part 'views/avatar_view.dart';
 
 part 'views/axis_view.dart';
 
+part 'views/controller.dart';
+
 part 'views/button.dart';
 
 part 'views/calendar_view.dart';
