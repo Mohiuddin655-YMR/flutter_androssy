@@ -23,31 +23,40 @@ abstract class AndrossyFragment<T extends AndrossyController>
   Widget onCreate(BuildContext context, T controller);
 
   @protected
-  Future<bool> onBackPressed() async => true;
+  @mustCallSuper
+  void onListener(BuildContext context) => controller.onListener(context);
 
   @protected
-  void onListener(BuildContext context) {}
+  @mustCallSuper
+  void onPause(BuildContext context) => controller.onPause(context);
 
   @protected
-  void onPause(BuildContext context) {}
+  @mustCallSuper
+  void onRestart(BuildContext context) => controller.onRestart(context);
 
   @protected
-  void onRestart(BuildContext context) {}
+  @mustCallSuper
+  void onResume(BuildContext context) => controller.onResume(context);
 
   @protected
-  void onResume(BuildContext context) {}
+  @mustCallSuper
+  void onStart(BuildContext context) => controller.onStart(context);
 
   @protected
-  void onStart(BuildContext context) {}
+  @mustCallSuper
+  void onStop(BuildContext context) => controller.onStop(context);
 
   @protected
-  void onStop(BuildContext context) {}
+  @mustCallSuper
+  Future<bool> onBackPressed() => controller.onBackPressed();
 
   @protected
-  void onDetached(BuildContext context) {}
+  @mustCallSuper
+  void onDetached(BuildContext context) => controller.onDetached(context);
 
   @protected
-  void onDestroy(BuildContext context) {}
+  @mustCallSuper
+  void onDestroy(BuildContext context) => controller.onDestroy(context);
 }
 
 class _AndrossyFragmentState<T extends AndrossyController>
@@ -65,6 +74,7 @@ class _AndrossyFragmentState<T extends AndrossyController>
       controller: controller,
     );
     widget.onListener(context);
+    widget.controller.onInit(context);
     super.initState();
   }
 

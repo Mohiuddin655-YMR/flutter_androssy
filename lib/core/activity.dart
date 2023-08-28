@@ -183,33 +183,40 @@ abstract class AndrossyActivity<T extends AndrossyController>
   void onEndDrawerChanged(bool isOpened) {}
 
   @protected
-  void onListener(BuildContext context) {}
+  @mustCallSuper
+  void onListener(BuildContext context) => controller.onListener(context);
 
   @protected
-  void onPause(BuildContext context) {}
+  @mustCallSuper
+  void onPause(BuildContext context) => controller.onPause(context);
 
   @protected
-  void onRestart(BuildContext context) {}
+  @mustCallSuper
+  void onRestart(BuildContext context) => controller.onRestart(context);
 
   @protected
-  void onResume(BuildContext context) {}
+  @mustCallSuper
+  void onResume(BuildContext context) => controller.onResume(context);
 
   @protected
-  void onStart(BuildContext context) {}
+  @mustCallSuper
+  void onStart(BuildContext context) => controller.onStart(context);
 
   @protected
-  void onStop(BuildContext context) {}
+  @mustCallSuper
+  void onStop(BuildContext context) => controller.onStop(context);
 
   @protected
-  Future<bool> onBackPressed() async {
-    return true;
-  }
+  @mustCallSuper
+  Future<bool> onBackPressed() => controller.onBackPressed();
 
   @protected
-  void onDetached(BuildContext context) {}
+  @mustCallSuper
+  void onDetached(BuildContext context) => controller.onDetached(context);
 
   @protected
-  void onDestroy(BuildContext context) {}
+  @mustCallSuper
+  void onDestroy(BuildContext context) => controller.onDestroy(context);
 }
 
 class AndrossyActivityState<T extends AndrossyController>
@@ -218,6 +225,7 @@ class AndrossyActivityState<T extends AndrossyController>
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     controller = widget.init(context);
     controller.setNotifier(setState);
     widget.instance.init(
@@ -226,7 +234,7 @@ class AndrossyActivityState<T extends AndrossyController>
       controller: controller,
     );
     widget.onListener(context);
-    WidgetsBinding.instance.addObserver(this);
+    widget.controller.onInit(context);
     super.initState();
   }
 
