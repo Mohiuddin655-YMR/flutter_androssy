@@ -2,34 +2,6 @@ part of '../widgets.dart';
 
 typedef MIVFrameRatioBuilder = double? Function(MIVLayer layer);
 
-enum MIVLayer {
-  singleLayer,
-  doubleLayer,
-  tripleLayer,
-  fourthLayer,
-  fifthLayer,
-  sixthLayer,
-  multipleLayer;
-
-  factory MIVLayer.from(int size) {
-    if (size == 1) {
-      return MIVLayer.singleLayer;
-    } else if (size == 2) {
-      return MIVLayer.doubleLayer;
-    } else if (size == 3) {
-      return MIVLayer.tripleLayer;
-    } else if (size == 4) {
-      return MIVLayer.fourthLayer;
-    } else if (size == 5) {
-      return MIVLayer.fifthLayer;
-    } else if (size == 6) {
-      return MIVLayer.sixthLayer;
-    } else {
-      return MIVLayer.multipleLayer;
-    }
-  }
-}
-
 class MaterialImageView<T extends Object>
     extends YMRView<MaterialImageViewController<T>> {
   final double? frameRatio;
@@ -42,7 +14,44 @@ class MaterialImageView<T extends Object>
   final ImageType? placeholderType;
 
   const MaterialImageView({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -54,23 +63,8 @@ class MaterialImageView<T extends Object>
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.child,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -179,6 +173,53 @@ class MaterialImageView<T extends Object>
         return _MIVMultiLayer<T>(controller: controller);
     }
   }
+}
+
+class MaterialImageViewController<T> extends ViewController {
+  double? frameRatio;
+  MIVFrameRatioBuilder? frameRatioBuilder;
+  Color? itemBackground;
+  double spaceBetween = 4;
+  ImageType? imageType;
+  List<T> items = [];
+  dynamic placeholder;
+  ImageType? placeholderType;
+
+  @override
+  MaterialImageViewController<T> fromView(
+    YMRView<ViewController> view, {
+    double? frameRatio,
+    MIVFrameRatioBuilder? frameBuilder,
+    Color? itemBackground,
+    double? itemSpace,
+    ImageType? itemType,
+    List<T>? items,
+    dynamic placeholder,
+    ImageType? placeholderType,
+  }) {
+    super.fromView(view);
+    this.frameRatio = frameRatio;
+    this.frameRatioBuilder = frameBuilder;
+    this.itemBackground = itemBackground;
+    this.spaceBetween = itemSpace ?? 4;
+    this.imageType = itemType;
+    this.items = items ?? [];
+    this.placeholder = placeholder;
+    this.placeholderType = placeholderType;
+    return this;
+  }
+
+  bool get isRational => ratio > 0;
+
+  int get invisibleItemSize => items.length - 5;
+
+  int get itemSize => items.length;
+
+  double get ratio {
+    return frameRatioBuilder?.call(MIVLayer.from(itemSize)) ?? frameRatio ?? 0;
+  }
+
+  MIVLayer get layer => MIVLayer.from(itemSize);
 }
 
 class _MIVSingleLayer<T> extends StatelessWidget {
@@ -640,49 +681,30 @@ class _MIVBuilder<T> extends StatelessWidget {
   }
 }
 
-class MaterialImageViewController<T> extends ViewController {
-  double? frameRatio;
-  MIVFrameRatioBuilder? frameRatioBuilder;
-  Color? itemBackground;
-  double spaceBetween = 4;
-  ImageType? imageType;
-  List<T> items = [];
-  dynamic placeholder;
-  ImageType? placeholderType;
+enum MIVLayer {
+  singleLayer,
+  doubleLayer,
+  tripleLayer,
+  fourthLayer,
+  fifthLayer,
+  sixthLayer,
+  multipleLayer;
 
-  @override
-  MaterialImageViewController<T> fromView(
-    YMRView<ViewController> view, {
-    double? frameRatio,
-    MIVFrameRatioBuilder? frameBuilder,
-    Color? itemBackground,
-    double? itemSpace,
-    ImageType? itemType,
-    List<T>? items,
-    dynamic placeholder,
-    ImageType? placeholderType,
-  }) {
-    super.fromView(view);
-    this.frameRatio = frameRatio;
-    this.frameRatioBuilder = frameBuilder;
-    this.itemBackground = itemBackground;
-    this.spaceBetween = itemSpace ?? 4;
-    this.imageType = itemType;
-    this.items = items ?? [];
-    this.placeholder = placeholder;
-    this.placeholderType = placeholderType;
-    return this;
+  factory MIVLayer.from(int size) {
+    if (size == 1) {
+      return MIVLayer.singleLayer;
+    } else if (size == 2) {
+      return MIVLayer.doubleLayer;
+    } else if (size == 3) {
+      return MIVLayer.tripleLayer;
+    } else if (size == 4) {
+      return MIVLayer.fourthLayer;
+    } else if (size == 5) {
+      return MIVLayer.fifthLayer;
+    } else if (size == 6) {
+      return MIVLayer.sixthLayer;
+    } else {
+      return MIVLayer.multipleLayer;
+    }
   }
-
-  bool get isRational => ratio > 0;
-
-  int get invisibleItemSize => items.length - 5;
-
-  int get itemSize => items.length;
-
-  double get ratio {
-    return frameRatioBuilder?.call(MIVLayer.from(itemSize)) ?? frameRatio ?? 0;
-  }
-
-  MIVLayer get layer => MIVLayer.from(itemSize);
 }

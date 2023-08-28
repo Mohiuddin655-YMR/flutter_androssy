@@ -1,43 +1,5 @@
 part of '../widgets.dart';
 
-class Content {
-  final String? title;
-  final String? body;
-
-  Content({
-    this.title,
-    this.body,
-  });
-}
-
-class ContentStyle {
-  final FontWeight? fontWeight;
-  final TextAlign? textAlign;
-  final Color textColor;
-  final double textSize;
-
-  const ContentStyle({
-    this.fontWeight,
-    this.textAlign,
-    this.textColor = Colors.black,
-    this.textSize = 14,
-  });
-
-  ContentStyle copy({
-    FontWeight? fontWeight,
-    TextAlign? textAlign,
-    Color? textColor,
-    double? textSize,
-  }) {
-    return ContentStyle(
-      fontWeight: fontWeight ?? this.fontWeight,
-      textAlign: textAlign ?? this.textAlign,
-      textColor: textColor ?? this.textColor,
-      textSize: textSize ?? this.textSize,
-    );
-  }
-}
-
 class ContentView extends YMRView<ContentViewController> {
   final String? header;
   final String? description;
@@ -47,7 +9,44 @@ class ContentView extends YMRView<ContentViewController> {
   final DotStyle? dotStyle;
 
   const ContentView({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -59,23 +58,8 @@ class ContentView extends YMRView<ContentViewController> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.child,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -169,6 +153,35 @@ class ContentView extends YMRView<ContentViewController> {
       ],
     );
   }
+}
+
+class ContentViewController extends ViewController {
+  String? header;
+  String? description;
+  DotStyle dotStyle = DotStyle.bullet;
+  List<Content> paragraphs = [];
+  ContentStyle paragraphStyle = const ContentStyle();
+  ContentStyle? _titleStyle;
+
+  ContentViewController fromContentView(ContentView view) {
+    super.fromView(view);
+    header = view.header;
+    description = view.description;
+    dotStyle = view.dotStyle ?? DotStyle.bullet;
+    paragraphs = view.paragraphs ?? [];
+    paragraphStyle = view.paragraphStyle ?? const ContentStyle();
+    _titleStyle = view.titleStyle;
+    return this;
+  }
+
+  ContentStyle get titleStyle {
+    return _titleStyle ??
+        paragraphStyle.copy(
+          fontWeight: FontWeight.bold,
+        );
+  }
+
+  set titleStyle(ContentStyle value) => _titleStyle = value;
 }
 
 class _DottedText extends StatelessWidget {
@@ -298,33 +311,42 @@ class _ParagraphText extends StatelessWidget {
   }
 }
 
-class ContentViewController extends ViewController {
-  String? header;
-  String? description;
-  DotStyle dotStyle = DotStyle.bullet;
-  List<Content> paragraphs = [];
-  ContentStyle paragraphStyle = const ContentStyle();
-  ContentStyle? _titleStyle;
+class Content {
+  final String? title;
+  final String? body;
 
-  ContentViewController fromContentView(ContentView view) {
-    super.fromView(view);
-    header = view.header;
-    description = view.description;
-    dotStyle = view.dotStyle ?? DotStyle.bullet;
-    paragraphs = view.paragraphs ?? [];
-    paragraphStyle = view.paragraphStyle ?? const ContentStyle();
-    _titleStyle = view.titleStyle;
-    return this;
+  Content({
+    this.title,
+    this.body,
+  });
+}
+
+class ContentStyle {
+  final FontWeight? fontWeight;
+  final TextAlign? textAlign;
+  final Color textColor;
+  final double textSize;
+
+  const ContentStyle({
+    this.fontWeight,
+    this.textAlign,
+    this.textColor = Colors.black,
+    this.textSize = 14,
+  });
+
+  ContentStyle copy({
+    FontWeight? fontWeight,
+    TextAlign? textAlign,
+    Color? textColor,
+    double? textSize,
+  }) {
+    return ContentStyle(
+      fontWeight: fontWeight ?? this.fontWeight,
+      textAlign: textAlign ?? this.textAlign,
+      textColor: textColor ?? this.textColor,
+      textSize: textSize ?? this.textSize,
+    );
   }
-
-  ContentStyle get titleStyle {
-    return _titleStyle ??
-        paragraphStyle.copy(
-          fontWeight: FontWeight.bold,
-        );
-  }
-
-  set titleStyle(ContentStyle value) => _titleStyle = value;
 }
 
 enum DotStyle {

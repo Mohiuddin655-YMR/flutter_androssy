@@ -27,7 +27,44 @@ class SlideImageView<T> extends YMRView<SlideImageViewController<T>> {
   final SIVIndexing<T>? selectionIndexBuilder;
 
   const SlideImageView({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -39,23 +76,8 @@ class SlideImageView<T> extends YMRView<SlideImageViewController<T>> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.child,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -154,6 +176,97 @@ class SlideImageView<T> extends YMRView<SlideImageViewController<T>> {
   @override
   Widget? attach(BuildContext context, SlideImageViewController<T> controller) {
     return _SIVChild(controller: controller);
+  }
+}
+
+class SlideImageViewController<T> extends ViewController {
+  late PageController pager;
+  late TextViewController counter;
+  late NotifierViewController notifyCounter;
+
+  double? frameRatio;
+  Color? itemBackground;
+  BoxFit itemScaleType = BoxFit.cover;
+  ImageType itemType = ImageType.detect;
+  List<T> items = [];
+  dynamic placeholder;
+  ImageType placeholderType = ImageType.detect;
+  SIVChangedHandler<T>? changedHandler;
+  SIVCounterBuilder<T>? counterBuilder;
+  ViewPositionType counterPosition = ViewPositionType.topRight;
+  bool counterVisibility = true;
+  int selectionIndex = 0;
+  SIVIndexing<T>? selectionIndexBuilder;
+
+  int index = 0;
+
+  @override
+  SlideImageViewController<T> fromView(
+    YMRView<ViewController> view, {
+    SIVChangedHandler<T>? changedHandler,
+    SIVCounterBuilder<T>? counterBuilder,
+    ViewPositionType? counterPosition,
+    bool? counterVisibility,
+    double? frameRatio,
+    Color? itemBackground,
+    BoxFit? itemScaleType,
+    ImageType? itemType,
+    List<T>? items,
+    dynamic placeholder,
+    ImageType? placeholderType,
+    int? selectionIndex,
+    SIVIndexing<T>? selectionIndexBuilder,
+  }) {
+    this.changedHandler = changedHandler;
+    this.counterBuilder = counterBuilder;
+    this.counterPosition = counterPosition ?? ViewPositionType.topRight;
+    this.counterVisibility = counterVisibility ?? true;
+    this.frameRatio = frameRatio;
+    this.itemBackground = itemBackground;
+    this.itemScaleType = itemScaleType ?? BoxFit.cover;
+    this.itemType = itemType ?? ImageType.detect;
+    this.items = items ?? [];
+    this.placeholder = placeholder;
+    this.placeholderType = placeholderType ?? ImageType.detect;
+    this.selectionIndex = selectionIndex ?? 0;
+    this.selectionIndexBuilder = selectionIndexBuilder;
+    this.index = _selectionIndex;
+    this.pager = PageController(initialPage: index);
+    this.counter = TextViewController();
+    this.notifyCounter = NotifierViewController();
+    super.fromView(view);
+    return this;
+  }
+
+  T get item => items[index];
+
+  int get _selectionIndex {
+    var value = selectionIndex;
+    if (selectionIndexBuilder != null) {
+      value = items.indexWhere((item) {
+        return selectionIndexBuilder?.call(item) ?? false;
+      });
+    }
+    return value > -1 && value < size ? value : 0;
+  }
+
+  int get size => items.length;
+
+  void _setCounterNotifier(int value) {
+    index = value;
+    notifyCounter.onNotify();
+  }
+
+  String countingTextBuilder(
+    int current,
+    int total, [
+    String separator = "/",
+  ]) {
+    return "$current$separator$total";
+  }
+
+  void _dispose() {
+    pager.dispose();
   }
 }
 
@@ -261,96 +374,5 @@ class _SIVChildState<T> extends State<_SIVChild<T>> {
         ],
       ),
     );
-  }
-}
-
-class SlideImageViewController<T> extends ViewController {
-  late PageController pager;
-  late TextViewController counter;
-  late NotifierViewController notifyCounter;
-
-  double? frameRatio;
-  Color? itemBackground;
-  BoxFit itemScaleType = BoxFit.cover;
-  ImageType itemType = ImageType.detect;
-  List<T> items = [];
-  dynamic placeholder;
-  ImageType placeholderType = ImageType.detect;
-  SIVChangedHandler<T>? changedHandler;
-  SIVCounterBuilder<T>? counterBuilder;
-  ViewPositionType counterPosition = ViewPositionType.topRight;
-  bool counterVisibility = true;
-  int selectionIndex = 0;
-  SIVIndexing<T>? selectionIndexBuilder;
-
-  int index = 0;
-
-  @override
-  SlideImageViewController<T> fromView(
-    YMRView<ViewController> view, {
-    SIVChangedHandler<T>? changedHandler,
-    SIVCounterBuilder<T>? counterBuilder,
-    ViewPositionType? counterPosition,
-    bool? counterVisibility,
-    double? frameRatio,
-    Color? itemBackground,
-    BoxFit? itemScaleType,
-    ImageType? itemType,
-    List<T>? items,
-    dynamic placeholder,
-    ImageType? placeholderType,
-    int? selectionIndex,
-    SIVIndexing<T>? selectionIndexBuilder,
-  }) {
-    this.changedHandler = changedHandler;
-    this.counterBuilder = counterBuilder;
-    this.counterPosition = counterPosition ?? ViewPositionType.topRight;
-    this.counterVisibility = counterVisibility ?? true;
-    this.frameRatio = frameRatio;
-    this.itemBackground = itemBackground;
-    this.itemScaleType = itemScaleType ?? BoxFit.cover;
-    this.itemType = itemType ?? ImageType.detect;
-    this.items = items ?? [];
-    this.placeholder = placeholder;
-    this.placeholderType = placeholderType ?? ImageType.detect;
-    this.selectionIndex = selectionIndex ?? 0;
-    this.selectionIndexBuilder = selectionIndexBuilder;
-    this.index = _selectionIndex;
-    this.pager = PageController(initialPage: index);
-    this.counter = TextViewController();
-    this.notifyCounter = NotifierViewController();
-    super.fromView(view);
-    return this;
-  }
-
-  T get item => items[index];
-
-  int get _selectionIndex {
-    var value = selectionIndex;
-    if (selectionIndexBuilder != null) {
-      value = items.indexWhere((item) {
-        return selectionIndexBuilder?.call(item) ?? false;
-      });
-    }
-    return value > -1 && value < size ? value : 0;
-  }
-
-  int get size => items.length;
-
-  void _setCounterNotifier(int value) {
-    index = value;
-    notifyCounter.onNotify();
-  }
-
-  String countingTextBuilder(
-    int current,
-    int total, [
-    String separator = "/",
-  ]) {
-    return "$current$separator$total";
-  }
-
-  void _dispose() {
-    pager.dispose();
   }
 }

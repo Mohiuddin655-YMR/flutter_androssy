@@ -1,32 +1,49 @@
 part of '../widgets.dart';
 
-enum FlexPosition {
-  centerX(left: 0, right: 0),
-  centerY(top: 0, bottom: 0),
-  start(left: 0, top: 0, bottom: 0),
-  end(right: 0, top: 0, bottom: 0),
-  above(top: 0, left: 0, right: 0),
-  down(bottom: 0, left: 0, right: 0);
-
-  final double? top, bottom, left, right;
-
-  const FlexPosition({
-    this.top,
-    this.bottom,
-    this.left,
-    this.right,
-  });
-}
-
-enum FlexVisibleType { front, back }
-
 class FlexibleView extends YMRView<FlexibleViewController> {
   final Widget? flexible;
   final FlexPosition flexPosition;
   final FlexVisibleType type;
 
   const FlexibleView({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -38,23 +55,8 @@ class FlexibleView extends YMRView<FlexibleViewController> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.child,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -183,3 +185,23 @@ class FlexibleViewController extends ViewController {
     return this;
   }
 }
+
+enum FlexPosition {
+  centerX(left: 0, right: 0),
+  centerY(top: 0, bottom: 0),
+  start(left: 0, top: 0, bottom: 0),
+  end(right: 0, top: 0, bottom: 0),
+  above(top: 0, left: 0, right: 0),
+  down(bottom: 0, left: 0, right: 0);
+
+  final double? top, bottom, left, right;
+
+  const FlexPosition({
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+  });
+}
+
+enum FlexVisibleType { front, back }

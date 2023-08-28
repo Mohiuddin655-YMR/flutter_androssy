@@ -3,124 +3,6 @@ part of '../widgets.dart';
 typedef NavigationViewBuilder = Widget Function(BuildContext, int);
 typedef OnNavigationIndexChangeListener = void Function(int index);
 
-enum NavigationType {
-  fixed,
-  scrollable;
-}
-
-class NavigationItem extends StatelessWidget {
-  final bool isSelected;
-  final bool isVisible;
-  final dynamic icon;
-  final ValueState<dynamic>? iconState;
-  final double? iconSize;
-  final ValueState<double>? iconSizeState;
-  final Color? iconTint;
-  final ValueState<Color>? iconTintState;
-  final String? title;
-  final ValueState<String>? titleState;
-  final Color? titleColor;
-  final ValueState<Color>? titleColorState;
-  final double? titleSize;
-  final ValueState<double>? titleSizeState;
-  final double? spaceBetween;
-  final ValueState<double>? spaceBetweenState;
-  final Color? background;
-  final ValueState<Color>? backgroundState;
-  final double? maxWidth;
-  final double? maxHeight;
-  final double? minWidth;
-  final double? minHeight;
-  final double? margin;
-  final double? marginX;
-  final double? marginY;
-  final double? padding;
-  final double? paddingX;
-  final double? paddingY;
-  final OnViewClickListener? onClick;
-
-  const NavigationItem({
-    super.key,
-    this.isSelected = false,
-    this.isVisible = true,
-    this.icon,
-    this.iconState,
-    this.iconSize,
-    this.iconSizeState,
-    this.iconTint,
-    this.iconTintState,
-    this.title,
-    this.titleState,
-    this.titleColor,
-    this.titleColorState,
-    this.titleSize,
-    this.titleSizeState,
-    this.spaceBetween,
-    this.spaceBetweenState,
-    this.maxWidth,
-    this.maxHeight,
-    this.minWidth,
-    this.minHeight,
-    this.margin,
-    this.marginX,
-    this.marginY,
-    this.padding,
-    this.paddingX,
-    this.paddingY,
-    this.background,
-    this.backgroundState,
-    this.onClick,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    var ic = iconState?.detect(isSelected) ?? icon;
-    var text = titleState?.detect(isSelected) ?? title ?? "";
-    var spacer = spaceBetweenState?.detect(isSelected) ?? spaceBetween ?? 2;
-    return LinearLayout(
-      widthMax: maxWidth,
-      widthMin: minWidth,
-      heightMax: maxHeight,
-      heightMin: minHeight,
-      margin: margin,
-      marginHorizontal: marginX,
-      marginVertical: marginY,
-      padding: padding,
-      paddingHorizontal: paddingX,
-      paddingVertical: paddingY,
-      background: background,
-      backgroundState: backgroundState,
-      visibility: isVisible,
-      gravity: Alignment.center,
-      layoutGravity: LayoutGravity.center,
-      onClick: onClick,
-      children: [
-        IconView(
-          visibility: ic != null,
-          activated: isSelected,
-          icon: ic,
-          iconState: iconState,
-          size: iconSize,
-          sizeState: iconSizeState,
-          tint: iconTint,
-          tintState: iconTintState,
-        ),
-        TextView(
-          paddingHorizontal: 8,
-          marginTop: spacer,
-          visibility: text.isNotEmpty,
-          activated: isSelected,
-          text: text,
-          textState: titleState,
-          textSize: titleSize,
-          textColor: titleColor,
-          textColorState: titleColorState,
-        ),
-      ],
-    );
-  }
-}
-
 class NavigationView extends YMRView<NavigationViewController> {
   final int? currentIndex;
   final double? iconSize;
@@ -151,7 +33,44 @@ class NavigationView extends YMRView<NavigationViewController> {
   final OnNavigationIndexChangeListener? onIndexChanged;
 
   const NavigationView({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -163,22 +82,7 @@ class NavigationView extends YMRView<NavigationViewController> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -552,4 +456,122 @@ class NavigationViewController extends ViewController {
       }
     });
   }
+}
+
+class NavigationItem extends StatelessWidget {
+  final bool isSelected;
+  final bool isVisible;
+  final dynamic icon;
+  final ValueState<dynamic>? iconState;
+  final double? iconSize;
+  final ValueState<double>? iconSizeState;
+  final Color? iconTint;
+  final ValueState<Color>? iconTintState;
+  final String? title;
+  final ValueState<String>? titleState;
+  final Color? titleColor;
+  final ValueState<Color>? titleColorState;
+  final double? titleSize;
+  final ValueState<double>? titleSizeState;
+  final double? spaceBetween;
+  final ValueState<double>? spaceBetweenState;
+  final Color? background;
+  final ValueState<Color>? backgroundState;
+  final double? maxWidth;
+  final double? maxHeight;
+  final double? minWidth;
+  final double? minHeight;
+  final double? margin;
+  final double? marginX;
+  final double? marginY;
+  final double? padding;
+  final double? paddingX;
+  final double? paddingY;
+  final OnViewClickListener? onClick;
+
+  const NavigationItem({
+    super.key,
+    this.isSelected = false,
+    this.isVisible = true,
+    this.icon,
+    this.iconState,
+    this.iconSize,
+    this.iconSizeState,
+    this.iconTint,
+    this.iconTintState,
+    this.title,
+    this.titleState,
+    this.titleColor,
+    this.titleColorState,
+    this.titleSize,
+    this.titleSizeState,
+    this.spaceBetween,
+    this.spaceBetweenState,
+    this.maxWidth,
+    this.maxHeight,
+    this.minWidth,
+    this.minHeight,
+    this.margin,
+    this.marginX,
+    this.marginY,
+    this.padding,
+    this.paddingX,
+    this.paddingY,
+    this.background,
+    this.backgroundState,
+    this.onClick,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var ic = iconState?.detect(isSelected) ?? icon;
+    var text = titleState?.detect(isSelected) ?? title ?? "";
+    var spacer = spaceBetweenState?.detect(isSelected) ?? spaceBetween ?? 2;
+    return LinearLayout(
+      widthMax: maxWidth,
+      widthMin: minWidth,
+      heightMax: maxHeight,
+      heightMin: minHeight,
+      margin: margin,
+      marginHorizontal: marginX,
+      marginVertical: marginY,
+      padding: padding,
+      paddingHorizontal: paddingX,
+      paddingVertical: paddingY,
+      background: background,
+      backgroundState: backgroundState,
+      visibility: isVisible,
+      gravity: Alignment.center,
+      layoutGravity: LayoutGravity.center,
+      onClick: onClick,
+      children: [
+        IconView(
+          visibility: ic != null,
+          activated: isSelected,
+          icon: ic,
+          iconState: iconState,
+          size: iconSize,
+          sizeState: iconSizeState,
+          tint: iconTint,
+          tintState: iconTintState,
+        ),
+        TextView(
+          paddingHorizontal: 8,
+          marginTop: spacer,
+          visibility: text.isNotEmpty,
+          activated: isSelected,
+          text: text,
+          textState: titleState,
+          textSize: titleSize,
+          textColor: titleColor,
+          textColorState: titleColorState,
+        ),
+      ],
+    );
+  }
+}
+
+enum NavigationType {
+  fixed,
+  scrollable;
 }

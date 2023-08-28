@@ -1,68 +1,5 @@
 part of '../widgets.dart';
 
-enum ImageType {
-  unknown,
-  detect,
-  asset,
-  file,
-  memory,
-  network,
-  svg,
-  svgCode,
-  svgNetwork;
-
-  factory ImageType.from(dynamic data, [ImageType type = ImageType.detect]) {
-    if (type == ImageType.detect || type == ImageType.unknown) {
-      if (data is String) {
-        if (data.isAsset) {
-          if (data.isSvg) {
-            return ImageType.svg;
-          } else {
-            return ImageType.asset;
-          }
-        } else if (data.isNetwork) {
-          if (data.isSvg) {
-            return ImageType.svgNetwork;
-          } else {
-            return ImageType.network;
-          }
-        } else if (data.isSvgCode) {
-          return ImageType.svgCode;
-        } else {
-          return ImageType.unknown;
-        }
-      } else if (data is File) {
-        return ImageType.file;
-      } else if (data is Uint8List) {
-        return ImageType.memory;
-      } else {
-        return ImageType.unknown;
-      }
-    } else {
-      return type;
-    }
-  }
-}
-
-extension ImageTypeExtension on String {
-  bool get isAsset {
-    return startsWith('assets/') || startsWith('asset/');
-  }
-
-  bool get isNetwork {
-    return startsWith('https://') || startsWith('http://');
-  }
-
-  bool get isSvg {
-    return endsWith(".svg");
-  }
-
-  bool get isSvgCode {
-    var code = replaceAll("\n", "");
-    return code.startsWith("<svg") && code.endsWith("/svg>");
-  }
-}
-
 class ImageView<T extends ImageViewController> extends YMRView<T> {
   final bool? cacheMode;
   final dynamic image;
@@ -76,7 +13,44 @@ class ImageView<T extends ImageViewController> extends YMRView<T> {
   final BoxFit? scaleType;
 
   const ImageView({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -88,22 +62,7 @@ class ImageView<T extends ImageViewController> extends YMRView<T> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -358,5 +317,68 @@ class RawImageView extends StatelessWidget {
         height: height,
       );
     }
+  }
+}
+
+enum ImageType {
+  unknown,
+  detect,
+  asset,
+  file,
+  memory,
+  network,
+  svg,
+  svgCode,
+  svgNetwork;
+
+  factory ImageType.from(dynamic data, [ImageType type = ImageType.detect]) {
+    if (type == ImageType.detect || type == ImageType.unknown) {
+      if (data is String) {
+        if (data.isAsset) {
+          if (data.isSvg) {
+            return ImageType.svg;
+          } else {
+            return ImageType.asset;
+          }
+        } else if (data.isNetwork) {
+          if (data.isSvg) {
+            return ImageType.svgNetwork;
+          } else {
+            return ImageType.network;
+          }
+        } else if (data.isSvgCode) {
+          return ImageType.svgCode;
+        } else {
+          return ImageType.unknown;
+        }
+      } else if (data is File) {
+        return ImageType.file;
+      } else if (data is Uint8List) {
+        return ImageType.memory;
+      } else {
+        return ImageType.unknown;
+      }
+    } else {
+      return type;
+    }
+  }
+}
+
+extension ImageTypeExtension on String {
+  bool get isAsset {
+    return startsWith('assets/') || startsWith('asset/');
+  }
+
+  bool get isNetwork {
+    return startsWith('https://') || startsWith('http://');
+  }
+
+  bool get isSvg {
+    return endsWith(".svg");
+  }
+
+  bool get isSvgCode {
+    var code = replaceAll("\n", "");
+    return code.startsWith("<svg") && code.endsWith("/svg>");
   }
 }

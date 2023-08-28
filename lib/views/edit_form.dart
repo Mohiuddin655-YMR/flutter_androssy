@@ -4,7 +4,44 @@ class EditForm extends YMRView<EditFormController> {
   final List<EditText>? children;
 
   const EditForm({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.activated,
     super.animation,
     super.animationType,
@@ -15,22 +52,7 @@ class EditForm extends YMRView<EditFormController> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -114,18 +136,52 @@ class EditForm extends YMRView<EditFormController> {
     return Column(
       children: controller.children.map((e) {
         final id = controller._id(e);
+
         return EditText(
+          /// BASE PROPERTIES
+          key: e.key,
+          controller: e.controller,
+
+          /// BORDER PROPERTIES
+          borderColor: e.borderColor,
+          borderColorState: e.borderColorState,
+          borderSize: e.borderSize,
+          borderSizeState: e.borderSizeState,
+          borderHorizontal: e.borderHorizontal,
+          borderHorizontalState: e.borderHorizontalState,
+          borderVertical: e.borderVertical,
+          borderVerticalState: e.borderVerticalState,
+          borderTop: e.borderTop,
+          borderTopState: e.borderTopState,
+          borderBottom: e.borderBottom,
+          borderBottomState: e.borderBottomState,
+          borderStart: e.borderStart,
+          borderStartState: e.borderStartState,
+          borderEnd: e.borderEnd,
+          borderEndState: e.borderEndState,
+
+          /// BORDER RADIUS PROPERTIES
+          borderRadius: e.borderRadius,
+          borderRadiusState: e.borderRadiusState,
+          borderRadiusBL: e.borderRadiusBL,
+          borderRadiusBLState: e.borderRadiusBLState,
+          borderRadiusBR: e.borderRadiusBR,
+          borderRadiusBRState: e.borderRadiusBRState,
+          borderRadiusTL: e.borderRadiusTL,
+          borderRadiusTLState: e.borderRadiusTLState,
+          borderRadiusTR: e.borderRadiusTR,
+          borderRadiusTRState: e.borderRadiusTRState,
+
+          ///
+          ///
+          ///
           activated: e.activated,
           absorbMode: e.absorbMode,
           animation: e.animation,
           animationType: e.animationType,
-          controller: e.controller,
           autocorrect: e.autocorrect,
           autofillHints: e.autofillHints,
           autoFocus: e.autoFocus,
-          border: e.border,
-          borderColor: e.borderColor,
-          borderRadius: e.borderRadius,
           background: e.background,
           backgroundBlendMode: e.backgroundBlendMode,
           backgroundGradient: e.backgroundGradient,
@@ -133,17 +189,6 @@ class EditForm extends YMRView<EditFormController> {
           backgroundImage: e.backgroundImage,
           backgroundImageState: e.backgroundImageState,
           backgroundState: e.backgroundState,
-          borderBottom: e.borderBottom,
-          borderEnd: e.borderEnd,
-          borderGradient: e.borderGradient,
-          borderHorizontal: e.borderHorizontal,
-          borderRadiusBL: e.borderRadiusBL,
-          borderRadiusBR: e.borderRadiusBR,
-          borderRadiusTL: e.borderRadiusTL,
-          borderRadiusTR: e.borderRadiusTR,
-          borderStart: e.borderStart,
-          borderTop: e.borderTop,
-          borderVertical: e.borderVertical,
           cursorOpacityAnimates: e.cursorOpacityAnimates,
           cursorRadius: e.cursorRadius,
           cursorWidth: e.cursorWidth,
@@ -205,7 +250,6 @@ class EditForm extends YMRView<EditFormController> {
           indicatorStrokeBackground: e.indicatorStrokeBackground,
           indicatorStrokeBackgroundState: e.indicatorStrokeBackgroundState,
           indicatorVisible: e.indicatorVisible,
-          key: e.key,
           keyboardAppearance: e.keyboardAppearance,
           locale: e.locale,
           lineSpacingExtra: e.lineSpacingExtra,

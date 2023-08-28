@@ -130,8 +130,44 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final EditTextTapOutsideListener? onTapOutside;
 
   const EditText({
-    /// SUPER PROPERTIES
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -143,22 +179,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -248,7 +269,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.floatingLabelVisible = false,
 
     /// ERROR TEXT PROPERTIES
-    this.errorColor = const Color(0xFFF44336),
+    this.errorColor = const Color(0xFFFF7769),
     this.errorVisible = true,
     this.counterVisible = false,
 
@@ -408,6 +429,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     final primaryColor = controller.primary ?? theme.primaryColor;
     const underlineColor = Color(0xffe1e1e1);
     const secondaryColor = Color(0xffbbbbbb);
+    final errorColor = controller.errorColor ?? const Color(0xFFFF7769);
     final hasError = controller.hasError;
 
     var style = TextStyle(
@@ -420,32 +442,28 @@ class EditText<T extends EditTextController> extends TextView<T> {
       secondary: primaryColor,
       disable: secondaryColor,
       ternary: secondaryColor,
-      error: const Color(0xFFF44336),
+      error: errorColor,
     );
 
     var defaultColor = colors.fromController(controller);
 
-    Widget child = Padding(
+    Widget child = Container(
+      color: Colors.transparent,
       padding: controller.padding ?? EdgeInsets.zero,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Builder(
-            builder: (context) {
-              if (drawableStartBuilder != null) {
-                return drawableStartBuilder!(context, controller);
-              } else {
-                return IconView(
-                  visibility: controller.drawableStart != null,
-                  icon: controller.drawableStart,
-                  size: controller.drawableStartSize,
-                  tint: controller.drawableStartTint ?? defaultColor,
-                  marginEnd: controller.drawableStartPadding ?? 12,
-                );
-              }
-            },
-          ),
+          if (drawableStartBuilder != null)
+            drawableStartBuilder!(context, controller)
+          else
+            IconView(
+              visibility: controller.drawableStart != null,
+              icon: controller.drawableStart,
+              size: controller.drawableStartSize,
+              tint: controller.drawableStartTint ?? defaultColor,
+              marginEnd: controller.drawableStartPadding ?? 12,
+            ),
           Expanded(
             child: TextField(
               canRequestFocus: true,
@@ -474,11 +492,11 @@ class EditText<T extends EditTextController> extends TextView<T> {
               cursorRadius: controller.cursorRadius,
               cursorWidth: controller.cursorWidth,
               contentInsertionConfiguration:
-              controller.contentInsertionConfiguration,
+                  controller.contentInsertionConfiguration,
               contextMenuBuilder: controller.contextMenuBuilder,
               dragStartBehavior: controller.dragStartBehavior,
               enableIMEPersonalizedLearning:
-              controller.enableIMEPersonalizedLearning,
+                  controller.enableIMEPersonalizedLearning,
               enableInteractiveSelection: controller.enableInteractiveSelection,
               enableSuggestions: controller.enableSuggestions,
               expands: controller.expands,
@@ -519,33 +537,28 @@ class EditText<T extends EditTextController> extends TextView<T> {
               undoController: controller.undoController,
             ),
           ),
-          Builder(
-            builder: (context) {
-              if (controller.indicatorVisible) {
-                return Container(
-                  width: controller.indicatorSize,
-                  height: controller.indicatorSize,
-                  padding: EdgeInsets.all(controller.indicatorSize * 0.05),
-                  child: CircularProgressIndicator(
-                    strokeWidth: controller.indicatorStroke,
-                    color: controller.indicatorStrokeColor ?? defaultColor,
-                    backgroundColor: controller.indicatorStrokeBackground ??
-                        defaultColor?.withOpacity(0.1),
-                  ),
-                );
-              } else if (drawableEndBuilder != null) {
-                return drawableEndBuilder!(context, controller);
-              } else {
-                return IconView(
-                  visibility: controller.drawableEnd != null,
-                  icon: controller.drawableEnd,
-                  size: controller.drawableEndSize,
-                  tint: controller.drawableEndTint ?? defaultColor,
-                  marginStart: controller.drawableEndPadding ?? 4,
-                );
-              }
-            },
-          ),
+          if (controller.indicatorVisible)
+            Container(
+              width: controller.indicatorSize,
+              height: controller.indicatorSize,
+              padding: EdgeInsets.all(controller.indicatorSize * 0.05),
+              child: CircularProgressIndicator(
+                strokeWidth: controller.indicatorStroke,
+                color: controller.indicatorStrokeColor ?? defaultColor,
+                backgroundColor: controller.indicatorStrokeBackground ??
+                    defaultColor?.withOpacity(0.1),
+              ),
+            )
+          else if (drawableEndBuilder != null)
+            drawableEndBuilder!(context, controller)
+          else
+            IconView(
+              visibility: controller.drawableEnd != null,
+              icon: controller.drawableEnd,
+              size: controller.drawableEndSize,
+              tint: controller.drawableEndTint ?? defaultColor,
+              marginStart: controller.drawableEndPadding ?? 4,
+            ),
         ],
       ),
     );
@@ -581,7 +594,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
                   colorState: ValueState(
                     primary: primaryColor,
                     secondary: underlineColor,
-                    error: Colors.red,
+                    error: errorColor,
                     disable: underlineColor,
                   ),
                 ),
@@ -593,7 +606,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
                     children: [
                       _EditTextHighlightText(
                         text: hasError
-                            ? controller._error
+                            ? controller.errorText
                             : controller.helperText,
                         textAlign: TextAlign.start,
                         textSize: controller.floatingLabelSize,
@@ -629,52 +642,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     );
   }
 }
-
-
-class _EditTextHighlightText extends StatelessWidget {
-  final bool valid;
-  final bool visible;
-  final String text;
-  final TextAlign? textAlign;
-  final Color? textColor;
-  final double textSize;
-  final EdgeInsetsGeometry? padding;
-
-  const _EditTextHighlightText({
-    Key? key,
-    required this.text,
-    this.textAlign,
-    this.textColor,
-    this.textSize = 12,
-    this.valid = false,
-    this.visible = true,
-    this.padding,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Visibility(
-      visible: visible,
-      child: Container(
-        padding: padding ??
-            const EdgeInsets.symmetric(
-              vertical: 4,
-            ),
-        child: Text(
-          text,
-          textAlign: textAlign,
-          style: TextStyle(
-            color: valid ? textColor ?? Colors.grey : Colors.transparent,
-            fontFamily: "",
-            fontSize: textSize,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 
 class EditTextController extends TextViewController {
   late TextEditingController _editable;
@@ -805,13 +772,16 @@ class EditTextController extends TextViewController {
 
   /// ERROR TEXT PROPERTIES
   bool errorVisible = false;
-  String _error = "";
-  Color? errorColor = const Color(0xFFF44336);
+  String? _error;
+  ValueState<String>? errorTextState;
+  Color? errorColor;
+
+  String? get errorText => errorTextState?.fromController(this) ?? _error;
 
   /// COUNTER TEXT PROPERTIES
   bool counterVisible = false;
 
-  bool get hasError => !isValid && _error.isNotEmpty;
+  bool get hasError => !isValid && (errorText ?? "").isNotEmpty;
 
   bool get isValid {
     final v = onValidator?.call(_editable.text);
@@ -1192,6 +1162,50 @@ class EditTextController extends TextViewController {
   EditTextVoidListener? onEditingComplete;
   EditTextSubmitListener? onSubmitted;
   EditTextTapOutsideListener? onTapOutside;
+}
+
+class _EditTextHighlightText extends StatelessWidget {
+  final bool valid;
+  final bool visible;
+  final String? text;
+  final TextAlign? textAlign;
+  final Color? textColor;
+  final double textSize;
+  final EdgeInsetsGeometry? padding;
+
+  const _EditTextHighlightText({
+    Key? key,
+    required this.text,
+    this.textAlign,
+    this.textColor,
+    this.textSize = 12,
+    this.valid = false,
+    this.visible = true,
+    this.padding,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: visible,
+      child: Container(
+        padding: padding ??
+            const EdgeInsets.symmetric(
+              vertical: 4,
+            ),
+        child: Text(
+          text ?? "",
+          textAlign: textAlign,
+          style: TextStyle(
+            color: valid ? textColor ?? Colors.grey : Colors.transparent,
+            fontFamily: "",
+            fontSize: textSize,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 enum DrawableState {

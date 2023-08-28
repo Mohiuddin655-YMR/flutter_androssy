@@ -12,7 +12,44 @@ class AvatarView extends YMRView<AvatarViewController> {
   final double? borderOverlaySize;
 
   const AvatarView({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -24,23 +61,8 @@ class AvatarView extends YMRView<AvatarViewController> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.child,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -118,7 +140,7 @@ class AvatarView extends YMRView<AvatarViewController> {
       borderOverlay: borderOverlay,
       borderOverlayColor: borderOverlayColor,
       borderOverlaySize: borderOverlaySize,
-      borderSize: border,
+      borderSize: borderSize,
       cacheMode: cacheMode,
       circular: circular,
       placeholder: placeholder,
@@ -135,6 +157,42 @@ class AvatarView extends YMRView<AvatarViewController> {
     Widget parent,
   ) {
     return ImageView(
+      /// BASE PROPERTIES
+      key: key,
+
+      /// BORDER PROPERTIES
+      borderColor: controller.borderColor,
+      borderColorState: controller.borderColorState,
+      borderSize: controller.borderSize,
+      borderSizeState: controller.borderSizeState,
+      borderHorizontal: controller.borderHorizontal,
+      borderHorizontalState: controller.borderHorizontalState,
+      borderVertical: controller.borderVertical,
+      borderVerticalState: controller.borderVerticalState,
+      borderTop: controller.borderTop,
+      borderTopState: controller.borderTopState,
+      borderBottom: controller.borderBottom,
+      borderBottomState: controller.borderBottomState,
+      borderStart: controller.borderStart,
+      borderStartState: controller.borderStartState,
+      borderEnd: controller.borderEnd,
+      borderEndState: controller.borderEndState,
+
+      /// BORDER RADIUS PROPERTIES
+      borderRadius: controller.borderRadiusAll,
+      borderRadiusState: controller.borderRadiusAllState,
+      borderRadiusBL: controller.borderRadiusBL,
+      borderRadiusBLState: controller.borderRadiusBLState,
+      borderRadiusBR: controller.borderRadiusBR,
+      borderRadiusBRState: controller.borderRadiusBRState,
+      borderRadiusTL: controller.borderRadiusTL,
+      borderRadiusTLState: controller.borderRadiusTLState,
+      borderRadiusTR: controller.borderRadiusTR,
+      borderRadiusTRState: controller.borderRadiusTRState,
+
+      ///
+      ///
+      ///
       activated: controller.activated,
       enabled: controller.enabled,
       visibility: controller.visible,
@@ -147,8 +205,6 @@ class AvatarView extends YMRView<AvatarViewController> {
       marginBottom: controller.marginBottom,
       marginStart: controller.marginStart,
       marginEnd: controller.marginEnd,
-      border: controller.borderSize,
-      borderRadius: controller.borderRadiusValue,
       shadow: controller.shadow,
       shadowBlurRadius: controller.shadowBlurRadius,
       shadowSpreadRadius: controller.shadowSpreadRadius,
@@ -160,7 +216,6 @@ class AvatarView extends YMRView<AvatarViewController> {
       shadowBottom: controller.shadowBottom,
       background: controller.background,
       foreground: controller.foreground,
-      borderColor: controller.borderColor,
       shadowColor: controller.shadowColor ?? controller.borderOverlayColor,
       gravity: controller.gravity,
       transformGravity: controller.transformGravity,
@@ -170,7 +225,6 @@ class AvatarView extends YMRView<AvatarViewController> {
       foregroundImage: controller.foregroundImage,
       backgroundGradient: controller.backgroundGradient,
       foregroundGradient: controller.foregroundGradient,
-      borderGradient: controller.borderGradient,
       transform: controller.transform,
       shadowBlurStyle: controller.shadowBlurStyle,
       clipBehavior: controller.clipBehavior,
@@ -191,7 +245,6 @@ class AvatarViewController extends ViewController {
   bool? cacheMode;
   bool circular = true;
   BoxFit scaleType = BoxFit.cover;
-  double borderSize = 0;
   bool borderOverlay = true;
   Color borderOverlayColor = Colors.black.withOpacity(0.5);
   double borderOverlaySize = 0.2;
@@ -250,8 +303,8 @@ class AvatarViewController extends ViewController {
   Color get borderColor => super.borderColor ?? Colors.white;
 
   @override
-  double get borderRadiusValue {
-    return circular ? 0 : super.borderRadiusValue ?? size;
+  double get borderRadiusAll {
+    return circular ? 0 : super.borderRadiusAll ?? size;
   }
 
   @override

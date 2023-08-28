@@ -3,6 +3,30 @@ part of '../widgets.dart';
 class YMRView<T extends ViewController> extends StatefulWidget {
   final T? controller;
 
+  /// BORDER PROPERTIES
+  final Color? borderColor;
+  final ValueState<Color>? borderColorState;
+
+  final double? borderSize;
+  final ValueState<double>? borderSizeState;
+  final double? borderHorizontal, borderVertical;
+  final ValueState<double>? borderHorizontalState, borderVerticalState;
+  final double? borderTop, borderBottom, borderStart, borderEnd;
+  final ValueState<double>? borderTopState, borderBottomState;
+  final ValueState<double>? borderStartState, borderEndState;
+
+  /// BORDER RADIUS PROPERTIES
+  final double? borderRadius;
+  final ValueState<double>? borderRadiusState;
+  final double? borderRadiusBL, borderRadiusBR, borderRadiusTL, borderRadiusTR;
+  final ValueState<double>? borderRadiusBLState, borderRadiusBRState;
+  final ValueState<double>? borderRadiusTLState, borderRadiusTRState;
+
+  ///
+  ///
+  ///
+  ///
+  ///
   final int? flex;
   final bool? absorbMode, activated, enabled, expandable, scrollable, wrapper;
 
@@ -25,19 +49,12 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final double? paddingHorizontal, paddingVertical;
   final double? paddingTop, paddingBottom, paddingStart, paddingEnd;
 
-  final double? border;
-  final double? borderHorizontal, borderVertical;
-  final double? borderTop, borderBottom, borderStart, borderEnd;
-
-  final double? borderRadius;
-  final double? borderRadiusBL, borderRadiusBR, borderRadiusTL, borderRadiusTR;
-
   final double? shadow;
   final double? shadowBlurRadius, shadowSpreadRadius;
   final double? shadowHorizontal, shadowVertical;
   final double? shadowStart, shadowEnd, shadowTop, shadowBottom;
 
-  final Color? background, borderColor, foreground, shadowColor;
+  final Color? background, foreground, shadowColor;
   final Color hoverColor, pressedColor, rippleColor;
 
   final DecorationImage? backgroundImage, foregroundImage;
@@ -79,6 +96,41 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   const YMRView({
     Key? key,
     this.controller,
+
+    /// BORDER PROPERTIES
+    this.borderColor,
+    this.borderColorState,
+    this.borderSize,
+    this.borderSizeState,
+    this.borderHorizontal,
+    this.borderHorizontalState,
+    this.borderVertical,
+    this.borderVerticalState,
+    this.borderTop,
+    this.borderTopState,
+    this.borderBottom,
+    this.borderBottomState,
+    this.borderStart,
+    this.borderStartState,
+    this.borderEnd,
+    this.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    this.borderRadius,
+    this.borderRadiusState,
+    this.borderRadiusBL,
+    this.borderRadiusBLState,
+    this.borderRadiusBR,
+    this.borderRadiusBRState,
+    this.borderRadiusTL,
+    this.borderRadiusTLState,
+    this.borderRadiusTR,
+    this.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     this.flex,
     this.absorbMode,
     this.activated,
@@ -112,18 +164,6 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.paddingBottom,
     this.paddingStart,
     this.paddingEnd,
-    this.border,
-    this.borderHorizontal,
-    this.borderVertical,
-    this.borderTop,
-    this.borderBottom,
-    this.borderStart,
-    this.borderEnd,
-    this.borderRadius,
-    this.borderRadiusBL,
-    this.borderRadiusBR,
-    this.borderRadiusTL,
-    this.borderRadiusTR,
     this.orientation,
     this.scrollable,
     this.scrollController,
@@ -138,7 +178,6 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.shadowTop,
     this.shadowBottom,
     this.background,
-    this.borderColor,
     this.foreground,
     this.hoverColor = Colors.transparent,
     this.pressedColor = Colors.transparent,

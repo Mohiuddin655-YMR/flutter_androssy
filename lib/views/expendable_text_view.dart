@@ -10,7 +10,44 @@ class ExpendableTextView extends TextView {
   final FontWeight? expendedTextWeight;
 
   const ExpendableTextView({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -22,22 +59,7 @@ class ExpendableTextView extends TextView {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -139,17 +161,46 @@ class _ExpendableTextViewState extends State<ExpendableTextView> {
   @override
   Widget build(BuildContext context) {
     return TextView(
+      /// BASE PROPERTIES
+      key: widget.key,
       controller: widget.controller,
+
+      /// BORDER PROPERTIES
+      borderColor: widget.borderColor,
+      borderColorState: widget.borderColorState,
+      borderSize: widget.borderSize,
+      borderSizeState: widget.borderSizeState,
+      borderHorizontal: widget.borderHorizontal,
+      borderHorizontalState: widget.borderHorizontalState,
+      borderVertical: widget.borderVertical,
+      borderVerticalState: widget.borderVerticalState,
+      borderTop: widget.borderTop,
+      borderTopState: widget.borderTopState,
+      borderBottom: widget.borderBottom,
+      borderBottomState: widget.borderBottomState,
+      borderStart: widget.borderStart,
+      borderStartState: widget.borderStartState,
+      borderEnd: widget.borderEnd,
+      borderEndState: widget.borderEndState,
+
+      /// BORDER RADIUS PROPERTIES
+      borderRadius: widget.borderRadius,
+      borderRadiusState: widget.borderRadiusState,
+      borderRadiusBL: widget.borderRadiusBL,
+      borderRadiusBLState: widget.borderRadiusBLState,
+      borderRadiusBR: widget.borderRadiusBR,
+      borderRadiusBRState: widget.borderRadiusBRState,
+      borderRadiusTL: widget.borderRadiusTL,
+      borderRadiusTLState: widget.borderRadiusTLState,
+      borderRadiusTR: widget.borderRadiusTR,
+      borderRadiusTRState: widget.borderRadiusTRState,
+
+      ///
+      ///
+      ///
       gravity: widget.gravity,
       background: widget.background,
       backgroundGradient: widget.backgroundGradient,
-      borderColor: widget.borderColor,
-      borderRadius: widget.borderRadius,
-      borderRadiusTL: widget.borderRadiusTL,
-      borderRadiusTR: widget.borderRadiusTR,
-      borderRadiusBL: widget.borderRadiusBL,
-      borderRadiusBR: widget.borderRadiusBR,
-      border: widget.border,
       textDecoration: widget.textDecoration,
       textDecorationColor: widget.textDecorationColor,
       textDecorationStyle: widget.textDecorationStyle,

@@ -11,7 +11,44 @@ class IconView extends YMRView<IconViewController> {
   final BlendMode? tintMode;
 
   const IconView({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -23,23 +60,7 @@ class IconView extends YMRView<IconViewController> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
-    super.child,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -120,6 +141,54 @@ class IconView extends YMRView<IconViewController> {
   }
 }
 
+class IconViewController extends ViewController {
+  BoxFit fit = BoxFit.contain;
+  dynamic _icon;
+  ValueState<dynamic>? iconState;
+  double _size = 24;
+  ValueState<double>? iconSizeState;
+  Color? _tint;
+  ValueState<Color>? tintState;
+  BlendMode tintMode = BlendMode.srcIn;
+
+  IconViewController fromIconView(IconView view) {
+    super.fromView(view);
+    fit = view.fit ?? BoxFit.contain;
+    _icon = view.icon;
+    iconState = view.iconState;
+    _size = view.size ?? 24;
+    _tint = view.tint;
+    tintState = view.tintState;
+    tintMode = view.tintMode ?? BlendMode.srcIn;
+    return this;
+  }
+
+  @override
+  double get borderRadiusAll => super.borderRadiusAll ?? size;
+
+  dynamic get icon => iconState?.fromController(this) ?? _icon;
+
+  double get size => iconSizeState?.fromController(this) ?? _size;
+
+  Color? get tint => tintState?.fromController(this) ?? _tint;
+
+  void setIcon(dynamic value) {
+    onNotifyWithCallback(() => _icon = value);
+  }
+
+  void setIconSize(double value) {
+    onNotifyWithCallback(() => _size = value);
+  }
+
+  void setIconTint(Color value) {
+    onNotifyWithCallback(() => _tint = value);
+  }
+
+  void setIconTintState(ValueState<Color>? value) {
+    onNotifyWithCallback(() => tintState = value);
+  }
+}
+
 class RawIconView extends StatelessWidget {
   final BoxFit? fit;
   final dynamic icon;
@@ -197,51 +266,3 @@ class RawIconView extends StatelessWidget {
 }
 
 enum IconType { none, icon, svg, png }
-
-class IconViewController extends ViewController {
-  BoxFit fit = BoxFit.contain;
-  dynamic _icon;
-  ValueState<dynamic>? iconState;
-  double _size = 24;
-  ValueState<double>? iconSizeState;
-  Color? _tint;
-  ValueState<Color>? tintState;
-  BlendMode tintMode = BlendMode.srcIn;
-
-  IconViewController fromIconView(IconView view) {
-    super.fromView(view);
-    fit = view.fit ?? BoxFit.contain;
-    _icon = view.icon;
-    iconState = view.iconState;
-    _size = view.size ?? 24;
-    _tint = view.tint;
-    tintState = view.tintState;
-    tintMode = view.tintMode ?? BlendMode.srcIn;
-    return this;
-  }
-
-  @override
-  double get borderRadiusValue => super.borderRadiusValue ?? size;
-
-  dynamic get icon => iconState?.fromController(this) ?? _icon;
-
-  double get size => iconSizeState?.fromController(this) ?? _size;
-
-  Color? get tint => tintState?.fromController(this) ?? _tint;
-
-  void setIcon(dynamic value) {
-    onNotifyWithCallback(() => _icon = value);
-  }
-
-  void setIconSize(double value) {
-    onNotifyWithCallback(() => _size = value);
-  }
-
-  void setIconTint(Color value) {
-    onNotifyWithCallback(() => _tint = value);
-  }
-
-  void setIconTintState(ValueState<Color>? value) {
-    onNotifyWithCallback(() => tintState = value);
-  }
-}

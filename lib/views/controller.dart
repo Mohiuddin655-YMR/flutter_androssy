@@ -3,6 +3,41 @@ part of '../widgets.dart';
 class ViewController {
   @mustCallSuper
   ViewController fromView(YMRView view) {
+    /// VIEW BORDER PROPERTIES
+    _borderColor = view.borderColor;
+    _borderSize = view.borderSize;
+    _borderStart = view.borderStart;
+    _borderEnd = view.borderEnd;
+    _borderTop = view.borderTop;
+    _borderBottom = view.borderBottom;
+    _borderHorizontal = view.borderHorizontal;
+    _borderVertical = view.borderVertical;
+    borderColorState = view.borderColorState;
+    borderSizeState = view.borderSizeState;
+    borderStartState = view.borderStartState;
+    borderEndState = view.borderEndState;
+    borderTopState = view.borderTopState;
+    borderBottomState = view.borderBottomState;
+    borderHorizontalState = view.borderHorizontalState;
+    borderVerticalState = view.borderVerticalState;
+
+    /// VIEW BORDER RADIUS PROPERTIES
+    _borderRadiusAll = view.borderRadius;
+    _borderRadiusBL = view.borderRadiusBL;
+    _borderRadiusBR = view.borderRadiusBR;
+    _borderRadiusTL = view.borderRadiusTL;
+    _borderRadiusTR = view.borderRadiusTR;
+    borderRadiusAllState = view.borderRadiusState;
+    borderRadiusBLState = view.borderRadiusBLState;
+    borderRadiusBRState = view.borderRadiusBRState;
+    borderRadiusTLState = view.borderRadiusTLState;
+    borderRadiusTRState = view.borderRadiusTRState;
+
+    ///
+    ///
+    ///
+    ///
+    ///
     hoverColor = view.hoverColor;
     pressedColor = view.pressedColor;
     rippleColor = view.rippleColor;
@@ -50,24 +85,6 @@ class ViewController {
     _paddingBottom = view.paddingBottom;
     paddingHorizontal = view.paddingHorizontal;
     paddingVertical = view.paddingVertical;
-
-    /// VIEW BORDER PROPERTIES
-    borderColor = view.borderColor;
-    borderGradient = view.borderGradient;
-    _borderSize = view.border ?? 0;
-    _borderStart = view.borderStart;
-    _borderEnd = view.borderEnd;
-    _borderTop = view.borderTop;
-    _borderBottom = view.borderBottom;
-    borderHorizontal = view.borderHorizontal;
-    borderVertical = view.borderVertical;
-
-    /// VIEW BORDER RADIUS PROPERTIES
-    borderRadiusValue = view.borderRadius ?? 0;
-    _borderRadiusBL = view.borderRadiusBL;
-    _borderRadiusBR = view.borderRadiusBR;
-    _borderRadiusTL = view.borderRadiusTL;
-    _borderRadiusTR = view.borderRadiusTR;
 
     /// VIEW SHADOW PROPERTIES
     shadowColor = view.shadowColor;
@@ -138,6 +155,313 @@ class ViewController {
 
   ThemeData get theme => context != null ? Theme.of(context!) : ThemeData();
 
+  /// BORDER PROPERTIES
+
+  Color? _borderColor;
+
+  ValueState<Color>? borderColorState;
+
+  double? _borderSize;
+
+  ValueState<double>? borderSizeState;
+
+  double? _borderHorizontal;
+
+  ValueState<double>? borderHorizontalState;
+
+  double? _borderVertical;
+
+  ValueState<double>? borderVerticalState;
+
+  double? _borderTop;
+
+  ValueState<double>? borderTopState;
+
+  double? _borderBottom;
+
+  ValueState<double>? borderBottomState;
+
+  double? _borderStart;
+
+  ValueState<double>? borderStartState;
+
+  double? _borderEnd;
+
+  ValueState<double>? borderEndState;
+
+  Color? get borderColor {
+    return borderColorState?.fromController(this) ?? _borderColor;
+  }
+
+  double? get borderSize {
+    return borderSizeState?.fromController(this) ?? _borderSize;
+  }
+
+  double? get borderHorizontal {
+    var v = borderHorizontalState?.fromController(this) ?? _borderHorizontal;
+    return v ?? borderSize;
+  }
+
+  double? get borderVertical {
+    var v = borderVerticalState?.fromController(this) ?? _borderVertical;
+    return v ?? borderSize;
+  }
+
+  double? get borderTop {
+    var v = borderTopState?.fromController(this) ?? _borderTop;
+    return v ?? borderVertical ?? borderSize;
+  }
+
+  double? get borderBottom {
+    var v = borderBottomState?.fromController(this) ?? _borderBottom;
+    return v ?? borderVertical ?? borderSize;
+  }
+
+  double? get borderStart {
+    var v = borderStartState?.fromController(this) ?? _borderStart;
+    return v ?? borderHorizontal ?? borderSize;
+  }
+
+  double? get borderEnd {
+    var v = borderEndState?.fromController(this) ?? _borderEnd;
+    return v ?? borderHorizontal ?? borderSize;
+  }
+
+  double get borderAll {
+    return border.left + border.right + border.top + border.bottom;
+  }
+
+  EdgeInsets get border {
+    return EdgeInsets.only(
+      left: borderStart ?? 0,
+      right: borderEnd ?? 0,
+      top: borderTop ?? 0,
+      bottom: borderBottom ?? 0,
+    );
+  }
+
+  BoxBorder? get boxBorder {
+    return Border(
+      top: BorderSide(
+        color: borderColor ?? Colors.black,
+        width: border.top,
+      ),
+      bottom: BorderSide(
+        color: borderColor ?? Colors.black,
+        width: border.bottom,
+      ),
+      left: BorderSide(
+        color: borderColor ?? Colors.black,
+        width: border.left,
+      ),
+      right: BorderSide(
+        color: borderColor ?? Colors.black,
+        width: border.right,
+      ),
+    );
+  }
+
+  bool get isBorder => roots.border && borderAll > 0;
+
+  bool get isBorderX => roots.border && (border.left + border.right) > 0;
+
+  bool get isBorderY => roots.border && (border.top + border.bottom) > 0;
+
+  set borderColor(Color? value) => _borderColor = value;
+
+  set borderSize(double? value) => _borderSize = value;
+
+  set borderHorizontal(double? value) => _borderHorizontal = value;
+
+  set borderVertical(double? value) => _borderVertical = value;
+
+  set borderTop(double? value) => _borderTop = value;
+
+  set borderBottom(double? value) => _borderBottom = value;
+
+  set borderStart(double? value) => _borderStart = value;
+
+  set borderEnd(double? value) => _borderEnd = value;
+
+  void setBorderColor(Color? value) {
+    onNotifyWithCallback(() => _borderColor = value);
+  }
+
+  void setBorderColorState(ValueState<Color>? value) {
+    onNotifyWithCallback(() => borderColorState = value);
+  }
+
+  void setBorderSize(double value) {
+    onNotifyWithCallback(() => _borderSize = value);
+  }
+
+  void setBorderSizeState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderSizeState = value);
+  }
+
+  void setBorderHorizontal(double? value) {
+    onNotifyWithCallback(() => _borderHorizontal = value);
+  }
+
+  void setBorderHorizontalState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderHorizontalState = value);
+  }
+
+  void setBorderVerticalState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderVerticalState = value);
+  }
+
+  void setBorderTop(double? value) {
+    onNotifyWithCallback(() => _borderTop = value);
+  }
+
+  void setBorderTopState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderTopState = value);
+  }
+
+  void setBorderBottom(double? value) {
+    onNotifyWithCallback(() => _borderBottom = value);
+  }
+
+  void setBorderBottomState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderBottomState = value);
+  }
+
+  void setBorderStart(double? value) {
+    onNotifyWithCallback(() => _borderStart = value);
+  }
+
+  void setBorderStartState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderStartState = value);
+  }
+
+  void setBorderEnd(double? value) {
+    onNotifyWithCallback(() => _borderEnd = value);
+  }
+
+  void setBorderEndState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderEndState = value);
+  }
+
+  /// BORDER RADIUS PROPERTIES
+
+  double? _borderRadiusAll;
+
+  ValueState<double>? borderRadiusAllState;
+
+  double? _borderRadiusBL;
+
+  ValueState<double>? borderRadiusBLState;
+
+  double? _borderRadiusBR;
+
+  ValueState<double>? borderRadiusBRState;
+
+  double? _borderRadiusTL;
+
+  ValueState<double>? borderRadiusTLState;
+
+  double? _borderRadiusTR;
+
+  ValueState<double>? borderRadiusTRState;
+
+  double? get borderRadiusAll {
+    return borderRadiusAllState?.fromController(this) ?? _borderRadiusAll;
+  }
+
+  double? get borderRadiusBL {
+    var v = borderRadiusBLState?.fromController(this) ?? _borderRadiusBL;
+    return v ?? borderRadiusAll;
+  }
+
+  double? get borderRadiusBR {
+    var v = borderRadiusBRState?.fromController(this) ?? _borderRadiusBR;
+    return v ?? borderRadiusAll;
+  }
+
+  double? get borderRadiusTL {
+    var v = borderRadiusTLState?.fromController(this) ?? _borderRadiusTL;
+    return v ?? borderRadiusAll;
+  }
+
+  double? get borderRadiusTR {
+    var v = borderRadiusTRState?.fromController(this) ?? _borderRadiusTR;
+    return v ?? borderRadiusAll;
+  }
+
+  BorderRadius get borderRadius {
+    return BorderRadius.only(
+      topLeft: Radius.circular(borderRadiusTL ?? 0),
+      topRight: Radius.circular(borderRadiusTR ?? 0),
+      bottomLeft: Radius.circular(borderRadiusBL ?? 0),
+      bottomRight: Radius.circular(borderRadiusBR ?? 0),
+    );
+  }
+
+  bool get isRadius {
+    var a = roots.radius;
+    var b = !isCircular;
+    var c = isBorderRadius;
+    return a && b && c;
+  }
+
+  bool get isBorderRadius => roots.radius && borderRadius != BorderRadius.zero;
+
+  set borderRadiusAll(double? value) => _borderRadiusAll = value;
+
+  set borderRadiusBL(double? value) => _borderRadiusBL = value;
+
+  set borderRadiusBR(double? value) => _borderRadiusBR = value;
+
+  set borderRadiusTL(double? value) => _borderRadiusTL = value;
+
+  set borderRadiusTR(double? value) => _borderRadiusTR = value;
+
+  void setBorderRadiusAll(double? value) {
+    onNotifyWithCallback(() => _borderRadiusAll = value);
+  }
+
+  void setBorderRadiusAllState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderRadiusAllState = value);
+  }
+
+  void setBorderRadiusBL(double? value) {
+    onNotifyWithCallback(() => _borderRadiusBL = value);
+  }
+
+  void setBorderRadiusBLState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderRadiusBLState = value);
+  }
+
+  void setBorderRadiusBR(double? value) {
+    onNotifyWithCallback(() => _borderRadiusBR = value);
+  }
+
+  void setBorderRadiusBRState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderRadiusBRState = value);
+  }
+
+  void setBorderRadiusTL(double? value) {
+    onNotifyWithCallback(() => _borderRadiusTL = value);
+  }
+
+  void setBorderRadiusTLState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderRadiusTLState = value);
+  }
+
+  void setBorderRadiusTR(double? value) {
+    onNotifyWithCallback(() => _borderRadiusTR = value);
+  }
+
+  void setBorderRadiusTRState(ValueState<double>? value) {
+    onNotifyWithCallback(() => borderRadiusTRState = value);
+  }
+
+  ///
+  ///
+  ///
+  ///
+  ///
   bool expandable = false;
   bool scrollable = false;
   bool wrapper = false;
@@ -213,137 +537,7 @@ class ViewController {
 
   DecorationImage? foregroundImage;
 
-  double? _borderSize;
-
-  EdgeInsets get border {
-    return EdgeInsets.only(
-      left: borderStart ?? 0,
-      right: borderEnd ?? 0,
-      top: borderTop ?? 0,
-      bottom: borderBottom ?? 0,
-    );
-  }
-
-  double get borderAll {
-    return border.left + border.right + border.top + border.bottom;
-  }
-
-  double? borderHorizontal, borderVertical;
-
-  double? _borderTop;
-
-  double? get borderTop => _borderTop ?? borderVertical ?? _borderSize;
-
-  double? _borderBottom;
-
-  double? get borderBottom => _borderBottom ?? borderVertical ?? _borderSize;
-
-  double? _borderStart;
-
-  double? get borderStart => _borderStart ?? borderHorizontal ?? _borderSize;
-
-  double? _borderEnd;
-
-  double? get borderEnd => _borderEnd ?? borderHorizontal ?? _borderSize;
-
-  BoxBorder? get boxBorder => Border(
-        top: BorderSide(
-          color: borderColor ?? Colors.black,
-          width: border.top,
-        ),
-        bottom: BorderSide(
-          color: borderColor ?? Colors.black,
-          width: border.bottom,
-        ),
-        left: BorderSide(
-          color: borderColor ?? Colors.black,
-          width: border.left,
-        ),
-        right: BorderSide(
-          color: borderColor ?? Colors.black,
-          width: border.right,
-        ),
-      );
-
-  bool get isBorder => roots.border && borderAll > 0;
-
-  bool get isBorderX => roots.border && (border.left + border.right) > 0;
-
-  bool get isBorderY => roots.border && (border.top + border.bottom) > 0;
-
-  Color? borderColor;
-
-  Gradient? borderGradient;
-
-  double? borderRadiusValue;
-
-  BorderRadius get borderRadius {
-    return BorderRadius.only(
-      topLeft: Radius.circular(borderRadiusTL ?? 0),
-      topRight: Radius.circular(borderRadiusTR ?? 0),
-      bottomLeft: Radius.circular(borderRadiusBL ?? 0),
-      bottomRight: Radius.circular(borderRadiusBR ?? 0),
-    );
-  }
-
-  BorderRadius get borderRadiusF {
-    return BorderRadius.only(
-      topLeft: Radius.circular(borderRadiusTLF ?? 0),
-      topRight: Radius.circular(borderRadiusTRF ?? 0),
-      bottomLeft: Radius.circular(borderRadiusBLF ?? 0),
-      bottomRight: Radius.circular(borderRadiusBRF ?? 0),
-    );
-  }
-
-  double? _borderRadiusBL;
-
-  double? get borderRadiusBL => _borderRadiusBL ?? borderRadiusValue;
-
-  double? get borderRadiusBLF {
-    final a = borderRadiusBL ?? 0;
-    final b = a > 0 ? min(border.left, border.bottom) : 0;
-    return a + b;
-  }
-
-  double? _borderRadiusBR;
-
-  double? get borderRadiusBR => _borderRadiusBR ?? borderRadiusValue;
-
-  double? get borderRadiusBRF {
-    final a = borderRadiusBR ?? 0;
-    final b = a > 0 ? min(border.right, border.bottom) : 0;
-    return a + b;
-  }
-
-  double? _borderRadiusTL;
-
-  double? get borderRadiusTL => _borderRadiusTL ?? borderRadiusValue;
-
-  double? get borderRadiusTLF {
-    final a = borderRadiusTL ?? 0;
-    final b = a > 0 ? min(border.left, border.top) : 0;
-    return a + b;
-  }
-
-  double? _borderRadiusTR;
-
-  double? get borderRadiusTR => _borderRadiusTR ?? borderRadiusValue;
-
-  double? get borderRadiusTRF {
-    final a = borderRadiusTR ?? 0;
-    final b = a > 0 ? min(border.right, border.top) : 0;
-    return a + b;
-  }
-
-  bool get isRadius {
-    var a = roots.radius;
-    var b = !isCircular;
-    var c = isBorderRadius;
-    return a && b && c;
-  }
-
-  bool get isBorderRadius => roots.radius && borderRadius != BorderRadius.zero;
-
+  /// CHILD PROPERTIES
   Widget? child;
 
   bool enabled = true;
@@ -692,76 +886,6 @@ class ViewController {
 
   void setBackgroundImageState(ValueState<DecorationImage>? value) {
     backgroundImageState = value;
-    _notify;
-  }
-
-  void setBorderColor(Color value) {
-    borderColor = value;
-    _notify;
-  }
-
-  void setBorderGradient(Gradient? value) {
-    borderGradient = value;
-    _notify;
-  }
-
-  void setBorder(double value) {
-    _borderSize = value;
-    _notify;
-  }
-
-  void setBorderHorizontal(double? value) {
-    borderHorizontal = value;
-    _notify;
-  }
-
-  void setBorderVertical(double? value) {
-    borderVertical = value;
-    _notify;
-  }
-
-  void setBorderTop(double? value) {
-    _borderTop = value;
-    _notify;
-  }
-
-  void setBorderBottom(double? value) {
-    _borderBottom = value;
-    _notify;
-  }
-
-  void setBorderStart(double? value) {
-    _borderStart = value;
-    _notify;
-  }
-
-  void setBorderEnd(double? value) {
-    _borderEnd = value;
-    _notify;
-  }
-
-  void setBorderRadius(double value) {
-    borderRadiusValue = value;
-    _notify;
-  }
-
-  void setBorderRadiusBL(double? value) {
-    _borderRadiusBL = value;
-    _notify;
-  }
-
-  void setBorderRadiusBR(double? value) {
-    _borderRadiusBR = value;
-    _notify;
-  }
-
-  void setBorderRadiusTL(double? value) {
-    _borderRadiusTL = value;
-    _notify;
-  }
-
-  void setBorderRadiusTR(double? value) {
-    _borderRadiusTR = value;
     _notify;
   }
 

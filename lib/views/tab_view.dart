@@ -22,7 +22,44 @@ class TabView extends YMRView<TabViewController> {
   final bool Function(bool selected)? onVisibleTitleWhenTabSelected;
 
   const TabView({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -34,23 +71,8 @@ class TabView extends YMRView<TabViewController> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.child,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -163,82 +185,6 @@ class TabView extends YMRView<TabViewController> {
   }
 }
 
-class _TabViewX extends StatelessWidget {
-  final TabViewController controller;
-
-  const _TabViewX({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        if (controller.iconVisible) _TabViewIcon(controller: controller),
-        if (controller.titleVisible) _TabViewText(controller: controller),
-      ],
-    );
-  }
-}
-
-class _TabViewY extends StatelessWidget {
-  final TabViewController controller;
-
-  const _TabViewY({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        if (controller.iconVisible) _TabViewIcon(controller: controller),
-        if (controller.titleVisible) _TabViewText(controller: controller),
-      ],
-    );
-  }
-}
-
-class _TabViewIcon extends StatelessWidget {
-  final TabViewController controller;
-
-  const _TabViewIcon({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-        right: controller._iconSpacingX,
-        bottom: controller._iconSpacingY,
-      ),
-      child: RawIconView(
-        icon: controller.icon,
-        size: controller.iconSize,
-        tint: controller.iconTint,
-      ),
-    );
-  }
-}
-
-class _TabViewText extends StatelessWidget {
-  final TabViewController controller;
-
-  const _TabViewText({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      controller.title,
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        color: controller.contentColor,
-        fontWeight: controller.titleWeight,
-        fontSize: controller.titleSize,
-      ),
-    );
-  }
-}
-
 class TabViewController extends ViewController {
   Color _contentColor = const Color(0xFF808080);
   ValueState<Color>? contentColorState;
@@ -335,5 +281,81 @@ class TabViewController extends ViewController {
 
   bool get _isVisibleTitleWhenSelected {
     return onVisibleTitleWhenTabSelected?.call(activated) ?? true;
+  }
+}
+
+class _TabViewX extends StatelessWidget {
+  final TabViewController controller;
+
+  const _TabViewX({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        if (controller.iconVisible) _TabViewIcon(controller: controller),
+        if (controller.titleVisible) _TabViewText(controller: controller),
+      ],
+    );
+  }
+}
+
+class _TabViewY extends StatelessWidget {
+  final TabViewController controller;
+
+  const _TabViewY({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        if (controller.iconVisible) _TabViewIcon(controller: controller),
+        if (controller.titleVisible) _TabViewText(controller: controller),
+      ],
+    );
+  }
+}
+
+class _TabViewIcon extends StatelessWidget {
+  final TabViewController controller;
+
+  const _TabViewIcon({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+        right: controller._iconSpacingX,
+        bottom: controller._iconSpacingY,
+      ),
+      child: RawIconView(
+        icon: controller.icon,
+        size: controller.iconSize,
+        tint: controller.iconTint,
+      ),
+    );
+  }
+}
+
+class _TabViewText extends StatelessWidget {
+  final TabViewController controller;
+
+  const _TabViewText({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      controller.title,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        color: controller.contentColor,
+        fontWeight: controller.titleWeight,
+        fontSize: controller.titleSize,
+      ),
+    );
   }
 }

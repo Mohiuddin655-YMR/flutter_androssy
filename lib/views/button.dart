@@ -14,7 +14,44 @@ class Button extends TextView<ButtonController> {
   final IconAlignment? iconAlignment;
 
   const Button({
+    /// BASE PROPERTIES
     super.key,
+    super.controller,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    ///
+    ///
+    ///
+    ///
     super.absorbMode,
     super.activated,
     super.animation,
@@ -26,22 +63,7 @@ class Button extends TextView<ButtonController> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
-    super.border,
-    super.borderHorizontal,
-    super.borderVertical,
-    super.borderTop,
-    super.borderBottom,
-    super.borderStart,
-    super.borderEnd,
-    super.borderColor,
-    super.borderGradient,
-    super.borderRadius,
-    super.borderRadiusBL,
-    super.borderRadiusBR,
-    super.borderRadiusTL,
-    super.borderRadiusTR,
     super.clipBehavior,
-    super.controller,
     super.dimensionRatio,
     super.elevation,
     super.enabled,
@@ -163,59 +185,6 @@ class Button extends TextView<ButtonController> {
   }
 }
 
-class _Text extends StatelessWidget {
-  final ButtonController controller;
-
-  const _Text({
-    Key? key,
-    required this.controller,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return RawTextView(
-      text: controller.text,
-      textAlign: TextAlign.center,
-      textColor: controller.color,
-      textSize: controller.textSize,
-      textFontWeight: controller.textFontWeight,
-      textStyle: controller.textStyle,
-    );
-  }
-}
-
-class _Icon extends StatelessWidget {
-  final ButtonController controller;
-  final bool visible;
-
-  const _Icon({
-    Key? key,
-    required this.controller,
-    this.visible = true,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return IconView(
-      visibility: visible,
-      marginStart: !controller.isCenterText && controller.isEndIconVisible
-          ? controller.iconSpace
-          : null,
-      marginEnd: !controller.isCenterText && controller.isStartIconVisible
-          ? controller.iconSpace
-          : null,
-      positionType: controller.isCenterText
-          ? controller.isEndIconVisible
-              ? ViewPositionType.left
-              : ViewPositionType.right
-          : null,
-      icon: controller.icon,
-      tint: controller.iconTint,
-      size: controller.iconSize,
-    );
-  }
-}
-
 class ButtonController extends TextViewController {
   bool centerText = false;
   dynamic _icon;
@@ -293,6 +262,59 @@ class ButtonController extends TextViewController {
 
   @override
   double? get paddingVertical => super.paddingVertical ?? 12;
+}
+
+class _Text extends StatelessWidget {
+  final ButtonController controller;
+
+  const _Text({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return RawTextView(
+      text: controller.text,
+      textAlign: TextAlign.center,
+      textColor: controller.color,
+      textSize: controller.textSize,
+      textFontWeight: controller.textFontWeight,
+      textStyle: controller.textStyle,
+    );
+  }
+}
+
+class _Icon extends StatelessWidget {
+  final ButtonController controller;
+  final bool visible;
+
+  const _Icon({
+    Key? key,
+    required this.controller,
+    this.visible = true,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconView(
+      visibility: visible,
+      marginStart: !controller.isCenterText && controller.isEndIconVisible
+          ? controller.iconSpace
+          : null,
+      marginEnd: !controller.isCenterText && controller.isStartIconVisible
+          ? controller.iconSpace
+          : null,
+      positionType: controller.isCenterText
+          ? controller.isEndIconVisible
+              ? ViewPositionType.left
+              : ViewPositionType.right
+          : null,
+      icon: controller.icon,
+      tint: controller.iconTint,
+      size: controller.iconSize,
+    );
+  }
 }
 
 enum IconAlignment { start, end }

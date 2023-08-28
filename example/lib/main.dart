@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/core.dart';
+import 'package:flutter_androssy/extensions.dart';
 import 'package:flutter_androssy/widgets.dart';
 
 void main() {
@@ -44,19 +45,28 @@ class Example extends AndrossyActivity<ExampleController> {
       paddingHorizontal: 24,
       children: [
         TextView(text: instance.preferences.toString()),
-        const EditText(
+        EditText(
           inputType: TextInputType.emailAddress,
           marginTop: 24,
           hint: "Email",
-          drawableStartState: ValueState(
+          drawableStartState: const ValueState(
             primary: Icons.email_outlined,
             secondary: Icons.email,
           ),
-          drawableEndState: ValueState(
-            primary: Icons.email_outlined,
-            secondary: Icons.email,
+          paddingHorizontal: 12,
+          borderColor: context.primaryColor,
+          borderSizeState: const ValueState(
+            primary: 1,
+            secondary: 2,
           ),
-          paddingVertical: 40,
+          borderRadiusState: const ValueState(
+            primary: 24,
+            secondary: 12,
+          ),
+          borderColorState: ValueState(
+            primary: Colors.grey,
+            secondary: context.primaryColor,
+          ),
         ),
         const EditText(
           inputType: TextInputType.visiblePassword,
