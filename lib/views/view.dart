@@ -22,6 +22,9 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final ValueState<double>? borderRadiusBLState, borderRadiusBRState;
   final ValueState<double>? borderRadiusTLState, borderRadiusTRState;
 
+  /// INDICATOR AND ACTIVATOR PROPERTIES
+  final OnViewActivator? onActivator;
+
   ///
   ///
   ///
@@ -126,6 +129,9 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.borderRadiusTLState,
     this.borderRadiusTR,
     this.borderRadiusTRState,
+
+    /// INDICATOR AND ACTIVATOR PROPERTIES
+    this.onActivator,
 
     ///
     ///

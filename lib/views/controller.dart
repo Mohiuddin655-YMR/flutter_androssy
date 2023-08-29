@@ -33,6 +33,9 @@ class ViewController {
     borderRadiusTLState = view.borderRadiusTLState;
     borderRadiusTRState = view.borderRadiusTRState;
 
+    /// INDICATOR AND ACTIVATOR PROPERTIES
+    onActivator = view.onActivator;
+
     ///
     ///
     ///
@@ -455,6 +458,38 @@ class ViewController {
 
   void setBorderRadiusTRState(ValueState<double>? value) {
     onNotifyWithCallback(() => borderRadiusTRState = value);
+  }
+
+  /// INDICATOR AND ACTIVATOR PROPERTIES
+
+  bool _loading = false;
+
+  bool get isIndicatorVisible => onActivator != null && _loading;
+
+  OnViewActivator? _onActivator;
+
+  OnViewActivator? get onActivator => enabled ? _onActivator : null;
+
+  set onActivator(OnViewActivator? value) => _onActivator ??= value;
+
+  void setOnActivatorListener(OnViewActivator listener) =>
+      _onActivator = listener;
+
+  void onNotifyActivator(dynamic data, {VoidCallback? callback}) async {
+    if (onActivator != null) {
+      onNotifyWithCallback(() => _loading = true);
+      bool value = await onActivator!(data);
+      onNotifyWithCallback(() {
+        activated = value;
+        _loading = false;
+      });
+    } else {
+      if (callback != null) callback();
+    }
+  }
+
+  void onNotifyToggleWithActivator() {
+    onNotifyActivator(!activated, callback: onNotifyToggle);
   }
 
   ///
@@ -1694,3 +1729,15 @@ enum ViewScrollingType {
 enum ViewShadowType { overlay, none }
 
 enum ViewShape { circular, rectangular, squire }
+
+class ViewToggleContent<T> {
+  final T active;
+  final T inactive;
+
+  const ViewToggleContent({
+    required this.active,
+    T? inactive,
+  }) : inactive = inactive ?? active;
+
+  T detect(bool isActivated) => isActivated ? active : inactive;
+}

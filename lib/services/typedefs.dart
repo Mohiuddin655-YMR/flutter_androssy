@@ -32,3 +32,5 @@ typedef OnViewModifyBuilder<T extends ViewController> = Widget Function(
 );
 typedef OnViewNotifier = void Function(VoidCallback fn);
 typedef OnViewNotifyListener<T extends ViewController> = Function(T controller);
+
+typedef OnViewActivator = Future<bool> Function(dynamic value);

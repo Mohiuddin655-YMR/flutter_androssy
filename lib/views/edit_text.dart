@@ -537,7 +537,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
               undoController: controller.undoController,
             ),
           ),
-          if (controller.indicatorVisible)
+          if (controller._loading)
             Container(
               width: controller.indicatorSize,
               height: controller.indicatorSize,
@@ -705,7 +705,7 @@ class EditTextController extends TextViewController {
     indicatorStrokeColorState = view.indicatorStrokeColorState;
     indicatorStrokeBackground = view.indicatorStrokeBackground;
     indicatorStrokeBackgroundState = view.indicatorStrokeBackgroundState;
-    indicatorVisible = view.indicatorVisible;
+    _loading = view.indicatorVisible;
 
     /// EDITING PROPERTIES
     autocorrect = view.autocorrect;
@@ -1062,7 +1062,6 @@ class EditTextController extends TextViewController {
   ValueState<Color>? indicatorStrokeColorState;
   Color? _indicatorStrokeBackground;
   ValueState<Color>? indicatorStrokeBackgroundState;
-  bool indicatorVisible = false;
 
   set indicatorStrokeColor(Color? value) => _indicatorStrokeColor = value;
 
@@ -1108,7 +1107,7 @@ class EditTextController extends TextViewController {
   }
 
   void setIndicatorVisibility(bool visible) {
-    onNotifyWithCallback(() => indicatorVisible = visible);
+    onNotifyWithCallback(() => _loading = visible);
   }
 
   /// EDITING PROPERTIES
