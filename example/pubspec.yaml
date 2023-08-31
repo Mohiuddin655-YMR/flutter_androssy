@@ -4,25 +4,67 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.0.5 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.2
+  # CUSTOMS
+  app_color: ^0.0.7
+  auth_management: ^0.1.3
+  data_management: ^0.1.1
+  flutter_andomie: ^0.5.6-alpha1
+  flutter_app_navigator: ^0.0.3
+  flutter_route_generator: ^0.0.2
   flutter_androssy:
     path: ../
+
+  # OTHERS
+  cupertino_icons: ^1.0.2
+  firebase_auth: ^4.7.2
+  flutter_bloc: ^8.1.2
+  get_it: ^7.6.0
+  shared_preferences: ^2.2.0
+  firebase_core: ^2.15.0
+  go_router: ^10.1.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.2
 
 flutter:
 
   uses-material-design: true
 
   assets:
+    - assets/contents/
+    - assets/icons/
     - assets/images/
+    - assets/svg/
+
+  fonts:
+    - family: Lora
+      fonts:
+        - asset: fonts/lora/bold.ttf
+          weight: 700
+        - asset: fonts/lora/bold_italic.ttf
+          weight: 700
+          style: italic
+        - asset: fonts/lora/italic.ttf
+          style: italic
+        - asset: fonts/lora/medium.ttf
+        - asset: fonts/lora/medium_italic.ttf
+        - asset: fonts/lora/regular.ttf
+        - asset: fonts/lora/semi_bold.ttf
+        - asset: fonts/lora/semi_bold_italic.ttf
+          style: italic
+        - asset: fonts/lora/variable.ttf
+        - asset: fonts/lora/variable_italic.ttf
+          style: italic
+
+    - family: Arial
+      fonts:
+        - asset: fonts/arial/bold.ttf

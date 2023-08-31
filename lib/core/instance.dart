@@ -14,6 +14,8 @@ class AndrossyInstance {
 
   static AndrossyInstance get i => _proxy ??= AndrossyInstance._();
 
+  T? getController<T>() => controller is T ? controller as T : null;
+
   void init({
     required BuildContext context,
     Androssy? androssy,

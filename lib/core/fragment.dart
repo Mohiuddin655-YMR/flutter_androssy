@@ -9,7 +9,7 @@ abstract class AndrossyFragment<T extends AndrossyController>
     required this.instance,
   });
 
-  T get controller => instance.controller as T;
+  T get controller => instance.getController() ?? init(instance.context);
 
   T init(BuildContext context);
 
@@ -68,7 +68,6 @@ class _AndrossyFragmentState<T extends AndrossyController>
     WidgetsBinding.instance.addObserver(this);
     controller = widget.init(context);
     controller.setNotifier(setState);
-    widget.instance.logValue;
     widget.instance.modify(
       context: context,
       controller: controller,
