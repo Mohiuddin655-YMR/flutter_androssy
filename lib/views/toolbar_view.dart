@@ -158,10 +158,10 @@ class ToolbarView extends YMRView<ToolbarViewController> {
   });
 
   @override
-  void onInit(ToolbarViewController controller) => controller.changeStatusBar();
+  void onInit(context, controller) => controller.changeStatusBar();
 
   @override
-  void onUpdateWidget(ToolbarViewController controller, oldWidget) =>
+  void onUpdateWidget(context, controller, oldWidget) =>
       controller.changeStatusBar();
 
   @override

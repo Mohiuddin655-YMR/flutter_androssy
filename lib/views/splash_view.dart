@@ -14,7 +14,7 @@ class SplashView extends YMRView<SplashViewController> {
   final double? logoRadius;
   final double? logoSize;
 
-  final Future Function()? onExecute;
+  final Future Function(BuildContext context)? onExecute;
   final Function(BuildContext context)? onRoute;
 
   final Widget? body;
@@ -215,10 +215,10 @@ class SplashView extends YMRView<SplashViewController> {
   }
 
   @override
-  void onInit(SplashViewController controller) {
+  void onInit(context, controller) {
     Timer(Duration(milliseconds: duration), () {
       if (onExecute != null) {
-        onExecute?.call().whenComplete(() {
+        onExecute?.call(context).whenComplete(() {
           return onRoute?.call(controller.context!);
         });
       } else {

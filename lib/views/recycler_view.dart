@@ -124,7 +124,7 @@ class RecyclerView<T> extends YMRView<RecyclerViewController<T>> {
   });
 
   @override
-  void onDispose(RecyclerViewController<T> controller) => controller._dispose();
+  void onDispose(context, controller) => controller._dispose();
 
   @override
   ViewRoots initRootProperties() => const ViewRoots(wrapper: false);

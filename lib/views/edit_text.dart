@@ -375,7 +375,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   T attachController(T controller) => controller.fromEditText(this) as T;
 
   @override
-  void onDispose(T controller) => controller._dispose();
+  void onDispose(context, controller) => controller._dispose();
 
   static Widget _defaultContextMenuBuilder(
     BuildContext context,

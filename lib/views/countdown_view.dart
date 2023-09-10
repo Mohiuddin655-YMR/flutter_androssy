@@ -134,12 +134,12 @@ class CountdownView extends YMRView<CountdownViewController> {
   }
 
   @override
-  void onInit(CountdownViewController controller) {
+  void onInit(context, controller) {
     if (controller.initialStartMode) controller._continue();
   }
 
   @override
-  void onDispose(CountdownViewController controller) => controller._dispose();
+  void onDispose(context, controller) => controller._dispose();
 
   @override
   Widget? attach(BuildContext context, CountdownViewController controller) {

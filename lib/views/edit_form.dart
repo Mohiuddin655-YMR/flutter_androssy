@@ -112,7 +112,7 @@ class EditForm extends YMRView<EditFormController> {
   });
 
   @override
-  void onInit(EditFormController controller) {
+  void onInit(context, controller) {
     controller.init();
   }
 
