@@ -427,7 +427,7 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
                       }
                     : null,
                 child: child,
-              ).logValue,
+              ),
             ),
           );
         } else {

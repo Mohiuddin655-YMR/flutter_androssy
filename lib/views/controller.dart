@@ -834,11 +834,11 @@ class ViewController {
   bool get isToggleClickable => onToggle != null || expandable;
 
   double get maxSize {
-    return max(width ?? 0, height ?? 0);
+    return max(_width ?? 0, _height ?? 0);
   }
 
   double get minSize {
-    return min(width ?? 0, height ?? 0);
+    return min(_width ?? 0, _height ?? 0);
   }
 
   /// Boolean properties

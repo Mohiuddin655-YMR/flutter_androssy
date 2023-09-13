@@ -112,7 +112,7 @@ class IconView extends YMRView<IconViewController> {
     this.tint,
     this.tintState,
     this.tintMode = BlendMode.srcIn,
-  });
+  }) : super(width: size, height: size);
 
   @override
   IconViewController initController() {
@@ -165,12 +165,6 @@ class IconViewController extends ViewController {
   double get iconSize => size - (paddingAll / 2);
 
   Color? get tint => tintState?.fromController(this) ?? _tint;
-
-  @override
-  double get width => size;
-
-  @override
-  double get height => size;
 
   void setIcon(dynamic value) {
     onNotifyWithCallback(() => _icon = value);

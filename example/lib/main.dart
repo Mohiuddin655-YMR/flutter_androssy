@@ -19,31 +19,11 @@ class Application extends StatelessWidget {
         body: Center(
           child: LinearLayout(
             children: [
-              IconView(
-                icon: Icons.edit,
+              const ImageView(
+                marginTop: 24,
                 padding: 24,
-                size: 100,
+                width: 100,
                 shape: ViewShape.squire,
-                borderRadius: 24,
-                tint: Colors.orange,
-                rippleColor: Colors.black,
-                hoverColor: Colors.transparent,
-                backgroundState: ValueState(
-                  ternary: Colors.red.withOpacity(0.1),
-                  primary: Colors.orange.withOpacity(0.1),
-                  secondary: Colors.orange,
-                ),
-                tintState: ValueState(
-                  primary: Colors.orange,
-                  secondary: Colors.white,
-                  ternary: Colors.red,
-                ),
-                onClick: (c) {
-                  c.logValue;
-                },
-                onHover: (c) {
-                  c.logValue;
-                },
               ),
               IconView(
                 marginTop: 24,
@@ -58,7 +38,7 @@ class Application extends StatelessWidget {
                   primary: Colors.orange.withOpacity(0.1),
                   secondary: Colors.orange,
                 ),
-                tintState: ValueState(
+                tintState: const ValueState(
                   primary: Colors.orange,
                   secondary: Colors.white,
                   ternary: Colors.red,

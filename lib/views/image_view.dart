@@ -117,6 +117,7 @@ class ImageView<T extends ImageViewController> extends YMRView<T> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggle,
+    super.onHover,
     this.cacheMode,
     this.image,
     this.tint,
