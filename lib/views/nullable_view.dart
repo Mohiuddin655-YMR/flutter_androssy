@@ -346,8 +346,8 @@ class NullableViewController extends ViewController {
   /// ICON
   dynamic icon;
   Color? iconTint;
-  BlendMode? iconTintMode = BlendMode.srcIn;
-  double? iconSize = 50;
+  BlendMode iconTintMode = BlendMode.srcIn;
+  double iconSize = 50;
   double iconSpacing = 24;
   bool _iconVisible = true;
 

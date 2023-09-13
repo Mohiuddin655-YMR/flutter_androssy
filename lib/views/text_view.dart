@@ -1,11 +1,11 @@
 part of '../widgets.dart';
 
 class TextView<T extends TextViewController> extends YMRView<T> {
-  final int? maxCharacters;
+  final int maxCharacters;
   final int? maxLines;
 
   final double? letterSpacing;
-  final double? lineSpacingExtra;
+  final double lineSpacingExtra;
   final Color? selectionColor;
   final String? semanticsLabel;
   final bool? softWrap;
@@ -18,7 +18,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final String? text;
   final ValueState<String>? textState;
   final TextAlign? textAlign;
-  final bool? textAllCaps;
+  final bool textAllCaps;
   final Color? textColor;
   final ValueState<Color>? textColorState;
   final TextDecoration? textDecoration;
@@ -33,13 +33,13 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final TextHeightBehavior? textHeightBehavior;
   final TextLeadingDistribution? textLeadingDistribution;
   final TextOverflow? textOverflow;
-  final double? textScaleFactor;
+  final double textScaleFactor;
   final double? textSize;
   final ValueState<double>? textSizeState;
-  final List<TextSpan>? textSpans;
+  final List<TextSpan> textSpans;
   final TextStyle? textStyle;
   final ValueState<TextStyle>? textStyleState;
-  final TextWidthBasis? textWidthBasis;
+  final TextWidthBasis textWidthBasis;
 
   ///PREFIX
   final FontStyle? prefixFontStyle;
@@ -47,7 +47,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final ValueState<FontWeight>? prefixFontWeightState;
   final String? prefixText;
   final ValueState<String>? prefixTextState;
-  final bool? prefixTextAllCaps;
+  final bool prefixTextAllCaps;
   final Color? prefixTextColor;
   final ValueState<Color>? prefixTextColorState;
   final TextDecoration? prefixTextDecoration;
@@ -59,7 +59,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final ValueState<double>? prefixTextSizeState;
   final TextStyle? prefixTextStyle;
   final ValueState<TextStyle>? prefixTextStyleState;
-  final bool? prefixTextVisible;
+  final bool prefixTextVisible;
   final OnViewClickListener? onPrefixClick;
 
   ///SUFFIX
@@ -68,7 +68,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final ValueState<FontWeight>? suffixFontWeightState;
   final String? suffixText;
   final ValueState<String>? suffixTextState;
-  final bool? suffixTextAllCaps;
+  final bool suffixTextAllCaps;
   final Color? suffixTextColor;
   final ValueState<Color>? suffixTextColorState;
   final TextDecoration? suffixTextDecoration;
@@ -80,7 +80,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final ValueState<double>? suffixTextSizeState;
   final TextStyle? suffixTextStyle;
   final ValueState<TextStyle>? suffixTextStyleState;
-  final bool? suffixTextVisible;
+  final bool suffixTextVisible;
   final OnViewClickListener? onSuffixClick;
 
   const TextView({
@@ -202,9 +202,9 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.onValidator,
     this.ellipsis,
     this.letterSpacing,
-    this.lineSpacingExtra,
+    this.lineSpacingExtra = 0,
     this.locale,
-    this.maxCharacters,
+    this.maxCharacters = 0,
     this.maxLines,
     this.selectionColor,
     this.semanticsLabel,
@@ -214,7 +214,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     required this.text,
     this.textState,
     this.textAlign,
-    this.textAllCaps,
+    this.textAllCaps = false,
     this.textColor,
     this.textColorState,
     this.textDecoration,
@@ -229,13 +229,13 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.textHeightBehavior,
     this.textLeadingDistribution,
     this.textOverflow,
-    this.textScaleFactor,
+    this.textScaleFactor = 1,
     this.textSize,
     this.textSizeState,
-    this.textSpans,
+    this.textSpans = const [],
     this.textStyle,
     this.textStyleState,
-    this.textWidthBasis,
+    this.textWidthBasis = TextWidthBasis.parent,
 
     ///PREFIX
     this.prefixFontStyle,
@@ -243,7 +243,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.prefixFontWeightState,
     this.prefixText,
     this.prefixTextState,
-    this.prefixTextAllCaps,
+    this.prefixTextAllCaps = false,
     this.prefixTextColor,
     this.prefixTextColorState,
     this.prefixTextDecoration,
@@ -255,13 +255,13 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.prefixTextSizeState,
     this.prefixTextStyle,
     this.prefixTextStyleState,
-    this.prefixTextVisible,
+    this.prefixTextVisible = true,
     this.onPrefixClick,
 
     ///SUFFIX
     this.suffixText,
     this.suffixTextState,
-    this.suffixTextAllCaps,
+    this.suffixTextAllCaps = false,
     this.suffixTextColor,
     this.suffixTextColorState,
     this.suffixTextDecoration,
@@ -274,7 +274,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.suffixFontStyle,
     this.suffixFontWeight,
     this.suffixFontWeightState,
-    this.suffixTextVisible,
+    this.suffixTextVisible = true,
     this.suffixTextStyle,
     this.suffixTextStyleState,
     this.onSuffixClick,
@@ -445,23 +445,23 @@ class TextViewController extends ViewController {
 
     ellipsis = view.ellipsis;
 
-    maxCharacters = view.maxCharacters ?? 0;
+    maxCharacters = view.maxCharacters;
     maxLines = view.maxLines;
     locale = view.locale;
 
     letterSpacing = view.letterSpacing;
-    lineSpacingExtra = view.lineSpacingExtra ?? 0;
+    lineSpacingExtra = view.lineSpacingExtra;
     selectionColor = view.selectionColor;
     semanticsLabel = view.semanticsLabel;
     softWrap = view.softWrap;
-    textScaleFactor = view.textScaleFactor ?? 1;
+    textScaleFactor = view.textScaleFactor;
     strutStyle = view.strutStyle;
     wordSpacing = view.wordSpacing;
 
     text = view.text;
     textState = view.textState;
     textAlign = view.textAlign;
-    textAllCaps = view.textAllCaps ?? false;
+    textAllCaps = view.textAllCaps;
     textColor = view.textColor;
     textColorState = view.textColorState;
     textDecoration = view.textDecoration;
@@ -478,9 +478,9 @@ class TextViewController extends ViewController {
     textOverflow = view.textOverflow;
     textSize = view.textSize;
     textSizeState = view.textSizeState;
-    textSpans = view.textSpans ?? [];
+    textSpans = view.textSpans;
     textStyle = view.textStyle;
-    textWidthBasis = view.textWidthBasis ?? TextWidthBasis.parent;
+    textWidthBasis = view.textWidthBasis;
     textExtras = textExtrasFromSpans;
 
     ///PREFIX
@@ -489,7 +489,7 @@ class TextViewController extends ViewController {
     prefixFontWeightState = view.prefixFontWeightState;
     prefixText = view.prefixText;
     prefixTextState = view.prefixTextState;
-    prefixTextAllCaps = view.prefixTextAllCaps ?? false;
+    prefixTextAllCaps = view.prefixTextAllCaps;
     prefixTextColor = view.prefixTextColor;
     prefixTextColorState = view.prefixTextColorState;
     prefixTextDecoration = view.prefixTextDecoration;
@@ -501,7 +501,7 @@ class TextViewController extends ViewController {
     prefixTextSizeState = view.prefixTextSizeState;
     prefixTextStyle = view.prefixTextStyle;
     prefixTextStyleState = view.prefixTextStyleState;
-    prefixTextVisible = view.prefixTextVisible ?? true;
+    prefixTextVisible = view.prefixTextVisible;
     onPrefixClick = view.onPrefixClick;
 
     ///SUFFIX
@@ -510,7 +510,7 @@ class TextViewController extends ViewController {
     suffixFontWeightState = view.suffixFontWeightState;
     suffixText = view.suffixText;
     suffixTextState = view.suffixTextState;
-    suffixTextAllCaps = view.suffixTextAllCaps ?? false;
+    suffixTextAllCaps = view.suffixTextAllCaps;
     suffixTextColor = view.suffixTextColor;
     suffixTextColorState = view.suffixTextColorState;
     suffixTextDecoration = view.suffixTextDecoration;
@@ -522,7 +522,7 @@ class TextViewController extends ViewController {
     suffixTextSizeState = view.suffixTextSizeState;
     suffixTextStyle = view.suffixTextStyle;
     suffixTextStyleState = view.suffixTextStyleState;
-    suffixTextVisible = view.suffixTextVisible ?? true;
+    suffixTextVisible = view.suffixTextVisible;
     onSuffixClick = view.onSuffixClick;
 
     return this;

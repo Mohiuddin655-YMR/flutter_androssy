@@ -400,7 +400,7 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
                 splashColor: controller.rippleColor,
                 hoverColor: controller.hoverColor,
                 highlightColor: controller.pressedColor,
-                onHover: controller.onNotifyHover,
+                onHover: controller.isHovered ? controller.onNotifyHover : null,
                 onTap: controller.isClickable
                     ? () {
                         if (controller.isToggleClickable) {
@@ -427,7 +427,7 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
                       }
                     : null,
                 child: child,
-              ),
+              ).logValue,
             ),
           );
         } else {

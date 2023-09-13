@@ -1,14 +1,14 @@
 part of '../widgets.dart';
 
 class IconView extends YMRView<IconViewController> {
-  final BoxFit? fit;
+  final BoxFit fit;
   final dynamic icon;
   final ValueState<dynamic>? iconState;
-  final double? size;
+  final double size;
   final ValueState<double>? sizeState;
   final Color? tint;
   final ValueState<Color>? tintState;
-  final BlendMode? tintMode;
+  final BlendMode tintMode;
 
   const IconView({
     /// BASE PROPERTIES
@@ -69,7 +69,7 @@ class IconView extends YMRView<IconViewController> {
     super.foregroundGradient,
     super.foregroundImage,
     super.flex,
-    super.gravity,
+    super.gravity = Alignment.center,
     super.hoverColor,
     super.margin,
     super.marginHorizontal,
@@ -79,12 +79,6 @@ class IconView extends YMRView<IconViewController> {
     super.marginStart,
     super.marginEnd,
     super.padding,
-    super.paddingHorizontal,
-    super.paddingVertical,
-    super.paddingTop,
-    super.paddingBottom,
-    super.paddingStart,
-    super.paddingEnd,
     super.position,
     super.positionType,
     super.pressedColor,
@@ -109,14 +103,15 @@ class IconView extends YMRView<IconViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggle,
+    super.onHover,
     this.icon,
-    this.fit,
+    this.fit = BoxFit.contain,
     this.iconState,
-    this.size,
+    this.size = 24,
     this.sizeState,
     this.tint,
     this.tintState,
-    this.tintMode,
+    this.tintMode = BlendMode.srcIn,
   });
 
   @override
@@ -134,7 +129,7 @@ class IconView extends YMRView<IconViewController> {
     return RawIconView(
       fit: controller.fit,
       icon: controller.icon,
-      size: controller.size,
+      size: controller.iconSize,
       tint: controller.tint,
       tintMode: controller.tintMode,
     );
@@ -153,24 +148,29 @@ class IconViewController extends ViewController {
 
   IconViewController fromIconView(IconView view) {
     super.fromView(view);
-    fit = view.fit ?? BoxFit.contain;
+    fit = view.fit;
     _icon = view.icon;
     iconState = view.iconState;
-    _size = view.size ?? 24;
+    _size = view.size;
     _tint = view.tint;
     tintState = view.tintState;
-    tintMode = view.tintMode ?? BlendMode.srcIn;
+    tintMode = view.tintMode;
     return this;
   }
-
-  @override
-  double get borderRadiusAll => super.borderRadiusAll ?? size;
 
   dynamic get icon => iconState?.fromController(this) ?? _icon;
 
   double get size => iconSizeState?.fromController(this) ?? _size;
 
+  double get iconSize => size - (paddingAll / 2);
+
   Color? get tint => tintState?.fromController(this) ?? _tint;
+
+  @override
+  double get width => size;
+
+  @override
+  double get height => size;
 
   void setIcon(dynamic value) {
     onNotifyWithCallback(() => _icon = value);

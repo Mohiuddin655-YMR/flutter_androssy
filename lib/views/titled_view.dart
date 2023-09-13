@@ -1,6 +1,6 @@
 part of '../widgets.dart';
 
-class TitledView extends YMRView<DescriptionViewController> {
+class TitledView extends YMRView<TitledViewController> {
   /// TITLE CONTENTS
   final String? title;
   final Color? titleColor;
@@ -8,7 +8,7 @@ class TitledView extends YMRView<DescriptionViewController> {
   final String? titleFontFamily;
   final FontWeight? titleFontWeight;
   final double titleSpaceFromDescription;
-  final double? titleSpacingExtra;
+  final double titleSpacingExtra;
 
   /// BODY CONTENTS
   final String? subtitle;
@@ -16,7 +16,7 @@ class TitledView extends YMRView<DescriptionViewController> {
   final double? subtitleSize;
   final String? subtitleFontFamily;
   final FontWeight? subtitleFontWeight;
-  final double? subtitleSpacingExtra;
+  final double subtitleSpacingExtra;
 
   const TitledView({
     /// BASE PROPERTIES
@@ -122,7 +122,7 @@ class TitledView extends YMRView<DescriptionViewController> {
     this.titleFontFamily,
     this.titleFontWeight,
     this.titleSpaceFromDescription = 0,
-    this.titleSpacingExtra,
+    this.titleSpacingExtra = 0,
 
     /// BODY CONTENTS
     this.subtitle,
@@ -130,21 +130,21 @@ class TitledView extends YMRView<DescriptionViewController> {
     this.subtitleSize,
     this.subtitleFontFamily,
     this.subtitleFontWeight,
-    this.subtitleSpacingExtra,
+    this.subtitleSpacingExtra = 0,
   });
 
   @override
-  DescriptionViewController initController() => DescriptionViewController();
+  TitledViewController initController() => TitledViewController();
 
   @override
-  DescriptionViewController attachController(
-    DescriptionViewController controller,
+  TitledViewController attachController(
+    TitledViewController controller,
   ) {
     return controller.fromDescriptionView(this);
   }
 
   @override
-  Widget? attach(BuildContext context, DescriptionViewController controller) {
+  Widget? attach(BuildContext context, TitledViewController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -175,7 +175,7 @@ class TitledView extends YMRView<DescriptionViewController> {
   }
 }
 
-class DescriptionViewController extends ViewController {
+class TitledViewController extends ViewController {
   /// TITLE CONTENTS
   String? title;
   Color? titleColor;
@@ -190,7 +190,7 @@ class DescriptionViewController extends ViewController {
   String? subtitleFontFamily;
   FontWeight? subtitleFontWeight;
 
-  DescriptionViewController fromDescriptionView(TitledView view) {
+  TitledViewController fromDescriptionView(TitledView view) {
     super.fromView(view);
 
     /// TITLE CONTENTS

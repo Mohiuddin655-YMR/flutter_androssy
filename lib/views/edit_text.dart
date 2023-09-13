@@ -53,7 +53,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final dynamic drawableStart;
   final ValueState<dynamic>? drawableStartState;
   final EditTextDrawableBuilder<T>? drawableStartBuilder;
-  final double? drawableStartSize;
+  final double drawableStartSize;
   final ValueState<double>? drawableStartSizeState;
   final double? drawableStartPadding;
   final ValueState<double>? drawableStartPaddingState;
@@ -63,7 +63,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final dynamic drawableEnd;
   final ValueState<dynamic>? drawableEndState;
   final EditTextDrawableBuilder<T>? drawableEndBuilder;
-  final double? drawableEndSize;
+  final double drawableEndSize;
   final ValueState<double>? drawableEndSizeState;
   final double? drawableEndPadding;
   final ValueState<double>? drawableEndPaddingState;
@@ -285,7 +285,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.drawableStart,
     this.drawableStartState,
     this.drawableStartBuilder,
-    this.drawableStartSize,
+    this.drawableStartSize = 18,
     this.drawableStartSizeState,
     this.drawableStartPadding,
     this.drawableStartPaddingState,
@@ -295,7 +295,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.drawableEnd,
     this.drawableEndState,
     this.drawableEndBuilder,
-    this.drawableEndSize,
+    this.drawableEndSize = 18,
     this.drawableEndSizeState,
     this.drawableEndPadding,
     this.drawableEndPaddingState,
@@ -674,8 +674,8 @@ class EditTextController extends TextViewController {
     hint = view.hint;
     hintColor = view.hintColor;
     primary = view.primary;
-    maxCharacters = view.maxCharacters ?? 0;
-    minCharacters = view.minCharacters ?? 0;
+    maxCharacters = view.maxCharacters;
+    minCharacters = view.minCharacters;
 
     /// DRAWABLE PROPERTIES
     drawableStart = view.drawableStart;
@@ -916,7 +916,7 @@ class EditTextController extends TextViewController {
   /// DRAWABLE PROPERTIES
   dynamic _drawableStart;
   ValueState<dynamic>? drawableStartState;
-  double? _drawableStartSize;
+  double _drawableStartSize = 18;
   ValueState<double>? drawableStartSizeState;
   double? _drawableStartPadding;
   ValueState<double>? drawableStartPaddingState;
@@ -926,7 +926,7 @@ class EditTextController extends TextViewController {
 
   dynamic _drawableEnd;
   ValueState<dynamic>? drawableEndState;
-  double? _drawableEndSize;
+  double _drawableEndSize = 18;
   ValueState<double>? drawableEndSizeState;
   double? _drawableEndPadding;
   ValueState<double>? drawableEndPaddingState;
@@ -936,7 +936,7 @@ class EditTextController extends TextViewController {
 
   set drawableStart(dynamic value) => _drawableStart = value;
 
-  set drawableStartSize(double? value) => _drawableStartSize = value;
+  set drawableStartSize(double value) => _drawableStartSize = value;
 
   set drawableStartPadding(double? value) => _drawableStartPadding = value;
 
@@ -944,7 +944,7 @@ class EditTextController extends TextViewController {
 
   set drawableEnd(dynamic value) => _drawableEnd = value;
 
-  set drawableEndSize(double? value) => _drawableEndSize = value;
+  set drawableEndSize(double value) => _drawableEndSize = value;
 
   set drawableEndPadding(double? value) => _drawableEndPadding = value;
 
@@ -955,7 +955,7 @@ class EditTextController extends TextViewController {
     return value ?? _drawableStart;
   }
 
-  double? get drawableStartSize {
+  double get drawableStartSize {
     var value = drawableStartSizeState?.fromController(this);
     return value ?? _drawableStartSize;
   }
@@ -975,7 +975,7 @@ class EditTextController extends TextViewController {
     return value ?? _drawableEnd;
   }
 
-  double? get drawableEndSize {
+  double get drawableEndSize {
     var value = drawableEndSizeState?.fromController(this);
     return value ?? _drawableEndSize;
   }
@@ -998,7 +998,7 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => drawableStartState = drawableState);
   }
 
-  void setDrawableStartSize(double? size) {
+  void setDrawableStartSize(double size) {
     onNotifyWithCallback(() => drawableStartSize = size);
   }
 
@@ -1030,7 +1030,7 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => drawableEndState = drawableState);
   }
 
-  void setDrawableEndSize(double? size) {
+  void setDrawableEndSize(double size) {
     onNotifyWithCallback(() => drawableEndSize = size);
   }
 

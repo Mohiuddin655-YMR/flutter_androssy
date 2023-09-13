@@ -247,7 +247,7 @@ class NavigationView extends YMRView<NavigationViewController> {
           isVisible: item.isVisible,
           icon: item.icon,
           iconState: item.iconState,
-          iconSize: item.iconSize ?? controller.iconSize,
+          iconSize: item.iconSize,
           iconSizeState: item.iconSizeState ?? controller.iconSizeState,
           iconTint: item.iconTint ?? controller.iconTint,
           iconTintState: item.iconTintState ?? controller.iconTintState,
@@ -463,7 +463,7 @@ class NavigationItem extends StatelessWidget {
   final bool isVisible;
   final dynamic icon;
   final ValueState<dynamic>? iconState;
-  final double? iconSize;
+  final double iconSize;
   final ValueState<double>? iconSizeState;
   final Color? iconTint;
   final ValueState<Color>? iconTintState;
@@ -495,7 +495,7 @@ class NavigationItem extends StatelessWidget {
     this.isVisible = true,
     this.icon,
     this.iconState,
-    this.iconSize,
+    this.iconSize = 24,
     this.iconSizeState,
     this.iconTint,
     this.iconTintState,
