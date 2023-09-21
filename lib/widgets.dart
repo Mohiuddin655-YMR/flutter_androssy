@@ -85,8 +85,6 @@ part 'views/stack_layout.dart';
 
 part 'views/stream_view.dart';
 
-part 'views/switch_view.dart';
-
 part 'views/tab_layout.dart';
 
 part 'views/tab_view.dart';
