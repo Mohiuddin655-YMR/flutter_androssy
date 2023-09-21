@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/extensions.dart';
+import 'package:flutter_androssy/services.dart';
 import 'package:flutter_androssy/widgets.dart';
-
-import '../services.dart';
 
 class SwitchView extends YMRView<SwitchViewController> {
   final double size;

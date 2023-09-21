@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/extensions.dart';
-import 'package:flutter_androssy/raw.dart';
-import 'package:flutter_androssy/views/switch_view.dart';
+import 'package:flutter_androssy/raw.dart' hide SwitchButton;
 import 'package:flutter_androssy/widgets.dart';
+
+import 'switch_view.dart';
 
 enum SettingsViewType {
   arrow,
@@ -48,6 +49,7 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.enabled,
     super.rippleColor,
     super.pressedColor,
+    super.absorbMode = true,
     this.icon,
     required this.title,
     this.summary,
@@ -71,32 +73,40 @@ class SettingsView extends YMRView<SettingsViewController> {
   Widget? attach(context, controller) {
     var mTT = context.textTheme;
 
-    return SettingTile(
-      background: Colors.transparent,
-      rippleColor: Colors.transparent,
-      pressedColor: Colors.transparent,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 24,
-        vertical: 16,
-      ),
-      header: RawTextView(
-        text: controller.title,
-        textStyle: controller.titleStyle ?? mTT.titleMedium!,
-      ),
-      body: TextView(
-        visibility: controller.summary?.isNotEmpty ?? false,
-        text: controller.summary,
-        textStyle: controller.summaryStyle ?? mTT.titleSmall!,
-      ),
-      leading: IconView(
-        visibility: controller.icon != null,
-        icon: controller.icon,
-        size: context.iconTheme.size ?? 24,
-        tint: context.iconTheme.color,
-        marginEnd: 24,
-      ),
-      tailing: AbsorbPointer(
-        child: SettingsTailingView(controller: controller),
+    return Opacity(
+      opacity: controller.enabled ? 1 : 0.5,
+      child: SettingTile(
+        background: Colors.transparent,
+        rippleColor: Colors.transparent,
+        pressedColor: Colors.transparent,
+        padding: const EdgeInsets.only(
+          left: 24,
+          right: 16,
+          top: 16,
+          bottom: 16,
+        ),
+        header: RawTextView(
+          text: controller.title,
+          textStyle: controller.titleStyle ?? mTT.titleMedium!,
+        ),
+        body: TextView(
+          visibility: controller.summary?.isNotEmpty ?? false,
+          text: controller.summary,
+          textStyle: controller.summaryStyle ?? mTT.titleSmall!,
+        ),
+        leading: IconView(
+          visibility: controller.icon != null,
+          icon: controller.icon,
+          size: context.iconTheme.size ?? 24,
+          tint: context.iconTheme.color,
+          marginEnd: 24,
+        ),
+        tailing: controller.type == SettingsViewType.none
+            ? null
+            : Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: SettingsTailingView(controller: controller),
+              ),
       ),
     );
   }
@@ -167,7 +177,6 @@ class SettingsTailingSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     return SwitchButton(
       value: controller.activated,
-      enabled: controller.enabled,
       config: controller.switchConfig,
     );
   }
