@@ -831,7 +831,9 @@ class ViewController {
     return shape == ViewShape.squire;
   }
 
-  bool get isToggleClickable => onToggle != null || expandable;
+  bool get isToggleClickable {
+    return onToggle != null || onActivator != null || expandable;
+  }
 
   double get maxSize {
     return max(_width ?? 0, _height ?? 0);

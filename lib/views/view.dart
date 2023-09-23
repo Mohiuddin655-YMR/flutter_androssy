@@ -404,7 +404,7 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
                 onTap: controller.isClickable
                     ? () {
                         if (controller.isToggleClickable) {
-                          controller.onNotifyToggle();
+                          controller.onNotifyToggleWithActivator();
                         } else {
                           controller.onClickHandler != null
                               ? controller.onClickHandler?.call(controller)
@@ -436,7 +436,7 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
             onTap: controller.isClickable
                 ? () {
                     if (controller.isToggleClickable) {
-                      controller.onNotifyToggle();
+                      controller.onNotifyToggleWithActivator();
                     } else {
                       controller.onClickHandler != null
                           ? controller.onClickHandler?.call(controller)
