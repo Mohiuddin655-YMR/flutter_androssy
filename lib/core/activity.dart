@@ -278,6 +278,7 @@ class AndrossyActivityState<T extends AndrossyController>
       case AppLifecycleState.detached:
         widget.onDetached(context);
         break;
+      default:
     }
     super.didChangeAppLifecycleState(state);
   }

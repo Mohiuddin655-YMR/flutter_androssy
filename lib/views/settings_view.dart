@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/extensions.dart';
-import 'package:flutter_androssy/raw.dart' hide SwitchButton;
+import 'package:flutter_androssy/raw.dart';
 import 'package:flutter_androssy/widgets.dart';
 
 import 'switch_view.dart';
