@@ -286,45 +286,38 @@ class AndrossyActivityState<T extends AndrossyController>
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    var config = widget.config(context);
     return WillPopScope(
       onWillPop: widget.onBackPressed,
-      child: AndrossyBuilder(
-        message: _providerError,
-        builder: (context, value) {
-          var config = widget.config(context);
-          widget.instance.androssy = value;
-          return Scaffold(
-            appBar: widget.onCreateAppbar(context),
-            backgroundColor:
-                config.backgroundColor ?? theme.scaffoldBackgroundColor,
-            body: widget.onCreate(context, widget.instance),
-            bottomNavigationBar: widget.onCreateBottomNavigationBar(context),
-            bottomSheet: widget.onCreateBottomSheet(context),
-            drawer: widget.onCreateDrawer(context),
-            drawerEdgeDragWidth: config.drawerEdgeDragWidth,
-            drawerEnableOpenDragGesture: config.drawerEnableOpenDragGesture,
-            drawerDragStartBehavior: config.drawerDragStartBehavior,
-            drawerScrimColor:
-                config.drawerScrimColor ?? theme.drawerTheme.scrimColor,
-            endDrawer: widget.onCreateEndDrawer(context),
-            endDrawerEnableOpenDragGesture:
-                config.endDrawerEnableOpenDragGesture,
-            extendBody: config.extendBody,
-            extendBodyBehindAppBar: config.extendBodyBehindAppBar,
-            floatingActionButton: widget.onCreateFloatingButton(context),
-            floatingActionButtonAnimator: config.floatingActionButtonAnimator,
-            floatingActionButtonLocation: config.floatingActionButtonLocation,
-            key: widget.key,
-            primary: config.primary,
-            persistentFooterAlignment: config.persistentFooterAlignment,
-            persistentFooterButtons:
-                widget.onCreatePersistentFooterButtons(context),
-            restorationId: config.restorationId,
-            resizeToAvoidBottomInset: config.resizeToAvoidBottomInset,
-            onDrawerChanged: widget.onDrawerChanged,
-            onEndDrawerChanged: widget.onEndDrawerChanged,
-          );
-        },
+      child: Scaffold(
+        appBar: widget.onCreateAppbar(context),
+        backgroundColor:
+            config.backgroundColor ?? theme.scaffoldBackgroundColor,
+        body: widget.onCreate(context, widget.instance),
+        bottomNavigationBar: widget.onCreateBottomNavigationBar(context),
+        bottomSheet: widget.onCreateBottomSheet(context),
+        drawer: widget.onCreateDrawer(context),
+        drawerEdgeDragWidth: config.drawerEdgeDragWidth,
+        drawerEnableOpenDragGesture: config.drawerEnableOpenDragGesture,
+        drawerDragStartBehavior: config.drawerDragStartBehavior,
+        drawerScrimColor:
+            config.drawerScrimColor ?? theme.drawerTheme.scrimColor,
+        endDrawer: widget.onCreateEndDrawer(context),
+        endDrawerEnableOpenDragGesture: config.endDrawerEnableOpenDragGesture,
+        extendBody: config.extendBody,
+        extendBodyBehindAppBar: config.extendBodyBehindAppBar,
+        floatingActionButton: widget.onCreateFloatingButton(context),
+        floatingActionButtonAnimator: config.floatingActionButtonAnimator,
+        floatingActionButtonLocation: config.floatingActionButtonLocation,
+        key: widget.key,
+        primary: config.primary,
+        persistentFooterAlignment: config.persistentFooterAlignment,
+        persistentFooterButtons:
+            widget.onCreatePersistentFooterButtons(context),
+        restorationId: config.restorationId,
+        resizeToAvoidBottomInset: config.resizeToAvoidBottomInset,
+        onDrawerChanged: widget.onDrawerChanged,
+        onEndDrawerChanged: widget.onEndDrawerChanged,
       ),
     );
   }

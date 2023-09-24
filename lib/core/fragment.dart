@@ -2,12 +2,12 @@ part of '../core.dart';
 
 abstract class AndrossyFragment<T extends AndrossyController>
     extends StatefulWidget {
-  final AndrossyInstance instance;
 
   const AndrossyFragment({
     super.key,
-    required this.instance,
   });
+
+  AndrossyInstance get instance => AndrossyInstance.i;
 
   T get controller => instance.getController() ?? init(instance.context);
 
@@ -126,13 +126,7 @@ class _AndrossyFragmentState<T extends AndrossyController>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: widget.onBackPressed,
-      child: AndrossyBuilder(
-        message: _providerError,
-        builder: (context, value) {
-          widget.instance.androssy = value;
-          return widget.onCreate(context, controller);
-        },
-      ),
+      child: widget.onCreate(context, controller),
     );
   }
 }
