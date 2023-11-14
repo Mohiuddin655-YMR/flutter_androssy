@@ -14,6 +14,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final double? borderTop, borderBottom, borderStart, borderEnd;
   final ValueState<double>? borderTopState, borderBottomState;
   final ValueState<double>? borderStartState, borderEndState;
+  final double? borderStrokeAlign;
 
   /// BORDER RADIUS PROPERTIES
   final double? borderRadius;
@@ -97,7 +98,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final OnViewValidatorListener? onValidator;
 
   const YMRView({
-    Key? key,
+    super.key,
     this.controller,
 
     /// BORDER PROPERTIES
@@ -117,7 +118,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.borderStartState,
     this.borderEnd,
     this.borderEndState,
-
+    this.borderStrokeAlign,
     /// BORDER RADIUS PROPERTIES
     this.borderRadius,
     this.borderRadiusState,
@@ -221,7 +222,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.onHover,
     this.onValid,
     this.onValidator,
-  }) : super(key: key);
+  });
 
   T initController() => ViewController() as T;
 

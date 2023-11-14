@@ -12,6 +12,7 @@ class ViewController {
     _borderBottom = view.borderBottom;
     _borderHorizontal = view.borderHorizontal;
     _borderVertical = view.borderVertical;
+    _borderStrokeAlign = view.borderStrokeAlign;
     borderColorState = view.borderColorState;
     borderSizeState = view.borderSizeState;
     borderStartState = view.borderStartState;
@@ -192,6 +193,8 @@ class ViewController {
 
   ValueState<double>? borderEndState;
 
+  double? _borderStrokeAlign;
+
   Color? get borderColor {
     return borderColorState?.fromController(this) ?? _borderColor;
   }
@@ -243,23 +246,32 @@ class ViewController {
     );
   }
 
+  double get borderStrokeAlign {
+    return _borderStrokeAlign ?? BorderSide.strokeAlignInside;
+  }
+
   BoxBorder? get boxBorder {
+    final primary = theme.primaryColor;
     return Border(
       top: BorderSide(
-        color: borderColor ?? Colors.black,
+        color: borderColor ?? primary,
         width: border.top,
+        strokeAlign: borderStrokeAlign,
       ),
       bottom: BorderSide(
-        color: borderColor ?? Colors.black,
+        color: borderColor ?? primary,
         width: border.bottom,
+        strokeAlign: borderStrokeAlign,
       ),
       left: BorderSide(
-        color: borderColor ?? Colors.black,
+        color: borderColor ?? primary,
         width: border.left,
+        strokeAlign: borderStrokeAlign,
       ),
       right: BorderSide(
-        color: borderColor ?? Colors.black,
+        color: borderColor ?? primary,
         width: border.right,
+        strokeAlign: borderStrokeAlign,
       ),
     );
   }

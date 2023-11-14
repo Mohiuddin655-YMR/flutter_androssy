@@ -2,6 +2,7 @@ part of '../widgets.dart';
 
 class Button extends TextView<ButtonController> {
   final bool? centerText;
+  final bool? iconOnly;
   final dynamic icon;
   final ValueState<dynamic>? iconState;
   final Color? iconColor;
@@ -35,6 +36,7 @@ class Button extends TextView<ButtonController> {
     super.borderStartState,
     super.borderEnd,
     super.borderEndState,
+    super.borderStrokeAlign,
 
     /// BORDER RADIUS PROPERTIES
     super.borderRadius,
@@ -121,7 +123,7 @@ class Button extends TextView<ButtonController> {
     super.onLongClick,
     super.onHover,
     super.onToggle,
-    required super.text,
+    super.text,
     super.textSize,
     super.textFontWeight,
     super.textStyle,
@@ -130,6 +132,7 @@ class Button extends TextView<ButtonController> {
     super.textColorState,
     super.textState,
     this.centerText,
+    this.iconOnly,
     this.iconFlexible,
     this.icon,
     this.iconState,
@@ -154,6 +157,12 @@ class Button extends TextView<ButtonController> {
 
   @override
   Widget? attach(BuildContext context, ButtonController controller) {
+    if (controller.iconOnly) {
+      return _Icon(
+        controller: controller,
+        visible: controller.icon != null,
+      );
+    }
     return controller.isCenterText
         ? Stack(
             alignment: Alignment.center,
@@ -187,6 +196,7 @@ class Button extends TextView<ButtonController> {
 
 class ButtonController extends TextViewController {
   bool centerText = false;
+  bool iconOnly = false;
   dynamic _icon;
   ValueState<dynamic>? iconState;
   double? _iconSize;
@@ -195,11 +205,12 @@ class ButtonController extends TextViewController {
   ValueState<Color>? iconTintState;
   bool iconTintEnabled = true;
   bool expended = false;
-  double iconSpace = 16;
+  double? _iconSpace;
   IconAlignment iconAlignment = IconAlignment.end;
 
   ButtonController fromButton(Button view) {
     super.fromTextView(view);
+    iconOnly = view.iconOnly ?? false;
     centerText = view.centerText ?? false;
     _icon = view.icon;
     iconState = view.iconState;
@@ -209,7 +220,7 @@ class ButtonController extends TextViewController {
     iconTintState = view.iconColorState;
     iconTintEnabled = view.iconColorEnabled ?? true;
     expended = view.iconFlexible ?? false;
-    iconSpace = view.iconSpace ?? 16;
+    _iconSpace = view.iconSpace;
     iconAlignment = view.iconAlignment ?? IconAlignment.end;
     return this;
   }
@@ -218,6 +229,8 @@ class ButtonController extends TextViewController {
 
   double get iconSize =>
       iconSizeState?.fromController(this) ?? _iconSize ?? (textSize ?? 0) * 1.2;
+
+  double get iconSpace => _iconSpace ?? (iconOnly ? 0 : 16);
 
   Color? get iconTint => iconTintEnabled
       ? iconTintState?.fromController(this) ?? _iconTint ?? color
@@ -239,7 +252,9 @@ class ButtonController extends TextViewController {
       return enabled && isObservable
           ? activated
               ? theme.primaryColor
-              : Colors.white
+              : isBorder
+                  ? theme.primaryColor
+                  : Colors.white
           : Colors.grey.shade400;
     }
     return I;
@@ -258,10 +273,30 @@ class ButtonController extends TextViewController {
   }
 
   @override
-  double? get paddingHorizontal => super.paddingHorizontal ?? 24;
+  Color? get borderColor {
+    if (super.borderColor == null) {
+      return enabled && isObservable
+          ? activated
+              ? theme.primaryColor.withOpacity(0.1)
+              : theme.primaryColor
+          : Colors.grey.shade200;
+    }
+    return super.background;
+  }
 
   @override
-  double? get paddingVertical => super.paddingVertical ?? 12;
+  double? get paddingHorizontal {
+    final x = width ?? 0;
+    final y = x == double.infinity || x > 0;
+    return y ? super.paddingHorizontal : super.paddingHorizontal ?? 24;
+  }
+
+  @override
+  double? get paddingVertical {
+    final x = height ?? 0;
+    final y = x == double.infinity || x > 0;
+    return y ? super.paddingVertical : super.paddingVertical ?? 12;
+  }
 }
 
 class _Text extends StatelessWidget {
@@ -307,8 +342,8 @@ class _Icon extends StatelessWidget {
           : null,
       positionType: controller.isCenterText
           ? controller.isEndIconVisible
-              ? ViewPositionType.left
-              : ViewPositionType.right
+              ? ViewPositionType.right
+              : ViewPositionType.left
           : null,
       icon: controller.icon,
       tint: controller.iconTint,

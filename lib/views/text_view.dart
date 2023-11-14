@@ -105,6 +105,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.borderStartState,
     super.borderEnd,
     super.borderEndState,
+    super.borderStrokeAlign,
 
     /// BORDER RADIUS PROPERTIES
     super.borderRadius,
