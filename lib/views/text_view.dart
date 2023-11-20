@@ -755,9 +755,56 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final OnViewClickListener? onSuffixClick;
 
   const TextView({
-    /// BASE PROPERTIES
+    /// ROOT PROPERTIES
     super.key,
     super.controller,
+
+    ///BASE PROPERTIES
+    super.absorbMode,
+    super.activated,
+    super.background,
+    super.backgroundState,
+    super.backgroundBlendMode,
+    super.backgroundGradient,
+    super.backgroundGradientState,
+    super.backgroundImage,
+    super.backgroundImageState,
+    super.clipBehavior,
+    super.dimensionRatio,
+    super.elevation,
+    super.enabled,
+    super.expandable,
+    super.foreground,
+    super.foregroundBlendMode,
+    super.foregroundGradient,
+    super.foregroundImage,
+    super.flex,
+    super.gravity,
+    super.height,
+    super.heightState,
+    super.heightMax,
+    super.heightMin,
+    super.hoverColor,
+    super.orientation,
+    super.position,
+    super.positionType,
+    super.pressedColor,
+    super.rippleColor,
+    super.scrollable,
+    super.scrollController,
+    super.scrollingType,
+    super.shape,
+    super.transform,
+    super.transformGravity,
+    super.width,
+    super.widthState,
+    super.widthMax,
+    super.widthMin,
+    super.visibility,
+
+    /// ANIMATION PROPERTIES
+    super.animation,
+    super.animationType,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -790,37 +837,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
-    ///
-    ///
-    ///
-    ///
-    super.absorbMode,
-    super.activated,
-    super.animation,
-    super.animationType,
-    super.background,
-    super.backgroundState,
-    super.backgroundBlendMode,
-    super.backgroundGradient,
-    super.backgroundGradientState,
-    super.backgroundImage,
-    super.backgroundImageState,
-    super.clipBehavior,
-    super.dimensionRatio,
-    super.elevation,
-    super.enabled,
-    super.expandable,
-    super.foreground,
-    super.foregroundBlendMode,
-    super.foregroundGradient,
-    super.foregroundImage,
-    super.flex,
-    super.gravity,
-    super.height,
-    super.heightState,
-    super.heightMax,
-    super.heightMin,
-    super.hoverColor,
+    /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,
     super.marginVertical,
@@ -828,7 +845,8 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
-    super.orientation,
+
+    /// PADDING PROPERTIES
     super.padding,
     super.paddingHorizontal,
     super.paddingVertical,
@@ -836,13 +854,8 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
-    super.position,
-    super.positionType,
-    super.pressedColor,
-    super.rippleColor,
-    super.scrollable,
-    super.scrollController,
-    super.scrollingType,
+
+    /// SHADOW PROPERTIES
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -855,14 +868,8 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
-    super.shape,
-    super.transform,
-    super.transformGravity,
-    super.width,
-    super.widthState,
-    super.widthMax,
-    super.widthMin,
-    super.visibility,
+
+    /// LISTENER PROPERTIES
     super.onClick,
     super.onDoubleClick,
     super.onLongClick,
@@ -872,6 +879,8 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.onError,
     super.onValid,
     super.onValidator,
+
+    /// CHILD PROPERTIES
     this.ellipsis,
     this.letterSpacing,
     this.lineSpacingExtra = 0,
@@ -909,7 +918,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.textStyleState,
     this.textWidthBasis = TextWidthBasis.parent,
 
-    ///PREFIX
+    /// PREFIX
     this.prefixFontStyle,
     this.prefixFontWeight,
     this.prefixFontWeightState,
@@ -930,7 +939,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.prefixTextVisible = true,
     this.onPrefixClick,
 
-    ///SUFFIX
+    /// SUFFIX
     this.suffixText,
     this.suffixTextState,
     this.suffixTextAllCaps = false,

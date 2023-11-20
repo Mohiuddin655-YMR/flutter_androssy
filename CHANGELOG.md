@@ -1,3 +1,4 @@
-## 0.2.9
+## 0.2.8
 
-* Stable version
+* TextView properties rearrange
+* Bouncer effect created
