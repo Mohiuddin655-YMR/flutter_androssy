@@ -1,3 +1,7 @@
+## 0.3.1
+
+* Create ViewObserver to notify updated data
+
 ## 0.3.0
 
 * Update activity build function

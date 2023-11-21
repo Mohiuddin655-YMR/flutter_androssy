@@ -67,6 +67,8 @@ part 'views/navigation_view.dart';
 
 part 'views/nullable_view.dart';
 
+part 'views/observer.dart';
+
 part 'views/option_view_builder.dart';
 
 part 'views/progress_view.dart';
