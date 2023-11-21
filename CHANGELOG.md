@@ -1,3 +1,6 @@
+## 0.3.3
+* ViewObserver extension too short
+
 ## 0.3.2
 
 * Create ViewObserver extension
