@@ -1,5 +1,21 @@
 part of '../widgets.dart';
 
+extension ObserverBool on bool {
+  Observer<bool> get obx => Observer(this);
+}
+
+extension ObserverInt on int {
+  Observer<int> get obx => Observer(this);
+}
+
+extension ObserverDouble on double {
+  Observer<double> get obx => Observer(this);
+}
+
+extension ObserverList<T> on List<T> {
+  Observer<List<T>> get obx => Observer(this);
+}
+
 class Observer<T> extends ViewController {
   T? _value;
 
