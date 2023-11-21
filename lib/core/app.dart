@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_androssy/core.dart';
-import 'package:flutter_network_status/network_status.dart';
+part of '../core.dart';
 
 class AndrossyApp extends MaterialApp {
   final Androssy androssy;

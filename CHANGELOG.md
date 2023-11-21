@@ -1,6 +1,10 @@
+## 0.3.0
+
+* Update activity build function
+
 ## 0.2.9
 
-* Create AndrossyApp widget 
+* Create AndrossyApp widget
 * Attach NetworkProvider
 
 ## 0.2.8
