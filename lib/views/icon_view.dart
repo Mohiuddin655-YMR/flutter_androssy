@@ -1,6 +1,82 @@
 part of '../widgets.dart';
 
-class IconView extends YMRView<IconViewController> {
+class IconViewController extends ViewController {
+  BoxFit fit = BoxFit.contain;
+
+  void setIconFit(BoxFit value) {
+    onNotifyWithCallback(() => fit = value);
+  }
+
+  dynamic _icon;
+
+  set icon(dynamic value) => _icon = value;
+
+  void setIcon(dynamic value) {
+    onNotifyWithCallback(() => icon = value);
+  }
+
+  ValueState<dynamic>? iconState;
+
+  void setIconState(ValueState<dynamic>? value) {
+    onNotifyWithCallback(() => iconState = value);
+  }
+
+  double _size = 24;
+
+  set size(double value) => _size = value;
+
+  void setIconSize(double value) {
+    onNotifyWithCallback(() => size = value);
+  }
+
+  ValueState<double>? iconSizeState;
+
+  void setIconSizeState(ValueState<double>? value) {
+    onNotifyWithCallback(() => iconSizeState = value);
+  }
+
+  Color? _tint;
+
+  set tint(Color? value) => _tint = value;
+
+  void setIconTint(Color value) {
+    onNotifyWithCallback(() => tint = value);
+  }
+
+  ValueState<Color>? tintState;
+
+  void setIconTintState(ValueState<Color>? value) {
+    onNotifyWithCallback(() => tintState = value);
+  }
+
+  BlendMode tintMode = BlendMode.srcIn;
+
+  void setIconTintMode(BlendMode value) {
+    onNotifyWithCallback(() => tintMode = value);
+  }
+
+  IconViewController fromIconView(IconView view) {
+    super.fromView(view);
+    fit = view.fit;
+    icon = view.icon;
+    iconState = view.iconState;
+    size = view.size;
+    tint = view.tint;
+    tintState = view.tintState;
+    tintMode = view.tintMode;
+    return this;
+  }
+
+  dynamic get icon => iconState?.fromController(this) ?? _icon;
+
+  double get size => iconSizeState?.fromController(this) ?? _size;
+
+  double get iconSize => size - (paddingAll / 2);
+
+  Color? get tint => tintState?.fromController(this) ?? _tint;
+}
+
+class IconView<T extends IconViewController> extends YMRView<T> {
   final BoxFit fit;
   final dynamic icon;
   final ValueState<dynamic>? iconState;
@@ -11,9 +87,48 @@ class IconView extends YMRView<IconViewController> {
   final BlendMode tintMode;
 
   const IconView({
-    /// BASE PROPERTIES
+    /// ROOT PROPERTIES
     super.key,
     super.controller,
+
+    ///BASE PROPERTIES
+    super.absorbMode,
+    super.activated,
+    super.background,
+    super.backgroundState,
+    super.backgroundBlendMode,
+    super.backgroundGradient,
+    super.backgroundGradientState,
+    super.backgroundImage,
+    super.backgroundImageState,
+    super.clipBehavior,
+    super.dimensionRatio,
+    super.elevation,
+    super.enabled,
+    super.expandable,
+    super.foreground,
+    super.foregroundBlendMode,
+    super.foregroundGradient,
+    super.foregroundImage,
+    super.flex,
+    super.gravity,
+    super.hoverColor,
+    super.orientation,
+    super.position,
+    super.positionType,
+    super.pressedColor,
+    super.rippleColor,
+    super.scrollable,
+    super.scrollController,
+    super.scrollingType,
+    super.shape,
+    super.transform,
+    super.transformGravity,
+    super.visibility,
+
+    /// ANIMATION PROPERTIES
+    super.animation,
+    super.animationType,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -32,6 +147,7 @@ class IconView extends YMRView<IconViewController> {
     super.borderStartState,
     super.borderEnd,
     super.borderEndState,
+    super.borderStrokeAlign,
 
     /// BORDER RADIUS PROPERTIES
     super.borderRadius,
@@ -45,32 +161,7 @@ class IconView extends YMRView<IconViewController> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
-    ///
-    ///
-    ///
-    ///
-    super.absorbMode,
-    super.activated,
-    super.animation,
-    super.animationType,
-    super.background,
-    super.backgroundState,
-    super.backgroundBlendMode,
-    super.backgroundGradient,
-    super.backgroundGradientState,
-    super.backgroundImage,
-    super.backgroundImageState,
-    super.clipBehavior,
-    super.dimensionRatio,
-    super.elevation,
-    super.enabled,
-    super.foreground,
-    super.foregroundBlendMode,
-    super.foregroundGradient,
-    super.foregroundImage,
-    super.flex,
-    super.gravity = Alignment.center,
-    super.hoverColor,
+    /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,
     super.marginVertical,
@@ -78,11 +169,17 @@ class IconView extends YMRView<IconViewController> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+
+    /// PADDING PROPERTIES
     super.padding,
-    super.position,
-    super.positionType,
-    super.pressedColor,
-    super.rippleColor,
+    super.paddingHorizontal,
+    super.paddingVertical,
+    super.paddingTop,
+    super.paddingBottom,
+    super.paddingStart,
+    super.paddingEnd,
+
+    /// SHADOW PROPERTIES
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -95,15 +192,15 @@ class IconView extends YMRView<IconViewController> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
-    super.shape,
-    super.transform,
-    super.transformGravity,
-    super.visibility,
+
+    /// LISTENER PROPERTIES
     super.onClick,
     super.onDoubleClick,
     super.onLongClick,
-    super.onToggle,
     super.onHover,
+    super.onToggle,
+
+    /// CHILD PROPERTIES
     this.icon,
     this.fit = BoxFit.contain,
     this.iconState,
@@ -115,17 +212,13 @@ class IconView extends YMRView<IconViewController> {
   }) : super(width: size, height: size);
 
   @override
-  IconViewController initController() {
-    return IconViewController();
-  }
+  T initController() => IconViewController() as T;
 
   @override
-  IconViewController attachController(IconViewController controller) {
-    return controller.fromIconView(this);
-  }
+  T attachController(T controller) => controller.fromIconView(this) as T;
 
   @override
-  Widget? attach(BuildContext context, IconViewController controller) {
+  Widget? attach(BuildContext context, T controller) {
     return RawIconView(
       fit: controller.fit,
       icon: controller.icon,
@@ -133,53 +226,6 @@ class IconView extends YMRView<IconViewController> {
       tint: controller.tint,
       tintMode: controller.tintMode,
     );
-  }
-}
-
-class IconViewController extends ViewController {
-  BoxFit fit = BoxFit.contain;
-  dynamic _icon;
-  ValueState<dynamic>? iconState;
-  double _size = 24;
-  ValueState<double>? iconSizeState;
-  Color? _tint;
-  ValueState<Color>? tintState;
-  BlendMode tintMode = BlendMode.srcIn;
-
-  IconViewController fromIconView(IconView view) {
-    super.fromView(view);
-    fit = view.fit;
-    _icon = view.icon;
-    iconState = view.iconState;
-    _size = view.size;
-    _tint = view.tint;
-    tintState = view.tintState;
-    tintMode = view.tintMode;
-    return this;
-  }
-
-  dynamic get icon => iconState?.fromController(this) ?? _icon;
-
-  double get size => iconSizeState?.fromController(this) ?? _size;
-
-  double get iconSize => size - (paddingAll / 2);
-
-  Color? get tint => tintState?.fromController(this) ?? _tint;
-
-  void setIcon(dynamic value) {
-    onNotifyWithCallback(() => _icon = value);
-  }
-
-  void setIconSize(double value) {
-    onNotifyWithCallback(() => _size = value);
-  }
-
-  void setIconTint(Color value) {
-    onNotifyWithCallback(() => _tint = value);
-  }
-
-  void setIconTintState(ValueState<Color>? value) {
-    onNotifyWithCallback(() => tintState = value);
   }
 }
 

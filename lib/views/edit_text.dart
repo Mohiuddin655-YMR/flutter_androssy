@@ -24,6 +24,526 @@ typedef EditTextSelectionChangeListener = void Function(
 typedef EditTextSubmitListener = void Function(String value);
 typedef EditTextTapOutsideListener = void Function(PointerDownEvent event);
 
+class EditTextController extends TextViewController {
+  late TextEditingController _editable;
+  late FocusNode _node;
+
+  EditTextController() {
+    _editable = TextEditingController();
+    _node = FocusNode();
+    _node.addListener(_handleFocusChange);
+  }
+
+  EditTextController fromEditText(EditText view) {
+    super.fromTextView(view);
+
+    helperText = view.helperText;
+    helperTextColor = view.helperTextColor;
+    floatingLabelColor = view.floatingLabelColor;
+    floatingLabelSize = view.floatingLabelSize;
+    floatingLabelVisible = view.floatingLabelVisible;
+    errorVisible = view.errorVisible;
+    errorColor = view.errorColor;
+    counterVisible = view.counterVisible;
+    onChange = view.onChange;
+    onError = view.onError;
+    onValidator = view.onValidator;
+
+    /// BASE PROPERTIES
+    id = view.id;
+    digits = view.digits;
+    hint = view.hint;
+    hintColor = view.hintColor;
+    primary = view.primary;
+    maxCharacters = view.maxCharacters;
+    minCharacters = view.minCharacters;
+
+    /// DRAWABLE PROPERTIES
+    drawableStart = view.drawableStart;
+    drawableStartState = view.drawableStartState;
+    drawableStartSize = view.drawableStartSize;
+    drawableStartSizeState = view.drawableStartSizeState;
+    drawableStartPadding = view.drawableStartPadding;
+    drawableStartPaddingState = view.drawableStartPaddingState;
+    drawableStartTint = view.drawableStartTint;
+    drawableStartTintState = view.drawableStartTintState;
+    drawableStartVisible = view.drawableStartVisible;
+    drawableEnd = view.drawableEnd;
+    drawableEndState = view.drawableEndState;
+    drawableEndSize = view.drawableEndSize;
+    drawableEndSizeState = view.drawableEndSizeState;
+    drawableEndPadding = view.drawableEndPadding;
+    drawableEndPaddingState = view.drawableEndPaddingState;
+    drawableEndTint = view.drawableEndTint;
+    drawableEndTintState = view.drawableEndTintState;
+    drawableEndVisible = view.drawableEndVisible;
+
+    /// INDICATOR PROPERTIES
+    indicator = view.indicator;
+    indicatorSize = view.indicatorSize;
+    indicatorStroke = view.indicatorStroke;
+    indicatorStrokeColor = view.indicatorStrokeColor;
+    indicatorStrokeColorState = view.indicatorStrokeColorState;
+    indicatorStrokeBackground = view.indicatorStrokeBackground;
+    indicatorStrokeBackgroundState = view.indicatorStrokeBackgroundState;
+    _loading = view.indicatorVisible;
+
+    /// EDITING PROPERTIES
+    autocorrect = view.autocorrect;
+    autofillHints = view.autofillHints;
+    autoFocus = view.autoFocus;
+    clipBehaviorText = view.clipBehaviorText;
+    cursorColor = view.cursorColor;
+    cursorHeight = view.cursorHeight;
+    cursorOpacityAnimates = view.cursorOpacityAnimates;
+    cursorRadius = view.cursorRadius;
+    cursorWidth = view.cursorWidth;
+    contentInsertionConfiguration = view.contentInsertionConfiguration;
+    contextMenuBuilder = view.contextMenuBuilder;
+    dragStartBehavior = view.dragStartBehavior;
+    enableIMEPersonalizedLearning = view.enableIMEPersonalizedLearning;
+    enableInteractiveSelection = view.enableInteractiveSelection;
+    enableSuggestions = view.enableSuggestions;
+    expands = view.expands;
+    keyboardAppearance = view.keyboardAppearance;
+    inputType = view.inputType;
+    magnifierConfiguration = view.magnifierConfiguration;
+    minLines = view.minLines;
+    mouseCursor = view.mouseCursor;
+    _obscureText = view.obscureText;
+    obscuringCharacter = view.obscuringCharacter;
+    readOnly = view.readOnly;
+    restorationId = view.restorationId;
+    scribbleEnabled = view.scribbleEnabled;
+    scrollControllerText = view.scrollControllerText;
+    scrollPaddingText = view.scrollPaddingText;
+    scrollPhysicsText = view.scrollPhysicsText;
+    selectionControls = view.selectionControls;
+    selectionHeightStyle = view.selectionHeightStyle;
+    selectionWidthStyle = view.selectionWidthStyle;
+    showCursor = view.showCursor;
+    smartDashesType = view.smartDashesType;
+    smartQuotesType = view.smartQuotesType;
+    spellCheckConfiguration = view.spellCheckConfiguration;
+    textCapitalization = view.textCapitalization;
+    textInputAction = view.textInputAction;
+    textHeightBehavior = view.textHeightBehavior;
+    undoController = view.undoController;
+
+    /// LISTENER & CALLBACKS
+    onAppPrivateCommand = view.onAppPrivateCommand;
+    onChecked = view.onChecked;
+    onEditingComplete = view.onEditingComplete;
+    onSubmitted = view.onSubmitted;
+    onTapOutside = view.onTapOutside;
+
+    /// CUSTOMIZATIONS
+    _editable.text = view.text ?? _editable.text;
+    return this;
+  }
+
+  /// HELPER TEXT PROPERTIES
+  String helperText = "";
+  Color? helperTextColor;
+
+  /// FLOATING TEXT PROPERTIES
+  Color? floatingLabelColor;
+  double floatingLabelSize = 12;
+  bool floatingLabelVisible = false;
+
+  /// ERROR TEXT PROPERTIES
+  bool errorVisible = false;
+  String? _error;
+  ValueState<String>? errorTextState;
+  Color? errorColor;
+
+  String? get errorText => errorTextState?.fromController(this) ?? _error;
+
+  /// COUNTER TEXT PROPERTIES
+  bool counterVisible = false;
+
+  bool get hasError => !isValid && (errorText ?? "").isNotEmpty;
+
+  bool get isValid {
+    final v = onValidator?.call(_editable.text);
+    onValid?.call(v ?? false);
+    return v ?? true;
+  }
+
+  dynamic get iStart => drawableStart?.drawable(isFocused);
+
+  dynamic get iEnd => drawableEnd?.drawable(isFocused);
+
+  ViewError errorType(String text) {
+    if (text.isEmpty && !_initial) {
+      return ViewError.empty;
+    } else if (!isValid) {
+      final length = text.length;
+      if (maxCharacters > 0 && maxCharacters < length) {
+        return ViewError.maximum;
+      } else if ((minCharacters ?? 0) > 0 && (minCharacters ?? 0) > length) {
+        return ViewError.minimum;
+      } else {
+        return ViewError.invalid;
+      }
+    } else {
+      return ViewError.none;
+    }
+  }
+
+  String get counter {
+    var currentLength = text.length;
+    final maxLength = maxCharacters;
+    return maxLength > 0
+        ? '$currentLength / $maxLength'
+        : currentLength > 0
+        ? "$currentLength"
+        : "";
+  }
+
+  /// CUSTOMIZATIONS
+  bool _initial = true;
+
+  bool _focused = false;
+
+  bool get isInitial => _initial;
+
+  bool get isFocused => _focused;
+
+  bool get isReadMode => !enabled && readOnly;
+
+  bool get isUnderlineHide => background != null || borderAll > 0;
+
+  List<TextInputFormatter>? get formatter {
+    if (digits.isNotEmpty) {
+      return [
+        FilteringTextInputFormatter.allow(RegExp("[$digits]")),
+      ];
+    }
+    return null;
+  }
+
+  void _handleFocusChange() {
+    if (_node.hasFocus != _focused) {
+      _focused = _node.hasFocus;
+      if (onFocusChanged(_focused)) {
+        onNotify();
+      }
+    }
+  }
+
+  bool onFocusChanged(bool focused) {
+    return true;
+  }
+
+  void _handleEditingChange(String value) {
+    onNotifyWithCallback(() {
+      _initial = false;
+      if (onChange != null) {
+        onChange!(value);
+      }
+    });
+  }
+
+  void showKeyboard(BuildContext context) async {
+    FocusScope.of(context).requestFocus(_node);
+  }
+
+  void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
+
+  void _dispose() {
+    _editable.dispose();
+    _node.dispose();
+  }
+
+  /// SUPER PROPERTIES
+  @override
+  String get text => _editable.text;
+
+  @override
+  bool get activated => isFocused;
+
+  @override
+  double? get paddingVertical => super.paddingVertical ?? 8;
+
+  @override
+  int? get maxLines {
+    switch (inputType) {
+      case TextInputType.datetime:
+      case TextInputType.emailAddress:
+      case TextInputType.name:
+      case TextInputType.number:
+      case TextInputType.phone:
+      case TextInputType.streetAddress:
+      case TextInputType.text:
+      case TextInputType.visiblePassword:
+      case TextInputType.text:
+        return 1;
+      case TextInputType.multiline:
+      case TextInputType.url:
+      default:
+        return null;
+    }
+  }
+
+  /// BASE PROPERTIES
+  String? id;
+  String digits = "";
+  String hint = "";
+  Color? hintColor;
+  Color? primary;
+  int? minCharacters;
+
+  /// DRAWABLE PROPERTIES
+  dynamic _drawableStart;
+  ValueState<dynamic>? drawableStartState;
+  double _drawableStartSize = 18;
+  ValueState<double>? drawableStartSizeState;
+  double? _drawableStartPadding;
+  ValueState<double>? drawableStartPaddingState;
+  Color? _drawableStartTint;
+  ValueState<Color>? drawableStartTintState;
+  bool drawableStartVisible = true;
+
+  dynamic _drawableEnd;
+  ValueState<dynamic>? drawableEndState;
+  double _drawableEndSize = 18;
+  ValueState<double>? drawableEndSizeState;
+  double? _drawableEndPadding;
+  ValueState<double>? drawableEndPaddingState;
+  Color? _drawableEndTint;
+  ValueState<Color>? drawableEndTintState;
+  bool drawableEndVisible = true;
+
+  set drawableStart(dynamic value) => _drawableStart = value;
+
+  set drawableStartSize(double value) => _drawableStartSize = value;
+
+  set drawableStartPadding(double? value) => _drawableStartPadding = value;
+
+  set drawableStartTint(Color? value) => _drawableStartTint = value;
+
+  set drawableEnd(dynamic value) => _drawableEnd = value;
+
+  set drawableEndSize(double value) => _drawableEndSize = value;
+
+  set drawableEndPadding(double? value) => _drawableEndPadding = value;
+
+  set drawableEndTint(Color? value) => _drawableEndTint = value;
+
+  dynamic get drawableStart {
+    var value = drawableStartState?.fromController(this);
+    return value ?? _drawableStart;
+  }
+
+  double get drawableStartSize {
+    var value = drawableStartSizeState?.fromController(this);
+    return value ?? _drawableStartSize;
+  }
+
+  double? get drawableStartPadding {
+    var value = drawableStartPaddingState?.fromController(this);
+    return value ?? _drawableStartPadding;
+  }
+
+  Color? get drawableStartTint {
+    var value = drawableStartTintState?.fromController(this);
+    return value ?? _drawableStartTint;
+  }
+
+  dynamic get drawableEnd {
+    var value = drawableEndState?.fromController(this);
+    return value ?? _drawableEnd;
+  }
+
+  double get drawableEndSize {
+    var value = drawableEndSizeState?.fromController(this);
+    return value ?? _drawableEndSize;
+  }
+
+  double? get drawableEndPadding {
+    var value = drawableEndPaddingState?.fromController(this);
+    return value ?? _drawableEndPadding;
+  }
+
+  Color? get drawableEndTint {
+    var value = drawableEndTintState?.fromController(this);
+    return value ?? _drawableEndTint;
+  }
+
+  void setDrawableStart(dynamic drawable) {
+    onNotifyWithCallback(() => drawableStart = drawable);
+  }
+
+  void setDrawableStartState(ValueState<dynamic> drawableState) {
+    onNotifyWithCallback(() => drawableStartState = drawableState);
+  }
+
+  void setDrawableStartSize(double size) {
+    onNotifyWithCallback(() => drawableStartSize = size);
+  }
+
+  void setDrawableStartSizeState(ValueState<double>? sizeState) {
+    onNotifyWithCallback(() => drawableStartSizeState = sizeState);
+  }
+
+  void setDrawableStartPadding(double? padding) {
+    onNotifyWithCallback(() => drawableStartPadding = padding);
+  }
+
+  void setDrawableStartPaddingState(ValueState<double>? paddingState) {
+    onNotifyWithCallback(() => drawableStartPaddingState = paddingState);
+  }
+
+  void setDrawableStartTint(Color? tint) {
+    onNotifyWithCallback(() => drawableStartTint = tint);
+  }
+
+  void setDrawableStartTintState(ValueState<Color>? tintState) {
+    onNotifyWithCallback(() => drawableStartTintState = tintState);
+  }
+
+  void setDrawableEnd(dynamic drawable) {
+    onNotifyWithCallback(() => drawableEnd = drawable);
+  }
+
+  void setDrawableEndState(ValueState<dynamic> drawableState) {
+    onNotifyWithCallback(() => drawableEndState = drawableState);
+  }
+
+  void setDrawableEndSize(double size) {
+    onNotifyWithCallback(() => drawableEndSize = size);
+  }
+
+  void setDrawableEndSizeState(ValueState<double>? sizeState) {
+    onNotifyWithCallback(() => drawableEndSizeState = sizeState);
+  }
+
+  void setDrawableEndPadding(double? padding) {
+    onNotifyWithCallback(() => drawableEndPadding = padding);
+  }
+
+  void setDrawableEndPaddingState(ValueState<double>? paddingState) {
+    onNotifyWithCallback(() => drawableEndPaddingState = paddingState);
+  }
+
+  void setDrawableEndTint(Color? tint) {
+    onNotifyWithCallback(() => drawableEndTint = tint);
+  }
+
+  void setDrawableEndTintState(ValueState<Color>? tintState) {
+    onNotifyWithCallback(() => drawableEndTintState = tintState);
+  }
+
+  /// INDICATOR PROPERTIES
+  Widget? indicator;
+  double indicatorSize = 24;
+  double indicatorStroke = 2;
+  Color? _indicatorStrokeColor;
+  ValueState<Color>? indicatorStrokeColorState;
+  Color? _indicatorStrokeBackground;
+  ValueState<Color>? indicatorStrokeBackgroundState;
+
+  set indicatorStrokeColor(Color? value) => _indicatorStrokeColor = value;
+
+  set indicatorStrokeBackground(Color? value) =>
+      _indicatorStrokeBackground = value;
+
+  Color? get indicatorStrokeColor {
+    var value = indicatorStrokeColorState?.fromController(this);
+    return value ?? _indicatorStrokeColor;
+  }
+
+  Color? get indicatorStrokeBackground {
+    var value = indicatorStrokeBackgroundState?.fromController(this);
+    return value ?? _indicatorStrokeBackground;
+  }
+
+  void setIndicator(Widget? indicator) {
+    onNotifyWithCallback(() => this.indicator = indicator);
+  }
+
+  void setIndicatorSize(double size) {
+    onNotifyWithCallback(() => indicatorSize = size);
+  }
+
+  void setIndicatorStroke(double stroke) {
+    onNotifyWithCallback(() => indicatorStroke = stroke);
+  }
+
+  void setIndicatorColor(Color? color) {
+    onNotifyWithCallback(() => indicatorStrokeColor = color);
+  }
+
+  void setIndicatorColorState(ValueState<Color>? colorState) {
+    onNotifyWithCallback(() => indicatorStrokeColorState = colorState);
+  }
+
+  void setIndicatorBackground(Color? color) {
+    onNotifyWithCallback(() => indicatorStrokeBackground = color);
+  }
+
+  void setIndicatorBackgroundState(ValueState<Color>? colorState) {
+    onNotifyWithCallback(() => indicatorStrokeBackgroundState = colorState);
+  }
+
+  void setIndicatorVisibility(bool visible) {
+    onNotifyWithCallback(() => _loading = visible);
+  }
+
+  /// EDITING PROPERTIES
+  bool autocorrect = true;
+  List<String> autofillHints = [];
+  bool autoFocus = false;
+  Clip clipBehaviorText = Clip.hardEdge;
+  Color? cursorColor;
+  double? cursorHeight;
+  bool cursorOpacityAnimates = false;
+  Radius? cursorRadius;
+  double cursorWidth = 2.0;
+  ContentInsertionConfiguration? contentInsertionConfiguration;
+  EditTextContextMenuBuilder? contextMenuBuilder;
+  DragStartBehavior dragStartBehavior = DragStartBehavior.start;
+  bool enableIMEPersonalizedLearning = true;
+  bool? enableInteractiveSelection;
+  bool enableSuggestions = true;
+  bool expands = false;
+  Brightness keyboardAppearance = Brightness.light;
+  TextInputType? inputType;
+  TextMagnifierConfiguration magnifierConfiguration =
+      TextMagnifierConfiguration.disabled;
+  int? minLines;
+  MouseCursor? mouseCursor;
+  bool? _obscureText;
+  String obscuringCharacter = '•';
+  bool readOnly = false;
+  String? restorationId;
+  bool scribbleEnabled = true;
+  ScrollController? scrollControllerText;
+  EdgeInsets scrollPaddingText = const EdgeInsets.all(20);
+  ScrollPhysics? scrollPhysicsText;
+  TextSelectionControls? selectionControls;
+  BoxHeightStyle selectionHeightStyle = BoxHeightStyle.tight;
+  BoxWidthStyle selectionWidthStyle = BoxWidthStyle.tight;
+  bool? showCursor;
+  SmartDashesType? smartDashesType;
+  SmartQuotesType? smartQuotesType;
+  SpellCheckConfiguration? spellCheckConfiguration;
+  TextCapitalization textCapitalization = TextCapitalization.none;
+  TextInputAction? textInputAction;
+  UndoHistoryController? undoController;
+
+  bool get obscureText =>
+      _obscureText ?? inputType == TextInputType.visiblePassword;
+
+  /// EDITING CALLBACK & LISTENERS
+  EditTextPrivateCommandListener? onAppPrivateCommand;
+  EditTextCheckingListener? onChecked;
+  EditTextVoidListener? onEditingComplete;
+  EditTextSubmitListener? onSubmitted;
+  EditTextTapOutsideListener? onTapOutside;
+}
+
 class EditText<T extends EditTextController> extends TextView<T> {
   /// HELPER TEXT PROPERTIES
   final String helperText;
@@ -130,48 +650,13 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final EditTextTapOutsideListener? onTapOutside;
 
   const EditText({
-    /// BASE PROPERTIES
+    /// ROOT PROPERTIES
     super.key,
     super.controller,
 
-    /// BORDER PROPERTIES
-    super.borderColor,
-    super.borderColorState,
-    super.borderSize,
-    super.borderSizeState,
-    super.borderHorizontal,
-    super.borderHorizontalState,
-    super.borderVertical,
-    super.borderVerticalState,
-    super.borderTop,
-    super.borderTopState,
-    super.borderBottom,
-    super.borderBottomState,
-    super.borderStart,
-    super.borderStartState,
-    super.borderEnd,
-    super.borderEndState,
-
-    /// BORDER RADIUS PROPERTIES
-    super.borderRadius,
-    super.borderRadiusState,
-    super.borderRadiusBL,
-    super.borderRadiusBLState,
-    super.borderRadiusBR,
-    super.borderRadiusBRState,
-    super.borderRadiusTL,
-    super.borderRadiusTLState,
-    super.borderRadiusTR,
-    super.borderRadiusTRState,
-
-    ///
-    ///
-    ///
-    ///
+    ///BASE PROPERTIES
     super.absorbMode,
     super.activated,
-    super.animation,
-    super.animationType,
     super.background,
     super.backgroundState,
     super.backgroundBlendMode,
@@ -191,24 +676,11 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.flex,
     super.gravity,
     super.height,
+    super.heightState,
     super.heightMax,
     super.heightMin,
     super.hoverColor,
-    super.margin,
-    super.marginHorizontal,
-    super.marginVertical,
-    super.marginTop,
-    super.marginBottom,
-    super.marginStart,
-    super.marginEnd,
     super.orientation,
-    super.padding,
-    super.paddingHorizontal,
-    super.paddingVertical,
-    super.paddingTop,
-    super.paddingBottom,
-    super.paddingStart,
-    super.paddingEnd,
     super.position,
     super.positionType,
     super.pressedColor,
@@ -216,6 +688,69 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.scrollable,
     super.scrollController,
     super.scrollingType,
+    super.shape,
+    super.transform,
+    super.transformGravity,
+    super.width,
+    super.widthState,
+    super.widthMax,
+    super.widthMin,
+    super.visibility,
+
+    /// ANIMATION PROPERTIES
+    super.animation,
+    super.animationType,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+    super.borderStrokeAlign,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    /// MARGIN PROPERTIES
+    super.margin,
+    super.marginHorizontal,
+    super.marginVertical,
+    super.marginTop,
+    super.marginBottom,
+    super.marginStart,
+    super.marginEnd,
+
+    /// PADDING PROPERTIES
+    super.padding,
+    super.paddingHorizontal,
+    super.paddingVertical,
+    super.paddingTop,
+    super.paddingBottom,
+    super.paddingStart,
+    super.paddingEnd,
+
+    /// SHADOW PROPERTIES
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -228,13 +763,15 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
-    super.shape,
-    super.transform,
-    super.transformGravity,
-    super.width,
-    super.widthMax,
-    super.widthMin,
-    super.visibility,
+
+    /// LISTENER PROPERTIES
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onHover,
+    super.onToggle,
+
+    /// SUPER TEXT PROPERTIES
     super.maxCharacters,
     super.maxLines,
     super.letterSpacing,
@@ -252,7 +789,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.textColor,
     super.textHeightBehavior,
     super.textOverflow,
-    super.textScaleFactor,
     super.textSize,
     super.textStyle,
     super.textWidthBasis,
@@ -643,526 +1179,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
   }
 }
 
-class EditTextController extends TextViewController {
-  late TextEditingController _editable;
-  late FocusNode _node;
-
-  EditTextController() {
-    _editable = TextEditingController();
-    _node = FocusNode();
-    _node.addListener(_handleFocusChange);
-  }
-
-  EditTextController fromEditText(EditText view) {
-    super.fromTextView(view);
-
-    helperText = view.helperText;
-    helperTextColor = view.helperTextColor;
-    floatingLabelColor = view.floatingLabelColor;
-    floatingLabelSize = view.floatingLabelSize;
-    floatingLabelVisible = view.floatingLabelVisible;
-    errorVisible = view.errorVisible;
-    errorColor = view.errorColor;
-    counterVisible = view.counterVisible;
-    onChange = view.onChange;
-    onError = view.onError;
-    onValidator = view.onValidator;
-
-    /// BASE PROPERTIES
-    id = view.id;
-    digits = view.digits;
-    hint = view.hint;
-    hintColor = view.hintColor;
-    primary = view.primary;
-    maxCharacters = view.maxCharacters;
-    minCharacters = view.minCharacters;
-
-    /// DRAWABLE PROPERTIES
-    drawableStart = view.drawableStart;
-    drawableStartState = view.drawableStartState;
-    drawableStartSize = view.drawableStartSize;
-    drawableStartSizeState = view.drawableStartSizeState;
-    drawableStartPadding = view.drawableStartPadding;
-    drawableStartPaddingState = view.drawableStartPaddingState;
-    drawableStartTint = view.drawableStartTint;
-    drawableStartTintState = view.drawableStartTintState;
-    drawableStartVisible = view.drawableStartVisible;
-    drawableEnd = view.drawableEnd;
-    drawableEndState = view.drawableEndState;
-    drawableEndSize = view.drawableEndSize;
-    drawableEndSizeState = view.drawableEndSizeState;
-    drawableEndPadding = view.drawableEndPadding;
-    drawableEndPaddingState = view.drawableEndPaddingState;
-    drawableEndTint = view.drawableEndTint;
-    drawableEndTintState = view.drawableEndTintState;
-    drawableEndVisible = view.drawableEndVisible;
-
-    /// INDICATOR PROPERTIES
-    indicator = view.indicator;
-    indicatorSize = view.indicatorSize;
-    indicatorStroke = view.indicatorStroke;
-    indicatorStrokeColor = view.indicatorStrokeColor;
-    indicatorStrokeColorState = view.indicatorStrokeColorState;
-    indicatorStrokeBackground = view.indicatorStrokeBackground;
-    indicatorStrokeBackgroundState = view.indicatorStrokeBackgroundState;
-    _loading = view.indicatorVisible;
-
-    /// EDITING PROPERTIES
-    autocorrect = view.autocorrect;
-    autofillHints = view.autofillHints;
-    autoFocus = view.autoFocus;
-    clipBehaviorText = view.clipBehaviorText;
-    cursorColor = view.cursorColor;
-    cursorHeight = view.cursorHeight;
-    cursorOpacityAnimates = view.cursorOpacityAnimates;
-    cursorRadius = view.cursorRadius;
-    cursorWidth = view.cursorWidth;
-    contentInsertionConfiguration = view.contentInsertionConfiguration;
-    contextMenuBuilder = view.contextMenuBuilder;
-    dragStartBehavior = view.dragStartBehavior;
-    enableIMEPersonalizedLearning = view.enableIMEPersonalizedLearning;
-    enableInteractiveSelection = view.enableInteractiveSelection;
-    enableSuggestions = view.enableSuggestions;
-    expands = view.expands;
-    keyboardAppearance = view.keyboardAppearance;
-    inputType = view.inputType;
-    magnifierConfiguration = view.magnifierConfiguration;
-    minLines = view.minLines;
-    mouseCursor = view.mouseCursor;
-    _obscureText = view.obscureText;
-    obscuringCharacter = view.obscuringCharacter;
-    readOnly = view.readOnly;
-    restorationId = view.restorationId;
-    scribbleEnabled = view.scribbleEnabled;
-    scrollControllerText = view.scrollControllerText;
-    scrollPaddingText = view.scrollPaddingText;
-    scrollPhysicsText = view.scrollPhysicsText;
-    selectionControls = view.selectionControls;
-    selectionHeightStyle = view.selectionHeightStyle;
-    selectionWidthStyle = view.selectionWidthStyle;
-    showCursor = view.showCursor;
-    smartDashesType = view.smartDashesType;
-    smartQuotesType = view.smartQuotesType;
-    spellCheckConfiguration = view.spellCheckConfiguration;
-    textCapitalization = view.textCapitalization;
-    textInputAction = view.textInputAction;
-    textHeightBehavior = view.textHeightBehavior;
-    undoController = view.undoController;
-
-    /// LISTENER & CALLBACKS
-    onAppPrivateCommand = view.onAppPrivateCommand;
-    onChecked = view.onChecked;
-    onEditingComplete = view.onEditingComplete;
-    onSubmitted = view.onSubmitted;
-    onTapOutside = view.onTapOutside;
-
-    /// CUSTOMIZATIONS
-    _editable.text = view.text ?? _editable.text;
-    return this;
-  }
-
-  /// HELPER TEXT PROPERTIES
-  String helperText = "";
-  Color? helperTextColor;
-
-  /// FLOATING TEXT PROPERTIES
-  Color? floatingLabelColor;
-  double floatingLabelSize = 12;
-  bool floatingLabelVisible = false;
-
-  /// ERROR TEXT PROPERTIES
-  bool errorVisible = false;
-  String? _error;
-  ValueState<String>? errorTextState;
-  Color? errorColor;
-
-  String? get errorText => errorTextState?.fromController(this) ?? _error;
-
-  /// COUNTER TEXT PROPERTIES
-  bool counterVisible = false;
-
-  bool get hasError => !isValid && (errorText ?? "").isNotEmpty;
-
-  bool get isValid {
-    final v = onValidator?.call(_editable.text);
-    onValid?.call(v ?? false);
-    return v ?? true;
-  }
-
-  dynamic get iStart => drawableStart?.drawable(isFocused);
-
-  dynamic get iEnd => drawableEnd?.drawable(isFocused);
-
-  ViewError errorType(String text) {
-    if (text.isEmpty && !_initial) {
-      return ViewError.empty;
-    } else if (!isValid) {
-      final length = text.length;
-      if (maxCharacters > 0 && maxCharacters < length) {
-        return ViewError.maximum;
-      } else if ((minCharacters ?? 0) > 0 && (minCharacters ?? 0) > length) {
-        return ViewError.minimum;
-      } else {
-        return ViewError.invalid;
-      }
-    } else {
-      return ViewError.none;
-    }
-  }
-
-  String get counter {
-    var currentLength = text.length;
-    final maxLength = maxCharacters;
-    return maxLength > 0
-        ? '$currentLength / $maxLength'
-        : currentLength > 0
-            ? "$currentLength"
-            : "";
-  }
-
-  /// CUSTOMIZATIONS
-  bool _initial = true;
-
-  bool _focused = false;
-
-  bool get isInitial => _initial;
-
-  bool get isFocused => _focused;
-
-  bool get isReadMode => !enabled && readOnly;
-
-  bool get isUnderlineHide => background != null || borderAll > 0;
-
-  List<TextInputFormatter>? get formatter {
-    if (digits.isNotEmpty) {
-      return [
-        FilteringTextInputFormatter.allow(RegExp("[$digits]")),
-      ];
-    }
-    return null;
-  }
-
-  void _handleFocusChange() {
-    if (_node.hasFocus != _focused) {
-      _focused = _node.hasFocus;
-      if (onFocusChanged(_focused)) {
-        onNotify();
-      }
-    }
-  }
-
-  bool onFocusChanged(bool focused) {
-    return true;
-  }
-
-  void _handleEditingChange(String value) {
-    onNotifyWithCallback(() {
-      _initial = false;
-      if (onChange != null) {
-        onChange!(value);
-      }
-    });
-  }
-
-  void showKeyboard(BuildContext context) async {
-    FocusScope.of(context).requestFocus(_node);
-  }
-
-  void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
-
-  void _dispose() {
-    _editable.dispose();
-    _node.dispose();
-  }
-
-  /// SUPER PROPERTIES
-  @override
-  String get text => _editable.text;
-
-  @override
-  bool get activated => isFocused;
-
-  @override
-  double? get paddingVertical => super.paddingVertical ?? 8;
-
-  @override
-  int? get maxLines {
-    switch (inputType) {
-      case TextInputType.datetime:
-      case TextInputType.emailAddress:
-      case TextInputType.name:
-      case TextInputType.number:
-      case TextInputType.phone:
-      case TextInputType.streetAddress:
-      case TextInputType.text:
-      case TextInputType.visiblePassword:
-      case TextInputType.text:
-        return 1;
-      case TextInputType.multiline:
-      case TextInputType.url:
-      default:
-        return null;
-    }
-  }
-
-  /// BASE PROPERTIES
-  String? id;
-  String digits = "";
-  String hint = "";
-  Color? hintColor;
-  Color? primary;
-  int? minCharacters;
-
-  /// DRAWABLE PROPERTIES
-  dynamic _drawableStart;
-  ValueState<dynamic>? drawableStartState;
-  double _drawableStartSize = 18;
-  ValueState<double>? drawableStartSizeState;
-  double? _drawableStartPadding;
-  ValueState<double>? drawableStartPaddingState;
-  Color? _drawableStartTint;
-  ValueState<Color>? drawableStartTintState;
-  bool drawableStartVisible = true;
-
-  dynamic _drawableEnd;
-  ValueState<dynamic>? drawableEndState;
-  double _drawableEndSize = 18;
-  ValueState<double>? drawableEndSizeState;
-  double? _drawableEndPadding;
-  ValueState<double>? drawableEndPaddingState;
-  Color? _drawableEndTint;
-  ValueState<Color>? drawableEndTintState;
-  bool drawableEndVisible = true;
-
-  set drawableStart(dynamic value) => _drawableStart = value;
-
-  set drawableStartSize(double value) => _drawableStartSize = value;
-
-  set drawableStartPadding(double? value) => _drawableStartPadding = value;
-
-  set drawableStartTint(Color? value) => _drawableStartTint = value;
-
-  set drawableEnd(dynamic value) => _drawableEnd = value;
-
-  set drawableEndSize(double value) => _drawableEndSize = value;
-
-  set drawableEndPadding(double? value) => _drawableEndPadding = value;
-
-  set drawableEndTint(Color? value) => _drawableEndTint = value;
-
-  dynamic get drawableStart {
-    var value = drawableStartState?.fromController(this);
-    return value ?? _drawableStart;
-  }
-
-  double get drawableStartSize {
-    var value = drawableStartSizeState?.fromController(this);
-    return value ?? _drawableStartSize;
-  }
-
-  double? get drawableStartPadding {
-    var value = drawableStartPaddingState?.fromController(this);
-    return value ?? _drawableStartPadding;
-  }
-
-  Color? get drawableStartTint {
-    var value = drawableStartTintState?.fromController(this);
-    return value ?? _drawableStartTint;
-  }
-
-  dynamic get drawableEnd {
-    var value = drawableEndState?.fromController(this);
-    return value ?? _drawableEnd;
-  }
-
-  double get drawableEndSize {
-    var value = drawableEndSizeState?.fromController(this);
-    return value ?? _drawableEndSize;
-  }
-
-  double? get drawableEndPadding {
-    var value = drawableEndPaddingState?.fromController(this);
-    return value ?? _drawableEndPadding;
-  }
-
-  Color? get drawableEndTint {
-    var value = drawableEndTintState?.fromController(this);
-    return value ?? _drawableEndTint;
-  }
-
-  void setDrawableStart(dynamic drawable) {
-    onNotifyWithCallback(() => drawableStart = drawable);
-  }
-
-  void setDrawableStartState(ValueState<dynamic> drawableState) {
-    onNotifyWithCallback(() => drawableStartState = drawableState);
-  }
-
-  void setDrawableStartSize(double size) {
-    onNotifyWithCallback(() => drawableStartSize = size);
-  }
-
-  void setDrawableStartSizeState(ValueState<double>? sizeState) {
-    onNotifyWithCallback(() => drawableStartSizeState = sizeState);
-  }
-
-  void setDrawableStartPadding(double? padding) {
-    onNotifyWithCallback(() => drawableStartPadding = padding);
-  }
-
-  void setDrawableStartPaddingState(ValueState<double>? paddingState) {
-    onNotifyWithCallback(() => drawableStartPaddingState = paddingState);
-  }
-
-  void setDrawableStartTint(Color? tint) {
-    onNotifyWithCallback(() => drawableStartTint = tint);
-  }
-
-  void setDrawableStartTintState(ValueState<Color>? tintState) {
-    onNotifyWithCallback(() => drawableStartTintState = tintState);
-  }
-
-  void setDrawableEnd(dynamic drawable) {
-    onNotifyWithCallback(() => drawableEnd = drawable);
-  }
-
-  void setDrawableEndState(ValueState<dynamic> drawableState) {
-    onNotifyWithCallback(() => drawableEndState = drawableState);
-  }
-
-  void setDrawableEndSize(double size) {
-    onNotifyWithCallback(() => drawableEndSize = size);
-  }
-
-  void setDrawableEndSizeState(ValueState<double>? sizeState) {
-    onNotifyWithCallback(() => drawableEndSizeState = sizeState);
-  }
-
-  void setDrawableEndPadding(double? padding) {
-    onNotifyWithCallback(() => drawableEndPadding = padding);
-  }
-
-  void setDrawableEndPaddingState(ValueState<double>? paddingState) {
-    onNotifyWithCallback(() => drawableEndPaddingState = paddingState);
-  }
-
-  void setDrawableEndTint(Color? tint) {
-    onNotifyWithCallback(() => drawableEndTint = tint);
-  }
-
-  void setDrawableEndTintState(ValueState<Color>? tintState) {
-    onNotifyWithCallback(() => drawableEndTintState = tintState);
-  }
-
-  /// INDICATOR PROPERTIES
-  Widget? indicator;
-  double indicatorSize = 24;
-  double indicatorStroke = 2;
-  Color? _indicatorStrokeColor;
-  ValueState<Color>? indicatorStrokeColorState;
-  Color? _indicatorStrokeBackground;
-  ValueState<Color>? indicatorStrokeBackgroundState;
-
-  set indicatorStrokeColor(Color? value) => _indicatorStrokeColor = value;
-
-  set indicatorStrokeBackground(Color? value) =>
-      _indicatorStrokeBackground = value;
-
-  Color? get indicatorStrokeColor {
-    var value = indicatorStrokeColorState?.fromController(this);
-    return value ?? _indicatorStrokeColor;
-  }
-
-  Color? get indicatorStrokeBackground {
-    var value = indicatorStrokeBackgroundState?.fromController(this);
-    return value ?? _indicatorStrokeBackground;
-  }
-
-  void setIndicator(Widget? indicator) {
-    onNotifyWithCallback(() => this.indicator = indicator);
-  }
-
-  void setIndicatorSize(double size) {
-    onNotifyWithCallback(() => indicatorSize = size);
-  }
-
-  void setIndicatorStroke(double stroke) {
-    onNotifyWithCallback(() => indicatorStroke = stroke);
-  }
-
-  void setIndicatorColor(Color? color) {
-    onNotifyWithCallback(() => indicatorStrokeColor = color);
-  }
-
-  void setIndicatorColorState(ValueState<Color>? colorState) {
-    onNotifyWithCallback(() => indicatorStrokeColorState = colorState);
-  }
-
-  void setIndicatorBackground(Color? color) {
-    onNotifyWithCallback(() => indicatorStrokeBackground = color);
-  }
-
-  void setIndicatorBackgroundState(ValueState<Color>? colorState) {
-    onNotifyWithCallback(() => indicatorStrokeBackgroundState = colorState);
-  }
-
-  void setIndicatorVisibility(bool visible) {
-    onNotifyWithCallback(() => _loading = visible);
-  }
-
-  /// EDITING PROPERTIES
-  bool autocorrect = true;
-  List<String> autofillHints = [];
-  bool autoFocus = false;
-  Clip clipBehaviorText = Clip.hardEdge;
-  Color? cursorColor;
-  double? cursorHeight;
-  bool cursorOpacityAnimates = false;
-  Radius? cursorRadius;
-  double cursorWidth = 2.0;
-  ContentInsertionConfiguration? contentInsertionConfiguration;
-  EditTextContextMenuBuilder? contextMenuBuilder;
-  DragStartBehavior dragStartBehavior = DragStartBehavior.start;
-  bool enableIMEPersonalizedLearning = true;
-  bool? enableInteractiveSelection;
-  bool enableSuggestions = true;
-  bool expands = false;
-  Brightness keyboardAppearance = Brightness.light;
-  TextInputType? inputType;
-  TextMagnifierConfiguration magnifierConfiguration =
-      TextMagnifierConfiguration.disabled;
-  int? minLines;
-  MouseCursor? mouseCursor;
-  bool? _obscureText;
-  String obscuringCharacter = '•';
-  bool readOnly = false;
-  String? restorationId;
-  bool scribbleEnabled = true;
-  ScrollController? scrollControllerText;
-  EdgeInsets scrollPaddingText = const EdgeInsets.all(20);
-  ScrollPhysics? scrollPhysicsText;
-  TextSelectionControls? selectionControls;
-  BoxHeightStyle selectionHeightStyle = BoxHeightStyle.tight;
-  BoxWidthStyle selectionWidthStyle = BoxWidthStyle.tight;
-  bool? showCursor;
-  SmartDashesType? smartDashesType;
-  SmartQuotesType? smartQuotesType;
-  SpellCheckConfiguration? spellCheckConfiguration;
-  TextCapitalization textCapitalization = TextCapitalization.none;
-  TextInputAction? textInputAction;
-  UndoHistoryController? undoController;
-
-  bool get obscureText =>
-      _obscureText ?? inputType == TextInputType.visiblePassword;
-
-  /// EDITING CALLBACK & LISTENERS
-  EditTextPrivateCommandListener? onAppPrivateCommand;
-  EditTextCheckingListener? onChecked;
-  EditTextVoidListener? onEditingComplete;
-  EditTextSubmitListener? onSubmitted;
-  EditTextTapOutsideListener? onTapOutside;
-}
-
 class _EditTextHighlightText extends StatelessWidget {
   final bool valid;
   final bool visible;
@@ -1173,7 +1189,6 @@ class _EditTextHighlightText extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const _EditTextHighlightText({
-    Key? key,
     required this.text,
     this.textAlign,
     this.textColor,
@@ -1181,7 +1196,7 @@ class _EditTextHighlightText extends StatelessWidget {
     this.valid = false,
     this.visible = true,
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1224,7 +1239,7 @@ class UnderlineView extends StatelessWidget {
   final ValueState<Color> colorState;
 
   const UnderlineView({
-    Key? key,
+    super.key,
     this.primary,
     this.visible = true,
     this.enabled = true,
@@ -1232,7 +1247,7 @@ class UnderlineView extends StatelessWidget {
     this.error = false,
     required this.colorState,
     this.height = 1,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

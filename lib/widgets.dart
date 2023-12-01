@@ -8,11 +8,13 @@ import 'dart:ui';
 
 import 'package:badges/badges.dart' as b;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'extensions.dart';
@@ -40,8 +42,6 @@ part 'views/controller.dart';
 part 'views/countdown_view.dart';
 
 part 'views/dropdown_view.dart';
-
-part 'views/edit_form.dart';
 
 part 'views/edit_text.dart';
 
@@ -81,7 +81,7 @@ part 'views/recycler_view.dart';
 
 part 'views/slide_image_view.dart';
 
-part 'views/splash_view.dart';
+part 'views/splash_layout.dart';
 
 part 'views/stack_layout.dart';
 

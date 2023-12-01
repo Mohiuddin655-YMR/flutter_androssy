@@ -187,12 +187,6 @@ class TextViewController extends ViewController {
     onNotifyWithCallback(() => textOverflow = value);
   }
 
-  double textScaleFactor = 1;
-
-  void setTextScaleFactor(double value) {
-    onNotifyWithCallback(() => textScaleFactor = value);
-  }
-
   double? _textSize;
 
   set textSize(double? value) => _textSize = value;
@@ -501,7 +495,6 @@ class TextViewController extends ViewController {
     selectionColor = view.selectionColor;
     semanticsLabel = view.semanticsLabel;
     softWrap = view.softWrap;
-    textScaleFactor = view.textScaleFactor;
     strutStyle = view.strutStyle;
     wordSpacing = view.wordSpacing;
 
@@ -704,7 +697,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final TextHeightBehavior? textHeightBehavior;
   final TextLeadingDistribution? textLeadingDistribution;
   final TextOverflow? textOverflow;
-  final double textScaleFactor;
   final double? textSize;
   final ValueState<double>? textSizeState;
   final List<TextSpan> textSpans;
@@ -910,7 +902,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.textHeightBehavior,
     this.textLeadingDistribution,
     this.textOverflow,
-    this.textScaleFactor = 1,
     this.textSize,
     this.textSizeState,
     this.textSpans = const [],
@@ -997,7 +988,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
       textHeightBehavior: controller.textHeightBehavior,
       textLeadingDistribution: controller.textLeadingDistribution,
       textOverflow: controller.textOverflow,
-      textScaleFactor: controller.textScaleFactor,
       textSize: controller.textSize,
       textSpans: controller.textSpans,
       textStyle: controller.textStyle,
@@ -1081,7 +1071,6 @@ class RawTextView extends StatelessWidget {
   final TextHeightBehavior? textHeightBehavior;
   final TextLeadingDistribution? textLeadingDistribution;
   final TextOverflow? textOverflow;
-  final double? textScaleFactor;
   final double? textSize;
   final List<TextSpan> textSpans;
   final TextStyle textStyle;
@@ -1143,7 +1132,6 @@ class RawTextView extends StatelessWidget {
     this.textHeightBehavior,
     this.textLeadingDistribution,
     this.textOverflow,
-    this.textScaleFactor,
     this.textSize,
     this.textSpans = const [],
     this.textStyle = const TextStyle(),
@@ -1265,7 +1253,6 @@ class RawTextView extends StatelessWidget {
                 ),
             textAlign: textAlign ?? TextAlign.start,
             textDirection: textDirection ?? TextDirection.ltr,
-            textScaleFactor: textScaleFactor ?? 1,
             maxLines: maxLines,
             ellipsis: ellipsis ?? "...",
             locale: locale,
@@ -1290,7 +1277,6 @@ class RawTextView extends StatelessWidget {
         locale: locale,
         softWrap: softWrap,
         overflow: textOverflow,
-        textScaleFactor: textScaleFactor,
         maxLines: maxLines,
         semanticsLabel: semanticsLabel,
         textWidthBasis: textWidthBasis,
@@ -1307,7 +1293,6 @@ class RawTextView extends StatelessWidget {
         locale: locale,
         softWrap: softWrap,
         overflow: textOverflow,
-        textScaleFactor: textScaleFactor,
         maxLines: maxLines,
         semanticsLabel: semanticsLabel,
         textWidthBasis: textWidthBasis,

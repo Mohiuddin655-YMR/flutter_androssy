@@ -173,7 +173,7 @@ class Home extends AndrossyActivity<HomeController> {
           paddingHorizontal: 24,
           icon: Icons.call,
           iconSize: 24,
-          centerText: true,
+          textCenter: true,
           iconAlignment: IconAlignment.start,
         ),
         // ICON BORDER BUTTONS
@@ -228,7 +228,7 @@ class Home extends AndrossyActivity<HomeController> {
           paddingHorizontal: 24,
           icon: Icons.chat_bubble_outline,
           iconSize: 24,
-          centerText: true,
+          textCenter: true,
           iconAlignment: IconAlignment.start,
         ),
         // ICON CIRCULAR BUTTONS

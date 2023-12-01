@@ -1,6 +1,110 @@
 part of '../widgets.dart';
 
-class LinearLayout extends YMRView<LinearLayoutController> {
+class LinearLayoutController extends ViewController {
+  ScrollController _scrollController = ScrollController();
+
+  @override
+  set scrollController(ScrollController value) => _scrollController = value;
+
+  void setScrollController(ScrollController value) {
+    onNotifyWithCallback(() => scrollController = value);
+  }
+
+  LayoutGravity layoutGravity = LayoutGravity.start;
+
+  void setLayoutGravity(LayoutGravity value) {
+    onNotifyWithCallback(() => layoutGravity = value);
+  }
+
+  CrossAxisAlignment? _crossGravity;
+
+  set crossGravity(CrossAxisAlignment? value) => _crossGravity = value;
+
+  void setCrossGravity(CrossAxisAlignment value) {
+    onNotifyWithCallback(() => crossGravity = value);
+  }
+
+  MainAxisAlignment? _mainGravity;
+
+  set mainGravity(MainAxisAlignment? value) => _mainGravity = value;
+
+  void setMainGravity(MainAxisAlignment value) {
+    onNotifyWithCallback(() => mainGravity = value);
+  }
+
+  MainAxisSize mainAxisSize = MainAxisSize.min;
+
+  void setMainAxisSize(MainAxisSize value) {
+    onNotifyWithCallback(() => mainAxisSize = value);
+  }
+
+  TextBaseline? textBaseline;
+
+  void setTextBaseLine(TextBaseline? value) {
+    onNotifyWithCallback(() => textBaseline = value);
+  }
+
+  TextDirection? textDirection;
+
+  void setTextDirection(TextDirection? value) {
+    onNotifyWithCallback(() => textDirection = value);
+  }
+
+  VerticalDirection verticalDirection = VerticalDirection.down;
+
+  void setVerticalDirection(VerticalDirection value) {
+    onNotifyWithCallback(() => verticalDirection = value);
+  }
+
+  List<Widget> children = [];
+
+  void setChildren(List<Widget> value) {
+    onNotifyWithCallback(() => children = value);
+  }
+
+  OnViewChangeListener? _onPaging;
+
+  OnViewChangeListener? get onPaging => enabled ? _onPaging : null;
+
+  set onPaging(OnViewChangeListener? listener) => _onPaging ??= listener;
+
+  void setOnPagingListener(OnViewChangeListener listener) {
+    onPaging = listener;
+  }
+
+  LinearLayoutController fromLinearLayout(LinearLayout view) {
+    super.fromView(view);
+    scrollController = view.scrollController ?? ScrollController();
+    orientation = view.orientation ?? Axis.vertical;
+    layoutGravity = view.layoutGravity ?? LayoutGravity.start;
+    mainGravity = view.mainGravity;
+    mainAxisSize = view.mainAxisSize;
+    crossGravity = view.crossGravity;
+    scrollable = view.scrollable ?? false;
+    scrollingType = view.scrollingType ?? ViewScrollingType.none;
+    textBaseline = view.textBaseline;
+    textDirection = view.textDirection;
+    verticalDirection = view.verticalDirection;
+    children = view.children ?? [];
+    onPaging = view.onPaging;
+    return this;
+  }
+
+  MainAxisAlignment get mainGravity => _mainGravity ?? layoutGravity.main;
+
+  CrossAxisAlignment get crossGravity => _crossGravity ?? layoutGravity.cross;
+
+  @override
+  ScrollController get scrollController {
+    if (onPaging != null) {
+      return _scrollController.paging(onListen: onPaging ?? (v) {});
+    } else {
+      return _scrollController;
+    }
+  }
+}
+
+class LinearLayout<T extends LinearLayoutController> extends YMRView<T> {
   final LayoutGravity? layoutGravity;
   final CrossAxisAlignment? crossGravity;
   final MainAxisAlignment? mainGravity;
@@ -8,14 +112,61 @@ class LinearLayout extends YMRView<LinearLayoutController> {
   final TextBaseline? textBaseline;
   final TextDirection? textDirection;
   final VerticalDirection verticalDirection;
-  final OnViewChangeListener? onPagingListener;
+  final OnViewChangeListener? onPaging;
 
   final List<Widget>? children;
 
   const LinearLayout({
-    /// BASE PROPERTIES
+    /// ROOT PROPERTIES
     super.key,
     super.controller,
+
+    ///BASE PROPERTIES
+    super.absorbMode,
+    super.activated,
+    super.background,
+    super.backgroundState,
+    super.backgroundBlendMode,
+    super.backgroundGradient,
+    super.backgroundGradientState,
+    super.backgroundImage,
+    super.backgroundImageState,
+    super.clipBehavior,
+    super.dimensionRatio,
+    super.elevation,
+    super.enabled,
+    super.expandable,
+    super.foreground,
+    super.foregroundBlendMode,
+    super.foregroundGradient,
+    super.foregroundImage,
+    super.flex,
+    super.gravity,
+    super.height,
+    super.heightState,
+    super.heightMax,
+    super.heightMin,
+    super.hoverColor,
+    super.orientation,
+    super.position,
+    super.positionType,
+    super.pressedColor,
+    super.rippleColor,
+    super.scrollable,
+    super.scrollController,
+    super.scrollingType,
+    super.shape,
+    super.transform,
+    super.transformGravity,
+    super.width,
+    super.widthState,
+    super.widthMax,
+    super.widthMin,
+    super.visibility,
+
+    /// ANIMATION PROPERTIES
+    super.animation,
+    super.animationType,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -34,6 +185,7 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.borderStartState,
     super.borderEnd,
     super.borderEndState,
+    super.borderStrokeAlign,
 
     /// BORDER RADIUS PROPERTIES
     super.borderRadius,
@@ -47,35 +199,7 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
-    ///
-    ///
-    ///
-    ///
-    super.absorbMode,
-    super.activated,
-    super.animation,
-    super.animationType,
-    super.background,
-    super.backgroundState,
-    super.backgroundBlendMode,
-    super.backgroundGradient,
-    super.backgroundGradientState,
-    super.backgroundImage,
-    super.backgroundImageState,
-    super.clipBehavior,
-    super.dimensionRatio,
-    super.elevation,
-    super.enabled,
-    super.foreground,
-    super.foregroundBlendMode,
-    super.foregroundGradient,
-    super.foregroundImage,
-    super.flex,
-    super.gravity,
-    super.height,
-    super.heightMax,
-    super.heightMin,
-    super.hoverColor,
+    /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,
     super.marginVertical,
@@ -83,7 +207,8 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
-    super.orientation,
+
+    /// PADDING PROPERTIES
     super.padding,
     super.paddingHorizontal,
     super.paddingVertical,
@@ -91,13 +216,8 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
-    super.position,
-    super.positionType,
-    super.pressedColor,
-    super.rippleColor,
-    super.scrollable,
-    super.scrollingType,
-    super.scrollController,
+
+    /// SHADOW PROPERTIES
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -110,17 +230,15 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
-    super.shape,
-    super.transform,
-    super.transformGravity,
-    super.width,
-    super.widthMax,
-    super.widthMin,
-    super.visibility,
+
+    /// LISTENER PROPERTIES
     super.onClick,
     super.onDoubleClick,
     super.onLongClick,
+    super.onHover,
     super.onToggle,
+
+    /// CHILD PROPERTIES
     this.layoutGravity,
     this.mainGravity,
     this.mainAxisSize = MainAxisSize.min,
@@ -128,22 +246,18 @@ class LinearLayout extends YMRView<LinearLayoutController> {
     this.textBaseline,
     this.textDirection,
     this.verticalDirection = VerticalDirection.down,
-    this.onPagingListener,
+    this.onPaging,
     this.children,
   });
 
   @override
-  LinearLayoutController initController() {
-    return LinearLayoutController();
-  }
+  T initController() => LinearLayoutController() as T;
 
   @override
-  LinearLayoutController attachController(LinearLayoutController controller) {
-    return controller.fromLinearLayout(this);
-  }
+  T attachController(T controller) => controller.fromLinearLayout(this) as T;
 
   @override
-  Widget? attach(BuildContext context, LinearLayoutController controller) {
+  Widget? attach(BuildContext context, T controller) {
     return controller.orientation == Axis.vertical
         ? Column(
             mainAxisAlignment: controller.mainGravity,
@@ -163,52 +277,6 @@ class LinearLayout extends YMRView<LinearLayoutController> {
             verticalDirection: controller.verticalDirection,
             children: controller.children,
           );
-  }
-}
-
-class LinearLayoutController extends ViewController {
-  ScrollController _scrollController = ScrollController();
-  LayoutGravity layoutGravity = LayoutGravity.start;
-  CrossAxisAlignment? _crossGravity;
-  MainAxisAlignment? _mainGravity;
-  MainAxisSize mainAxisSize = MainAxisSize.min;
-  TextBaseline? textBaseline;
-  TextDirection? textDirection;
-  VerticalDirection verticalDirection = VerticalDirection.down;
-  List<Widget> children = [];
-
-  OnViewChangeListener? onPagingListener;
-
-  LinearLayoutController fromLinearLayout(LinearLayout view) {
-    super.fromView(view);
-    _scrollController = view.scrollController ?? ScrollController();
-    orientation = view.orientation ?? Axis.vertical;
-    layoutGravity = view.layoutGravity ?? LayoutGravity.start;
-    _mainGravity = view.mainGravity;
-    mainAxisSize = view.mainAxisSize;
-    _crossGravity = view.crossGravity;
-    scrollable = view.scrollable ?? false;
-    scrollingType = view.scrollingType ?? ViewScrollingType.none;
-    textBaseline = view.textBaseline;
-    textDirection = view.textDirection;
-    verticalDirection = view.verticalDirection;
-
-    children = view.children ?? [];
-    onPagingListener = view.onPagingListener;
-    return this;
-  }
-
-  MainAxisAlignment get mainGravity => _mainGravity ?? layoutGravity.main;
-
-  CrossAxisAlignment get crossGravity => _crossGravity ?? layoutGravity.cross;
-
-  @override
-  ScrollController get scrollController {
-    if (onPagingListener != null) {
-      return _scrollController.paging(onListen: onPagingListener ?? (v) {});
-    } else {
-      return _scrollController;
-    }
   }
 }
 

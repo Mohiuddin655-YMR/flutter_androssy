@@ -174,7 +174,6 @@ class CheckmarkView extends TextView<CheckmarkViewController> {
     super.textHeightBehavior,
     super.textLeadingDistribution,
     super.textOverflow,
-    super.textScaleFactor,
     super.textSize,
     super.textSizeState,
     super.textSpans,

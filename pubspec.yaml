@@ -1,6 +1,6 @@
 name: flutter_androssy
 description: Collection of service with advanced style and controlling system.
-version: 0.3.3
+version: 0.3.4
 homepage: https://github.com/P-YMR/flutter_androssy.git
 
 environment:
@@ -18,6 +18,8 @@ dependencies:
   flutter_svg: ^2.0.9
   intl: ^0.18.1
   badges: ^3.1.2
+  cached_network_image_platform_interface: ^3.0.0
+  flutter_cache_manager: ^3.3.1
 
 dev_dependencies:
   flutter_test:

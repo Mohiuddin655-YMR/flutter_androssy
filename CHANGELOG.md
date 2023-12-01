@@ -1,4 +1,9 @@
+## 0.3.4
+
+* Button, EditText, IconView, ImageView, LinearLayout, SplashLayout and TextView modified
+
 ## 0.3.3
+
 * ViewObserver extension too short
 
 ## 0.3.2
