@@ -474,9 +474,9 @@ class ViewController {
 
   /// INDICATOR AND ACTIVATOR PROPERTIES
 
-  bool _loading = false;
+  bool indicatorVisible = false;
 
-  bool get isIndicatorVisible => onActivator != null && _loading;
+  bool get isIndicatorVisible => onActivator != null && indicatorVisible;
 
   OnViewActivator? _onActivator;
 
@@ -484,16 +484,20 @@ class ViewController {
 
   set onActivator(OnViewActivator? value) => _onActivator ??= value;
 
+  void setIndicatorVisible(bool value) {
+    onNotifyWithCallback(() => indicatorVisible = value);
+  }
+
   void setOnActivatorListener(OnViewActivator listener) =>
       _onActivator = listener;
 
   void onNotifyActivator(dynamic data, {VoidCallback? callback}) async {
     if (onActivator != null) {
-      onNotifyWithCallback(() => _loading = true);
+      onNotifyWithCallback(() => indicatorVisible = true);
       bool value = await onActivator!(data);
       onNotifyWithCallback(() {
         activated = value;
-        _loading = false;
+        indicatorVisible = false;
       });
     } else {
       if (callback != null) callback();

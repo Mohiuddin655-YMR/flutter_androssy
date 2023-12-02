@@ -1,3 +1,7 @@
+## 0.3.5
+
+* EditText, EditLayout, LinearLayout modified
+
 ## 0.3.4
 
 * Button, EditText, IconView, ImageView, LinearLayout, SplashLayout and TextView modified

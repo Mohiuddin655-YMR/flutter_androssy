@@ -237,6 +237,7 @@ class LinearLayout<T extends LinearLayoutController> extends YMRView<T> {
     super.onLongClick,
     super.onHover,
     super.onToggle,
+    super.onValid,
 
     /// CHILD PROPERTIES
     this.layoutGravity,

@@ -16,7 +16,7 @@ typedef EditTextPrivateCommandListener = void Function(
 );
 
 typedef EditTextVoidListener = void Function();
-typedef EditTextCheckingListener = Function(String tag, bool valid);
+typedef EditTextCheckListener = Function(String tag, bool valid);
 typedef EditTextSelectionChangeListener = void Function(
   TextSelection selection,
   SelectionChangedCause? cause,
@@ -34,26 +34,565 @@ class EditTextController extends TextViewController {
     _node.addListener(_handleFocusChange);
   }
 
+  bool counterTextVisible = false;
+
+  void setCounterTextVisible(bool value) {
+    onNotifyWithCallback(() => counterTextVisible = value);
+  }
+
+  String digits = "";
+
+  void setDigits(String value) {
+    onNotifyWithCallback(() => digits = value);
+  }
+
+  dynamic _drawableEnd;
+
+  set drawableEnd(dynamic value) => _drawableEnd = value;
+
+  void setDrawableEnd(dynamic value) {
+    onNotifyWithCallback(() => drawableEnd = value);
+  }
+
+  ValueState<dynamic>? drawableEndState;
+
+  void setDrawableEndState(ValueState<dynamic>? value) {
+    onNotifyWithCallback(() => drawableEndState = value);
+  }
+
+  double _drawableEndSize = 18;
+
+  set drawableEndSize(double value) => _drawableEndSize = value;
+
+  void setDrawableEndSize(double value) {
+    onNotifyWithCallback(() => drawableEndSize = value);
+  }
+
+  ValueState<double>? drawableEndSizeState;
+
+  void setDrawableEndSizeState(ValueState<double>? value) {
+    onNotifyWithCallback(() => drawableEndSizeState = value);
+  }
+
+  double? _drawableEndPadding;
+
+  set drawableEndPadding(double? value) => _drawableEndPadding = value;
+
+  void setDrawableEndPadding(double? value) {
+    onNotifyWithCallback(() => drawableEndPadding = value);
+  }
+
+  ValueState<double>? drawableEndPaddingState;
+
+  void setDrawableEndPaddingState(ValueState<double>? value) {
+    onNotifyWithCallback(() => drawableEndPaddingState = value);
+  }
+
+  Color? _drawableEndTint;
+
+  set drawableEndTint(Color? value) => _drawableEndTint = value;
+
+  void setDrawableEndTint(Color? value) {
+    onNotifyWithCallback(() => drawableEndTint = value);
+  }
+
+  ValueState<Color>? drawableEndTintState;
+
+  void setDrawableEndTintState(ValueState<Color>? value) {
+    onNotifyWithCallback(() => drawableEndTintState = value);
+  }
+
+  bool drawableEndVisible = true;
+
+  void setDrawableEndVisible(bool value) {
+    onNotifyWithCallback(() => drawableEndVisible = value);
+  }
+
+  dynamic _drawableStart;
+
+  set drawableStart(dynamic value) => _drawableStart = value;
+
+  void setDrawableStart(dynamic value) {
+    onNotifyWithCallback(() => drawableStart = value);
+  }
+
+  ValueState<dynamic>? drawableStartState;
+
+  void setDrawableStartState(ValueState<dynamic>? value) {
+    onNotifyWithCallback(() => drawableStartState = value);
+  }
+
+  double _drawableStartSize = 18;
+
+  set drawableStartSize(double value) => _drawableStartSize = value;
+
+  void setDrawableStartSize(double value) {
+    onNotifyWithCallback(() => drawableStartSize = value);
+  }
+
+  ValueState<double>? drawableStartSizeState;
+
+  void setDrawableStartSizeState(dynamic value) {
+    onNotifyWithCallback(() => drawableStartSizeState = value);
+  }
+
+  double? _drawableStartPadding;
+
+  set drawableStartPadding(double? value) => _drawableStartPadding = value;
+
+  void setDrawableStartPadding(double? value) {
+    onNotifyWithCallback(() => drawableStartPadding = value);
+  }
+
+  ValueState<double>? drawableStartPaddingState;
+
+  void setDrawableStartPaddingState(ValueState<double>? value) {
+    onNotifyWithCallback(() => drawableStartPaddingState = value);
+  }
+
+  Color? _drawableStartTint;
+
+  set drawableStartTint(Color? value) => _drawableStartTint = value;
+
+  void setDrawableStartTint(Color? value) {
+    onNotifyWithCallback(() => drawableStartTint = value);
+  }
+
+  ValueState<Color>? drawableStartTintState;
+
+  void setDrawableStartTintState(ValueState<Color>? value) {
+    onNotifyWithCallback(() => drawableStartTintState = value);
+  }
+
+  bool drawableStartVisible = true;
+
+  void setDrawableStartVisible(bool value) {
+    onNotifyWithCallback(() => drawableStartVisible = value);
+  }
+
+  String? _errorText;
+
+  set errorText(String? value) => _errorText = value;
+
+  void setErrorText(String? value) {
+    onNotifyWithCallback(() => errorText = value);
+  }
+
+  ValueState<String>? errorTextState;
+
+  void setErrorTextState(ValueState<String>? value) {
+    onNotifyWithCallback(() => errorTextState = value);
+  }
+
+  Color? errorTextColor;
+
+  void setErrorTextColor(Color? value) {
+    onNotifyWithCallback(() => errorTextColor = value);
+  }
+
+  bool errorTextVisible = false;
+
+  void setErrorTextVisible(bool value) {
+    onNotifyWithCallback(() => errorTextVisible = value);
+  }
+
+  Color? floatingTextColor;
+
+  void setFloatingTextColor(Color? value) {
+    onNotifyWithCallback(() => floatingTextColor = value);
+  }
+
+  double floatingTextSize = 12;
+
+  void setFloatingTextSize(double value) {
+    onNotifyWithCallback(() => floatingTextSize = value);
+  }
+
+  bool floatingTextVisible = false;
+
+  void setFloatingTextVisible(bool value) {
+    onNotifyWithCallback(() => floatingTextVisible = value);
+  }
+
+  String helperText = "";
+
+  void setHelperText(String value) {
+    onNotifyWithCallback(() => helperText = value);
+  }
+
+  Color? helperTextColor;
+
+  void setHelperTextColor(Color? value) {
+    onNotifyWithCallback(() => helperTextColor = value);
+  }
+
+  String hintText = "";
+
+  void setHintText(String value) {
+    onNotifyWithCallback(() => hintText = value);
+  }
+
+  Color? hintTextColor;
+
+  void setHintTextColor(Color? value) {
+    onNotifyWithCallback(() => hintTextColor = value);
+  }
+
+  Widget? indicator;
+
+  void setIndicator(Widget? value) {
+    onNotifyWithCallback(() => indicator = value);
+  }
+
+  double indicatorSize = 24;
+
+  void setIndicatorSize(double value) {
+    onNotifyWithCallback(() => indicatorSize = value);
+  }
+
+  double indicatorStroke = 2;
+
+  void setIndicatorStroke(double value) {
+    onNotifyWithCallback(() => indicatorStroke = value);
+  }
+
+  Color? _indicatorStrokeColor;
+
+  set indicatorStrokeColor(Color? value) => _indicatorStrokeColor = value;
+
+  void setIndicatorStrokeColor(Color? value) {
+    onNotifyWithCallback(() => indicatorStrokeColor = value);
+  }
+
+  ValueState<Color>? indicatorStrokeColorState;
+
+  void setIndicatorStrokeColorState(ValueState<Color>? value) {
+    onNotifyWithCallback(() => indicatorStrokeColorState = value);
+  }
+
+  Color? _indicatorStrokeBackground;
+
+  set indicatorStrokeBackground(Color? value) {
+    _indicatorStrokeBackground = value;
+  }
+
+  void setIndicatorStrokeBackground(Color? value) {
+    onNotifyWithCallback(() => indicatorStrokeBackground = value);
+  }
+
+  ValueState<Color>? indicatorStrokeBackgroundState;
+
+  void setIndicatorStrokeBackgroundState(ValueState<Color>? value) {
+    onNotifyWithCallback(() => indicatorStrokeBackgroundState = value);
+  }
+
+  void setIndicatorVisibility(bool visible) {
+    onNotifyWithCallback(() => indicatorVisible = visible);
+  }
+
+  int? minCharacters;
+
+  void setMinCharacters(int? value) {
+    onNotifyWithCallback(() => minCharacters = value);
+  }
+
+  Color? primary;
+
+  void setPrimary(Color? value) {
+    onNotifyWithCallback(() => primary = value);
+  }
+
+  // EDITING PROPERTIES
+  bool autocorrect = true;
+
+  void setAutocorrect(bool value) {
+    onNotifyWithCallback(() => autocorrect = value);
+  }
+
+  List<String> autofillHints = const [];
+
+  void setAutofillHints(List<String> value) {
+    onNotifyWithCallback(() => autofillHints = value);
+  }
+
+  bool autoFocus = false;
+
+  void setAutoFocus(bool value) {
+    onNotifyWithCallback(() => autoFocus = value);
+  }
+
+  Clip clipBehaviorText = Clip.hardEdge;
+
+  void setClipBehaviorText(Clip value) {
+    onNotifyWithCallback(() => clipBehaviorText = value);
+  }
+
+  Color? cursorColor;
+
+  void setCursorColor(Color? value) {
+    onNotifyWithCallback(() => cursorColor = value);
+  }
+
+  double? cursorHeight;
+
+  void setCursorHeight(double? value) {
+    onNotifyWithCallback(() => cursorHeight = value);
+  }
+
+  bool cursorOpacityAnimates = false;
+
+  void setCursorOpacityAnimates(bool value) {
+    onNotifyWithCallback(() => cursorOpacityAnimates = value);
+  }
+
+  Radius? cursorRadius;
+
+  void setCursorRadius(Radius? value) {
+    onNotifyWithCallback(() => cursorRadius = value);
+  }
+
+  double cursorWidth = 2.0;
+
+  void setCursorWidth(double value) {
+    onNotifyWithCallback(() => cursorWidth = value);
+  }
+
+  ContentInsertionConfiguration? contentInsertionConfiguration;
+
+  void setContentInsertionConfiguration(ContentInsertionConfiguration? value) {
+    onNotifyWithCallback(() => contentInsertionConfiguration = value);
+  }
+
+  EditTextContextMenuBuilder? contextMenuBuilder;
+
+  void setContextMenuBuilder(EditTextContextMenuBuilder? value) {
+    onNotifyWithCallback(() => contextMenuBuilder = value);
+  }
+
+  DragStartBehavior dragStartBehavior = DragStartBehavior.start;
+
+  void setDragStartBehavior(DragStartBehavior value) {
+    onNotifyWithCallback(() => dragStartBehavior = value);
+  }
+
+  bool enableIMEPersonalizedLearning = true;
+
+  void setEnableIMEPersonalizedLearning(bool value) {
+    onNotifyWithCallback(() => enableIMEPersonalizedLearning = value);
+  }
+
+  bool? enableInteractiveSelection;
+
+  void setEnableInteractiveSelection(bool? value) {
+    onNotifyWithCallback(() => enableInteractiveSelection = value);
+  }
+
+  bool enableSuggestions = true;
+
+  void setEnableSuggestions(bool value) {
+    onNotifyWithCallback(() => enableSuggestions = value);
+  }
+
+  bool expands = false;
+
+  void setExpands(bool value) {
+    onNotifyWithCallback(() => expands = value);
+  }
+
+  Brightness keyboardAppearance = Brightness.light;
+
+  void setKeyboardAppearance(Brightness value) {
+    onNotifyWithCallback(() => keyboardAppearance = value);
+  }
+
+  TextInputType? inputType;
+
+  void setInputType(TextInputType? value) {
+    onNotifyWithCallback(() => inputType = value);
+  }
+
+  TextMagnifierConfiguration magnifierConfiguration =
+      TextMagnifierConfiguration.disabled;
+
+  void setMagnifierConfiguration(TextMagnifierConfiguration value) {
+    onNotifyWithCallback(() => magnifierConfiguration = value);
+  }
+
+  int? minLines;
+
+  void setMinLines(int? value) {
+    onNotifyWithCallback(() => minLines = value);
+  }
+
+  MouseCursor? mouseCursor;
+
+  void setMouseCursor(MouseCursor? value) {
+    onNotifyWithCallback(() => mouseCursor = value);
+  }
+
+  bool? _obscureText;
+
+  set obscureText(bool? value) => _obscureText = value;
+
+  void setObscureText(bool? value) {
+    onNotifyWithCallback(() => obscureText = value);
+  }
+
+  String obscuringCharacter = '•';
+
+  void setObscuringCharacter(String value) {
+    onNotifyWithCallback(() => obscuringCharacter = value);
+  }
+
+  bool readOnly = false;
+
+  void setReadOnly(bool value) {
+    onNotifyWithCallback(() => readOnly = value);
+  }
+
+  String? restorationId;
+
+  void setRestorationId(String? value) {
+    onNotifyWithCallback(() => restorationId = value);
+  }
+
+  bool scribbleEnabled = true;
+
+  void setScribbleEnabled(bool value) {
+    onNotifyWithCallback(() => scribbleEnabled = value);
+  }
+
+  ScrollController? scrollControllerText;
+
+  void setScrollControllerText(ScrollController? value) {
+    onNotifyWithCallback(() => scrollControllerText = value);
+  }
+
+  EdgeInsets textScrollPadding = const EdgeInsets.all(20);
+
+  void setTextScrollPadding(EdgeInsets value) {
+    onNotifyWithCallback(() => textScrollPadding = value);
+  }
+
+  ScrollPhysics? textScrollPhysics;
+
+  void setTextScrollPhysics(ScrollPhysics? value) {
+    onNotifyWithCallback(() => textScrollPhysics = value);
+  }
+
+  TextSelectionControls? selectionControls;
+
+  void setSelectionControls(TextSelectionControls? value) {
+    onNotifyWithCallback(() => selectionControls = value);
+  }
+
+  BoxHeightStyle selectionHeightStyle = BoxHeightStyle.tight;
+
+  void setSelectionHeightStyle(BoxHeightStyle value) {
+    onNotifyWithCallback(() => selectionHeightStyle = value);
+  }
+
+  BoxWidthStyle selectionWidthStyle = BoxWidthStyle.tight;
+
+  void setSelectionWidthStyle(BoxWidthStyle value) {
+    onNotifyWithCallback(() => selectionWidthStyle = value);
+  }
+
+  bool? showCursor;
+
+  void setShowCursor(bool? value) {
+    onNotifyWithCallback(() => showCursor = value);
+  }
+
+  SmartDashesType? smartDashesType;
+
+  void setSmartDashesType(SmartDashesType? value) {
+    onNotifyWithCallback(() => smartDashesType = value);
+  }
+
+  SmartQuotesType? smartQuotesType;
+
+  void setSmartQuotesType(SmartQuotesType? value) {
+    onNotifyWithCallback(() => smartQuotesType = value);
+  }
+
+  SpellCheckConfiguration? spellCheckConfiguration;
+
+  void setSpellCheckConfiguration(SpellCheckConfiguration? value) {
+    onNotifyWithCallback(() => spellCheckConfiguration = value);
+  }
+
+  TextCapitalization textCapitalization = TextCapitalization.none;
+
+  void setTextCapitalization(TextCapitalization value) {
+    onNotifyWithCallback(() => textCapitalization = value);
+  }
+
+  TextInputAction? textInputAction;
+
+  void setTextInputAction(TextInputAction? value) {
+    onNotifyWithCallback(() => textInputAction = value);
+  }
+
+  UndoHistoryController? undoController;
+
+  void setUndoController(UndoHistoryController? value) {
+    onNotifyWithCallback(() => undoController = value);
+  }
+
+  // CALLBACK & LISTENERS
+
+  EditTextPrivateCommandListener? _onAppPrivateCommand;
+
+  set onAppPrivateCommand(EditTextPrivateCommandListener? listener) =>
+      _onAppPrivateCommand = listener;
+
+  void setOnEditTextPrivateCommandListener(
+          EditTextPrivateCommandListener listener) =>
+      onAppPrivateCommand = listener;
+
+  EditTextVoidListener? _onEditingComplete;
+
+  set onEditingComplete(EditTextVoidListener? listener) =>
+      _onEditingComplete = listener;
+
+  void setOnEditTextVoidListener(EditTextVoidListener listener) =>
+      onEditingComplete = listener;
+
+  EditTextSubmitListener? _onSubmitted;
+
+  set onSubmitted(EditTextSubmitListener? listener) => _onSubmitted = listener;
+
+  void setOnEditTextSubmitListener(EditTextSubmitListener listener) =>
+      onSubmitted = listener;
+
+  EditTextTapOutsideListener? _onTapOutside;
+
+  set onTapOutside(EditTextTapOutsideListener? listener) =>
+      _onTapOutside = listener;
+
+  void setOnEditTextTapOutsideListener(EditTextTapOutsideListener listener) =>
+      onTapOutside = listener;
+
   EditTextController fromEditText(EditText view) {
     super.fromTextView(view);
 
     helperText = view.helperText;
     helperTextColor = view.helperTextColor;
-    floatingLabelColor = view.floatingLabelColor;
-    floatingLabelSize = view.floatingLabelSize;
-    floatingLabelVisible = view.floatingLabelVisible;
-    errorVisible = view.errorVisible;
-    errorColor = view.errorColor;
-    counterVisible = view.counterVisible;
+    floatingTextColor = view.floatingTextColor;
+    floatingTextSize = view.floatingTextSize;
+    floatingTextVisible = view.floatingTextVisible;
+    errorTextVisible = view.errorTextVisible;
+    errorTextColor = view.errorTextColor;
+    counterTextVisible = view.counterTextVisible;
     onChange = view.onChange;
     onError = view.onError;
     onValidator = view.onValidator;
 
     /// BASE PROPERTIES
-    id = view.id;
     digits = view.digits;
-    hint = view.hint;
-    hintColor = view.hintColor;
+    hintText = view.hint;
+    hintTextColor = view.hintColor;
     primary = view.primary;
     maxCharacters = view.maxCharacters;
     minCharacters = view.minCharacters;
@@ -86,7 +625,7 @@ class EditTextController extends TextViewController {
     indicatorStrokeColorState = view.indicatorStrokeColorState;
     indicatorStrokeBackground = view.indicatorStrokeBackground;
     indicatorStrokeBackgroundState = view.indicatorStrokeBackgroundState;
-    _loading = view.indicatorVisible;
+    indicatorVisible = view.indicatorVisible;
 
     /// EDITING PROPERTIES
     autocorrect = view.autocorrect;
@@ -110,14 +649,14 @@ class EditTextController extends TextViewController {
     magnifierConfiguration = view.magnifierConfiguration;
     minLines = view.minLines;
     mouseCursor = view.mouseCursor;
-    _obscureText = view.obscureText;
+    obscureText = view.obscureText;
     obscuringCharacter = view.obscuringCharacter;
     readOnly = view.readOnly;
     restorationId = view.restorationId;
     scribbleEnabled = view.scribbleEnabled;
     scrollControllerText = view.scrollControllerText;
-    scrollPaddingText = view.scrollPaddingText;
-    scrollPhysicsText = view.scrollPhysicsText;
+    textScrollPadding = view.scrollPaddingText;
+    textScrollPhysics = view.scrollPhysicsText;
     selectionControls = view.selectionControls;
     selectionHeightStyle = view.selectionHeightStyle;
     selectionWidthStyle = view.selectionWidthStyle;
@@ -132,7 +671,6 @@ class EditTextController extends TextViewController {
 
     /// LISTENER & CALLBACKS
     onAppPrivateCommand = view.onAppPrivateCommand;
-    onChecked = view.onChecked;
     onEditingComplete = view.onEditingComplete;
     onSubmitted = view.onSubmitted;
     onTapOutside = view.onTapOutside;
@@ -140,215 +678,6 @@ class EditTextController extends TextViewController {
     /// CUSTOMIZATIONS
     _editable.text = view.text ?? _editable.text;
     return this;
-  }
-
-  /// HELPER TEXT PROPERTIES
-  String helperText = "";
-  Color? helperTextColor;
-
-  /// FLOATING TEXT PROPERTIES
-  Color? floatingLabelColor;
-  double floatingLabelSize = 12;
-  bool floatingLabelVisible = false;
-
-  /// ERROR TEXT PROPERTIES
-  bool errorVisible = false;
-  String? _error;
-  ValueState<String>? errorTextState;
-  Color? errorColor;
-
-  String? get errorText => errorTextState?.fromController(this) ?? _error;
-
-  /// COUNTER TEXT PROPERTIES
-  bool counterVisible = false;
-
-  bool get hasError => !isValid && (errorText ?? "").isNotEmpty;
-
-  bool get isValid {
-    final v = onValidator?.call(_editable.text);
-    onValid?.call(v ?? false);
-    return v ?? true;
-  }
-
-  dynamic get iStart => drawableStart?.drawable(isFocused);
-
-  dynamic get iEnd => drawableEnd?.drawable(isFocused);
-
-  ViewError errorType(String text) {
-    if (text.isEmpty && !_initial) {
-      return ViewError.empty;
-    } else if (!isValid) {
-      final length = text.length;
-      if (maxCharacters > 0 && maxCharacters < length) {
-        return ViewError.maximum;
-      } else if ((minCharacters ?? 0) > 0 && (minCharacters ?? 0) > length) {
-        return ViewError.minimum;
-      } else {
-        return ViewError.invalid;
-      }
-    } else {
-      return ViewError.none;
-    }
-  }
-
-  String get counter {
-    var currentLength = text.length;
-    final maxLength = maxCharacters;
-    return maxLength > 0
-        ? '$currentLength / $maxLength'
-        : currentLength > 0
-        ? "$currentLength"
-        : "";
-  }
-
-  /// CUSTOMIZATIONS
-  bool _initial = true;
-
-  bool _focused = false;
-
-  bool get isInitial => _initial;
-
-  bool get isFocused => _focused;
-
-  bool get isReadMode => !enabled && readOnly;
-
-  bool get isUnderlineHide => background != null || borderAll > 0;
-
-  List<TextInputFormatter>? get formatter {
-    if (digits.isNotEmpty) {
-      return [
-        FilteringTextInputFormatter.allow(RegExp("[$digits]")),
-      ];
-    }
-    return null;
-  }
-
-  void _handleFocusChange() {
-    if (_node.hasFocus != _focused) {
-      _focused = _node.hasFocus;
-      if (onFocusChanged(_focused)) {
-        onNotify();
-      }
-    }
-  }
-
-  bool onFocusChanged(bool focused) {
-    return true;
-  }
-
-  void _handleEditingChange(String value) {
-    onNotifyWithCallback(() {
-      _initial = false;
-      if (onChange != null) {
-        onChange!(value);
-      }
-    });
-  }
-
-  void showKeyboard(BuildContext context) async {
-    FocusScope.of(context).requestFocus(_node);
-  }
-
-  void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
-
-  void _dispose() {
-    _editable.dispose();
-    _node.dispose();
-  }
-
-  /// SUPER PROPERTIES
-  @override
-  String get text => _editable.text;
-
-  @override
-  bool get activated => isFocused;
-
-  @override
-  double? get paddingVertical => super.paddingVertical ?? 8;
-
-  @override
-  int? get maxLines {
-    switch (inputType) {
-      case TextInputType.datetime:
-      case TextInputType.emailAddress:
-      case TextInputType.name:
-      case TextInputType.number:
-      case TextInputType.phone:
-      case TextInputType.streetAddress:
-      case TextInputType.text:
-      case TextInputType.visiblePassword:
-      case TextInputType.text:
-        return 1;
-      case TextInputType.multiline:
-      case TextInputType.url:
-      default:
-        return null;
-    }
-  }
-
-  /// BASE PROPERTIES
-  String? id;
-  String digits = "";
-  String hint = "";
-  Color? hintColor;
-  Color? primary;
-  int? minCharacters;
-
-  /// DRAWABLE PROPERTIES
-  dynamic _drawableStart;
-  ValueState<dynamic>? drawableStartState;
-  double _drawableStartSize = 18;
-  ValueState<double>? drawableStartSizeState;
-  double? _drawableStartPadding;
-  ValueState<double>? drawableStartPaddingState;
-  Color? _drawableStartTint;
-  ValueState<Color>? drawableStartTintState;
-  bool drawableStartVisible = true;
-
-  dynamic _drawableEnd;
-  ValueState<dynamic>? drawableEndState;
-  double _drawableEndSize = 18;
-  ValueState<double>? drawableEndSizeState;
-  double? _drawableEndPadding;
-  ValueState<double>? drawableEndPaddingState;
-  Color? _drawableEndTint;
-  ValueState<Color>? drawableEndTintState;
-  bool drawableEndVisible = true;
-
-  set drawableStart(dynamic value) => _drawableStart = value;
-
-  set drawableStartSize(double value) => _drawableStartSize = value;
-
-  set drawableStartPadding(double? value) => _drawableStartPadding = value;
-
-  set drawableStartTint(Color? value) => _drawableStartTint = value;
-
-  set drawableEnd(dynamic value) => _drawableEnd = value;
-
-  set drawableEndSize(double value) => _drawableEndSize = value;
-
-  set drawableEndPadding(double? value) => _drawableEndPadding = value;
-
-  set drawableEndTint(Color? value) => _drawableEndTint = value;
-
-  dynamic get drawableStart {
-    var value = drawableStartState?.fromController(this);
-    return value ?? _drawableStart;
-  }
-
-  double get drawableStartSize {
-    var value = drawableStartSizeState?.fromController(this);
-    return value ?? _drawableStartSize;
-  }
-
-  double? get drawableStartPadding {
-    var value = drawableStartPaddingState?.fromController(this);
-    return value ?? _drawableStartPadding;
-  }
-
-  Color? get drawableStartTint {
-    var value = drawableStartTintState?.fromController(this);
-    return value ?? _drawableStartTint;
   }
 
   dynamic get drawableEnd {
@@ -371,83 +700,29 @@ class EditTextController extends TextViewController {
     return value ?? _drawableEndTint;
   }
 
-  void setDrawableStart(dynamic drawable) {
-    onNotifyWithCallback(() => drawableStart = drawable);
+  dynamic get drawableStart {
+    var value = drawableStartState?.fromController(this);
+    return value ?? _drawableStart;
   }
 
-  void setDrawableStartState(ValueState<dynamic> drawableState) {
-    onNotifyWithCallback(() => drawableStartState = drawableState);
+  double get drawableStartSize {
+    var value = drawableStartSizeState?.fromController(this);
+    return value ?? _drawableStartSize;
   }
 
-  void setDrawableStartSize(double size) {
-    onNotifyWithCallback(() => drawableStartSize = size);
+  double? get drawableStartPadding {
+    var value = drawableStartPaddingState?.fromController(this);
+    return value ?? _drawableStartPadding;
   }
 
-  void setDrawableStartSizeState(ValueState<double>? sizeState) {
-    onNotifyWithCallback(() => drawableStartSizeState = sizeState);
+  Color? get drawableStartTint {
+    var value = drawableStartTintState?.fromController(this);
+    return value ?? _drawableStartTint;
   }
 
-  void setDrawableStartPadding(double? padding) {
-    onNotifyWithCallback(() => drawableStartPadding = padding);
-  }
+  String? get errorText => errorTextState?.fromController(this) ?? _errorText;
 
-  void setDrawableStartPaddingState(ValueState<double>? paddingState) {
-    onNotifyWithCallback(() => drawableStartPaddingState = paddingState);
-  }
-
-  void setDrawableStartTint(Color? tint) {
-    onNotifyWithCallback(() => drawableStartTint = tint);
-  }
-
-  void setDrawableStartTintState(ValueState<Color>? tintState) {
-    onNotifyWithCallback(() => drawableStartTintState = tintState);
-  }
-
-  void setDrawableEnd(dynamic drawable) {
-    onNotifyWithCallback(() => drawableEnd = drawable);
-  }
-
-  void setDrawableEndState(ValueState<dynamic> drawableState) {
-    onNotifyWithCallback(() => drawableEndState = drawableState);
-  }
-
-  void setDrawableEndSize(double size) {
-    onNotifyWithCallback(() => drawableEndSize = size);
-  }
-
-  void setDrawableEndSizeState(ValueState<double>? sizeState) {
-    onNotifyWithCallback(() => drawableEndSizeState = sizeState);
-  }
-
-  void setDrawableEndPadding(double? padding) {
-    onNotifyWithCallback(() => drawableEndPadding = padding);
-  }
-
-  void setDrawableEndPaddingState(ValueState<double>? paddingState) {
-    onNotifyWithCallback(() => drawableEndPaddingState = paddingState);
-  }
-
-  void setDrawableEndTint(Color? tint) {
-    onNotifyWithCallback(() => drawableEndTint = tint);
-  }
-
-  void setDrawableEndTintState(ValueState<Color>? tintState) {
-    onNotifyWithCallback(() => drawableEndTintState = tintState);
-  }
-
-  /// INDICATOR PROPERTIES
-  Widget? indicator;
-  double indicatorSize = 24;
-  double indicatorStroke = 2;
-  Color? _indicatorStrokeColor;
-  ValueState<Color>? indicatorStrokeColorState;
-  Color? _indicatorStrokeBackground;
-  ValueState<Color>? indicatorStrokeBackgroundState;
-
-  set indicatorStrokeColor(Color? value) => _indicatorStrokeColor = value;
-
-  set indicatorStrokeBackground(Color? value) =>
-      _indicatorStrokeBackground = value;
+  bool get hasError => !isValid && (errorText ?? "").isNotEmpty;
 
   Color? get indicatorStrokeColor {
     var value = indicatorStrokeColorState?.fromController(this);
@@ -459,89 +734,149 @@ class EditTextController extends TextViewController {
     return value ?? _indicatorStrokeBackground;
   }
 
-  void setIndicator(Widget? indicator) {
-    onNotifyWithCallback(() => this.indicator = indicator);
+  bool get obscureText {
+    return _obscureText ?? (inputType == TextInputType.visiblePassword);
   }
 
-  void setIndicatorSize(double size) {
-    onNotifyWithCallback(() => indicatorSize = size);
+  @override
+  bool get activated => isFocused;
+
+  @override
+  int? get maxLines {
+    switch (inputType) {
+      case TextInputType.datetime:
+      case TextInputType.emailAddress:
+      case TextInputType.name:
+      case TextInputType.number:
+      case TextInputType.phone:
+      case TextInputType.streetAddress:
+      case TextInputType.text:
+      case TextInputType.visiblePassword:
+      case TextInputType.text:
+        return 1;
+      case TextInputType.multiline:
+      case TextInputType.url:
+      default:
+        return null;
+    }
   }
 
-  void setIndicatorStroke(double stroke) {
-    onNotifyWithCallback(() => indicatorStroke = stroke);
+  @override
+  double? get paddingVertical => super.paddingVertical ?? 8;
+
+  @override
+  String get text => _editable.text;
+
+  /// CALLBACK & LISTENERS
+  EditTextPrivateCommandListener? get onAppPrivateCommand =>
+      enabled ? _onAppPrivateCommand : null;
+
+  EditTextVoidListener? get onEditingComplete =>
+      enabled ? _onEditingComplete : null;
+
+  EditTextSubmitListener? get onSubmitted => enabled ? _onSubmitted : null;
+
+  EditTextTapOutsideListener? get onTapOutside =>
+      enabled ? _onTapOutside : null;
+
+  /// CUSTOMIZATIONS
+  bool _initial = true;
+
+  bool _focused = false;
+
+  bool get isInitial => _initial;
+
+  bool get isFocused => _focused;
+
+  bool get isReadMode => !enabled && readOnly;
+
+  bool get isUnderlineHide => background != null || borderAll > 0;
+
+  bool get isValid {
+    if (onValidator != null) {
+      return onValidator!(_editable.text);
+    } else {
+      return true;
+    }
   }
 
-  void setIndicatorColor(Color? color) {
-    onNotifyWithCallback(() => indicatorStrokeColor = color);
+  dynamic get iEnd => drawableEnd?.drawable(isFocused);
+
+  dynamic get iStart => drawableStart?.drawable(isFocused);
+
+  String get counter {
+    var currentLength = text.length;
+    final maxLength = maxCharacters;
+    return maxLength > 0
+        ? '$currentLength / $maxLength'
+        : currentLength > 0
+            ? "$currentLength"
+            : "";
   }
 
-  void setIndicatorColorState(ValueState<Color>? colorState) {
-    onNotifyWithCallback(() => indicatorStrokeColorState = colorState);
+  List<TextInputFormatter>? get formatter {
+    if (digits.isNotEmpty) {
+      return [
+        FilteringTextInputFormatter.allow(RegExp("[$digits]")),
+      ];
+    }
+    return null;
   }
 
-  void setIndicatorBackground(Color? color) {
-    onNotifyWithCallback(() => indicatorStrokeBackground = color);
+  ViewError errorType(String text, [bool? valid]) {
+    if (text.isEmpty && !_initial) {
+      return ViewError.empty;
+    } else if (!(valid ?? isValid)) {
+      final length = text.length;
+      if (maxCharacters > 0 && maxCharacters < length) {
+        return ViewError.maximum;
+      } else if ((minCharacters ?? 0) > 0 && (minCharacters ?? 0) > length) {
+        return ViewError.minimum;
+      } else {
+        return ViewError.invalid;
+      }
+    } else {
+      return ViewError.none;
+    }
   }
 
-  void setIndicatorBackgroundState(ValueState<Color>? colorState) {
-    onNotifyWithCallback(() => indicatorStrokeBackgroundState = colorState);
+  void _handleFocusChange() {
+    if (_node.hasFocus != _focused) {
+      _focused = _node.hasFocus;
+      if (onFocusChanged(_focused)) {
+        onNotify();
+      }
+    }
   }
 
-  void setIndicatorVisibility(bool visible) {
-    onNotifyWithCallback(() => _loading = visible);
+  bool onFocusChanged(bool focused) {
+    return true;
   }
 
-  /// EDITING PROPERTIES
-  bool autocorrect = true;
-  List<String> autofillHints = [];
-  bool autoFocus = false;
-  Clip clipBehaviorText = Clip.hardEdge;
-  Color? cursorColor;
-  double? cursorHeight;
-  bool cursorOpacityAnimates = false;
-  Radius? cursorRadius;
-  double cursorWidth = 2.0;
-  ContentInsertionConfiguration? contentInsertionConfiguration;
-  EditTextContextMenuBuilder? contextMenuBuilder;
-  DragStartBehavior dragStartBehavior = DragStartBehavior.start;
-  bool enableIMEPersonalizedLearning = true;
-  bool? enableInteractiveSelection;
-  bool enableSuggestions = true;
-  bool expands = false;
-  Brightness keyboardAppearance = Brightness.light;
-  TextInputType? inputType;
-  TextMagnifierConfiguration magnifierConfiguration =
-      TextMagnifierConfiguration.disabled;
-  int? minLines;
-  MouseCursor? mouseCursor;
-  bool? _obscureText;
-  String obscuringCharacter = '•';
-  bool readOnly = false;
-  String? restorationId;
-  bool scribbleEnabled = true;
-  ScrollController? scrollControllerText;
-  EdgeInsets scrollPaddingText = const EdgeInsets.all(20);
-  ScrollPhysics? scrollPhysicsText;
-  TextSelectionControls? selectionControls;
-  BoxHeightStyle selectionHeightStyle = BoxHeightStyle.tight;
-  BoxWidthStyle selectionWidthStyle = BoxWidthStyle.tight;
-  bool? showCursor;
-  SmartDashesType? smartDashesType;
-  SmartQuotesType? smartQuotesType;
-  SpellCheckConfiguration? spellCheckConfiguration;
-  TextCapitalization textCapitalization = TextCapitalization.none;
-  TextInputAction? textInputAction;
-  UndoHistoryController? undoController;
+  void _handleEditingChange(String value) {
+    onNotifyWithCallback(() {
+      _initial = false;
+      if (onChange != null) onChange!(value);
+      if (onValid != null || onError != null) {
+        final valid = isValid;
+        if (onValid != null) onValid!(valid);
+        if (onError != null) {
+          errorText = onError!(errorType(value, valid)) ?? "";
+        }
+      }
+    });
+  }
 
-  bool get obscureText =>
-      _obscureText ?? inputType == TextInputType.visiblePassword;
+  void showKeyboard(BuildContext context) async {
+    FocusScope.of(context).requestFocus(_node);
+  }
 
-  /// EDITING CALLBACK & LISTENERS
-  EditTextPrivateCommandListener? onAppPrivateCommand;
-  EditTextCheckingListener? onChecked;
-  EditTextVoidListener? onEditingComplete;
-  EditTextSubmitListener? onSubmitted;
-  EditTextTapOutsideListener? onTapOutside;
+  void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
+
+  void _dispose() {
+    _editable.dispose();
+    _node.dispose();
+  }
 }
 
 class EditText<T extends EditTextController> extends TextView<T> {
@@ -550,19 +885,18 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final Color? helperTextColor;
 
   /// FLOATING TEXT PROPERTIES
-  final Color? floatingLabelColor;
-  final double floatingLabelSize;
-  final bool floatingLabelVisible;
+  final Color? floatingTextColor;
+  final double floatingTextSize;
+  final bool floatingTextVisible;
 
   /// ERROR TEXT PROPERTIES
-  final bool errorVisible;
-  final Color? errorColor;
+  final bool errorTextVisible;
+  final Color? errorTextColor;
 
   /// COUNTER TEXT PROPERTIES
-  final bool counterVisible;
+  final bool counterTextVisible;
 
   /// BASE PROPERTIES
-  final String? id;
   final String digits;
   final String hint;
   final Color? hintColor;
@@ -644,7 +978,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
 
   /// LISTENER & CALLBACKS
   final EditTextPrivateCommandListener? onAppPrivateCommand;
-  final EditTextCheckingListener? onChecked;
   final EditTextVoidListener? onEditingComplete;
   final EditTextSubmitListener? onSubmitted;
   final EditTextTapOutsideListener? onTapOutside;
@@ -800,17 +1133,16 @@ class EditText<T extends EditTextController> extends TextView<T> {
     /// HELPER TEXT PROPERTIES
     this.helperText = "",
     this.helperTextColor,
-    this.floatingLabelColor,
-    this.floatingLabelSize = 12,
-    this.floatingLabelVisible = false,
+    this.floatingTextColor,
+    this.floatingTextSize = 12,
+    this.floatingTextVisible = false,
 
     /// ERROR TEXT PROPERTIES
-    this.errorColor = const Color(0xFFFF7769),
-    this.errorVisible = true,
-    this.counterVisible = false,
+    this.errorTextColor = const Color(0xFFFF7769),
+    this.errorTextVisible = true,
+    this.counterTextVisible = false,
 
     /// BASE PROPERTIES
-    this.id,
     this.digits = "",
     this.hint = "",
     this.hintColor,
@@ -892,17 +1224,18 @@ class EditText<T extends EditTextController> extends TextView<T> {
 
     /// CALLBACK AND LISTENING PROPERTIES
     this.onAppPrivateCommand,
-    this.onChecked,
     this.onEditingComplete,
     this.onSubmitted,
     this.onTapOutside,
   });
 
   @override
-  ViewRoots initRootProperties() => const ViewRoots(
-        observer: false,
-        padding: false,
-      );
+  ViewRoots initRootProperties() {
+    return const ViewRoots(
+      observer: false,
+      padding: false,
+    );
+  }
 
   @override
   T initController() => EditTextController() as T;
@@ -965,7 +1298,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     final primaryColor = controller.primary ?? theme.primaryColor;
     const underlineColor = Color(0xffe1e1e1);
     const secondaryColor = Color(0xffbbbbbb);
-    final errorColor = controller.errorColor ?? const Color(0xFFFF7769);
+    final errorColor = controller.errorTextColor ?? const Color(0xFFFF7769);
     final hasError = controller.hasError;
 
     var style = TextStyle(
@@ -1009,12 +1342,11 @@ class EditText<T extends EditTextController> extends TextView<T> {
                 contentPadding: EdgeInsets.zero,
                 isDense: true,
                 isCollapsed: true,
-                hintText: controller.hint,
+                hintText: controller.hintText,
                 hintStyle: style.copyWith(
-                  fontFamily: "",
                   color: controller.text.isNotEmpty
                       ? Colors.transparent
-                      : controller.hintColor ?? secondaryColor,
+                      : controller.hintTextColor ?? secondaryColor,
                 ),
               ),
               autocorrect: controller.autocorrect,
@@ -1055,8 +1387,8 @@ class EditText<T extends EditTextController> extends TextView<T> {
               restorationId: controller.restorationId,
               scribbleEnabled: controller.scribbleEnabled,
               scrollController: controller.scrollControllerText,
-              scrollPadding: controller.scrollPaddingText,
-              scrollPhysics: controller.scrollPhysicsText,
+              scrollPadding: controller.textScrollPadding,
+              scrollPhysics: controller.textScrollPhysics,
               selectionControls: controller.selectionControls,
               selectionHeightStyle: controller.selectionHeightStyle,
               selectionWidthStyle: controller.selectionWidthStyle,
@@ -1073,7 +1405,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
               undoController: controller.undoController,
             ),
           ),
-          if (controller._loading)
+          if (controller.indicatorVisible)
             Container(
               width: controller.indicatorSize,
               height: controller.indicatorSize,
@@ -1108,14 +1440,14 @@ class EditText<T extends EditTextController> extends TextView<T> {
                 SizedBox(
                   width: double.infinity,
                   child: _EditTextHighlightText(
-                    visible: controller.floatingLabelVisible,
+                    visible: controller.floatingTextVisible,
                     valid: controller.text.isNotEmpty,
-                    text: controller.hint,
+                    text: controller.hintText,
                     textAlign: controller.textAlign,
-                    textSize: controller.floatingLabelSize,
+                    textSize: controller.floatingTextSize,
                     textColor: controller.isFocused
                         ? primaryColor
-                        : controller.floatingLabelColor ?? secondaryColor,
+                        : controller.floatingTextColor ?? secondaryColor,
                   ),
                 ),
                 child,
@@ -1145,10 +1477,10 @@ class EditText<T extends EditTextController> extends TextView<T> {
                             ? controller.errorText
                             : controller.helperText,
                         textAlign: TextAlign.start,
-                        textSize: controller.floatingLabelSize,
+                        textSize: controller.floatingTextSize,
                         textColor: !hasError
                             ? controller.helperTextColor ?? secondaryColor
-                            : controller.errorColor,
+                            : controller.errorTextColor,
                         valid: hasError || controller.helperText.isNotEmpty,
                         visible: hasError || controller.helperText.isNotEmpty,
                         padding: const EdgeInsets.only(
@@ -1159,12 +1491,13 @@ class EditText<T extends EditTextController> extends TextView<T> {
                       _EditTextHighlightText(
                         text: controller.counter,
                         textAlign: TextAlign.end,
-                        textSize: controller.floatingLabelSize,
-                        textColor:
-                            hasError ? controller.errorColor : secondaryColor,
-                        valid:
-                            controller.counterVisible && controller.isFocused,
-                        visible: controller.counterVisible,
+                        textSize: controller.floatingTextSize,
+                        textColor: hasError
+                            ? controller.errorTextColor
+                            : secondaryColor,
+                        valid: controller.counterTextVisible &&
+                            controller.isFocused,
+                        visible: controller.counterTextVisible,
                         padding: const EdgeInsets.only(
                           top: 4,
                           bottom: 4,

@@ -43,6 +43,8 @@ part 'views/countdown_view.dart';
 
 part 'views/dropdown_view.dart';
 
+part 'views/edit_layout.dart';
+
 part 'views/edit_text.dart';
 
 part 'views/expendable_text_view.dart';

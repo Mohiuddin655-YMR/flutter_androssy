@@ -119,6 +119,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.borderEnd,
     this.borderEndState,
     this.borderStrokeAlign,
+
     /// BORDER RADIUS PROPERTIES
     this.borderRadius,
     this.borderRadiusState,
@@ -242,6 +243,8 @@ class YMRView<T extends ViewController> extends StatefulWidget {
 
   void onInit(BuildContext context, T controller) {}
 
+  void onReady(BuildContext context, T controller) {}
+
   void onUpdateWidget(BuildContext context, T controller, dynamic oldWidget) {}
 
   void onChangeDependencies(BuildContext context, T controller) {}
@@ -261,6 +264,9 @@ class _YMRViewState<T extends ViewController> extends State<YMRView<T>> {
     controller.setNotifier(setState);
     controller = widget.attachController(controller);
     widget.onInit(context, controller);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onReady(context, controller);
+    });
     super.initState();
   }
 

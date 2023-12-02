@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_andomie: ^0.5.9
   flutter_androssy:
     path: ../
 

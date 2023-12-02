@@ -14,13 +14,8 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Androssy Buttons",
-      theme: ThemeData(
-        primaryColor: Colors.blue,
-        useMaterial3: true,
-      ),
+    return AndrossyApp(
+      title: "Androssy App",
       home: const Home(),
     );
   }
