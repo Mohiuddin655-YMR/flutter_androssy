@@ -36,7 +36,7 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => drawableEndState = value);
   }
 
-  double _drawableEndSize = 18;
+  double _drawableEndSize = 24;
 
   set drawableEndSize(double value) => _drawableEndSize = value;
 
@@ -144,6 +144,12 @@ class EditTextController extends TextViewController {
 
   void setDrawableStartVisible(bool value) {
     onNotifyWithCallback(() => drawableStartVisible = value);
+  }
+
+  bool drawableEndAsEye = false;
+
+  void setDrawableEndAsEye(bool value) {
+    onNotifyWithCallback(() => drawableEndAsEye = value);
   }
 
   String? _errorText;
@@ -517,7 +523,6 @@ class EditTextController extends TextViewController {
   }
 
   // CALLBACK & LISTENERS
-
   EditTextPrivateCommandListener? _onAppPrivateCommand;
 
   set onAppPrivateCommand(EditTextPrivateCommandListener? listener) =>
@@ -592,6 +597,7 @@ class EditTextController extends TextViewController {
     drawableEndTint = view.drawableEndTint;
     drawableEndTintState = view.drawableEndTintState;
     drawableEndVisible = view.drawableEndVisible;
+    drawableEndAsEye = view.drawableEndAsEye;
 
     /// INDICATOR PROPERTIES
     indicator = view.indicator;
@@ -657,6 +663,9 @@ class EditTextController extends TextViewController {
   }
 
   dynamic get drawableEnd {
+    if (drawableEndAsEye) {
+      return drawableEndState?.detect(obscureText);
+    }
     var value = drawableEndState?.fromController(this);
     return value ?? _drawableEnd;
   }
@@ -744,6 +753,7 @@ class EditTextController extends TextViewController {
   String get text => _editable.text;
 
   /// CALLBACK & LISTENERS
+
   EditTextPrivateCommandListener? get onAppPrivateCommand =>
       enabled ? _onAppPrivateCommand : null;
 
@@ -822,6 +832,12 @@ class EditTextController extends TextViewController {
       if (onFocusChanged(_focused)) {
         onNotify();
       }
+    }
+  }
+
+  void onChangeEye(bool value) {
+    if (drawableEndAsEye) {
+      onNotifyWithCallback(() => obscureText = !obscureText);
     }
   }
 

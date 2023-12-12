@@ -11,9 +11,13 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'drawable_state.dart';
+
 part 'highlight_text.dart';
+
 part 'typedefs.dart';
+
 part 'underline.dart';
 
 class EditText<T extends EditTextController> extends TextView<T> {
@@ -61,6 +65,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final Color? drawableEndTint;
   final ValueState<Color>? drawableEndTintState;
   final bool drawableEndVisible;
+  final bool drawableEndAsEye;
 
   /// INDICATOR PROPERTIES
   final Widget? indicator;
@@ -290,7 +295,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.drawableStart,
     this.drawableStartState,
     this.drawableStartBuilder,
-    this.drawableStartSize = 18,
+    this.drawableStartSize = 24,
     this.drawableStartSizeState,
     this.drawableStartPadding,
     this.drawableStartPaddingState,
@@ -300,13 +305,14 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.drawableEnd,
     this.drawableEndState,
     this.drawableEndBuilder,
-    this.drawableEndSize = 18,
+    this.drawableEndSize = 24,
     this.drawableEndSizeState,
     this.drawableEndPadding,
     this.drawableEndPaddingState,
     this.drawableEndTint,
     this.drawableEndTintState,
     this.drawableEndVisible = true,
+    this.drawableEndAsEye = false,
 
     /// INDICATOR PROPERTIES
     this.indicator,
@@ -566,6 +572,8 @@ class EditText<T extends EditTextController> extends TextView<T> {
               size: controller.drawableEndSize,
               tint: controller.drawableEndTint ?? defaultColor,
               marginStart: controller.drawableEndPadding ?? 4,
+              onToggle:
+                  controller.drawableEndAsEye ? controller.onChangeEye : null,
             ),
         ],
       ),

@@ -79,11 +79,12 @@ class Home extends AndrossyActivity<HomeController> {
           hint: "Password",
           text: "123456",
           digits: "1234567890",
-          drawableEndState: ValueState(
+          inputType: TextInputType.visiblePassword,
+          drawableEndAsEye: true,
+          drawableEndState: const ValueState(
             primary: Icons.visibility_off_outlined,
             secondary: Icons.visibility_outlined,
           ),
-          inputType: TextInputType.visiblePassword,
           onValidator: (value) => value.length > 5,
         ),
         EditText(
@@ -93,6 +94,11 @@ class Home extends AndrossyActivity<HomeController> {
           text: "123456",
           digits: "1234567890",
           inputType: TextInputType.visiblePassword,
+          drawableEndAsEye: true,
+          drawableEndState: const ValueState(
+            primary: Icons.visibility_off_outlined,
+            secondary: Icons.visibility_outlined,
+          ),
           onValidator: (value) => controller.isValidConfirmPassword(value),
         ),
         EditLayout(
