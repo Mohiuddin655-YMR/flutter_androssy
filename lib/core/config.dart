@@ -1,4 +1,3 @@
-
 class AndrossyConfigure {
   final Map<Type, dynamic> _proxies;
 

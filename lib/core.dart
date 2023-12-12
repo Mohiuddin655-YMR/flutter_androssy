@@ -6,7 +6,6 @@ export 'core/app.dart';
 export 'core/builder.dart';
 export 'core/config.dart';
 export 'core/controller.dart';
-export 'core/errors.dart';
 export 'core/fragment.dart';
 export 'core/instance.dart';
 export 'core/localization.dart';

@@ -11,13 +11,9 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'drawable_state.dart';
-
 part 'highlight_text.dart';
-
 part 'typedefs.dart';
-
 part 'underline.dart';
 
 class EditText<T extends EditTextController> extends TextView<T> {
@@ -385,7 +381,10 @@ class EditText<T extends EditTextController> extends TextView<T> {
   T attachController(T controller) => controller.fromEditText(this) as T;
 
   @override
-  void onDispose(context, controller) => controller._dispose();
+  void onDispose(context, controller) {
+    super.onDispose(context, controller);
+    return controller._dispose();
+  }
 
   static Widget _defaultContextMenuBuilder(
     BuildContext context,

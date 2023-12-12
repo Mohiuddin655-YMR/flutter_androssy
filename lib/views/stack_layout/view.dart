@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../view/view.dart';
+
 part 'controller.dart';
 
 class StackLayout<T extends StackLayoutController> extends YMRView<T> {

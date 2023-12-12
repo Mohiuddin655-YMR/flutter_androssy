@@ -1,4 +1,3 @@
-
 class AndrossyUser {
   final String? uid;
   final String? name;

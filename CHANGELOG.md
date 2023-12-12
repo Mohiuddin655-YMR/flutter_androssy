@@ -1,3 +1,7 @@
+## 0.3.6
+
+* Minimize views
+
 ## 0.3.5
 
 * EditText, EditLayout, LinearLayout modified
