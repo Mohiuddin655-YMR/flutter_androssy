@@ -1,4 +1,9 @@
-part of '../core.dart';
+import 'package:flutter/material.dart';
+
+import 'androssy.dart';
+import 'config.dart';
+import 'localization.dart';
+import 'notifier.dart';
 
 class AndrossyProvider extends InheritedWidget {
   final Androssy androssy;

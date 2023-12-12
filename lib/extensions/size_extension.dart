@@ -1,5 +1,3 @@
-part of '../extensions.dart';
-
 extension SizeExtension on double? {
   /// UPPER
   double? get x01 => x(01);

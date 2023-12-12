@@ -1,4 +1,10 @@
-part of '../core.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'androssy.dart';
+import 'controller.dart';
+import 'provider.dart';
+import 'user.dart';
 
 class AndrossyInstance {
   late BuildContext context;

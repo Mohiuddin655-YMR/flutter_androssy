@@ -1,4 +1,4 @@
-part of '../core.dart';
+import 'package:flutter/material.dart';
 
 class AndrossyTheme {
   final ThemeData light;

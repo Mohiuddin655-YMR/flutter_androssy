@@ -3,8 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_andomie/core.dart';
 import 'package:flutter_androssy/core.dart';
-import 'package:flutter_androssy/extensions.dart';
-import 'package:flutter_androssy/widgets.dart';
 
 Future<void> main() async {
   runApp(const Application());
@@ -81,6 +79,10 @@ class Home extends AndrossyActivity<HomeController> {
           hint: "Password",
           text: "123456",
           digits: "1234567890",
+          drawableEndState: ValueState(
+            primary: Icons.visibility_off_outlined,
+            secondary: Icons.visibility_outlined,
+          ),
           inputType: TextInputType.visiblePassword,
           onValidator: (value) => value.length > 5,
         ),

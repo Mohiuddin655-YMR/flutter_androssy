@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/core.dart';
-import 'package:flutter_androssy/extensions.dart';
-import 'package:flutter_androssy/widgets.dart';
 
 Future<void> main() async {
   runApp(const Application());
@@ -16,7 +14,7 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Androssy Buttons",
+      title: "Androssy Example",
       theme: ThemeData(
         primaryColor: Colors.blue,
         useMaterial3: true,
@@ -50,7 +48,6 @@ class Home extends AndrossyActivity<HomeController> {
   @override
   Widget onCreate(BuildContext context, AndrossyInstance instance) {
     return LinearLayout(
-      scrollable: true,
       padding: 32,
       width: double.infinity,
       height: double.infinity,
@@ -70,13 +67,12 @@ class Home extends AndrossyActivity<HomeController> {
         ),
         Button(
           marginTop: 24,
-          width: double.infinity,
-          height: 50,
-          borderRadius: 12,
-          text: "Chat",
+          width: 200,
+          borderRadius: 16,
+          text: "Start",
           textAllCaps: true,
           textFontWeight: FontWeight.bold,
-          controller: controller.btn1,
+          controller: controller.btnStart,
         ),
       ],
     );
@@ -85,13 +81,17 @@ class Home extends AndrossyActivity<HomeController> {
 
 class HomeController extends AndrossyController {
   final counter = Observer(0);
-  final btn1 = ButtonController();
+  final btnStart = ButtonController();
 
   @override
   void onListener(BuildContext context) {
-    btn1.setOnClickListener((context) async {
+    btnStart.setOnClickListener((context) async {
+      btnStart.setEnabled(false);
       for (int i = 0; i <= 100; i++) {
         counter.value = i;
+        if (i == 100) {
+          btnStart.setEnabled(true);
+        }
         await Future.delayed(const Duration(milliseconds: 100));
       }
     });

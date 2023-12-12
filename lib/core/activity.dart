@@ -1,4 +1,10 @@
-part of '../core.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'androssy.dart';
+import 'controller.dart';
+import 'instance.dart';
 
 abstract class AndrossyActivity<T extends AndrossyController>
     extends StatefulWidget {
@@ -193,6 +199,14 @@ abstract class AndrossyActivity<T extends AndrossyController>
 
   @protected
   @mustCallSuper
+  void onInit(BuildContext context) => controller.onInit(context);
+
+  @protected
+  @mustCallSuper
+  void onReady(BuildContext context) => controller.onReady(context);
+
+  @protected
+  @mustCallSuper
   void onListener(BuildContext context) => controller.onListener(context);
 
   @protected
@@ -234,7 +248,26 @@ class AndrossyActivityState<T extends AndrossyController>
 
   @override
   void initState() {
+    _config().whenComplete(() {
+      widget.onInit(context);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onListener(context);
+      widget.onReady(context);
+    });
     WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant AndrossyActivity<T> oldWidget) {
+    _config().whenComplete(() {
+      widget.onRestart(context);
+    });
+    super.didUpdateWidget(oldWidget);
+  }
+
+  Future<void> _config() async {
     controller = widget.init(context);
     controller.setNotifier(setState);
     widget.instance.init(
@@ -242,15 +275,6 @@ class AndrossyActivityState<T extends AndrossyController>
       androssy: widget.androssy,
       controller: controller,
     );
-    widget.onListener(context);
-    widget.controller.onInit(context);
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant AndrossyActivity<T> oldWidget) {
-    widget.onRestart(context);
-    super.didUpdateWidget(oldWidget);
   }
 
   @override

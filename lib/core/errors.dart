@@ -1,4 +1,3 @@
-part of '../core.dart';
 
 const _providerError = """
 void main() {

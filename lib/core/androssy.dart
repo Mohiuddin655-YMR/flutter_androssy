@@ -1,4 +1,10 @@
-part of '../core.dart';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'settings.dart';
+import 'user.dart';
 
 String kAndrossyPath = "__androssy__";
 String kAndrossySettingsPath = "settings";

@@ -1,8 +1,10 @@
-part of '../core.dart';
+import 'package:flutter/material.dart';
+
+import 'controller.dart';
+import 'instance.dart';
 
 abstract class AndrossyFragment<T extends AndrossyController>
     extends StatefulWidget {
-
   const AndrossyFragment({
     super.key,
   });
@@ -21,6 +23,10 @@ abstract class AndrossyFragment<T extends AndrossyController>
 
   @protected
   Widget onCreate(BuildContext context, T controller);
+
+  @protected
+  @mustCallSuper
+  void onReady(BuildContext context) => controller.onReady(context);
 
   @protected
   @mustCallSuper

@@ -1,4 +1,7 @@
-part of '../core.dart';
+import 'package:flutter/material.dart';
+
+import 'androssy.dart';
+import 'provider.dart';
 
 typedef AndrossyViewBuilder = Widget Function(
   BuildContext context,

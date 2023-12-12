@@ -1,4 +1,4 @@
-part of '../core.dart';
+import 'package:flutter/material.dart';
 
 class AndrossyNotifier<T> extends ValueNotifier<T> {
   AndrossyNotifier(super.value);

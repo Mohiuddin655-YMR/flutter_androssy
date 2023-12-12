@@ -18,7 +18,6 @@ Future<void> main() async {
 
 ## Simple App
 ```dart
-
 class Application extends StatelessWidget {
   const Application({
     super.key,
@@ -39,9 +38,7 @@ class Application extends StatelessWidget {
 }
 ```
 
-
 ## Androssy App
-
 ```dart
 class Application extends StatelessWidget {
   const Application({
@@ -59,9 +56,7 @@ class Application extends StatelessWidget {
 ```
 
 ## View observer
-
 ```dart
-
 class Home extends AndrossyActivity<HomeController> {
   const Home({super.key});
 
@@ -86,7 +81,6 @@ class Home extends AndrossyActivity<HomeController> {
   @override
   Widget onCreate(BuildContext context, AndrossyInstance instance) {
     return LinearLayout(
-      scrollable: true,
       padding: 32,
       width: double.infinity,
       height: double.infinity,
@@ -106,13 +100,12 @@ class Home extends AndrossyActivity<HomeController> {
         ),
         Button(
           marginTop: 24,
-          width: double.infinity,
-          height: 50,
-          borderRadius: 12,
-          text: "Chat",
+          width: 200,
+          borderRadius: 16,
+          text: "Start",
           textAllCaps: true,
           textFontWeight: FontWeight.bold,
-          controller: controller.btn1,
+          controller: controller.btnStart,
         ),
       ],
     );
@@ -121,23 +114,23 @@ class Home extends AndrossyActivity<HomeController> {
 
 class HomeController extends AndrossyController {
   final counter = Observer(0);
-  final btn1 = ButtonController();
+  final btnStart = ButtonController();
 
   @override
   void onListener(BuildContext context) {
-    btn1.setOnClickListener((context) async {
+    btnStart.setOnClickListener((context) async {
+      btnStart.setEnabled(false);
       for (int i = 0; i <= 100; i++) {
         counter.value = i;
+        if (i == 100) btnStart.setEnabled(true);
         await Future.delayed(const Duration(milliseconds: 100));
       }
     });
   }
 }
-
 ```
 
-## EditLayout 
-
+## Edit Layout
 ```dart
 class Home extends AndrossyActivity<HomeController> {
   const Home({super.key});
@@ -262,5 +255,4 @@ class HomeController extends AndrossyController {
     log("onRegister {$email, $password}");
   }
 }
-
 ```
