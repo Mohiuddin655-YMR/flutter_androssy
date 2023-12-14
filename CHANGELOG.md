@@ -1,3 +1,7 @@
+## 0.3.7
+
+* Core bug fixed [Activity, Fragment, Controller, Instance, Provider, Builder, etc]
+
 ## 0.3.6
 
 * Minimize views
