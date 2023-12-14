@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../views/view/view.dart';
 
 class AndrossyController {
+  String identifier = "";
   OnViewNotifier? _notifier;
 
   void onInit(BuildContext context) {}
@@ -29,9 +30,9 @@ class AndrossyController {
 
   void setNotifier(OnViewNotifier? notifier) => _notifier = notifier;
 
-  void onNotify(VoidCallback callback) {
+  void onNotify([VoidCallback? callback]) {
     if (_notifier != null) {
-      _notifier?.call(callback);
+      _notifier?.call(callback ?? () {});
     }
   }
 }

@@ -193,9 +193,7 @@ class _AndrossyAppState extends State<AndrossyApp> {
       androssy: widget.androssy,
       configure: widget.configure,
       localizer: widget.localizer,
-      child: AndrossyBuilder(
-        builder: _appBuilder,
-      ),
+      child: AndrossyBuilder(builder: _appBuilder),
     );
 
     if (widget.userNetworkStatus) {

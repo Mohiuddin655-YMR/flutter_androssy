@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'builder.dart';
 import 'controller.dart';
 import 'instance.dart';
 
@@ -9,13 +10,13 @@ abstract class AndrossyFragment<T extends AndrossyController>
     super.key,
   });
 
-  AndrossyInstance get instance => AndrossyInstance.i;
+  AndrossyInstance<T> get instance => AndrossyInstance.init<T>();
 
-  T get controller => instance.getController() ?? init(instance.context);
+  BuildContext get context => instance.context;
+
+  T get controller => instance.controller;
 
   T init(BuildContext context);
-
-  String translate(String name) => instance.translate(name);
 
   @protected
   @override
@@ -23,6 +24,10 @@ abstract class AndrossyFragment<T extends AndrossyController>
 
   @protected
   Widget onCreate(BuildContext context, T controller);
+
+  @protected
+  @mustCallSuper
+  void onInit(BuildContext context) => controller.onInit(context);
 
   @protected
   @mustCallSuper
@@ -62,7 +67,10 @@ abstract class AndrossyFragment<T extends AndrossyController>
 
   @protected
   @mustCallSuper
-  void onDestroy(BuildContext context) => controller.onDestroy(context);
+  void onDestroy(BuildContext context) {
+    controller.onDestroy(context);
+    instance.close();
+  }
 }
 
 class _AndrossyFragmentState<T extends AndrossyController>
@@ -71,15 +79,16 @@ class _AndrossyFragmentState<T extends AndrossyController>
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     controller = widget.init(context);
     controller.setNotifier(setState);
-    widget.instance.modify(
-      context: context,
-      controller: controller,
-    );
+    widget.instance.create(context, controller);
+    widget.onInit(context);
     widget.onListener(context);
-    widget.controller.onInit(context);
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.instance.create(context, controller);
+      widget.onReady(context);
+    });
     super.initState();
   }
 
@@ -132,7 +141,12 @@ class _AndrossyFragmentState<T extends AndrossyController>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: widget.onBackPressed,
-      child: widget.onCreate(context, controller),
+      child: AndrossyBuilder(
+        builder: (context, value) {
+          widget.instance.androssy = value;
+          return widget.onCreate(context, controller);
+        },
+      ),
     );
   }
 }

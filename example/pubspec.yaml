@@ -10,6 +10,15 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # CUSTOMS
+  app_color: ^0.0.7
+  flutter_app_navigator: ^1.0.1
+
+  # OTHERS
+  flutter_bloc: ^8.1.3
+  get_it: ^7.6.4
+  shared_preferences: ^2.2.2
+
   flutter_andomie: ^0.5.9
   flutter_androssy:
     path: ../
@@ -23,3 +32,8 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+  assets:
+    - assets/contents/
+    - assets/icons/
+    - assets/images/

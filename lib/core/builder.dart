@@ -20,7 +20,7 @@ class AndrossyBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var provider = context.find();
+    var provider = AndrossyProvider.of(context);
     if (provider != null) {
       return ValueListenableBuilder(
         valueListenable: provider.notifier,

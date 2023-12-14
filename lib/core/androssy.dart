@@ -45,6 +45,11 @@ class Androssy {
     );
   }
 
+  Androssy reset() {
+    source.clear();
+    return this;
+  }
+
   Map<String, dynamic> get source {
     return {
       kAndrossySettingsPath: settings.source,

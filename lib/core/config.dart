@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 class AndrossyConfigure {
   final Map<Type, dynamic> _proxies;
 
@@ -11,6 +13,9 @@ class AndrossyConfigure {
     required List<Object> instances,
   }) async {
     var config = AndrossyConfigure._();
+    if (instances.whereType<SharedPreferences>().isEmpty) {
+      config._instance(await SharedPreferences.getInstance());
+    }
     for (var i in instances) {
       await config._instance(i);
     }

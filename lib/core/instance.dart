@@ -1,111 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_androssy/core.dart';
 
-import 'androssy.dart';
-import 'controller.dart';
-import 'provider.dart';
-import 'user.dart';
-
-class AndrossyInstance {
-  late BuildContext context;
-  late Androssy androssy;
-  late AndrossyController controller;
-  SharedPreferences? _pref;
-
-  AndrossyProvider? _provider;
+class AndrossyInstance<T extends AndrossyController> {
+  Androssy? _androssy;
+  BuildContext? _context;
+  T? _controller;
 
   AndrossyInstance._();
 
-  static AndrossyInstance? _proxy;
-
-  static AndrossyInstance get i => _proxy ??= AndrossyInstance._();
-
-  T? getController<T>() => controller is T ? controller as T : null;
-
-  void init({
-    required BuildContext context,
-    Androssy? androssy,
-    AndrossyController? controller,
-  }) async {
-    this.context = context;
-    this.controller = controller ?? AndrossyController();
-    this.androssy = androssy ?? const Androssy();
+  static AndrossyInstance<T> init<T extends AndrossyController>() {
+    return _Instances.create<T>(() => AndrossyInstance<T>._());
   }
 
-  void modify({
-    required BuildContext context,
-    Androssy? androssy,
-    AndrossyController? controller,
-  }) async {
-    this.context = context;
-    this.controller = controller ?? this.controller;
-    this.androssy = androssy ?? this.androssy;
+  AndrossyInstance<T> get i => init<T>();
+
+  void create(BuildContext context, T controller) {
+    i._context = context;
+    i._controller = controller;
   }
 
-  /// Customization properties
-  AndrossyProvider? get provider {
-    return _provider ??= context.find();
+  void close() {
+    i._androssy = null;
+    i._context = null;
+    i._controller = null;
+    _Instances.remove<T>();
   }
 
-  SharedPreferences get preferences => _pref!;
-
-  Future<SharedPreferences> getPreferences([
-    SharedPreferences? preferences,
-  ]) async {
-    return _pref ??= preferences ?? await SharedPreferences.getInstance();
-  }
-
-  I getInstance<I>() {
-    if (provider != null) {
-      return provider!.getInstance<I>();
+  BuildContext get context {
+    if (i._context != null) {
+      return i._context!;
     } else {
-      throw UnimplementedError("Global instance not found!");
+      throw Exception("Instance had dead");
     }
   }
 
-  String translate(String name) => provider?.localize(language, name) ?? name;
+  T get controller {
+    if (i._controller != null) {
+      return i._controller!;
+    } else {
+      throw Exception("Instance had dead");
+    }
+  }
+
+  Androssy get androssy => i._androssy ?? const Androssy();
+
+  set androssy(Androssy value) => i._androssy = value;
 
   /// User properties
-  AndrossyUser get user => androssy.user;
+  AndrossyUser get user => i.androssy.user;
 
-  String? get currentUid => user.uid;
+  String? get currentUid => i.user.uid;
+}
 
-  /// Theme properties
-  bool get isDarkTheme => androssy.settings.theme == ThemeMode.dark;
+class _Instances {
+  const _Instances._();
 
-  void setThemeMode(ThemeMode mode) async {
-    if (_pref != null) {
-      var raw = androssy.copy(theme: mode);
-      var done = await preferences.setString(kAndrossyPath, raw.json);
-      if (done && provider != null) provider!.notify(raw);
-    }
+  static final Map<Type, dynamic> _proxies = {};
+
+  static AndrossyInstance<T> create<T extends AndrossyController>(
+    AndrossyInstance<T> Function() instance,
+  ) {
+    return _proxies[T] ??= instance();
   }
 
-  /// Locale properties
-  bool get isDefaultLanguage => language == "en";
-
-  String get language => androssy.settings.locale?.languageCode ?? "en";
-
-  void setLocale(Locale locale) async {
-    if (_pref != null) {
-      var raw = androssy.copy(locale: locale);
-      var done = await preferences.setString(kAndrossyPath, raw.json);
-      if (done && provider != null) provider!.notify(raw);
-    }
-  }
-
-  void setLanguage(String language) => setLocale(Locale(language));
-
-  void setCountry(String country) => setLocale(Locale(language, country));
-
-  /// Settings properties
-  void setSettings(Androssy androssy) async {
-    if (_pref != null) {
-      var done = await preferences.setString(
-        kAndrossyPath,
-        androssy.json,
-      );
-      if (done && provider != null) provider!.notify(androssy);
-    }
-  }
+  static void remove<T extends AndrossyController>() => _proxies.remove(T);
 }
