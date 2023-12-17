@@ -449,7 +449,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     final errorColor = controller.errorTextColor ?? const Color(0xFFFF7769);
     final hasError = controller.hasError;
 
-    var style = TextStyle(
+    var style = (theme.textTheme.bodyLarge ?? const TextStyle()).copyWith(
       color: controller.textColor ?? Colors.black,
       fontSize: controller.textSize ?? 18,
       height: 1.2,

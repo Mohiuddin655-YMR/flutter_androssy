@@ -1,3 +1,7 @@
+## 0.3.9
+
+* Edit text style configure
+
 ## 0.3.8
 
 * Edit text auto dispose mode setup
