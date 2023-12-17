@@ -1,3 +1,7 @@
+## 0.3.8
+
+* Edit text auto dispose mode setup
+
 ## 0.3.7
 
 * Core bug fixed [Activity, Fragment, Controller, Instance, Provider, Builder, etc]
