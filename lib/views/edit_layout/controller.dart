@@ -3,7 +3,7 @@ part of 'view.dart';
 class EditLayoutController extends LinearLayoutController {
   int initialCheckTime = 500;
 
-  EditLayoutController fromMaterialEditGroup(EditLayout view) {
+  EditLayoutController fromEditLayout(EditLayout view) {
     super.fromLinearLayout(view);
     initialCheckTime = view.initialCheckTime;
     return this;

@@ -38,6 +38,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final bool counterTextVisible;
 
   /// BASE PROPERTIES
+  final bool autoDisposeMode;
   final String digits;
   final String hint;
   final Color? hintColor;
@@ -285,6 +286,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.counterTextVisible = false,
 
     /// BASE PROPERTIES
+    this.autoDisposeMode = true,
     this.digits = "",
     this.hint = "",
     this.hintColor,

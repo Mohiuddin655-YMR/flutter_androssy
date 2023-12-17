@@ -157,6 +157,6 @@ class EditLayout<T extends EditLayoutController> extends LinearLayout<T> {
 
   @override
   T attachController(T controller) {
-    return controller.fromMaterialEditGroup(this) as T;
+    return controller.fromEditLayout(this) as T;
   }
 }

@@ -10,6 +10,12 @@ class EditTextController extends TextViewController {
     _node.addListener(_handleFocusChange);
   }
 
+  bool autoDisposeMode = true;
+
+  void setAutoDisposeMode(bool value) {
+    onNotifyWithCallback(() => autoDisposeMode = value);
+  }
+
   bool counterTextVisible = false;
 
   void setCounterTextVisible(bool value) {
@@ -571,6 +577,7 @@ class EditTextController extends TextViewController {
     onValidator = view.onValidator;
 
     /// BASE PROPERTIES
+    autoDisposeMode = view.autoDisposeMode;
     digits = view.digits;
     hintText = view.hint;
     hintTextColor = view.hintColor;
@@ -866,6 +873,10 @@ class EditTextController extends TextViewController {
   void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
 
   void _dispose() {
+    if (autoDisposeMode) dispose();
+  }
+
+  void dispose() {
     _editable.dispose();
     _node.dispose();
   }
