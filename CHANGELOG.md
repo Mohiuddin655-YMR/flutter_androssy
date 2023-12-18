@@ -1,3 +1,4 @@
+## 0.3.10
 ## 0.3.9
 
 * Edit text style configure

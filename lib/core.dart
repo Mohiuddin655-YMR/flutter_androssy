@@ -8,6 +8,7 @@ export 'core/config.dart';
 export 'core/controller.dart';
 export 'core/fragment.dart';
 export 'core/instance.dart';
+export 'core/layout.dart';
 export 'core/localization.dart';
 export 'core/notifier.dart';
 export 'core/provider.dart';

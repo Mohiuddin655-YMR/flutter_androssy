@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_androssy/extensions.dart';
 
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'painter.dart';
+
 part 'raw.dart';
 
 class TextView<T extends TextViewController> extends YMRView<T> {

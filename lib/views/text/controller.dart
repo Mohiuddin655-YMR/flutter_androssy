@@ -600,8 +600,9 @@ class TextViewController extends ViewController {
 
   double? get textSize => textSizeState?.fromController(this) ?? _textSize;
 
-  TextStyle get textStyle =>
-      textStyleState?.fromController(this) ?? _textStyle ?? const TextStyle();
+  TextStyle? get textStyle {
+    return textStyleState?.fromController(this) ?? _textStyle;
+  }
 
   /// PREFIX
 
@@ -620,10 +621,8 @@ class TextViewController extends ViewController {
   double? get prefixTextSize =>
       prefixTextSizeState?.fromController(this) ?? _prefixTextSize;
 
-  TextStyle get prefixTextStyle =>
-      prefixTextStyleState?.fromController(this) ??
-      _prefixTextStyle ??
-      const TextStyle();
+  TextStyle? get prefixTextStyle =>
+      prefixTextStyleState?.fromController(this) ?? _prefixTextStyle;
 
   bool get isAutoPrefix {
     final a = maxCharacters > 0;
@@ -650,10 +649,8 @@ class TextViewController extends ViewController {
   double? get suffixTextSize =>
       suffixTextSizeState?.fromController(this) ?? _suffixTextSize;
 
-  TextStyle get suffixTextStyle =>
-      suffixTextStyleState?.fromController(this) ??
-      _suffixTextStyle ??
-      const TextStyle();
+  TextStyle? get suffixTextStyle =>
+      suffixTextStyleState?.fromController(this) ?? _suffixTextStyle;
 
   bool get isAutoSuffix {
     final a = maxCharacters > 0;

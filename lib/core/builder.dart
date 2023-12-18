@@ -27,7 +27,7 @@ class AndrossyBuilder extends StatelessWidget {
         builder: (context, value, old) => builder(context, value),
       );
     } else {
-      throw UnimplementedError(message ?? "Androssy provider not found!");
+      return builder(context, const Androssy());
     }
   }
 }

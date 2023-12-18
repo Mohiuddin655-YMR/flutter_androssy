@@ -30,7 +30,7 @@ class RawTextView extends StatelessWidget {
   final TextOverflow? textOverflow;
   final double? textSize;
   final List<TextSpan> textSpans;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
   final TextWidthBasis textWidthBasis;
   final OnViewClickListener? onClick;
 
@@ -45,7 +45,7 @@ class RawTextView extends StatelessWidget {
   final double? prefixTextDecorationThickness;
   final double? prefixTextLetterSpace;
   final double? prefixTextSize;
-  final TextStyle prefixTextStyle;
+  final TextStyle? prefixTextStyle;
   final bool prefixTextVisible;
   final OnViewClickListener? onPrefixClick;
 
@@ -60,7 +60,7 @@ class RawTextView extends StatelessWidget {
   final double? suffixTextDecorationThickness;
   final double? suffixTextLetterSpace;
   final double? suffixTextSize;
-  final TextStyle suffixTextStyle;
+  final TextStyle? suffixTextStyle;
   final bool suffixTextVisible;
   final OnViewClickListener? onSuffixClick;
 
@@ -91,7 +91,7 @@ class RawTextView extends StatelessWidget {
     this.textOverflow,
     this.textSize,
     this.textSpans = const [],
-    this.textStyle = const TextStyle(),
+    this.textStyle,
     this.textWidthBasis = TextWidthBasis.parent,
     this.wordSpacing,
     this.onClick,
@@ -107,7 +107,7 @@ class RawTextView extends StatelessWidget {
     this.prefixTextDecorationThickness,
     this.prefixTextLetterSpace,
     this.prefixTextSize,
-    this.prefixTextStyle = const TextStyle(),
+    this.prefixTextStyle,
     this.prefixTextVisible = true,
     this.onPrefixClick,
 
@@ -122,19 +122,20 @@ class RawTextView extends StatelessWidget {
     this.suffixTextDecorationThickness,
     this.suffixTextLetterSpace,
     this.suffixTextSize,
-    this.suffixTextStyle = const TextStyle(),
+    this.suffixTextStyle,
     this.suffixTextVisible = true,
     this.onSuffixClick,
   });
 
   @override
   Widget build(BuildContext context) {
-    var isEllipsis = ellipsis != null;
-    var isPrefix = (prefixText ?? "").isNotEmpty && prefixTextVisible;
-    var isSuffix = (suffixText ?? "").isNotEmpty && suffixTextVisible;
-    var isSpannable = isPrefix || isSuffix || textSpans.isNotEmpty;
+    final theme = context.textTheme.bodyMedium;
+    final isEllipsis = ellipsis != null;
+    final isPrefix = (prefixText ?? "").isNotEmpty && prefixTextVisible;
+    final isSuffix = (suffixText ?? "").isNotEmpty && suffixTextVisible;
+    final isSpannable = isPrefix || isSuffix || textSpans.isNotEmpty;
 
-    var style = textStyle.copyWith(
+    final style = (textStyle ?? theme ?? const TextStyle()).copyWith(
       color: textColor,
       fontSize: textSize,
       fontWeight: textFontWeight,
@@ -159,7 +160,7 @@ class RawTextView extends StatelessWidget {
                 TextSpan(
                   text: prefixText,
                   recognizer: context.onClick(onPrefixClick ?? onClick),
-                  style: prefixTextStyle.copyWith(
+                  style: (prefixTextStyle ?? style).copyWith(
                     color: prefixTextColor,
                     fontSize: prefixTextSize,
                     fontStyle: prefixFontStyle,
@@ -180,7 +181,7 @@ class RawTextView extends StatelessWidget {
                 TextSpan(
                   text: suffixText,
                   recognizer: context.onClick(onSuffixClick ?? onClick),
-                  style: suffixTextStyle.copyWith(
+                  style: (suffixTextStyle ?? style).copyWith(
                     color: suffixTextColor,
                     fontSize: suffixTextSize,
                     fontStyle: suffixFontStyle,

@@ -443,14 +443,15 @@ class EditText<T extends EditTextController> extends TextView<T> {
   @override
   Widget? attach(BuildContext context, T controller) {
     final theme = Theme.of(context);
+    final themeStyle = theme.textTheme.bodyLarge ?? const TextStyle();
     final primaryColor = controller.primary ?? theme.primaryColor;
     const underlineColor = Color(0xffe1e1e1);
     const secondaryColor = Color(0xffbbbbbb);
     final errorColor = controller.errorTextColor ?? const Color(0xFFFF7769);
     final hasError = controller.hasError;
 
-    var style = (theme.textTheme.bodyLarge ?? const TextStyle()).copyWith(
-      color: controller.textColor ?? Colors.black,
+    var style = (controller.textStyle ?? themeStyle).copyWith(
+      color: controller.textColor,
       fontSize: controller.textSize ?? 18,
       height: 1.2,
     );
