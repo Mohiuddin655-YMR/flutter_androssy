@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:developer' as developer;
 
 extension TExtension<T> on T {
   T get logType {
@@ -7,12 +7,17 @@ extension TExtension<T> on T {
   }
 
   T get logValue {
-    log(toString());
+    developer.log(toString());
     return this;
   }
 
   T get logValueType {
-    log("${toString()} ($runtimeType)");
+    developer.log("${toString()} ($runtimeType)");
+    return this;
+  }
+
+  T log(String tag) {
+    developer.log("$tag : ${toString()}");
     return this;
   }
 }

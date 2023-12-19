@@ -14,11 +14,11 @@
   "Home": {
     "bn": "হোম"
   },
-  "Info": {
-    "bn": "তথ্য"
-  },
   "Notification": {
     "bn": "বার্তা"
+  },
+  "Notifications": {
+    "bn": "বার্তা সমূহ"
   },
   "Profile": {
     "bn": "প্রোফাইল"
@@ -28,5 +28,14 @@
   },
   "Settings": {
     "bn": "সেটিংস"
+  },
+  "Info": {
+    "bn": "তথ্য"
+  },
+  "Privacy Policy": {
+    "bn": "গোপনীয়তা নীতি"
+  },
+  "Terms and Conditions": {
+    "bn": "শর্তাবলী"
   }
 }

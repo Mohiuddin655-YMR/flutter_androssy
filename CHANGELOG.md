@@ -1,4 +1,9 @@
+## 0.3.11-alpha1
+
+* Androssy instance bug fixed
+
 ## 0.3.10
+
 ## 0.3.9
 
 * Edit text style configure

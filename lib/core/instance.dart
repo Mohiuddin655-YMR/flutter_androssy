@@ -26,21 +26,13 @@ class AndrossyInstance<T extends AndrossyController> {
     _Instances.remove<T>();
   }
 
-  BuildContext get context {
-    if (i._context != null) {
-      return i._context!;
-    } else {
-      throw Exception("Instance had dead");
-    }
-  }
+  set context(BuildContext? value) => _context = value;
 
-  T get controller {
-    if (i._controller != null) {
-      return i._controller!;
-    } else {
-      throw Exception("Instance had dead");
-    }
-  }
+  BuildContext? get context => i._context;
+
+  set controller(T? value) => i._controller = value;
+
+  T? get controller => i._controller;
 
   Androssy get androssy => i._androssy ?? const Androssy();
 

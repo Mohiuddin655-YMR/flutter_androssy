@@ -12,11 +12,11 @@ abstract class AndrossyFragment<T extends AndrossyController>
 
   AndrossyInstance<T> get instance => AndrossyInstance.init<T>();
 
-  BuildContext get context => instance.context;
+  BuildContext? get context => instance.context;
 
-  T get controller => instance.controller;
+  T get controller => instance.controller ??= init();
 
-  T init(BuildContext context);
+  T init();
 
   @protected
   @override
@@ -75,11 +75,10 @@ abstract class AndrossyFragment<T extends AndrossyController>
 
 class _AndrossyFragmentState<T extends AndrossyController>
     extends State<AndrossyFragment<T>> with WidgetsBindingObserver {
-  late T controller;
+  late T controller = widget.controller;
 
   @override
   void initState() {
-    controller = widget.init(context);
     controller.setNotifier(setState);
     widget.instance.create(context, controller);
     widget.onInit(context);

@@ -31,9 +31,7 @@ class Home extends AndrossyActivity<HomeController> {
   const Home({super.key});
 
   @override
-  HomeController init(BuildContext context) {
-    return HomeController();
-  }
+  HomeController init() => HomeController();
 
   @override
   AppBar? onCreateAppbar(BuildContext context) {
@@ -56,7 +54,6 @@ class Home extends AndrossyActivity<HomeController> {
       width: double.infinity,
       height: double.infinity,
       layoutGravity: LayoutGravity.center,
-      onValid: controller.btnSubmit.setEnabled,
       children: [
         const TextView(
           text: "Sign up",
@@ -65,6 +62,7 @@ class Home extends AndrossyActivity<HomeController> {
           textSize: 24,
         ),
         EditText(
+          autoDisposeMode: false,
           controller: controller.etEmail,
           marginTop: 24,
           hint: "Email",
@@ -74,6 +72,7 @@ class Home extends AndrossyActivity<HomeController> {
           onValidator: Validator.isValidEmail,
         ),
         EditText(
+          autoDisposeMode: false,
           controller: controller.etPassword,
           marginTop: 24,
           hint: "Password",
@@ -88,6 +87,7 @@ class Home extends AndrossyActivity<HomeController> {
           onValidator: (value) => value.length > 5,
         ),
         EditText(
+          autoDisposeMode: false,
           controller: EditTextController(),
           marginTop: 24,
           hint: "Confirm password",
@@ -108,6 +108,7 @@ class Home extends AndrossyActivity<HomeController> {
           orientation: Axis.horizontal,
           children: [
             EditText(
+              autoDisposeMode: false,
               controller: EditTextController(),
               flex: 1,
               hint: "Age",
@@ -116,6 +117,7 @@ class Home extends AndrossyActivity<HomeController> {
             ),
             16.w,
             EditText(
+              autoDisposeMode: false,
               controller: EditTextController(),
               flex: 1,
               hint: "Gender",
@@ -127,7 +129,6 @@ class Home extends AndrossyActivity<HomeController> {
         ),
         Button(
           controller: controller.btnSubmit,
-          enabled: false,
           marginTop: 50,
           width: double.infinity,
           height: 50,
@@ -149,6 +150,13 @@ class HomeController extends AndrossyController {
     btnSubmit.setOnClickListener(onRegister);
   }
 
+  @override
+  void onDestroy(BuildContext context) {
+    etEmail.dispose();
+    etPassword.dispose();
+    super.onDestroy(context);
+  }
+
   bool isValidConfirmPassword(String? value) {
     final password = etPassword.text;
     return value == password;
@@ -158,5 +166,8 @@ class HomeController extends AndrossyController {
     final email = etEmail.text;
     final password = etPassword.text;
     log("onRegister {$email, $password}");
+    Navigator.push(context, MaterialPageRoute(builder: (context){
+      return const Home();
+    }));
   }
 }
