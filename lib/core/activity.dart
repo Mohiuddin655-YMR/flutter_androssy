@@ -9,22 +9,24 @@ import 'instance.dart';
 
 abstract class AndrossyActivity<T extends AndrossyController>
     extends StatefulWidget {
+  final String identifier;
   final bool statusBar;
   final Androssy? androssy;
 
   const AndrossyActivity({
     super.key,
+    this.identifier = "",
     this.androssy,
     this.statusBar = true,
   });
 
-  AndrossyInstance<T> get instance => AndrossyInstance.init<T>();
+  AndrossyInstance<T> get instance => AndrossyInstance.init<T>(identifier);
 
-  BuildContext? get context => instance.context;
+  BuildContext get context => instance.context;
 
-  T get controller => instance.controller ??= init();
+  T get controller => instance.controller;
 
-  T init();
+  T init(BuildContext context);
 
   @protected
   AndrossyScreenConfig config(BuildContext context) =>
@@ -246,16 +248,17 @@ abstract class AndrossyActivity<T extends AndrossyController>
   @mustCallSuper
   void onDestroy(BuildContext context) {
     controller.onDestroy(context);
-    instance.close();
+    instance.close(identifier);
   }
 }
 
 class AndrossyActivityState<T extends AndrossyController>
     extends State<AndrossyActivity<T>> with WidgetsBindingObserver {
-  late T controller = widget.controller;
+  late T controller;
 
   @override
   void initState() {
+    controller = widget.init(context);
     controller.setNotifier(setState);
     widget.instance.create(context, controller);
     widget.onInit(context);

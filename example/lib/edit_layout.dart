@@ -31,7 +31,7 @@ class Home extends AndrossyActivity<HomeController> {
   const Home({super.key});
 
   @override
-  HomeController init() {
+  HomeController init(BuildContext context) {
     return HomeController();
   }
 

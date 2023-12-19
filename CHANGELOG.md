@@ -1,6 +1,6 @@
-## 0.3.11-alpha1
+## 0.3.11
 
-* Androssy instance bug fixed
+* Androssy instance identifier make
 
 ## 0.3.10
 

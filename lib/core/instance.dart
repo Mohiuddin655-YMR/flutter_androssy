@@ -2,58 +2,82 @@ import 'package:flutter/material.dart';
 import 'package:flutter_androssy/core.dart';
 
 class AndrossyInstance<T extends AndrossyController> {
+  final String id;
   Androssy? _androssy;
   BuildContext? _context;
   T? _controller;
 
-  AndrossyInstance._();
+  AndrossyInstance._(this.id);
 
-  static AndrossyInstance<T> init<T extends AndrossyController>() {
-    return _Instances.create<T>(() => AndrossyInstance<T>._());
+  static AndrossyInstance<T> init<T extends AndrossyController>(String id) {
+    return _Instances.create<T>(id, () => AndrossyInstance<T>._(id));
   }
 
-  AndrossyInstance<T> get i => init<T>();
+  static AndrossyInstance<T>? find<T extends AndrossyController>([String? id]) {
+    return _Instances.find(id ?? "");
+  }
+
+  static T? findController<T extends AndrossyController>([String? id]) {
+    return find<T>(id)?.controller;
+  }
+
+  AndrossyInstance<T> get _i => init<T>(id);
 
   void create(BuildContext context, T controller) {
-    i._context = context;
-    i._controller = controller;
+    _i._context = context;
+    _i._controller = controller;
   }
 
-  void close() {
-    i._androssy = null;
-    i._context = null;
-    i._controller = null;
-    _Instances.remove<T>();
+  void close(String id) {
+    _i._androssy = null;
+    _i._context = null;
+    _i._controller = null;
+    _Instances.remove<T>(id);
   }
 
-  set context(BuildContext? value) => _context = value;
+  BuildContext get context {
+    if (_i._context != null) {
+      return _i._context!;
+    } else {
+      throw Exception("Instance deactivated");
+    }
+  }
 
-  BuildContext? get context => i._context;
+  T get controller {
+    if (_i._controller != null) {
+      return _i._controller!;
+    } else {
+      throw Exception("Instance deactivated");
+    }
+  }
 
-  set controller(T? value) => i._controller = value;
+  Androssy get androssy => _i._androssy ?? const Androssy();
 
-  T? get controller => i._controller;
-
-  Androssy get androssy => i._androssy ?? const Androssy();
-
-  set androssy(Androssy value) => i._androssy = value;
+  set androssy(Androssy value) => _i._androssy = value;
 
   /// User properties
-  AndrossyUser get user => i.androssy.user;
+  AndrossyUser get user => _i.androssy.user;
 
-  String? get currentUid => i.user.uid;
+  String? get currentUid => _i.user.uid;
 }
 
 class _Instances {
   const _Instances._();
 
-  static final Map<Type, dynamic> _proxies = {};
+  static final Map<String, dynamic> _proxies = {};
 
   static AndrossyInstance<T> create<T extends AndrossyController>(
+    String id,
     AndrossyInstance<T> Function() instance,
   ) {
-    return _proxies[T] ??= instance();
+    return _proxies["$T<$id>"] ??= instance();
   }
 
-  static void remove<T extends AndrossyController>() => _proxies.remove(T);
+  static AndrossyInstance<T>? find<T extends AndrossyController>(String id) {
+    return _proxies["$T<$id>"];
+  }
+
+  static void remove<T extends AndrossyController>(String id) {
+    _proxies.remove("$T<$id>");
+  }
 }

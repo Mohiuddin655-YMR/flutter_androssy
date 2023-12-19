@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_androssy/core.dart';
-import 'package:flutter_androssy/widgets.dart';
 
 Future<void> main() async {
   runApp(const Application());
@@ -31,7 +30,7 @@ class Home extends AndrossyActivity<HomeController> {
   const Home({super.key});
 
   @override
-  HomeController init() {
+  HomeController init(BuildContext context) {
     return HomeController();
   }
 
