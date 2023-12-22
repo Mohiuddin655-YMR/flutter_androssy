@@ -4,9 +4,8 @@ class _DottedTexts extends StatelessWidget {
   final ContentViewController controller;
 
   const _DottedTexts({
-    Key? key,
     required this.controller,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

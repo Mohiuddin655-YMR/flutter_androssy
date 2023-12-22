@@ -28,13 +28,6 @@ class AndrossyInstance<T extends AndrossyController> {
     _i._controller = controller;
   }
 
-  void close(String id) {
-    _i._androssy = null;
-    _i._context = null;
-    _i._controller = null;
-    _Instances.remove<T>(id);
-  }
-
   BuildContext get context {
     if (_i._context != null) {
       return _i._context!;
@@ -75,9 +68,5 @@ class _Instances {
 
   static AndrossyInstance<T>? find<T extends AndrossyController>(String id) {
     return _proxies["$T<$id>"];
-  }
-
-  static void remove<T extends AndrossyController>(String id) {
-    _proxies.remove("$T<$id>");
   }
 }

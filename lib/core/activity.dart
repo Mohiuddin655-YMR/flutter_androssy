@@ -15,7 +15,7 @@ abstract class AndrossyActivity<T extends AndrossyController>
 
   const AndrossyActivity({
     super.key,
-    this.identifier = "",
+    this.identifier = "activity",
     this.androssy,
     this.statusBar = true,
   });
@@ -246,10 +246,7 @@ abstract class AndrossyActivity<T extends AndrossyController>
 
   @protected
   @mustCallSuper
-  void onDestroy(BuildContext context) {
-    controller.onDestroy(context);
-    instance.close(identifier);
-  }
+  void onDestroy(BuildContext context) => controller.onDestroy(context);
 }
 
 class AndrossyActivityState<T extends AndrossyController>

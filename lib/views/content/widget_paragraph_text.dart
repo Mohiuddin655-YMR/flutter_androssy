@@ -6,11 +6,10 @@ class _ParagraphText extends StatelessWidget {
   final bool showDot;
 
   const _ParagraphText({
-    Key? key,
     required this.content,
     required this.controller,
     this.showDot = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

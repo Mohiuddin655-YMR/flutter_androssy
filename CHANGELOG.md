@@ -1,3 +1,7 @@
+## 0.3.12
+
+* Androssy instance bug fixed
+
 ## 0.3.11
 
 * Androssy instance identifier make

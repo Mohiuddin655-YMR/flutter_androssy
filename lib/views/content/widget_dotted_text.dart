@@ -7,12 +7,11 @@ class _DottedText extends StatelessWidget {
   final bool showDot;
 
   const _DottedText({
-    Key? key,
     this.isParagraph = false,
     this.showDot = true,
     required this.text,
     required this.controller,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

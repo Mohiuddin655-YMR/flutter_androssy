@@ -57,11 +57,11 @@ class CalendarPage extends StatelessWidget {
     return Column(
       children: [
         if (dowVisible) SizedBox(height: dowHeight ?? 0),
-        ...List.generate(rowAmount, (index) => index * 7)
-            .map((index) => Expanded(
-                  child: weekNumberBuilder!(context, visibleDays[index]),
-                ))
-            .toList()
+        ...List.generate(rowAmount, (index) => index * 7).map((index) {
+          return Expanded(
+            child: weekNumberBuilder!(context, visibleDays[index]),
+          );
+        })
       ],
     );
   }

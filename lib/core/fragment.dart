@@ -10,7 +10,7 @@ abstract class AndrossyFragment<T extends AndrossyController>
 
   const AndrossyFragment({
     super.key,
-    this.identifier = "",
+    this.identifier = "fragment",
   });
 
   AndrossyInstance<T> get instance => AndrossyInstance.init<T>(identifier);
@@ -70,10 +70,7 @@ abstract class AndrossyFragment<T extends AndrossyController>
 
   @protected
   @mustCallSuper
-  void onDestroy(BuildContext context) {
-    controller.onDestroy(context);
-    instance.close(identifier);
-  }
+  void onDestroy(BuildContext context) => controller.onDestroy(context);
 }
 
 class _AndrossyFragmentState<T extends AndrossyController>
