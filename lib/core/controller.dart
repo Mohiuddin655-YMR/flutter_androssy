@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../views/view/view.dart';
+import 'package:flutter_androssy/widgets.dart' show OnViewNotifier;
 
 class AndrossyController {
   String identifier = "";
@@ -27,8 +26,6 @@ class AndrossyController {
   void onHidden(BuildContext context) {}
 
   void onDestroy(BuildContext context) {}
-
-  Future<bool> onBackPressed() async => true;
 
   void setNotifier(OnViewNotifier? notifier) => _notifier = notifier;
 

@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,32 +8,33 @@ import 'androssy.dart';
 import 'builder.dart';
 import 'controller.dart';
 import 'instance.dart';
+import 'settings.dart';
+import 'user.dart';
 
 abstract class AndrossyActivity<T extends AndrossyController>
     extends StatefulWidget {
-  final bool globalInstance;
   final String? identifier;
+  final bool showLifecycleLog;
   final bool statusBar;
-  final Androssy? androssy;
 
   const AndrossyActivity({
     super.key,
-    this.globalInstance = false,
     this.identifier,
-    this.androssy,
+    this.showLifecycleLog = false,
     this.statusBar = true,
   });
 
-  AndrossyInstance<T> get instance {
-    return AndrossyInstance.init<T>(
-      globalInstance,
-      identifier,
-    );
-  }
+  AndrossyInstance<T> get instance => AndrossyInstance.init<T>(identifier);
 
   BuildContext get context => instance.context;
 
   T get controller => instance.controller;
+
+  Androssy get androssy => instance.androssy;
+
+  AndrossyUser get user => instance.user;
+
+  AndrossySettings get settings => instance.androssy.settings;
 
   T init(BuildContext context);
 
@@ -228,15 +231,20 @@ class AndrossyActivityState<T extends AndrossyController>
     extends State<AndrossyActivity<T>> with WidgetsBindingObserver {
   late T controller = widget.init(context);
 
+  void _log(String value) {
+    if (widget.showLifecycleLog) developer.log(value);
+  }
+
   @override
   void initState() {
+    _log("initState (ACTIVITY)");
     controller.setNotifier(setState);
-    widget.instance.create(context, controller);
+    widget.instance.attach(context, controller);
     widget.onInit(context);
     widget.onListener(context);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.instance.create(context, controller);
+      widget.instance.attach(context, controller);
       widget.onReady(context);
     });
     super.initState();
@@ -244,50 +252,57 @@ class AndrossyActivityState<T extends AndrossyController>
 
   @override
   void didChangeDependencies() {
+    _log("didChangeDependencies (ACTIVITY)");
     controller.setNotifier(setState);
-    widget.instance.create(context, controller);
+    widget.instance.attach(context, controller);
     super.didChangeDependencies();
   }
 
   @override
   void reassemble() {
+    _log("reassemble (ACTIVITY)");
     controller.setNotifier(setState);
-    widget.instance.create(context, controller);
+    widget.instance.attach(context, controller);
     super.reassemble();
   }
 
   @override
   void didUpdateWidget(covariant AndrossyActivity<T> oldWidget) {
+    _log("didUpdateWidget (ACTIVITY)");
     controller.setNotifier(setState);
-    widget.instance.create(context, controller);
+    widget.instance.attach(context, controller);
     widget.onRestart(context);
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void activate() {
+    _log("activate (ACTIVITY)");
     controller.setNotifier(setState);
-    widget.instance.create(context, controller);
+    widget.instance.attach(context, controller);
     widget.onStart(context);
     super.activate();
   }
 
   @override
   void deactivate() {
-    widget.onStop(context);
-    widget.instance.close(widget.identifier);
+    _log("deactivate (ACTIVITY)");
     super.deactivate();
+    widget.onStop(context);
   }
 
   @override
   void dispose() {
+    _log("dispose (ACTIVITY)");
     WidgetsBinding.instance.removeObserver(this);
     widget.onDestroy(context);
+    widget.instance.close(widget.identifier);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    _log("didChangeAppLifecycleState (ACTIVITY)");
     switch (state) {
       case AppLifecycleState.inactive:
         widget.onStart(context);
@@ -311,6 +326,7 @@ class AndrossyActivityState<T extends AndrossyController>
 
   @override
   Widget build(BuildContext context) {
+    _log("build (ACTIVITY)");
     var theme = Theme.of(context);
     var config = widget.config(context);
     return AndrossyBuilder(

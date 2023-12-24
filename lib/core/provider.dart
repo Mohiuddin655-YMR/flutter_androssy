@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_androssy/core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'androssy.dart';
+import 'config.dart';
+import 'localization.dart';
+import 'notifier.dart';
+import 'settings.dart';
+import 'user.dart';
 
 class AndrossyProvider extends InheritedWidget {
   final AndrossyConfigure configure;

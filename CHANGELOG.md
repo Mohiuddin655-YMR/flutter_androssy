@@ -1,4 +1,4 @@
-## 0.3.13-alpha1
+## 0.3.13
 
 * Androssy instance updates
 

@@ -502,7 +502,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
               autofillHints: controller.autofillHints,
               autofocus: controller.autoFocus,
               clipBehavior: controller.clipBehaviorText,
-              controller: controller._editable,
+              controller: controller._editor,
               cursorColor: controller.cursorColor ?? primaryColor,
               cursorHeight: controller.cursorHeight,
               cursorOpacityAnimates: controller.cursorOpacityAnimates,

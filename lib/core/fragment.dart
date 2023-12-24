@@ -1,30 +1,36 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 
+import 'androssy.dart';
 import 'builder.dart';
 import 'controller.dart';
 import 'instance.dart';
+import 'settings.dart';
+import 'user.dart';
 
 abstract class AndrossyFragment<T extends AndrossyController>
     extends StatefulWidget {
-  final bool globalInstance;
   final String? identifier;
+  final bool showLifecycleLog;
 
   const AndrossyFragment({
     super.key,
-    this.globalInstance = false,
     this.identifier,
+    this.showLifecycleLog = false,
   });
 
-  AndrossyInstance<T> get instance {
-    return AndrossyInstance.init<T>(
-      globalInstance,
-      identifier,
-    );
-  }
+  AndrossyInstance<T> get instance => AndrossyInstance.init<T>(identifier);
 
   BuildContext get context => instance.context;
 
   T get controller => instance.controller;
+
+  Androssy get androssy => instance.androssy;
+
+  AndrossyUser get user => instance.user;
+
+  AndrossySettings get settings => instance.androssy.settings;
 
   T init(BuildContext context);
 
@@ -84,15 +90,20 @@ class _AndrossyFragmentState<T extends AndrossyController>
     extends State<AndrossyFragment<T>> with WidgetsBindingObserver {
   late T controller = widget.init(context);
 
+  void _log(String value) {
+    if (widget.showLifecycleLog) developer.log(value);
+  }
+
   @override
   void initState() {
+    _log("initState (FRAGMENT)");
     controller.setNotifier(setState);
-    widget.instance.create(context, controller);
+    widget.instance.attach(context, controller);
     widget.onInit(context);
     widget.onListener(context);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.instance.create(context, controller);
+      widget.instance.attach(context, controller);
       widget.onReady(context);
     });
     super.initState();
@@ -100,50 +111,57 @@ class _AndrossyFragmentState<T extends AndrossyController>
 
   @override
   void didChangeDependencies() {
+    _log("didChangeDependencies (FRAGMENT)");
     controller.setNotifier(setState);
-    widget.instance.create(context, controller);
+    widget.instance.attach(context, controller);
     super.didChangeDependencies();
   }
 
   @override
   void reassemble() {
+    _log("reassemble (FRAGMENT)");
     controller.setNotifier(setState);
-    widget.instance.create(context, controller);
+    widget.instance.attach(context, controller);
     super.reassemble();
   }
 
   @override
   void didUpdateWidget(covariant AndrossyFragment<T> oldWidget) {
+    _log("didUpdateWidget (FRAGMENT)");
     controller.setNotifier(setState);
-    widget.instance.create(context, controller);
+    widget.instance.attach(context, controller);
     widget.onRestart(context);
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void activate() {
+    _log("activate (FRAGMENT)");
     controller.setNotifier(setState);
-    widget.instance.create(context, controller);
+    widget.instance.attach(context, controller);
     widget.onStart(context);
     super.activate();
   }
 
   @override
   void deactivate() {
-    widget.onStop(context);
-    widget.instance.close(widget.identifier);
+    _log("deactivate (FRAGMENT)");
     super.deactivate();
+    widget.onStop(context);
   }
 
   @override
   void dispose() {
+    _log("dispose (FRAGMENT)");
     WidgetsBinding.instance.removeObserver(this);
     widget.onDestroy(context);
+    widget.instance.close(widget.identifier);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    _log("didChangeAppLifecycleState => $state (FRAGMENT)");
     switch (state) {
       case AppLifecycleState.inactive:
         widget.onStart(context);
@@ -167,6 +185,7 @@ class _AndrossyFragmentState<T extends AndrossyController>
 
   @override
   Widget build(BuildContext context) {
+    _log("build (FRAGMENT)");
     return AndrossyBuilder(
       builder: (context, value) {
         widget.instance.androssy = value;

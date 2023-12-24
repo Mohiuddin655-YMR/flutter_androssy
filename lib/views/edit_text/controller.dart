@@ -1,13 +1,31 @@
 part of 'view.dart';
 
 class EditTextController extends TextViewController {
-  late TextEditingController _editable;
-  late FocusNode _node;
+  TextEditingController _editor = TextEditingController();
 
-  EditTextController() {
-    _editable = TextEditingController();
-    _node = FocusNode();
-    _node.addListener(_handleFocusChange);
+  FocusNode _node = FocusNode();
+
+  EditTextController({
+    TextEditingController? editor,
+    FocusNode? focusNode,
+  }) {
+    _editor = editor ?? _editor;
+    _node = focusNode ?? _node;
+    addFocusListener();
+  }
+
+  void addFocusListener([VoidCallback? callback]) {
+    _node.addListener(() {
+      _handleFocusChange();
+      if (callback != null) callback();
+    });
+  }
+
+  void removeFocusListener([VoidCallback? callback]) {
+    _node.removeListener(() {
+      _handleFocusChange();
+      if (callback != null) callback();
+    });
   }
 
   bool autoDisposeMode = true;
@@ -665,7 +683,7 @@ class EditTextController extends TextViewController {
     onTapOutside = view.onTapOutside;
 
     /// CUSTOMIZATIONS
-    _editable.text = view.text ?? _editable.text;
+    _editor.text = view.text ?? _editor.text;
     return this;
   }
 
@@ -757,7 +775,7 @@ class EditTextController extends TextViewController {
   double? get paddingVertical => super.paddingVertical ?? 8;
 
   @override
-  String get text => _editable.text;
+  String get text => _editor.text;
 
   /// CALLBACK & LISTENERS
 
@@ -787,7 +805,7 @@ class EditTextController extends TextViewController {
 
   bool get isValid {
     if (onValidator != null) {
-      return onValidator!(_editable.text);
+      return onValidator!(_editor.text);
     } else {
       return true;
     }
@@ -877,7 +895,8 @@ class EditTextController extends TextViewController {
   }
 
   void dispose() {
-    _editable.dispose();
+    removeFocusListener();
+    _editor.dispose();
     _node.dispose();
   }
 }

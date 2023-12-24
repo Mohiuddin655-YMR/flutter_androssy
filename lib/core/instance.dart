@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_androssy/core.dart';
+
+import 'androssy.dart';
+import 'controller.dart';
+import 'user.dart';
 
 class AndrossyInstance<T extends AndrossyController> {
-  final bool global;
   final String? id;
   Androssy? _androssy;
   BuildContext? _context;
   T? _controller;
 
-  AndrossyInstance._([
-    this.id,
-    this.global = false,
-  ]);
+  AndrossyInstance._([this.id]);
 
-  static AndrossyInstance<T> init<T extends AndrossyController>(
-    bool global,
-    String? id,
-  ) {
-    return _Instances.create<T>(() => AndrossyInstance<T>._(id, global), id);
+  static AndrossyInstance<T> init<T extends AndrossyController>(String? id) {
+    return _Instances.create<T>(() => AndrossyInstance<T>._(id), id);
   }
 
   static AndrossyInstance<T>? find<T extends AndrossyController>([String? id]) {
@@ -28,16 +24,16 @@ class AndrossyInstance<T extends AndrossyController> {
     return find<T>(id)?.controller;
   }
 
-  AndrossyInstance<T> get _i => init<T>(global, id);
+  AndrossyInstance<T> get _i => init<T>(id);
 
-  void create(BuildContext context, T controller) {
+  void attach(BuildContext context, T controller) {
     _i._context = context;
     _i._controller = controller;
   }
 
-  void close([String? id]) {
-    if (!global) _Instances.remove<T>(id);
-  }
+  void clear() => _Instances.clear();
+
+  void close([String? id]) => _Instances.remove<T>(id);
 
   BuildContext get context {
     if (_i._context != null) {
@@ -88,6 +84,8 @@ class _Instances {
   }
 
   static void remove<T extends AndrossyController>([String? name]) {
-    _proxies.remove(_key<T>(name));
+    // _proxies.remove(_key<T>(name));
   }
+
+  static void clear() => _proxies.clear();
 }
