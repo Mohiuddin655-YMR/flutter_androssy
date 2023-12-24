@@ -6,14 +6,21 @@ import 'instance.dart';
 
 abstract class AndrossyFragment<T extends AndrossyController>
     extends StatefulWidget {
-  final String identifier;
+  final bool globalInstance;
+  final String? identifier;
 
   const AndrossyFragment({
     super.key,
-    this.identifier = "fragment",
+    this.globalInstance = false,
+    this.identifier,
   });
 
-  AndrossyInstance<T> get instance => AndrossyInstance.init<T>(identifier);
+  AndrossyInstance<T> get instance {
+    return AndrossyInstance.init<T>(
+      globalInstance,
+      identifier,
+    );
+  }
 
   BuildContext get context => instance.context;
 
@@ -26,7 +33,7 @@ abstract class AndrossyFragment<T extends AndrossyController>
   State<AndrossyFragment<T>> createState() => _AndrossyFragmentState<T>();
 
   @protected
-  Widget onCreate(BuildContext context, T controller);
+  Widget onCreate(BuildContext context);
 
   @protected
   @mustCallSuper
@@ -42,7 +49,7 @@ abstract class AndrossyFragment<T extends AndrossyController>
 
   @protected
   @mustCallSuper
-  void onPause(BuildContext context) => controller.onPause(context);
+  void onPaused(BuildContext context) => controller.onPaused(context);
 
   @protected
   @mustCallSuper
@@ -50,7 +57,7 @@ abstract class AndrossyFragment<T extends AndrossyController>
 
   @protected
   @mustCallSuper
-  void onResume(BuildContext context) => controller.onResume(context);
+  void onResumed(BuildContext context) => controller.onResumed(context);
 
   @protected
   @mustCallSuper
@@ -62,11 +69,11 @@ abstract class AndrossyFragment<T extends AndrossyController>
 
   @protected
   @mustCallSuper
-  Future<bool> onBackPressed() => controller.onBackPressed();
+  void onDetached(BuildContext context) => controller.onDetached(context);
 
   @protected
   @mustCallSuper
-  void onDetached(BuildContext context) => controller.onDetached(context);
+  void onHidden(BuildContext context) => controller.onHidden(context);
 
   @protected
   @mustCallSuper
@@ -75,11 +82,10 @@ abstract class AndrossyFragment<T extends AndrossyController>
 
 class _AndrossyFragmentState<T extends AndrossyController>
     extends State<AndrossyFragment<T>> with WidgetsBindingObserver {
-  late T controller;
+  late T controller = widget.init(context);
 
   @override
   void initState() {
-    controller = widget.init(context);
     controller.setNotifier(setState);
     widget.instance.create(context, controller);
     widget.onInit(context);
@@ -93,13 +99,31 @@ class _AndrossyFragmentState<T extends AndrossyController>
   }
 
   @override
+  void didChangeDependencies() {
+    controller.setNotifier(setState);
+    widget.instance.create(context, controller);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void reassemble() {
+    controller.setNotifier(setState);
+    widget.instance.create(context, controller);
+    super.reassemble();
+  }
+
+  @override
   void didUpdateWidget(covariant AndrossyFragment<T> oldWidget) {
+    controller.setNotifier(setState);
+    widget.instance.create(context, controller);
     widget.onRestart(context);
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void activate() {
+    controller.setNotifier(setState);
+    widget.instance.create(context, controller);
     widget.onStart(context);
     super.activate();
   }
@@ -107,6 +131,7 @@ class _AndrossyFragmentState<T extends AndrossyController>
   @override
   void deactivate() {
     widget.onStop(context);
+    widget.instance.close(widget.identifier);
     super.deactivate();
   }
 
@@ -120,17 +145,20 @@ class _AndrossyFragmentState<T extends AndrossyController>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
-      case AppLifecycleState.resumed:
-        widget.onResume(context);
-        break;
       case AppLifecycleState.inactive:
-        widget.onStop(context);
-        break;
-      case AppLifecycleState.paused:
-        widget.onPause(context);
+        widget.onStart(context);
         break;
       case AppLifecycleState.detached:
         widget.onDetached(context);
+        break;
+      case AppLifecycleState.hidden:
+        widget.onHidden(context);
+        break;
+      case AppLifecycleState.paused:
+        widget.onPaused(context);
+        break;
+      case AppLifecycleState.resumed:
+        widget.onResumed(context);
         break;
       default:
     }
@@ -139,14 +167,11 @@ class _AndrossyFragmentState<T extends AndrossyController>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: widget.onBackPressed,
-      child: AndrossyBuilder(
-        builder: (context, value) {
-          widget.instance.androssy = value;
-          return widget.onCreate(context, controller);
-        },
-      ),
+    return AndrossyBuilder(
+      builder: (context, value) {
+        widget.instance.androssy = value;
+        return widget.onCreate(context);
+      },
     );
   }
 }

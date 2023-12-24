@@ -12,17 +12,19 @@ class AndrossyController {
 
   void onListener(BuildContext context) {}
 
-  void onPause(BuildContext context) {}
+  void onPaused(BuildContext context) {}
 
   void onRestart(BuildContext context) {}
 
-  void onResume(BuildContext context) {}
+  void onResumed(BuildContext context) {}
 
   void onStart(BuildContext context) {}
 
   void onStop(BuildContext context) {}
 
   void onDetached(BuildContext context) {}
+
+  void onHidden(BuildContext context) {}
 
   void onDestroy(BuildContext context) {}
 

@@ -47,7 +47,7 @@ class Home extends AndrossyActivity<HomeController> {
   }
 
   @override
-  Widget onCreate(BuildContext context, AndrossyInstance instance) {
+  Widget onCreate(BuildContext context) {
     return LinearLayout(
       scrollable: true,
       padding: 32,

@@ -2,30 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_androssy/core.dart';
 
 class AndrossyInstance<T extends AndrossyController> {
-  final String id;
+  final bool global;
+  final String? id;
   Androssy? _androssy;
   BuildContext? _context;
   T? _controller;
 
-  AndrossyInstance._(this.id);
+  AndrossyInstance._([
+    this.id,
+    this.global = false,
+  ]);
 
-  static AndrossyInstance<T> init<T extends AndrossyController>(String id) {
-    return _Instances.create<T>(id, () => AndrossyInstance<T>._(id));
+  static AndrossyInstance<T> init<T extends AndrossyController>(
+    bool global,
+    String? id,
+  ) {
+    return _Instances.create<T>(() => AndrossyInstance<T>._(id, global), id);
   }
 
   static AndrossyInstance<T>? find<T extends AndrossyController>([String? id]) {
-    return _Instances.find(id ?? "");
+    return _Instances.find<T>(id);
   }
 
   static T? findController<T extends AndrossyController>([String? id]) {
     return find<T>(id)?.controller;
   }
 
-  AndrossyInstance<T> get _i => init<T>(id);
+  AndrossyInstance<T> get _i => init<T>(global, id);
 
   void create(BuildContext context, T controller) {
     _i._context = context;
     _i._controller = controller;
+  }
+
+  void close([String? id]) {
+    if (!global) _Instances.remove<T>(id);
   }
 
   BuildContext get context {
@@ -59,14 +70,24 @@ class _Instances {
 
   static final Map<String, dynamic> _proxies = {};
 
-  static AndrossyInstance<T> create<T extends AndrossyController>(
-    String id,
-    AndrossyInstance<T> Function() instance,
-  ) {
-    return _proxies["$T<$id>"] ??= instance();
+  static String _key<T extends AndrossyController>([String? name]) {
+    return name != null && name.isNotEmpty ? "$T<$name>" : "$T";
   }
 
-  static AndrossyInstance<T>? find<T extends AndrossyController>(String id) {
-    return _proxies["$T<$id>"];
+  static AndrossyInstance<T> create<T extends AndrossyController>(
+    AndrossyInstance<T> Function() instance, [
+    String? name,
+  ]) {
+    return _proxies[_key<T>(name)] ??= instance();
+  }
+
+  static AndrossyInstance<T>? find<T extends AndrossyController>([
+    String? name,
+  ]) {
+    return _proxies[_key<T>(name)];
+  }
+
+  static void remove<T extends AndrossyController>([String? name]) {
+    _proxies.remove(_key<T>(name));
   }
 }

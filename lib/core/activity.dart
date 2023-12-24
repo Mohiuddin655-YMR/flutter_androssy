@@ -9,18 +9,25 @@ import 'instance.dart';
 
 abstract class AndrossyActivity<T extends AndrossyController>
     extends StatefulWidget {
-  final String identifier;
+  final bool globalInstance;
+  final String? identifier;
   final bool statusBar;
   final Androssy? androssy;
 
   const AndrossyActivity({
     super.key,
-    this.identifier = "activity",
+    this.globalInstance = false,
+    this.identifier,
     this.androssy,
     this.statusBar = true,
   });
 
-  AndrossyInstance<T> get instance => AndrossyInstance.init<T>(identifier);
+  AndrossyInstance<T> get instance {
+    return AndrossyInstance.init<T>(
+      globalInstance,
+      identifier,
+    );
+  }
 
   BuildContext get context => instance.context;
 
@@ -55,16 +62,10 @@ abstract class AndrossyActivity<T extends AndrossyController>
   State<AndrossyActivity<T>> createState() => AndrossyActivityState<T>();
 
   @protected
-  Widget build(
-    BuildContext context,
-    AndrossyInstance instance,
-    Widget child,
-  ) {
-    return child;
-  }
+  Widget build(BuildContext context, Widget child) => child;
 
   @protected
-  Widget onCreate(BuildContext context, AndrossyInstance instance);
+  Widget onCreate(BuildContext context);
 
   @protected
   AppBar? onCreateAppbar(BuildContext context) {
@@ -136,9 +137,7 @@ abstract class AndrossyActivity<T extends AndrossyController>
   }
 
   @protected
-  Widget? onCreateTitle(BuildContext context) {
-    return null;
-  }
+  Widget? onCreateTitle(BuildContext context) => null;
 
   @protected
   bool onCreateNotificationPredicate(ScrollNotification notification) {
@@ -146,63 +145,39 @@ abstract class AndrossyActivity<T extends AndrossyController>
   }
 
   @protected
-  Widget? onCreateLeading(BuildContext context) {
-    return null;
-  }
+  Widget? onCreateLeading(BuildContext context) => null;
 
   @protected
-  List<Widget>? onCreateActions(BuildContext context) {
-    return null;
-  }
+  List<Widget>? onCreateActions(BuildContext context) => null;
 
   @protected
-  PreferredSizeWidget? onCreateToolbarBottom(BuildContext context) {
-    return null;
-  }
+  PreferredSizeWidget? onCreateToolbarBottom(BuildContext context) => null;
 
-  Widget? onCreateToolbarFlexibleSpace(BuildContext context) {
-    return null;
-  }
+  Widget? onCreateToolbarFlexibleSpace(BuildContext context) => null;
 
   @protected
-  Widget? onCreateBottomSheet(BuildContext context) {
-    return null;
-  }
+  Widget? onCreateBottomSheet(BuildContext context) => null;
 
   @protected
-  Widget? onCreateBottomNavigationBar(BuildContext context) {
-    return null;
-  }
+  Widget? onCreateBottomNavigationBar(BuildContext context) => null;
 
   @protected
-  Widget? onCreateDrawer(BuildContext context) {
-    return null;
-  }
+  Widget? onCreateDrawer(BuildContext context) => null;
 
   @protected
-  Widget? onCreateEndDrawer(BuildContext context) {
-    return null;
-  }
+  Widget? onCreateEndDrawer(BuildContext context) => null;
 
   @protected
-  Widget? onCreateFloatingButton(BuildContext context) {
-    return null;
-  }
+  Widget? onCreateFloatingButton(BuildContext context) => null;
 
   @protected
-  List<Widget>? onCreatePersistentFooterButtons(BuildContext context) {
-    return null;
-  }
+  List<Widget>? onCreatePersistentFooterButtons(BuildContext context) => null;
 
   @protected
-  void onDrawerChanged(bool isOpened) {
-    if (!isOpened) controller.onNotify();
-  }
+  void onDrawerChanged(bool isOpened) => controller.onNotify();
 
   @protected
-  void onEndDrawerChanged(bool isOpened) {
-    if (!isOpened) controller.onNotify();
-  }
+  void onEndDrawerChanged(bool isOpened) => controller.onNotify();
 
   @protected
   @mustCallSuper
@@ -218,7 +193,7 @@ abstract class AndrossyActivity<T extends AndrossyController>
 
   @protected
   @mustCallSuper
-  void onPause(BuildContext context) => controller.onPause(context);
+  void onPaused(BuildContext context) => controller.onPaused(context);
 
   @protected
   @mustCallSuper
@@ -226,7 +201,7 @@ abstract class AndrossyActivity<T extends AndrossyController>
 
   @protected
   @mustCallSuper
-  void onResume(BuildContext context) => controller.onResume(context);
+  void onResumed(BuildContext context) => controller.onResumed(context);
 
   @protected
   @mustCallSuper
@@ -238,11 +213,11 @@ abstract class AndrossyActivity<T extends AndrossyController>
 
   @protected
   @mustCallSuper
-  Future<bool> onBackPressed() => controller.onBackPressed();
+  void onDetached(BuildContext context) => controller.onDetached(context);
 
   @protected
   @mustCallSuper
-  void onDetached(BuildContext context) => controller.onDetached(context);
+  void onHidden(BuildContext context) => controller.onHidden(context);
 
   @protected
   @mustCallSuper
@@ -251,11 +226,10 @@ abstract class AndrossyActivity<T extends AndrossyController>
 
 class AndrossyActivityState<T extends AndrossyController>
     extends State<AndrossyActivity<T>> with WidgetsBindingObserver {
-  late T controller;
+  late T controller = widget.init(context);
 
   @override
   void initState() {
-    controller = widget.init(context);
     controller.setNotifier(setState);
     widget.instance.create(context, controller);
     widget.onInit(context);
@@ -269,13 +243,31 @@ class AndrossyActivityState<T extends AndrossyController>
   }
 
   @override
+  void didChangeDependencies() {
+    controller.setNotifier(setState);
+    widget.instance.create(context, controller);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void reassemble() {
+    controller.setNotifier(setState);
+    widget.instance.create(context, controller);
+    super.reassemble();
+  }
+
+  @override
   void didUpdateWidget(covariant AndrossyActivity<T> oldWidget) {
+    controller.setNotifier(setState);
+    widget.instance.create(context, controller);
     widget.onRestart(context);
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void activate() {
+    controller.setNotifier(setState);
+    widget.instance.create(context, controller);
     widget.onStart(context);
     super.activate();
   }
@@ -283,6 +275,7 @@ class AndrossyActivityState<T extends AndrossyController>
   @override
   void deactivate() {
     widget.onStop(context);
+    widget.instance.close(widget.identifier);
     super.deactivate();
   }
 
@@ -296,17 +289,20 @@ class AndrossyActivityState<T extends AndrossyController>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
-      case AppLifecycleState.resumed:
-        widget.onResume(context);
-        break;
       case AppLifecycleState.inactive:
-        widget.onStop(context);
-        break;
-      case AppLifecycleState.paused:
-        widget.onPause(context);
+        widget.onStart(context);
         break;
       case AppLifecycleState.detached:
         widget.onDetached(context);
+        break;
+      case AppLifecycleState.hidden:
+        widget.onHidden(context);
+        break;
+      case AppLifecycleState.paused:
+        widget.onPaused(context);
+        break;
+      case AppLifecycleState.resumed:
+        widget.onResumed(context);
         break;
       default:
     }
@@ -317,48 +313,44 @@ class AndrossyActivityState<T extends AndrossyController>
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     var config = widget.config(context);
-    return WillPopScope(
-      onWillPop: widget.onBackPressed,
-      child: AndrossyBuilder(
-        builder: (context, value) {
-          widget.instance.androssy = value;
-          return widget.build(
-            context,
-            widget.instance,
-            Scaffold(
-              appBar: widget.onCreateAppbar(context),
-              backgroundColor:
-                  config.backgroundColor ?? theme.scaffoldBackgroundColor,
-              body: widget.onCreate(context, widget.instance),
-              bottomNavigationBar: widget.onCreateBottomNavigationBar(context),
-              bottomSheet: widget.onCreateBottomSheet(context),
-              drawer: widget.onCreateDrawer(context),
-              drawerEdgeDragWidth: config.drawerEdgeDragWidth,
-              drawerEnableOpenDragGesture: config.drawerEnableOpenDragGesture,
-              drawerDragStartBehavior: config.drawerDragStartBehavior,
-              drawerScrimColor:
-                  config.drawerScrimColor ?? theme.drawerTheme.scrimColor,
-              endDrawer: widget.onCreateEndDrawer(context),
-              endDrawerEnableOpenDragGesture:
-                  config.endDrawerEnableOpenDragGesture,
-              extendBody: config.extendBody,
-              extendBodyBehindAppBar: config.extendBodyBehindAppBar,
-              floatingActionButton: widget.onCreateFloatingButton(context),
-              floatingActionButtonAnimator: config.floatingActionButtonAnimator,
-              floatingActionButtonLocation: config.floatingActionButtonLocation,
-              key: widget.key,
-              primary: config.primary,
-              persistentFooterAlignment: config.persistentFooterAlignment,
-              persistentFooterButtons:
-                  widget.onCreatePersistentFooterButtons(context),
-              restorationId: config.restorationId,
-              resizeToAvoidBottomInset: config.resizeToAvoidBottomInset,
-              onDrawerChanged: widget.onDrawerChanged,
-              onEndDrawerChanged: widget.onEndDrawerChanged,
-            ),
-          );
-        },
-      ),
+    return AndrossyBuilder(
+      builder: (context, value) {
+        widget.instance.androssy = value;
+        return widget.build(
+          context,
+          Scaffold(
+            appBar: widget.onCreateAppbar(context),
+            backgroundColor:
+                config.backgroundColor ?? theme.scaffoldBackgroundColor,
+            body: widget.onCreate(context),
+            bottomNavigationBar: widget.onCreateBottomNavigationBar(context),
+            bottomSheet: widget.onCreateBottomSheet(context),
+            drawer: widget.onCreateDrawer(context),
+            drawerEdgeDragWidth: config.drawerEdgeDragWidth,
+            drawerEnableOpenDragGesture: config.drawerEnableOpenDragGesture,
+            drawerDragStartBehavior: config.drawerDragStartBehavior,
+            drawerScrimColor:
+                config.drawerScrimColor ?? theme.drawerTheme.scrimColor,
+            endDrawer: widget.onCreateEndDrawer(context),
+            endDrawerEnableOpenDragGesture:
+                config.endDrawerEnableOpenDragGesture,
+            extendBody: config.extendBody,
+            extendBodyBehindAppBar: config.extendBodyBehindAppBar,
+            floatingActionButton: widget.onCreateFloatingButton(context),
+            floatingActionButtonAnimator: config.floatingActionButtonAnimator,
+            floatingActionButtonLocation: config.floatingActionButtonLocation,
+            key: widget.key,
+            primary: config.primary,
+            persistentFooterAlignment: config.persistentFooterAlignment,
+            persistentFooterButtons:
+                widget.onCreatePersistentFooterButtons(context),
+            restorationId: config.restorationId,
+            resizeToAvoidBottomInset: config.resizeToAvoidBottomInset,
+            onDrawerChanged: widget.onDrawerChanged,
+            onEndDrawerChanged: widget.onEndDrawerChanged,
+          ),
+        );
+      },
     );
   }
 }
