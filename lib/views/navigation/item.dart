@@ -5,7 +5,7 @@ class NavigationItem extends StatelessWidget {
   final bool isVisible;
   final dynamic icon;
   final ValueState<dynamic>? iconState;
-  final double iconSize;
+  final double? iconSize;
   final ValueState<double>? iconSizeState;
   final Color? iconTint;
   final ValueState<Color>? iconTintState;
@@ -44,7 +44,7 @@ class NavigationItem extends StatelessWidget {
     this.isVisible = true,
     this.icon,
     this.iconState,
-    this.iconSize = 24,
+    this.iconSize,
     this.iconSizeState,
     this.iconTint,
     this.iconTintState,
@@ -82,7 +82,7 @@ class NavigationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var ic = iconState?.detect(isSelected) ?? icon;
     var text = titleState?.detect(isSelected) ?? title ?? "";
-    var spacer = spaceBetweenState?.detect(isSelected) ?? spaceBetween ?? 2;
+    var spacer = spaceBetweenState?.detect(isSelected) ?? spaceBetween;
     return LinearLayout(
       controller: itemController,
       widthMax: maxWidth,

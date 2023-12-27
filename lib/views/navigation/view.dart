@@ -14,7 +14,7 @@ part 'type.dart';
 part 'typedefs.dart';
 
 class NavigationView extends YMRView<NavigationViewController> {
-  final int? currentIndex;
+  final int currentIndex;
   final double? iconSize;
   final ValueState<double>? iconSizeState;
   final Color? iconTint;
@@ -27,13 +27,13 @@ class NavigationView extends YMRView<NavigationViewController> {
   final ValueState<double>? titleSizeState;
   final TextStyle? titleStyle;
   final ValueState<TextStyle>? titleStyleState;
-  final double? spaceBetween;
+  final double spaceBetween;
   final ValueState<double>? spaceBetweenState;
   final Color? itemBackground;
   final ValueState<Color>? itemBackgroundState;
   final double? itemMaxWidth;
   final double? itemMaxHeight;
-  final double? itemMinWidth;
+  final double itemMinWidth;
   final double? itemMinHeight;
   final double? itemMargin;
   final double? itemMarginX;
@@ -166,7 +166,7 @@ class NavigationView extends YMRView<NavigationViewController> {
     super.shadowBottom,
 
     /// CHILD PROPERTIES
-    this.currentIndex,
+    this.currentIndex = 0,
     this.iconSize,
     this.iconSizeState,
     this.iconTint,
@@ -179,13 +179,13 @@ class NavigationView extends YMRView<NavigationViewController> {
     this.titleSizeState,
     this.titleStyle,
     this.titleStyleState,
-    this.spaceBetween,
+    this.spaceBetween = 2,
     this.spaceBetweenState,
     this.itemBackground,
     this.itemBackgroundState,
     this.itemMaxWidth,
     this.itemMaxHeight,
-    this.itemMinWidth,
+    this.itemMinWidth = 80,
     this.itemMinHeight,
     this.itemMargin,
     this.itemMarginX,

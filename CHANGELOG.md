@@ -1,3 +1,5 @@
+## 0.3.15
+
 ## 0.3.14
 
 * Navigation view update and Add icon theme inside the Icon view

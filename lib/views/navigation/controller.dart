@@ -7,9 +7,9 @@ class NavigationViewController extends ViewController {
     onNotifyWithCallback(() => currentIndex = value);
   }
 
-  double iconSize = 24;
+  double? iconSize;
 
-  void setIconSize(double value) {
+  void setIconSize(double? value) {
     onNotifyWithCallback(() => iconSize = value);
   }
 
@@ -55,9 +55,9 @@ class NavigationViewController extends ViewController {
     onNotifyWithCallback(() => titleColorState = value);
   }
 
-  double titleSize = 12;
+  double? titleSize;
 
-  void setTitleSize(double value) {
+  void setTitleSize(double? value) {
     onNotifyWithCallback(() => titleSize = value);
   }
 
@@ -277,8 +277,8 @@ class NavigationViewController extends ViewController {
 
   NavigationViewController fromNavigationView(NavigationView view) {
     super.fromView(view);
-    currentIndex = view.currentIndex ?? 0;
-    iconSize = view.iconSize ?? 24;
+    currentIndex = view.currentIndex;
+    iconSize = view.iconSize;
     iconSizeState = view.iconSizeState;
     iconTint = view.iconTint;
     iconTintState = view.iconTintState;
@@ -286,17 +286,17 @@ class NavigationViewController extends ViewController {
     iconThemeState = view.iconThemeState;
     titleColor = view.titleColor;
     titleColorState = view.titleColorState;
-    titleSize = view.titleSize ?? 12;
+    titleSize = view.titleSize;
     titleSizeState = view.titleSizeState;
     titleStyle = view.titleStyle;
     titleStyleState = view.titleStyleState;
-    spaceBetween = view.spaceBetween ?? 2;
+    spaceBetween = view.spaceBetween;
     spaceBetweenState = view.spaceBetweenState;
     itemBackground = view.itemBackground;
     itemBackgroundState = view.itemBackgroundState;
     itemMaxWidth = view.itemMaxWidth;
     itemMaxHeight = view.itemMaxHeight;
-    itemMinWidth = view.itemMinWidth ?? 80;
+    itemMinWidth = view.itemMinWidth;
     itemMinHeight = view.itemMinHeight;
     itemMargin = view.itemMargin;
     itemMarginX = view.itemMarginX;
@@ -313,11 +313,11 @@ class NavigationViewController extends ViewController {
 
   @override
   void onNotify([int index = 0]) {
-    super.onNotifyWithCallback(() {
-      if (currentIndex != index) {
+    if (currentIndex != index) {
+      super.onNotifyWithCallback(() {
         currentIndex = index;
         if (onIndexChanged != null) onIndexChanged?.call(currentIndex);
-      }
-    });
+      });
+    }
   }
 }
