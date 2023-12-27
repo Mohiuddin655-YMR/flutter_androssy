@@ -1,3 +1,7 @@
+## 0.3.14
+
+* Navigation view update and Add icon theme inside the Icon view
+
 ## 0.3.13
 
 * Androssy instance updates

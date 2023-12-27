@@ -1,6 +1,12 @@
 part of 'view.dart';
 
 class IconViewController extends ViewController {
+  bool iconSizeAsFixed = true;
+
+  void setIconSizeAsFixed(bool value) {
+    onNotifyWithCallback(() => iconSizeAsFixed = value);
+  }
+
   BoxFit fit = BoxFit.contain;
 
   void setIconFit(BoxFit value) {
@@ -21,11 +27,11 @@ class IconViewController extends ViewController {
     onNotifyWithCallback(() => iconState = value);
   }
 
-  double _size = 24;
+  double? _size;
 
-  set size(double value) => _size = value;
+  set size(double? value) => _size = value;
 
-  void setIconSize(double value) {
+  void setIconSize(double? value) {
     onNotifyWithCallback(() => size = value);
   }
 
@@ -55,6 +61,20 @@ class IconViewController extends ViewController {
     onNotifyWithCallback(() => tintMode = value);
   }
 
+  IconThemeData? _iconTheme;
+
+  set iconTheme(IconThemeData? value) => _iconTheme = value;
+
+  void setIconTheme(IconThemeData? value) {
+    onNotifyWithCallback(() => iconTheme = value);
+  }
+
+  ValueState<IconThemeData>? iconThemeState;
+
+  void setIconThemeState(ValueState<IconThemeData>? value) {
+    onNotifyWithCallback(() => iconThemeState = value);
+  }
+
   IconViewController fromIconView(IconView view) {
     super.fromView(view);
     fit = view.fit;
@@ -64,14 +84,34 @@ class IconViewController extends ViewController {
     tint = view.tint;
     tintState = view.tintState;
     tintMode = view.tintMode;
+    iconSizeAsFixed = view.iconSizeAsFixed;
+    iconTheme = view.iconTheme;
+    iconThemeState = view.iconThemeState;
     return this;
   }
 
   dynamic get icon => iconState?.fromController(this) ?? _icon;
 
-  double get size => iconSizeState?.fromController(this) ?? _size;
+  IconThemeData? get iconTheme {
+    return iconThemeState?.fromController(this) ?? _iconTheme;
+  }
 
-  double get iconSize => size - (paddingAll / 2);
+  double get size {
+    return iconSizeState?.fromController(this) ??
+        _size ??
+        iconTheme?.size ??
+        24;
+  }
 
-  Color? get tint => tintState?.fromController(this) ?? _tint;
+  double get iconSize {
+    if (iconSizeAsFixed) {
+      return size;
+    } else {
+      return size - (paddingAll / 2);
+    }
+  }
+
+  Color? get tint {
+    return tintState?.fromController(this) ?? _tint ?? iconTheme?.color;
+  }
 }

@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_androssy/core.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'raw.dart';
+
 part 'type.dart';
 
 class IconView<T extends IconViewController> extends YMRView<T> {
   final BoxFit fit;
   final dynamic icon;
   final ValueState<dynamic>? iconState;
-  final double size;
+  final double? size;
   final ValueState<double>? sizeState;
   final Color? tint;
   final ValueState<Color>? tintState;
   final BlendMode tintMode;
+  final bool iconSizeAsFixed;
+  final IconThemeData? iconTheme;
+  final ValueState<IconThemeData>? iconThemeState;
 
   const IconView({
     /// ROOT PROPERTIES
@@ -135,11 +141,14 @@ class IconView<T extends IconViewController> extends YMRView<T> {
     this.icon,
     this.fit = BoxFit.contain,
     this.iconState,
-    this.size = 24,
+    this.size,
     this.sizeState,
     this.tint,
     this.tintState,
     this.tintMode = BlendMode.srcIn,
+    this.iconSizeAsFixed = true,
+    this.iconTheme,
+    this.iconThemeState,
   }) : super(width: size, height: size);
 
   @override

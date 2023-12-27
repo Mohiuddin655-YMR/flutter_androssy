@@ -39,25 +39,27 @@ abstract class AndrossyActivity<T extends AndrossyController>
   T init(BuildContext context);
 
   @protected
-  AndrossyScreenConfig config(BuildContext context) =>
-      const AndrossyScreenConfig();
-
-  @protected
-  AndrossyAppbarConfig appbarConfig(BuildContext context) =>
-      const AndrossyAppbarConfig();
-
-  StatusBarConfig statusBarConfig(
-    BuildContext context,
-    StatusBarConfig config,
-  ) {
-    return config;
+  ScaffoldProperties properties(BuildContext context) {
+    return const ScaffoldProperties();
   }
 
-  NavigationBarConfig navigationBarConfig(
+  @protected
+  AppbarProperties appbarProperties(BuildContext context) {
+    return const AppbarProperties();
+  }
+
+  StatusBarProperties statusBarProperties(
     BuildContext context,
-    NavigationBarConfig config,
+    StatusBarProperties properties,
   ) {
-    return config;
+    return properties;
+  }
+
+  NavigationBarProperties navigationBarProperties(
+    BuildContext context,
+    NavigationBarProperties properties,
+  ) {
+    return properties;
   }
 
   @protected
@@ -73,22 +75,22 @@ abstract class AndrossyActivity<T extends AndrossyController>
   @protected
   AppBar? onCreateAppbar(BuildContext context) {
     var t = Theme.of(context).appBarTheme;
-    var s = appbarConfig(context);
+    var s = appbarProperties(context);
     var it = s.iconTheme ?? t.iconTheme;
     var ait = s.actionsIconTheme ?? t.actionsIconTheme;
     var sos = s.systemOverlayStyle ?? t.systemOverlayStyle;
-    var mSC = statusBarConfig(
+    var mSC = statusBarProperties(
       context,
-      StatusBarConfig(
+      StatusBarProperties(
         contrastEnforced: sos?.systemStatusBarContrastEnforced,
         color: sos?.statusBarColor,
         brightness: sos?.statusBarBrightness,
         iconBrightness: sos?.statusBarIconBrightness,
       ),
     );
-    var mNC = navigationBarConfig(
+    var mNC = navigationBarProperties(
       context,
-      NavigationBarConfig(
+      NavigationBarProperties(
         contrastEnforced: sos?.systemNavigationBarContrastEnforced,
         color: sos?.systemNavigationBarColor,
         dividerColor: sos?.systemNavigationBarDividerColor,
@@ -100,7 +102,7 @@ abstract class AndrossyActivity<T extends AndrossyController>
       actions: onCreateActions(context),
       actionsIconTheme: ait ?? it,
       automaticallyImplyLeading: s.automaticallyImplyLeading,
-      backgroundColor: mSC.color ?? s.backgroundColor ?? t.backgroundColor,
+      backgroundColor: s.backgroundColor ?? t.backgroundColor,
       bottom: onCreateToolbarBottom(context),
       bottomOpacity: s.bottomOpacity,
       centerTitle: s.titleCenter ?? t.centerTitle,
@@ -130,7 +132,7 @@ abstract class AndrossyActivity<T extends AndrossyController>
         systemNavigationBarIconBrightness: mNC.brightness,
         systemNavigationBarContrastEnforced: mNC.contrastEnforced,
       ),
-      title: onCreateTitle(context),
+      title: onCreateTitle(context, s),
       titleSpacing: s.titleSpacing ?? t.titleSpacing,
       titleTextStyle: s.titleTextStyle ?? t.titleTextStyle,
       toolbarHeight: s.toolbarHeight ?? t.toolbarHeight,
@@ -140,7 +142,16 @@ abstract class AndrossyActivity<T extends AndrossyController>
   }
 
   @protected
-  Widget? onCreateTitle(BuildContext context) => null;
+  Widget? onCreateTitle(BuildContext context, AppbarProperties properties) {
+    final title = properties.title;
+    if (title != null && title.isNotEmpty) {
+      return Text(
+        title,
+        style: properties.titleTextStyle,
+      );
+    }
+    return null;
+  }
 
   @protected
   bool onCreateNotificationPredicate(ScrollNotification notification) {
@@ -328,7 +339,7 @@ class AndrossyActivityState<T extends AndrossyController>
   Widget build(BuildContext context) {
     _log("build (ACTIVITY)");
     var theme = Theme.of(context);
-    var config = widget.config(context);
+    var s = widget.properties(context);
     return AndrossyBuilder(
       builder: (context, value) {
         widget.instance.androssy = value;
@@ -336,32 +347,30 @@ class AndrossyActivityState<T extends AndrossyController>
           context,
           Scaffold(
             appBar: widget.onCreateAppbar(context),
-            backgroundColor:
-                config.backgroundColor ?? theme.scaffoldBackgroundColor,
+            backgroundColor: s.backgroundColor ?? theme.scaffoldBackgroundColor,
             body: widget.onCreate(context),
             bottomNavigationBar: widget.onCreateBottomNavigationBar(context),
             bottomSheet: widget.onCreateBottomSheet(context),
             drawer: widget.onCreateDrawer(context),
-            drawerEdgeDragWidth: config.drawerEdgeDragWidth,
-            drawerEnableOpenDragGesture: config.drawerEnableOpenDragGesture,
-            drawerDragStartBehavior: config.drawerDragStartBehavior,
+            drawerEdgeDragWidth: s.drawerEdgeDragWidth,
+            drawerEnableOpenDragGesture: s.drawerEnableOpenDragGesture,
+            drawerDragStartBehavior: s.drawerDragStartBehavior,
             drawerScrimColor:
-                config.drawerScrimColor ?? theme.drawerTheme.scrimColor,
+                s.drawerScrimColor ?? theme.drawerTheme.scrimColor,
             endDrawer: widget.onCreateEndDrawer(context),
-            endDrawerEnableOpenDragGesture:
-                config.endDrawerEnableOpenDragGesture,
-            extendBody: config.extendBody,
-            extendBodyBehindAppBar: config.extendBodyBehindAppBar,
+            endDrawerEnableOpenDragGesture: s.endDrawerEnableOpenDragGesture,
+            extendBody: s.extendBody,
+            extendBodyBehindAppBar: s.extendBodyBehindAppBar,
             floatingActionButton: widget.onCreateFloatingButton(context),
-            floatingActionButtonAnimator: config.floatingActionButtonAnimator,
-            floatingActionButtonLocation: config.floatingActionButtonLocation,
+            floatingActionButtonAnimator: s.floatingActionButtonAnimator,
+            floatingActionButtonLocation: s.floatingActionButtonLocation,
             key: widget.key,
-            primary: config.primary,
-            persistentFooterAlignment: config.persistentFooterAlignment,
+            primary: s.primary,
+            persistentFooterAlignment: s.persistentFooterAlignment,
             persistentFooterButtons:
                 widget.onCreatePersistentFooterButtons(context),
-            restorationId: config.restorationId,
-            resizeToAvoidBottomInset: config.resizeToAvoidBottomInset,
+            restorationId: s.restorationId,
+            resizeToAvoidBottomInset: s.resizeToAvoidBottomInset,
             onDrawerChanged: widget.onDrawerChanged,
             onEndDrawerChanged: widget.onEndDrawerChanged,
           ),
@@ -371,40 +380,40 @@ class AndrossyActivityState<T extends AndrossyController>
   }
 }
 
-class NavigationBarConfig {
+class NavigationBarProperties {
   final bool? contrastEnforced;
   final Color? color;
   final Color? dividerColor;
   final Brightness? brightness;
 
-  const NavigationBarConfig({
+  const NavigationBarProperties({
     this.contrastEnforced,
     this.color,
     Color? dividerColor,
     this.brightness,
   }) : dividerColor = dividerColor ?? color;
 
-  factory NavigationBarConfig.light([Color color = Colors.transparent]) {
-    return NavigationBarConfig(
+  factory NavigationBarProperties.light([Color color = Colors.transparent]) {
+    return NavigationBarProperties(
       color: color,
       brightness: Brightness.dark,
     );
   }
 
-  factory NavigationBarConfig.dark([Color color = Colors.black]) {
-    return NavigationBarConfig(
+  factory NavigationBarProperties.dark([Color color = Colors.black]) {
+    return NavigationBarProperties(
       color: color,
       brightness: Brightness.light,
     );
   }
 
-  NavigationBarConfig copyWith({
+  NavigationBarProperties copyWith({
     bool? contrastEnforced,
     Color? color,
     Color? dividerColor,
     Brightness? brightness,
   }) {
-    return NavigationBarConfig(
+    return NavigationBarProperties(
       contrastEnforced: contrastEnforced ?? this.contrastEnforced,
       color: color ?? this.color,
       dividerColor: dividerColor ?? this.dividerColor,
@@ -413,7 +422,7 @@ class NavigationBarConfig {
   }
 }
 
-class AndrossyScreenConfig {
+class ScaffoldProperties {
   final Color? backgroundColor;
   final double? drawerEdgeDragWidth;
   final bool drawerEnableOpenDragGesture;
@@ -429,7 +438,7 @@ class AndrossyScreenConfig {
   final String? restorationId;
   final bool? resizeToAvoidBottomInset;
 
-  const AndrossyScreenConfig({
+  const ScaffoldProperties({
     this.backgroundColor,
     this.drawerEdgeDragWidth,
     this.drawerEnableOpenDragGesture = true,
@@ -446,7 +455,7 @@ class AndrossyScreenConfig {
     this.resizeToAvoidBottomInset,
   });
 
-  AndrossyScreenConfig copyWith({
+  ScaffoldProperties copyWith({
     Color? backgroundColor,
     double? drawerEdgeDragWidth,
     bool? drawerEnableOpenDragGesture,
@@ -462,7 +471,7 @@ class AndrossyScreenConfig {
     String? restorationId,
     bool? resizeToAvoidBottomInset,
   }) {
-    return AndrossyScreenConfig(
+    return ScaffoldProperties(
       backgroundColor: backgroundColor ?? this.backgroundColor,
       drawerEdgeDragWidth: drawerEdgeDragWidth ?? this.drawerEdgeDragWidth,
       drawerEnableOpenDragGesture:
@@ -489,7 +498,7 @@ class AndrossyScreenConfig {
   }
 }
 
-class AndrossyAppbarConfig {
+class AppbarProperties {
   final Key? appbarKey;
   final IconThemeData? actionsIconTheme;
   final bool automaticallyImplyLeading;
@@ -508,6 +517,7 @@ class AndrossyAppbarConfig {
   final ShapeBorder? shape;
   final Color? surfaceTintColor;
   final SystemUiOverlayStyle? systemOverlayStyle;
+  final String? title;
   final bool? titleCenter;
   final double? titleSpacing;
   final TextStyle? titleTextStyle;
@@ -515,7 +525,7 @@ class AndrossyAppbarConfig {
   final double toolbarOpacity;
   final TextStyle? toolbarTextStyle;
 
-  const AndrossyAppbarConfig({
+  const AppbarProperties({
     this.appbarKey,
     this.automaticallyImplyLeading = true,
     this.backgroundColor,
@@ -531,6 +541,7 @@ class AndrossyAppbarConfig {
     this.shadowColor,
     this.shape,
     this.surfaceTintColor,
+    this.title,
     this.titleCenter,
     this.titleSpacing,
     this.titleTextStyle,
@@ -542,7 +553,7 @@ class AndrossyAppbarConfig {
     this.systemOverlayStyle,
   });
 
-  AndrossyAppbarConfig copyWith({
+  AppbarProperties copyWith({
     Key? appbarKey,
     IconThemeData? actionsIconTheme,
     bool? automaticallyImplyLeading,
@@ -561,6 +572,7 @@ class AndrossyAppbarConfig {
     ShapeBorder? shape,
     Color? surfaceTintColor,
     SystemUiOverlayStyle? systemOverlayStyle,
+    String? title,
     bool? titleCenter,
     double? titleSpacing,
     TextStyle? titleTextStyle,
@@ -568,7 +580,7 @@ class AndrossyAppbarConfig {
     double? toolbarOpacity,
     TextStyle? toolbarTextStyle,
   }) {
-    return AndrossyAppbarConfig(
+    return AppbarProperties(
       appbarKey: appbarKey ?? this.appbarKey,
       actionsIconTheme: actionsIconTheme ?? this.actionsIconTheme,
       automaticallyImplyLeading:
@@ -591,6 +603,7 @@ class AndrossyAppbarConfig {
       shape: shape ?? this.shape,
       surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor,
       systemOverlayStyle: systemOverlayStyle ?? this.systemOverlayStyle,
+      title: title ?? this.title,
       titleCenter: titleCenter ?? this.titleCenter,
       titleSpacing: titleSpacing ?? this.titleSpacing,
       titleTextStyle: titleTextStyle ?? this.titleTextStyle,
@@ -601,40 +614,40 @@ class AndrossyAppbarConfig {
   }
 }
 
-class StatusBarConfig {
+class StatusBarProperties {
   final bool? contrastEnforced;
   final Color? color;
   final Brightness? brightness;
   final Brightness? iconBrightness;
 
-  const StatusBarConfig({
+  const StatusBarProperties({
     this.contrastEnforced,
     this.color,
     this.brightness,
     Brightness? iconBrightness,
   }) : iconBrightness = iconBrightness ?? brightness;
 
-  factory StatusBarConfig.light([Color color = Colors.transparent]) {
-    return StatusBarConfig(
+  factory StatusBarProperties.light([Color color = Colors.transparent]) {
+    return StatusBarProperties(
       color: color,
       brightness: Brightness.dark,
     );
   }
 
-  factory StatusBarConfig.dark([Color color = Colors.transparent]) {
-    return StatusBarConfig(
+  factory StatusBarProperties.dark([Color color = Colors.transparent]) {
+    return StatusBarProperties(
       color: color,
       brightness: Brightness.light,
     );
   }
 
-  StatusBarConfig copyWith({
+  StatusBarProperties copyWith({
     bool? contrastEnforced,
     Color? color,
     Brightness? brightness,
     Brightness? iconBrightness,
   }) {
-    return StatusBarConfig(
+    return StatusBarProperties(
       contrastEnforced: contrastEnforced ?? this.contrastEnforced,
       color: color ?? this.color,
       brightness: brightness ?? this.brightness,
