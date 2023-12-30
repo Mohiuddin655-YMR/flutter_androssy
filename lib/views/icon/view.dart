@@ -146,7 +146,7 @@ class IconView<T extends IconViewController> extends YMRView<T> {
     this.tint,
     this.tintState,
     this.tintMode = BlendMode.srcIn,
-    this.iconSizeAsFixed = true,
+    this.iconSizeAsFixed = false,
     this.iconTheme,
     this.iconThemeState,
   }) : super(width: size, height: size);

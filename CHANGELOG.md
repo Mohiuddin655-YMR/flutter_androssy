@@ -1,3 +1,7 @@
+## 0.3.16
+
+* Text view text style state bug fixed
+
 ## 0.3.15
 
 ## 0.3.14

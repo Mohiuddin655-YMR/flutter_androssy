@@ -520,6 +520,7 @@ class TextViewController extends ViewController {
     textSizeState = view.textSizeState;
     textSpans = view.textSpans;
     textStyle = view.textStyle;
+    textStyleState = view.textStyleState;
     textWidthBasis = view.textWidthBasis;
     textExtras = textExtrasFromSpans;
 

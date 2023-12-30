@@ -1,7 +1,7 @@
 part of 'view.dart';
 
 class IconViewController extends ViewController {
-  bool iconSizeAsFixed = true;
+  bool iconSizeAsFixed = false;
 
   void setIconSizeAsFixed(bool value) {
     onNotifyWithCallback(() => iconSizeAsFixed = value);

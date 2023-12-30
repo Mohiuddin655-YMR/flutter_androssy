@@ -269,7 +269,7 @@ class NavigationView extends YMRView<NavigationViewController> {
     BuildContext context,
     NavigationViewController controller,
   ) {
-    var child = Flex(
+    Widget child = Flex(
       direction: controller.navDirection,
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: controller.navCrossDirection,
@@ -277,7 +277,7 @@ class NavigationView extends YMRView<NavigationViewController> {
       children: List.generate(controller.length, (index) {
         var item = controller.items[index];
         var selected = index == controller.currentIndex;
-        var child = NavigationItem(
+        Widget child = NavigationItem(
           key: item.key,
           isSelected: item.isSelected ? true : selected,
           isVisible: item.isVisible,
@@ -320,21 +320,20 @@ class NavigationView extends YMRView<NavigationViewController> {
             controller.onNotify(index);
           },
         );
-        if (controller.navigationType == NavigationType.fixed) {
+        if (controller.navigationType.isFixed) {
           return Expanded(child: child);
         } else {
           return child;
         }
       }),
     );
-    switch (controller.navigationType) {
-      case NavigationType.scrollable:
-        return SingleChildScrollView(
-          scrollDirection: controller.navDirection,
-          child: child,
-        );
-      default:
-        return child;
+
+    if (controller.navigationType.isScrollable) {
+      return SingleChildScrollView(
+        scrollDirection: controller.navDirection,
+        child: child,
+      );
     }
+    return child;
   }
 }
