@@ -348,10 +348,10 @@ class TextViewController extends ViewController {
 
   OnViewClickListener? _onPrefixClick;
 
-  set onPrefixClick(OnViewClickListener? listener) => _onPrefixClick = listener;
+  set onPrefixClick(OnViewClickListener? value) => _onPrefixClick = value;
 
   void setOnPrefixClickListener(OnViewClickListener? listener) {
-    onNotifyWithCallback(() => onPrefixClick = listener);
+    onPrefixClick = listener;
   }
 
   /// SUFFIX TEXT PROPERTIES
@@ -475,10 +475,10 @@ class TextViewController extends ViewController {
 
   OnViewClickListener? _onSuffixClick;
 
-  set onSuffixClick(OnViewClickListener? listener) => _onSuffixClick = listener;
+  set onSuffixClick(OnViewClickListener? value) => _onSuffixClick = value;
 
-  void setOnSuffixClickListener(OnViewClickListener? value) {
-    onNotifyWithCallback(() => onSuffixClick = value);
+  void setOnSuffixClickListener(OnViewClickListener? listener) {
+    onSuffixClick = listener;
   }
 
   TextViewController fromTextView(TextView view) {

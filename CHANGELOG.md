@@ -1,3 +1,7 @@
+## 0.3.17
+
+* Text view secondary callback and setting view some properties modified
+
 ## 0.3.16
 
 * Text view text style state bug fixed

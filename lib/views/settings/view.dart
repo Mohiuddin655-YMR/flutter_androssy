@@ -1,65 +1,600 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_androssy/extensions/theme.dart';
 
+import '../../extensions.dart';
 import '../../widgets/settings_tile.dart';
 import '../icon/view.dart';
 import '../switch/view.dart';
 import '../text/view.dart';
 import '../view/view.dart';
 
-enum SettingsViewType {
-  arrow,
-  checkmark,
-  switcher,
-  none;
+part 'arrow.dart';
 
-  bool get isArrow => this == SettingsViewType.arrow;
+part 'arrow_config.dart';
 
-  bool get isCheckmark => this == SettingsViewType.checkmark;
+part 'checkmark.dart';
 
-  bool get isSwitcher => this == SettingsViewType.switcher;
+part 'checkmark_config.dart';
 
-  bool get isNone => this == SettingsViewType.none;
-}
+part 'controller.dart';
+
+part 'switch.dart';
+
+part 'tail.dart';
+
+part 'type.dart';
 
 class SettingsView extends YMRView<SettingsViewController> {
   final dynamic icon;
+  final double? iconSize;
+  final Color? iconTint;
   final String title;
   final String? summary;
   final ValueState<String>? summaryState;
   final SettingsViewType type;
-  final SwitchButtonConfig switchConfig;
+  final ArrowConfig arrowConfig;
+  final CheckmarkConfig checkmarkConfig;
+  final SwitchConfig switchConfig;
+  final EdgeInsets contentPadding;
 
   const SettingsView({
+    /// ROOT PROPERTIES
     super.key,
+    super.controller,
+
+    ///BASE PROPERTIES
+    super.absorbMode,
     super.activated,
+    super.background,
+    super.backgroundState,
+    super.backgroundBlendMode,
+    super.backgroundGradient,
+    super.backgroundGradientState,
+    super.backgroundImage,
+    super.backgroundImageState,
+    super.clipBehavior,
+    super.dimensionRatio,
+    super.elevation,
     super.enabled,
-    super.rippleColor,
+    super.expandable,
+    super.foreground,
+    super.foregroundBlendMode,
+    super.foregroundGradient,
+    super.foregroundImage,
+    super.flex,
+    super.gravity,
+    super.height,
+    super.heightState,
+    super.heightMax,
+    super.heightMin,
+    super.hoverColor,
+    super.orientation,
+    super.position,
+    super.positionType,
     super.pressedColor,
+    super.rippleColor,
+    super.scrollable,
+    super.scrollController,
+    super.scrollingType,
+    super.shape,
+    super.transform,
+    super.transformGravity,
+    super.width,
+    super.widthState,
+    super.widthMax,
+    super.widthMin,
+    super.visibility,
+
+    /// ANIMATION PROPERTIES
+    super.animation,
+    super.animationType,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+    super.borderStrokeAlign,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    /// MARGIN PROPERTIES
+    super.margin,
+    super.marginHorizontal,
+    super.marginVertical,
+    super.marginTop,
+    super.marginBottom,
+    super.marginStart,
+    super.marginEnd,
+
+    /// PADDING PROPERTIES
+    super.padding,
+    super.paddingHorizontal,
+    super.paddingVertical,
+    super.paddingTop,
+    super.paddingBottom,
+    super.paddingStart,
+    super.paddingEnd,
+
+    /// SHADOW PROPERTIES
+    super.shadow,
+    super.shadowBlurRadius,
+    super.shadowBlurStyle,
+    super.shadowColor,
+    super.shadowType,
+    super.shadowSpreadRadius,
+    super.shadowHorizontal,
+    super.shadowVertical,
+    super.shadowStart,
+    super.shadowEnd,
+    super.shadowTop,
+    super.shadowBottom,
+
+    /// LISTENER PROPERTIES
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onHover,
+    super.onToggle,
+
+    /// CHILD PROPERTIES
+    this.contentPadding = const EdgeInsets.only(
+      left: 24,
+      right: 16,
+      top: 16,
+      bottom: 16,
+    ),
     this.icon,
+    this.iconSize,
+    this.iconTint,
     required this.title,
     this.summary,
     this.summaryState,
-    super.onClick,
-    super.onToggle,
   })  : type = SettingsViewType.none,
-        switchConfig = const SwitchButtonConfig();
+        arrowConfig = const ArrowConfig(),
+        checkmarkConfig = const CheckmarkConfig(),
+        switchConfig = const SwitchConfig();
+
+  const SettingsView.arrow({
+    /// ROOT PROPERTIES
+    super.key,
+    super.controller,
+
+    ///BASE PROPERTIES
+    super.absorbMode,
+    super.activated,
+    super.background,
+    super.backgroundState,
+    super.backgroundBlendMode,
+    super.backgroundGradient,
+    super.backgroundGradientState,
+    super.backgroundImage,
+    super.backgroundImageState,
+    super.clipBehavior,
+    super.dimensionRatio,
+    super.elevation,
+    super.enabled,
+    super.expandable,
+    super.foreground,
+    super.foregroundBlendMode,
+    super.foregroundGradient,
+    super.foregroundImage,
+    super.flex,
+    super.gravity,
+    super.height,
+    super.heightState,
+    super.heightMax,
+    super.heightMin,
+    super.hoverColor,
+    super.orientation,
+    super.position,
+    super.positionType,
+    super.pressedColor,
+    super.rippleColor,
+    super.scrollable,
+    super.scrollController,
+    super.scrollingType,
+    super.shape,
+    super.transform,
+    super.transformGravity,
+    super.width,
+    super.widthState,
+    super.widthMax,
+    super.widthMin,
+    super.visibility,
+
+    /// ANIMATION PROPERTIES
+    super.animation,
+    super.animationType,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+    super.borderStrokeAlign,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    /// MARGIN PROPERTIES
+    super.margin,
+    super.marginHorizontal,
+    super.marginVertical,
+    super.marginTop,
+    super.marginBottom,
+    super.marginStart,
+    super.marginEnd,
+
+    /// PADDING PROPERTIES
+    super.padding,
+    super.paddingHorizontal,
+    super.paddingVertical,
+    super.paddingTop,
+    super.paddingBottom,
+    super.paddingStart,
+    super.paddingEnd,
+
+    /// SHADOW PROPERTIES
+    super.shadow,
+    super.shadowBlurRadius,
+    super.shadowBlurStyle,
+    super.shadowColor,
+    super.shadowType,
+    super.shadowSpreadRadius,
+    super.shadowHorizontal,
+    super.shadowVertical,
+    super.shadowStart,
+    super.shadowEnd,
+    super.shadowTop,
+    super.shadowBottom,
+
+    /// LISTENER PROPERTIES
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onHover,
+    super.onToggle,
+
+    /// CHILD PROPERTIES
+    this.contentPadding = const EdgeInsets.only(
+      left: 24,
+      right: 16,
+      top: 16,
+      bottom: 16,
+    ),
+    this.icon,
+    this.iconSize,
+    this.iconTint,
+    required this.title,
+    this.summary,
+    this.summaryState,
+    this.arrowConfig = const ArrowConfig(),
+  })  : type = SettingsViewType.arrow,
+        checkmarkConfig = const CheckmarkConfig(),
+        switchConfig = const SwitchConfig();
+
+  const SettingsView.checkmark({
+    /// ROOT PROPERTIES
+    super.key,
+    super.controller,
+
+    ///BASE PROPERTIES
+    super.absorbMode,
+    super.activated,
+    super.background,
+    super.backgroundState,
+    super.backgroundBlendMode,
+    super.backgroundGradient,
+    super.backgroundGradientState,
+    super.backgroundImage,
+    super.backgroundImageState,
+    super.clipBehavior,
+    super.dimensionRatio,
+    super.elevation,
+    super.enabled,
+    super.expandable,
+    super.foreground,
+    super.foregroundBlendMode,
+    super.foregroundGradient,
+    super.foregroundImage,
+    super.flex,
+    super.gravity,
+    super.height,
+    super.heightState,
+    super.heightMax,
+    super.heightMin,
+    super.hoverColor,
+    super.orientation,
+    super.position,
+    super.positionType,
+    super.pressedColor,
+    super.rippleColor,
+    super.scrollable,
+    super.scrollController,
+    super.scrollingType,
+    super.shape,
+    super.transform,
+    super.transformGravity,
+    super.width,
+    super.widthState,
+    super.widthMax,
+    super.widthMin,
+    super.visibility,
+
+    /// ANIMATION PROPERTIES
+    super.animation,
+    super.animationType,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+    super.borderStrokeAlign,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    /// MARGIN PROPERTIES
+    super.margin,
+    super.marginHorizontal,
+    super.marginVertical,
+    super.marginTop,
+    super.marginBottom,
+    super.marginStart,
+    super.marginEnd,
+
+    /// PADDING PROPERTIES
+    super.padding,
+    super.paddingHorizontal,
+    super.paddingVertical,
+    super.paddingTop,
+    super.paddingBottom,
+    super.paddingStart,
+    super.paddingEnd,
+
+    /// SHADOW PROPERTIES
+    super.shadow,
+    super.shadowBlurRadius,
+    super.shadowBlurStyle,
+    super.shadowColor,
+    super.shadowType,
+    super.shadowSpreadRadius,
+    super.shadowHorizontal,
+    super.shadowVertical,
+    super.shadowStart,
+    super.shadowEnd,
+    super.shadowTop,
+    super.shadowBottom,
+
+    /// LISTENER PROPERTIES
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onHover,
+    super.onToggle,
+
+    /// CHILD PROPERTIES
+    this.contentPadding = const EdgeInsets.only(
+      left: 24,
+      right: 16,
+      top: 16,
+      bottom: 16,
+    ),
+    this.icon,
+    this.iconSize,
+    this.iconTint,
+    required this.title,
+    this.summary,
+    this.summaryState,
+    this.checkmarkConfig = const CheckmarkConfig(),
+  })  : type = SettingsViewType.checkmark,
+        arrowConfig = const ArrowConfig(),
+        switchConfig = const SwitchConfig();
 
   const SettingsView.switcher({
+    /// ROOT PROPERTIES
     super.key,
+    super.controller,
+
+    ///BASE PROPERTIES
+    super.absorbMode,
     super.activated,
+    super.background,
+    super.backgroundState,
+    super.backgroundBlendMode,
+    super.backgroundGradient,
+    super.backgroundGradientState,
+    super.backgroundImage,
+    super.backgroundImageState,
+    super.clipBehavior,
+    super.dimensionRatio,
+    super.elevation,
     super.enabled,
-    super.rippleColor,
+    super.expandable,
+    super.foreground,
+    super.foregroundBlendMode,
+    super.foregroundGradient,
+    super.foregroundImage,
+    super.flex,
+    super.gravity,
+    super.height,
+    super.heightState,
+    super.heightMax,
+    super.heightMin,
+    super.hoverColor,
+    super.orientation,
+    super.position,
+    super.positionType,
     super.pressedColor,
-    super.absorbMode = true,
+    super.rippleColor,
+    super.scrollable,
+    super.scrollController,
+    super.scrollingType,
+    super.shape,
+    super.transform,
+    super.transformGravity,
+    super.width,
+    super.widthState,
+    super.widthMax,
+    super.widthMin,
+    super.visibility,
+
+    /// ANIMATION PROPERTIES
+    super.animation,
+    super.animationType,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+    super.borderStrokeAlign,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    /// MARGIN PROPERTIES
+    super.margin,
+    super.marginHorizontal,
+    super.marginVertical,
+    super.marginTop,
+    super.marginBottom,
+    super.marginStart,
+    super.marginEnd,
+
+    /// PADDING PROPERTIES
+    super.padding,
+    super.paddingHorizontal,
+    super.paddingVertical,
+    super.paddingTop,
+    super.paddingBottom,
+    super.paddingStart,
+    super.paddingEnd,
+
+    /// SHADOW PROPERTIES
+    super.shadow,
+    super.shadowBlurRadius,
+    super.shadowBlurStyle,
+    super.shadowColor,
+    super.shadowType,
+    super.shadowSpreadRadius,
+    super.shadowHorizontal,
+    super.shadowVertical,
+    super.shadowStart,
+    super.shadowEnd,
+    super.shadowTop,
+    super.shadowBottom,
+
+    /// LISTENER PROPERTIES
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onHover,
+    super.onToggle,
+
+    /// CHILD PROPERTIES
+    this.contentPadding = const EdgeInsets.only(
+      left: 24,
+      right: 16,
+      top: 16,
+      bottom: 16,
+    ),
     this.icon,
+    this.iconSize,
+    this.iconTint,
     required this.title,
     this.summary,
     this.summaryState,
-    super.onClick,
-    super.onToggle,
-    this.switchConfig = const SwitchButtonConfig(),
-  }) : type = SettingsViewType.switcher;
+    this.switchConfig = const SwitchConfig(),
+  })  : type = SettingsViewType.switcher,
+        arrowConfig = const ArrowConfig(),
+        checkmarkConfig = const CheckmarkConfig();
 
   @override
   SettingsViewController initController() {
@@ -81,26 +616,21 @@ class SettingsView extends YMRView<SettingsViewController> {
         background: Colors.transparent,
         rippleColor: Colors.transparent,
         pressedColor: Colors.transparent,
-        padding: const EdgeInsets.only(
-          left: 24,
-          right: 16,
-          top: 16,
-          bottom: 16,
-        ),
+        padding: contentPadding,
         header: RawTextView(
           text: controller.title,
-          textStyle: controller.titleStyle ?? mTT.titleMedium!,
+          textStyle: controller.titleStyle ?? mTT.titleMedium,
         ),
         body: TextView(
           visibility: controller.summary?.isNotEmpty ?? false,
           text: controller.summary,
-          textStyle: controller.summaryStyle ?? mTT.titleSmall!,
+          textStyle: controller.summaryStyle ?? mTT.titleSmall,
         ),
         leading: IconView(
           visibility: controller.icon != null,
           icon: controller.icon,
-          size: context.iconTheme.size ?? 24,
-          tint: context.iconTheme.color,
+          size: controller.iconSize ?? context.iconTheme.size ?? 24,
+          tint: controller.iconTint ?? context.iconTheme.color,
           marginEnd: 24,
         ),
         tailing: controller.type == SettingsViewType.none
@@ -111,108 +641,5 @@ class SettingsView extends YMRView<SettingsViewController> {
               ),
       ),
     );
-  }
-}
-
-class SettingsTailingView extends StatelessWidget {
-  final SettingsViewController controller;
-
-  const SettingsTailingView({
-    super.key,
-    required this.controller,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    switch (controller.type) {
-      case SettingsViewType.arrow:
-        return const SettingsTailingArrow();
-
-      case SettingsViewType.checkmark:
-        return const SettingsTailingCheckmark();
-
-      case SettingsViewType.switcher:
-        return SettingsTailingSwitch(controller: controller);
-
-      default:
-        return const SizedBox(
-          width: 26,
-          height: 40,
-        );
-    }
-  }
-}
-
-class SettingsTailingArrow extends StatelessWidget {
-  const SettingsTailingArrow({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox(
-      width: 26,
-      height: 40,
-    );
-  }
-}
-
-class SettingsTailingCheckmark extends StatelessWidget {
-  const SettingsTailingCheckmark({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox(
-      width: 26,
-      height: 40,
-    );
-  }
-}
-
-class SettingsTailingSwitch extends StatelessWidget {
-  final SettingsViewController controller;
-
-  const SettingsTailingSwitch({
-    super.key,
-    required this.controller,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SwitchButton(
-      value: controller.activated,
-      config: controller.switchConfig,
-    );
-  }
-}
-
-class SettingsViewController extends ViewController {
-  dynamic icon;
-  String? title;
-  TextStyle? titleStyle;
-
-  String? _summary;
-  ValueState<String>? summaryState;
-  TextStyle? summaryStyle;
-
-  SettingsViewType type = SettingsViewType.none;
-
-  SwitchButtonConfig switchConfig = const SwitchButtonConfig();
-
-  SettingsViewController fromSettingsView(SettingsView view) {
-    super.fromView(view);
-    title = view.title;
-    summary = view.summary;
-    summaryState = view.summaryState;
-    icon = view.icon;
-    type = view.type;
-    switchConfig = view.switchConfig;
-    return this;
-  }
-
-  String? get summary => summaryState?.fromController(this) ?? _summary;
-
-  set summary(String? value) => _summary = value;
-
-  void setSummary(String? value) {
-    onNotifyWithCallback(() => summary = value);
   }
 }

@@ -14,11 +14,11 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Edit Layout",
-      theme: ThemeData(
-        primaryColor: Colors.blue,
+      title: "Settings View",
+      theme: ThemeData.light(
         useMaterial3: true,
       ),
+      darkTheme: ThemeData.dark(useMaterial3: true),
       home: const Home(),
     );
   }
@@ -45,83 +45,76 @@ class Home extends AndrossyActivity<HomeController> {
 
   @override
   Widget onCreate(BuildContext context) {
-    return NavigationView(
-      onIndexChanged: (value) => controller.changeNavigationIndex(
-        context,
-        value,
-      ),
-      elevation: 50,
-      currentIndex: controller.navigationIndex,
-      positionType: ViewPositionType.bottom,
-      paddingVertical: 12,
-      background: Colors.white,
-      spaceBetween: 8,
-      iconThemeState: ValueState(
-        primary: IconThemeData(
-          size: 24,
-          color: Colors.grey,
+    final isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return LinearLayout(
+      width: double.infinity,
+      background: isDark.logValue ? Colors.black : Colors.white,
+      children: [
+        SettingsView.arrow(
+          icon: Icons.account_circle_outlined,
+          rippleColor: Colors.black12,
+          pressedColor: Colors.black12,
+          title: "This is a arrow title",
+          summary: "This is a arrow summary",
+          onClick: (v) {
+            "ARROW IS CLICKED".log("arrow");
+          },
         ),
-        secondary: IconThemeData(
-          size: 32,
-          color: context.primaryColor,
+        SettingsView.arrow(
+          icon: Icons.account_circle_outlined,
+          enabled: false,
+          rippleColor: Colors.black12,
+          pressedColor: Colors.black12,
+          title: "This is a arrow title",
+          summary: "This is a arrow summary",
+          onClick: (v) {
+            "ARROW IS CLICKED".log("arrow");
+          },
         ),
-      ),
-      titleStyleState: ValueState(
-        primary: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.normal,
-          color: Colors.grey,
+        SettingsView.checkmark(
+          icon: Icons.account_circle_outlined,
+          rippleColor: Colors.black12,
+          pressedColor: Colors.black12,
+          title: "This is a arrow title",
+          summary: "This is a arrow summary",
+          onToggle: (v) {
+            "CHECKMARK IS CHANGED => $v".log("checkmark");
+          },
         ),
-        secondary: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: context.primaryColor,
+        SettingsView.checkmark(
+          activated: true,
+          icon: Icons.account_circle_outlined,
+          enabled: false,
+          rippleColor: Colors.black12,
+          pressedColor: Colors.black12,
+          title: "This is a arrow title",
+          summary: "This is a arrow summary",
+          onToggle: (v) {
+            "CHECKMARK IS CHANGED => $v".log("checkmark");
+          },
         ),
-      ),
-      items: const [
-        NavigationItem(
-          title: "Home",
-          iconState: ValueState(
-            primary: Icons.home_outlined,
-            secondary: Icons.home,
-          ),
+        SettingsView.switcher(
+          icon: Icons.settings,
+          rippleColor: Colors.black12,
+          pressedColor: Colors.black12,
+          title: "This is a switcher title",
+          summary: "This is a switcher summary",
+          onToggle: (v) {
+            "SWITCHER IS CHANGED => $v".log("switcher");
+          },
         ),
-        NavigationItem(
-          title: "Notifications",
-          iconState: ValueState(
-            primary: Icons.notifications_outlined,
-            secondary: Icons.notifications,
-          ),
-        ),
-        NavigationItem(
-          title: "Profile",
-          iconState: ValueState(
-            primary: Icons.person_outline,
-            secondary: Icons.person,
-          ),
+        SettingsView.switcher(
+          icon: Icons.settings,
+          enabled: false,
+          rippleColor: Colors.black12,
+          pressedColor: Colors.black12,
+          title: "This is a switcher title",
+          summary: "This is a switcher summary",
+          onToggle: (v) {
+            "SWITCHER IS CHANGED => $v".log("switcher");
+          },
         ),
       ],
-      builder: (context, index) {
-        if (index == 1) {
-          return Container(
-            color: Colors.white,
-            width: double.infinity,
-            height: double.infinity,
-          );
-        } else if (index == 2) {
-          return Container(
-            color: Colors.green,
-            width: double.infinity,
-            height: double.infinity,
-          );
-        } else {
-          return Container(
-            color: Colors.blue,
-            width: double.infinity,
-            height: double.infinity,
-          );
-        }
-      },
     );
   }
 }
