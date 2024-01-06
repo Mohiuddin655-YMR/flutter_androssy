@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'settings.dart';
@@ -35,12 +34,11 @@ class Androssy {
   }
 
   Androssy copy({
-    ThemeMode? theme,
-    Locale? locale,
+    AndrossySettings? settings,
     AndrossyUser? user,
   }) {
     return Androssy(
-      settings: settings.copy(locale: locale, theme: theme),
+      settings: settings ?? this.settings,
       user: user ?? this.user,
     );
   }

@@ -1,5 +1,9 @@
 ## 0.3.17
 
+* Androssy update mode
+
+## 0.3.17
+
 * Text view secondary callback and setting view some properties modified
 
 ## 0.3.16

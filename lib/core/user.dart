@@ -32,6 +32,24 @@ class AndrossyUser {
     );
   }
 
+  AndrossyUser copy({
+    String? uid,
+    String? name,
+    String? email,
+    String? password,
+    String? phone,
+    String? photo,
+  }) {
+    return AndrossyUser(
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      phone: phone ?? this.phone,
+      photo: photo ?? this.photo,
+    );
+  }
+
   Map<String, dynamic> get source {
     return {
       "uid": uid,

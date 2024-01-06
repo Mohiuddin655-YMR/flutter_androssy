@@ -52,8 +52,8 @@ class AndrossyProvider extends InheritedWidget {
 
   void notify(Androssy data) => notifier.update(data);
 
-  void changeLocale(Locale locale) async {
-    var raw = androssy.copy(locale: locale);
+  void changeLocale(Locale value) async {
+    var raw = androssy.copy(settings: androssy.settings.copy(locale: value));
     var done = await pref.setString(kAndrossyPath, raw.json);
     if (done) notify(raw);
   }
@@ -61,22 +61,33 @@ class AndrossyProvider extends InheritedWidget {
   void changeLanguage(String language) => changeLocale(Locale(language, "US"));
 
   void changeTheme(ThemeMode value) async {
-    var raw = androssy.copy(theme: value);
+    var raw = androssy.copy(settings: androssy.settings.copy(theme: value));
     var done = await pref.setString(kAndrossyPath, raw.json);
     if (done) notify(raw);
   }
 
   void resetSettings() async {
-    var raw = androssy.copy(
-      theme: ThemeMode.system,
-      locale: const Locale("en"),
-    );
+    var raw = androssy.copy(settings: const AndrossySettings());
     var done = await pref.setString(kAndrossyPath, raw.json);
     if (done) notify(raw);
   }
 
   void resetUser() async {
     var raw = androssy.copy(user: const AndrossyUser());
+    var done = await pref.setString(kAndrossyPath, raw.json);
+    if (done) notify(raw);
+  }
+
+  void updateSettings(
+    AndrossySettings Function(AndrossySettings old) callback,
+  ) async {
+    var raw = androssy.copy(settings: callback(androssy.settings));
+    var done = await pref.setString(kAndrossyPath, raw.json);
+    if (done) notify(raw);
+  }
+
+  void updateUser(AndrossyUser Function(AndrossyUser old) callback) async {
+    var raw = androssy.copy(user: callback(androssy.user));
     var done = await pref.setString(kAndrossyPath, raw.json);
     if (done) notify(raw);
   }
