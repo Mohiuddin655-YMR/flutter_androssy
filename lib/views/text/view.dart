@@ -48,6 +48,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final TextStyle? textStyle;
   final ValueState<TextStyle>? textStyleState;
   final TextWidthBasis textWidthBasis;
+  final OnViewClickListener? onTextClick;
 
   ///PREFIX
   final FontStyle? prefixFontStyle;
@@ -253,6 +254,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     this.textStyle,
     this.textStyleState,
     this.textWidthBasis = TextWidthBasis.parent,
+    this.onTextClick,
 
     /// PREFIX
     this.prefixFontStyle,
@@ -338,7 +340,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
       textStyle: controller.textStyle,
       textWidthBasis: controller.textWidthBasis,
       wordSpacing: controller.wordSpacing,
-      onClick: null,
+      onClick: controller.onTextClick,
 
       /// PREFIX
       prefixFontStyle: controller.prefixFontStyle,

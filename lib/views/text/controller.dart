@@ -227,6 +227,16 @@ class TextViewController extends ViewController {
     onNotifyWithCallback(() => textWidthBasis = value);
   }
 
+  OnViewClickListener? _onTextClick;
+
+  set onTextClick(OnViewClickListener? value) => _onTextClick ??= value;
+
+  OnViewClickListener? get onTextClick => enabled ? _onTextClick : null;
+
+  void setOnTextClickListener(OnViewClickListener? listener) {
+    _onTextClick = listener;
+  }
+
   /// PREFIX TEXT PROPERTIES
   FontStyle? prefixFontStyle;
 
@@ -348,10 +358,12 @@ class TextViewController extends ViewController {
 
   OnViewClickListener? _onPrefixClick;
 
-  set onPrefixClick(OnViewClickListener? value) => _onPrefixClick = value;
+  set onPrefixClick(OnViewClickListener? value) => _onPrefixClick ??= value;
+
+  OnViewClickListener? get onPrefixClick => enabled ? _onPrefixClick : null;
 
   void setOnPrefixClickListener(OnViewClickListener? listener) {
-    onPrefixClick = listener;
+    _onPrefixClick = listener;
   }
 
   /// SUFFIX TEXT PROPERTIES
@@ -475,10 +487,12 @@ class TextViewController extends ViewController {
 
   OnViewClickListener? _onSuffixClick;
 
-  set onSuffixClick(OnViewClickListener? value) => _onSuffixClick = value;
+  OnViewClickListener? get onSuffixClick => enabled ? _onSuffixClick : null;
+
+  set onSuffixClick(OnViewClickListener? value) => _onSuffixClick ??= value;
 
   void setOnSuffixClickListener(OnViewClickListener? listener) {
-    onSuffixClick = listener;
+    _onSuffixClick = listener;
   }
 
   TextViewController fromTextView(TextView view) {
@@ -523,6 +537,7 @@ class TextViewController extends ViewController {
     textStyleState = view.textStyleState;
     textWidthBasis = view.textWidthBasis;
     textExtras = textExtrasFromSpans;
+    onTextClick = view.onTextClick;
 
     ///PREFIX
     prefixFontStyle = view.prefixFontStyle;
@@ -631,8 +646,6 @@ class TextViewController extends ViewController {
     return (a && b) || prefixTextVisible;
   }
 
-  OnViewClickListener? get onPrefixClick => enabled ? _onPrefixClick : null;
-
   ///SUFFIX
 
   String? get suffixText {
@@ -658,6 +671,4 @@ class TextViewController extends ViewController {
     final b = text.length > maxCharacters;
     return (a && b) || suffixTextVisible;
   }
-
-  OnViewClickListener? get onSuffixClick => enabled ? _onSuffixClick : null;
 }
