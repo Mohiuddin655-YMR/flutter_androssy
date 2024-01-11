@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import '../axis/view.dart';
 import '../view/view.dart';
 
-typedef SplashViewOnExecuteListener = Future Function(BuildContext context);
-typedef SplashViewOnRouteListener = Function(BuildContext context);
+typedef OnSplashLayoutExecuteListener = Future Function(BuildContext context);
+typedef OnSplashLayoutRouteListener = Function(BuildContext context);
 
 class SplashLayout<T extends SplashLayoutController> extends YMRView<T> {
   final int duration;
@@ -16,8 +16,8 @@ class SplashLayout<T extends SplashLayoutController> extends YMRView<T> {
   final Widget? content;
   final Widget? footer;
 
-  final SplashViewOnExecuteListener? onExecute;
-  final SplashViewOnRouteListener? onRoute;
+  final OnSplashLayoutExecuteListener? onExecute;
+  final OnSplashLayoutRouteListener? onRoute;
 
   const SplashLayout({
     /// ROOT PROPERTIES
@@ -61,15 +61,19 @@ class SplashLayout<T extends SplashLayoutController> extends YMRView<T> {
     super.shape,
     super.transform,
     super.transformGravity,
+    super.visibility,
     super.width,
     super.widthState,
     super.widthMax,
     super.widthMin,
-    super.visibility,
 
     /// ANIMATION PROPERTIES
     super.animation,
     super.animationType,
+
+    /// BACKDROP PROPERTIES
+    super.backdropFilter,
+    super.backdropMode,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -138,8 +142,14 @@ class SplashLayout<T extends SplashLayoutController> extends YMRView<T> {
     super.onClick,
     super.onDoubleClick,
     super.onLongClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
     super.onHover,
     super.onToggle,
+
+    /// CALLBACK PROPERTIES
+    super.onActivator,
     super.onChange,
     super.onError,
     super.onValid,
@@ -229,19 +239,19 @@ class SplashLayoutController extends ViewController {
     onNotifyWithCallback(() => footer = value);
   }
 
-  SplashViewOnExecuteListener? _onExecute;
+  OnSplashLayoutExecuteListener? _onExecute;
 
-  SplashViewOnExecuteListener? get onExecute => enabled ? _onExecute : null;
+  OnSplashLayoutExecuteListener? get onExecute => enabled ? _onExecute : null;
 
-  void setOnExecuteListener(SplashViewOnExecuteListener listener) {
+  void setOnExecuteListener(OnSplashLayoutExecuteListener listener) {
     _onExecute = listener;
   }
 
-  SplashViewOnRouteListener? _onRoute;
+  OnSplashLayoutRouteListener? _onRoute;
 
-  SplashViewOnRouteListener? get onRoute => enabled ? _onRoute : null;
+  OnSplashLayoutRouteListener? get onRoute => enabled ? _onRoute : null;
 
-  void setOnRouteListener(SplashViewOnRouteListener listener) {
+  void setOnRouteListener(OnSplashLayoutRouteListener listener) {
     _onRoute = listener;
   }
 

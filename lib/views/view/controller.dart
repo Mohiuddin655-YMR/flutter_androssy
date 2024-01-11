@@ -3,6 +3,10 @@ part of 'view.dart';
 class ViewController {
   @mustCallSuper
   ViewController fromView(YMRView view) {
+    /// VIEW BACKDROP PROPERTIES
+    backdropFilter = view.backdropFilter;
+    backdropMode = view.backdropMode;
+
     /// VIEW BORDER PROPERTIES
     _borderColor = view.borderColor;
     _borderSize = view.borderSize;
@@ -158,6 +162,22 @@ class ViewController {
   ViewRoots roots = const ViewRoots();
 
   ThemeData get theme => context != null ? Theme.of(context!) : ThemeData();
+
+  /// BACKDROP PROPERTIES
+
+  bool get isBackdropFilter => backdropFilter != null;
+
+  ImageFilter? backdropFilter;
+
+  void setBackdropFilter(ImageFilter? value) {
+    onNotifyWithCallback(() => backdropFilter = value);
+  }
+
+  BlendMode? backdropMode;
+
+  void setBackdropMode(BlendMode? value) {
+    onNotifyWithCallback(() => backdropMode = value);
+  }
 
   /// BORDER PROPERTIES
 

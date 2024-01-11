@@ -51,15 +51,19 @@ class StackLayout<T extends StackLayoutController> extends YMRView<T> {
     super.shape,
     super.transform,
     super.transformGravity,
+    super.visibility,
     super.width,
     super.widthState,
     super.widthMax,
     super.widthMin,
-    super.visibility,
 
     /// ANIMATION PROPERTIES
     super.animation,
     super.animationType,
+
+    /// BACKDROP PROPERTIES
+    super.backdropFilter,
+    super.backdropMode,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -128,9 +132,18 @@ class StackLayout<T extends StackLayoutController> extends YMRView<T> {
     super.onClick,
     super.onDoubleClick,
     super.onLongClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
     super.onHover,
     super.onToggle,
+
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
     super.onValid,
+    super.onValidator,
 
     /// CHILD PROPERTIES
     this.layoutGravity = Alignment.center,

@@ -1,3 +1,9 @@
+## 0.3.19
+
+* Add backdrop inside view
+* Update all views properties
+* Update activity properties
+
 ## 0.3.18
 
 * Androssy update mode

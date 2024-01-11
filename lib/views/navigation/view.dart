@@ -6,11 +6,8 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'item.dart';
-
 part 'type.dart';
-
 part 'typedefs.dart';
 
 class NavigationView extends YMRView<NavigationViewController> {
@@ -92,15 +89,19 @@ class NavigationView extends YMRView<NavigationViewController> {
     super.shape,
     super.transform,
     super.transformGravity,
+    super.visibility,
     super.width,
     super.widthState,
     super.widthMax,
     super.widthMin,
-    super.visibility,
 
     /// ANIMATION PROPERTIES
     super.animation,
     super.animationType,
+
+    /// BACKDROP PROPERTIES
+    super.backdropFilter,
+    super.backdropMode,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -164,6 +165,23 @@ class NavigationView extends YMRView<NavigationViewController> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
+
+    /// LISTENER PROPERTIES
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
+    super.onHover,
+    super.onToggle,
+
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onValid,
+    super.onValidator,
 
     /// CHILD PROPERTIES
     this.currentIndex = 0,

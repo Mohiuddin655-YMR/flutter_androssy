@@ -167,15 +167,19 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.shape,
     super.transform,
     super.transformGravity,
+    super.visibility,
     super.width,
     super.widthState,
     super.widthMax,
     super.widthMin,
-    super.visibility,
 
     /// ANIMATION PROPERTIES
     super.animation,
     super.animationType,
+
+    /// BACKDROP PROPERTIES
+    super.backdropFilter,
+    super.backdropMode,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -244,8 +248,18 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.onClick,
     super.onDoubleClick,
     super.onLongClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
     super.onHover,
     super.onToggle,
+
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onValid,
+    super.onValidator,
 
     /// SUPER TEXT PROPERTIES
     super.maxCharacters,
@@ -268,10 +282,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.textSize,
     super.textStyle,
     super.textWidthBasis,
-    super.onChange,
-    super.onError,
-    super.onValid,
-    super.onValidator,
 
     /// HELPER TEXT PROPERTIES
     this.helperText = "",

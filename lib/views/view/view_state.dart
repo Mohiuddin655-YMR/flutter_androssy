@@ -57,6 +57,15 @@ class _ViewState<T extends ViewController> extends State<YMRView<T>> {
         );
       }
 
+      /// BACKDROP FILTER
+      if (controller.isBackdropFilter) {
+        child = BackdropFilter(
+          filter: controller.backdropFilter ?? ImageFilter.blur(),
+          blendMode: controller.backdropMode ?? BlendMode.srcOver,
+          child: child,
+        );
+      }
+
       /// STYLES
       if (controller.roots.view) {
         final root = controller.roots;

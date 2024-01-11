@@ -6,48 +6,13 @@ class ToggleBuilder extends YMRView<ToggleBuilderController> {
   final Widget Function(BuildContext context, bool value) builder;
 
   const ToggleBuilder({
-    /// BASE PROPERTIES
+    /// ROOT PROPERTIES
     super.key,
     super.controller,
 
-    /// BORDER PROPERTIES
-    super.borderColor,
-    super.borderColorState,
-    super.borderSize,
-    super.borderSizeState,
-    super.borderHorizontal,
-    super.borderHorizontalState,
-    super.borderVertical,
-    super.borderVerticalState,
-    super.borderTop,
-    super.borderTopState,
-    super.borderBottom,
-    super.borderBottomState,
-    super.borderStart,
-    super.borderStartState,
-    super.borderEnd,
-    super.borderEndState,
-
-    /// BORDER RADIUS PROPERTIES
-    super.borderRadius,
-    super.borderRadiusState,
-    super.borderRadiusBL,
-    super.borderRadiusBLState,
-    super.borderRadiusBR,
-    super.borderRadiusBRState,
-    super.borderRadiusTL,
-    super.borderRadiusTLState,
-    super.borderRadiusTR,
-    super.borderRadiusTRState,
-
-    ///
-    ///
-    ///
-    ///
+    ///BASE PROPERTIES
     super.absorbMode,
     super.activated,
-    super.animation,
-    super.animationType,
     super.background,
     super.backgroundState,
     super.backgroundBlendMode,
@@ -67,24 +32,11 @@ class ToggleBuilder extends YMRView<ToggleBuilderController> {
     super.flex,
     super.gravity,
     super.height,
+    super.heightState,
     super.heightMax,
     super.heightMin,
     super.hoverColor,
-    super.margin,
-    super.marginHorizontal,
-    super.marginVertical,
-    super.marginTop,
-    super.marginBottom,
-    super.marginStart,
-    super.marginEnd,
     super.orientation,
-    super.padding,
-    super.paddingHorizontal,
-    super.paddingVertical,
-    super.paddingTop,
-    super.paddingBottom,
-    super.paddingStart,
-    super.paddingEnd,
     super.position,
     super.positionType,
     super.pressedColor,
@@ -92,6 +44,73 @@ class ToggleBuilder extends YMRView<ToggleBuilderController> {
     super.scrollable,
     super.scrollController,
     super.scrollingType,
+    super.shape,
+    super.transform,
+    super.transformGravity,
+    super.visibility,
+    super.width,
+    super.widthState,
+    super.widthMax,
+    super.widthMin,
+
+    /// ANIMATION PROPERTIES
+    super.animation,
+    super.animationType,
+
+    /// BACKDROP PROPERTIES
+    super.backdropFilter,
+    super.backdropMode,
+
+    /// BORDER PROPERTIES
+    super.borderColor,
+    super.borderColorState,
+    super.borderSize,
+    super.borderSizeState,
+    super.borderHorizontal,
+    super.borderHorizontalState,
+    super.borderVertical,
+    super.borderVerticalState,
+    super.borderTop,
+    super.borderTopState,
+    super.borderBottom,
+    super.borderBottomState,
+    super.borderStart,
+    super.borderStartState,
+    super.borderEnd,
+    super.borderEndState,
+    super.borderStrokeAlign,
+
+    /// BORDER RADIUS PROPERTIES
+    super.borderRadius,
+    super.borderRadiusState,
+    super.borderRadiusBL,
+    super.borderRadiusBLState,
+    super.borderRadiusBR,
+    super.borderRadiusBRState,
+    super.borderRadiusTL,
+    super.borderRadiusTLState,
+    super.borderRadiusTR,
+    super.borderRadiusTRState,
+
+    /// MARGIN PROPERTIES
+    super.margin,
+    super.marginHorizontal,
+    super.marginVertical,
+    super.marginTop,
+    super.marginBottom,
+    super.marginStart,
+    super.marginEnd,
+
+    /// PADDING PROPERTIES
+    super.padding,
+    super.paddingHorizontal,
+    super.paddingVertical,
+    super.paddingTop,
+    super.paddingBottom,
+    super.paddingStart,
+    super.paddingEnd,
+
+    /// SHADOW PROPERTIES
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -104,14 +123,25 @@ class ToggleBuilder extends YMRView<ToggleBuilderController> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
-    super.shape,
-    super.transform,
-    super.transformGravity,
-    super.width,
-    super.widthMax,
-    super.widthMin,
-    super.visibility,
+
+    /// LISTENER PROPERTIES
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
+    super.onHover,
     super.onToggle,
+
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onValid,
+    super.onValidator,
+
+    /// CHILD PROPERTIES
     required this.builder,
   });
 

@@ -56,7 +56,7 @@ class CalendarCore extends StatelessWidget {
     this.tableBorder,
     this.tablePadding,
     this.scrollPhysics,
-  })  : assert(!dowVisible || (dowHeight != null && dowBuilder != null));
+  }) : assert(!dowVisible || (dowHeight != null && dowBuilder != null));
 
   @override
   Widget build(BuildContext context) {

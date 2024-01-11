@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,10 @@ part 'view_toggle_content.dart';
 
 class YMRView<T extends ViewController> extends StatefulWidget {
   final T? controller;
+
+  /// BACKDROP PROPERTIES
+  final ImageFilter? backdropFilter;
+  final BlendMode? backdropMode;
 
   /// BORDER PROPERTIES
   final Color? borderColor;
@@ -83,7 +88,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final Color hoverColor, pressedColor, rippleColor;
 
   final DecorationImage? backgroundImage, foregroundImage;
-  final Gradient? backgroundGradient, foregroundGradient, borderGradient;
+  final Gradient? backgroundGradient, foregroundGradient;
   final Matrix4? transform;
 
   final Alignment? gravity, transformGravity;
@@ -119,8 +124,60 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final OnViewValidatorListener? onValidator;
 
   const YMRView({
+    /// ROOT PROPERTIES
     super.key,
+
+    ///BASE PROPERTIES
     this.controller,
+    this.absorbMode,
+    this.activated,
+    this.background,
+    this.backgroundState,
+    this.backgroundBlendMode,
+    this.backgroundGradient,
+    this.backgroundGradientState,
+    this.backgroundImage,
+    this.backgroundImageState,
+    this.clipBehavior,
+    this.dimensionRatio,
+    this.elevation,
+    this.enabled,
+    this.expandable,
+    this.foreground,
+    this.foregroundBlendMode,
+    this.foregroundGradient,
+    this.foregroundImage,
+    this.flex,
+    this.gravity,
+    this.height,
+    this.heightState,
+    this.heightMax,
+    this.heightMin,
+    this.hoverColor = Colors.transparent,
+    this.orientation,
+    this.position,
+    this.positionType,
+    this.pressedColor = Colors.transparent,
+    this.rippleColor = Colors.transparent,
+    this.scrollable,
+    this.scrollController,
+    this.scrollingType,
+    this.shape,
+    this.transform,
+    this.transformGravity,
+    this.visibility,
+    this.width,
+    this.widthState,
+    this.widthMax,
+    this.widthMin,
+
+    /// ANIMATION PROPERTIES
+    this.animation,
+    this.animationType,
+
+    /// BACKDROP PROPERTIES
+    this.backdropFilter,
+    this.backdropMode,
 
     /// BORDER PROPERTIES
     this.borderColor,
@@ -153,32 +210,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.borderRadiusTR,
     this.borderRadiusTRState,
 
-    /// INDICATOR AND ACTIVATOR PROPERTIES
-    this.onActivator,
-
-    ///
-    ///
-    ///
-    ///
-    this.flex,
-    this.absorbMode,
-    this.activated,
-    this.enabled,
-    this.expandable,
-    this.visibility,
-    this.wrapper,
-    this.animation,
-    this.animationType,
-    this.elevation,
-    this.dimensionRatio,
-    this.width,
-    this.widthState,
-    this.widthMax,
-    this.widthMin,
-    this.height,
-    this.heightState,
-    this.heightMax,
-    this.heightMin,
+    /// MARGIN PROPERTIES
     this.margin,
     this.marginHorizontal,
     this.marginVertical,
@@ -186,6 +218,8 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.marginBottom,
     this.marginStart,
     this.marginEnd,
+
+    /// PADDING PROPERTIES
     this.padding,
     this.paddingHorizontal,
     this.paddingVertical,
@@ -193,12 +227,13 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.paddingBottom,
     this.paddingStart,
     this.paddingEnd,
-    this.orientation,
-    this.scrollable,
-    this.scrollController,
-    this.scrollingType,
+
+    /// SHADOW PROPERTIES
     this.shadow,
     this.shadowBlurRadius,
+    this.shadowBlurStyle,
+    this.shadowColor,
+    this.shadowType,
     this.shadowSpreadRadius,
     this.shadowHorizontal,
     this.shadowVertical,
@@ -206,44 +241,27 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.shadowEnd,
     this.shadowTop,
     this.shadowBottom,
-    this.background,
-    this.foreground,
-    this.hoverColor = Colors.transparent,
-    this.pressedColor = Colors.transparent,
-    this.shadowColor,
-    this.rippleColor = Colors.transparent,
-    this.gravity,
-    this.transformGravity,
-    this.backgroundBlendMode,
-    this.foregroundBlendMode,
-    this.backgroundImage,
-    this.foregroundImage,
-    this.backgroundGradient,
-    this.foregroundGradient,
-    this.borderGradient,
-    this.transform,
-    this.shadowBlurStyle,
-    this.clipBehavior,
-    this.shadowType,
-    this.position,
-    this.positionType,
-    this.shape,
-    this.child,
-    this.backgroundState,
-    this.backgroundGradientState,
-    this.backgroundImageState,
+
+    /// LISTENER PROPERTIES
     this.onClick,
     this.onDoubleClick,
     this.onLongClick,
     this.onClickHandler,
     this.onDoubleClickHandler,
     this.onLongClickHandler,
+    this.onHover,
     this.onToggle,
+
+    /// CALLBACK PROPERTIES
+    this.onActivator,
     this.onChange,
     this.onError,
-    this.onHover,
     this.onValid,
     this.onValidator,
+
+    /// OPTIONAL PROPERTIES
+    this.wrapper,
+    this.child,
   });
 
   T initController() => ViewController() as T;

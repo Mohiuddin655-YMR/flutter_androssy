@@ -11,7 +11,6 @@ class AxisView<T extends AxisViewController> extends YMRView<T> {
     /// ROOT PROPERTIES
     super.key,
     super.controller,
-    super.child,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -23,6 +22,7 @@ class AxisView<T extends AxisViewController> extends YMRView<T> {
     super.backgroundGradientState,
     super.backgroundImage,
     super.backgroundImageState,
+    super.child,
     super.clipBehavior,
     super.dimensionRatio,
     super.elevation,
@@ -50,15 +50,19 @@ class AxisView<T extends AxisViewController> extends YMRView<T> {
     super.shape,
     super.transform,
     super.transformGravity,
+    super.visibility,
     super.width,
     super.widthState,
     super.widthMax,
     super.widthMin,
-    super.visibility,
 
     /// ANIMATION PROPERTIES
     super.animation,
     super.animationType,
+
+    /// BACKDROP PROPERTIES
+    super.backdropFilter,
+    super.backdropMode,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -127,8 +131,18 @@ class AxisView<T extends AxisViewController> extends YMRView<T> {
     super.onClick,
     super.onDoubleClick,
     super.onLongClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
     super.onHover,
     super.onToggle,
+
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onValid,
+    super.onValidator,
 
     /// CHILD PROPERTIES
     this.x = 0,

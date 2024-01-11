@@ -80,9 +80,60 @@ class NullableView extends YMRView<NullableViewController> {
   final OnViewClickListener? onSecondaryButtonClick;
 
   const NullableView({
-    /// BASE PROPERTIES
+    /// ROOT PROPERTIES
     super.key,
     super.controller,
+
+    ///BASE PROPERTIES
+    super.absorbMode,
+    super.activated,
+    super.background,
+    super.backgroundState,
+    super.backgroundBlendMode,
+    super.backgroundGradient,
+    super.backgroundGradientState,
+    super.backgroundImage,
+    super.backgroundImageState,
+    super.clipBehavior,
+    super.dimensionRatio,
+    super.elevation,
+    super.enabled,
+    super.expandable,
+    super.foreground,
+    super.foregroundBlendMode,
+    super.foregroundGradient,
+    super.foregroundImage,
+    super.flex,
+    super.gravity,
+    super.height,
+    super.heightState,
+    super.heightMax,
+    super.heightMin,
+    super.hoverColor,
+    super.orientation,
+    super.position,
+    super.positionType,
+    super.pressedColor,
+    super.rippleColor,
+    super.scrollable,
+    super.scrollController,
+    super.scrollingType,
+    super.shape,
+    super.transform,
+    super.transformGravity,
+    super.visibility,
+    super.width,
+    super.widthState,
+    super.widthMax,
+    super.widthMin,
+
+    /// ANIMATION PROPERTIES
+    super.animation,
+    super.animationType,
+
+    /// BACKDROP PROPERTIES
+    super.backdropFilter,
+    super.backdropMode,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -101,6 +152,7 @@ class NullableView extends YMRView<NullableViewController> {
     super.borderStartState,
     super.borderEnd,
     super.borderEndState,
+    super.borderStrokeAlign,
 
     /// BORDER RADIUS PROPERTIES
     super.borderRadius,
@@ -114,35 +166,7 @@ class NullableView extends YMRView<NullableViewController> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
-    ///
-    ///
-    ///
-    ///
-    super.absorbMode,
-    super.activated,
-    super.animation,
-    super.animationType,
-    super.background,
-    super.backgroundState,
-    super.backgroundBlendMode,
-    super.backgroundGradient,
-    super.backgroundGradientState,
-    super.backgroundImage,
-    super.backgroundImageState,
-    super.clipBehavior,
-    super.dimensionRatio,
-    super.enabled,
-    super.elevation,
-    super.expandable,
-    super.foreground,
-    super.foregroundBlendMode,
-    super.foregroundGradient,
-    super.foregroundImage,
-    super.flex,
-    super.height,
-    super.heightMax,
-    super.heightMin,
-    super.hoverColor,
+    /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,
     super.marginVertical,
@@ -150,6 +174,8 @@ class NullableView extends YMRView<NullableViewController> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+
+    /// PADDING PROPERTIES
     super.padding,
     super.paddingHorizontal,
     super.paddingVertical,
@@ -157,8 +183,8 @@ class NullableView extends YMRView<NullableViewController> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
-    super.position,
-    super.positionType,
+
+    /// SHADOW PROPERTIES
     super.shadow,
     super.shadowBlurRadius,
     super.shadowBlurStyle,
@@ -171,13 +197,25 @@ class NullableView extends YMRView<NullableViewController> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
-    super.shape,
-    super.transform,
-    super.transformGravity,
-    super.width,
-    super.widthMax,
-    super.widthMin,
-    super.visibility,
+
+    /// LISTENER PROPERTIES
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
+    super.onHover,
+    super.onToggle,
+
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onValid,
+    super.onValidator,
+
+    /// CHILD PROPERTIES
 
     /// ICON PROPERTIES
     this.icon,

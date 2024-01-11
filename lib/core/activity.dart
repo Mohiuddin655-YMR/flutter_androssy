@@ -11,17 +11,400 @@ import 'instance.dart';
 import 'settings.dart';
 import 'user.dart';
 
+class ScaffoldProperties {
+  final Color? backgroundColor;
+  final double? drawerEdgeDragWidth;
+  final bool drawerEnableOpenDragGesture;
+  final DragStartBehavior drawerDragStartBehavior;
+  final Color? drawerScrimColor;
+  final bool endDrawerEnableOpenDragGesture;
+  final bool extendBody;
+  final bool extendBodyBehindAppBar;
+  final FloatingActionButtonAnimator? floatingActionButtonAnimator;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
+  final bool primary;
+  final AlignmentDirectional persistentFooterAlignment;
+  final String? restorationId;
+  final bool? resizeToAvoidBottomInset;
+
+  const ScaffoldProperties({
+    this.backgroundColor,
+    this.drawerEdgeDragWidth,
+    this.drawerEnableOpenDragGesture = true,
+    this.drawerDragStartBehavior = DragStartBehavior.start,
+    this.drawerScrimColor,
+    this.endDrawerEnableOpenDragGesture = true,
+    this.extendBody = false,
+    this.extendBodyBehindAppBar = false,
+    this.floatingActionButtonAnimator,
+    this.floatingActionButtonLocation,
+    this.primary = true,
+    this.persistentFooterAlignment = AlignmentDirectional.centerEnd,
+    this.restorationId,
+    this.resizeToAvoidBottomInset,
+  });
+
+  factory ScaffoldProperties.fromContext(
+    BuildContext context, {
+    bool transparencyAppBar = false,
+    bool transparencyNavigationBar = false,
+  }) {
+    final t = Theme.of(context);
+    return ScaffoldProperties(
+      backgroundColor: t.scaffoldBackgroundColor,
+      drawerScrimColor: t.drawerTheme.scrimColor,
+      extendBodyBehindAppBar: transparencyAppBar,
+      extendBody: transparencyNavigationBar,
+    );
+  }
+
+  ScaffoldProperties modify({
+    Color? backgroundColor,
+    double? drawerEdgeDragWidth,
+    bool? drawerEnableOpenDragGesture,
+    DragStartBehavior? drawerDragStartBehavior,
+    Color? drawerScrimColor,
+    bool? endDrawerEnableOpenDragGesture,
+    bool? extendBody,
+    bool? extendBodyBehindAppBar,
+    FloatingActionButtonAnimator? floatingActionButtonAnimator,
+    FloatingActionButtonLocation? floatingActionButtonLocation,
+    bool? primary,
+    AlignmentDirectional? persistentFooterAlignment,
+    String? restorationId,
+    bool? resizeToAvoidBottomInset,
+  }) {
+    return ScaffoldProperties(
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      drawerEdgeDragWidth: drawerEdgeDragWidth ?? this.drawerEdgeDragWidth,
+      drawerEnableOpenDragGesture:
+          drawerEnableOpenDragGesture ?? this.drawerEnableOpenDragGesture,
+      drawerDragStartBehavior:
+          drawerDragStartBehavior ?? this.drawerDragStartBehavior,
+      drawerScrimColor: drawerScrimColor ?? this.drawerScrimColor,
+      endDrawerEnableOpenDragGesture:
+          endDrawerEnableOpenDragGesture ?? this.endDrawerEnableOpenDragGesture,
+      extendBody: extendBody ?? this.extendBody,
+      extendBodyBehindAppBar:
+          extendBodyBehindAppBar ?? this.extendBodyBehindAppBar,
+      floatingActionButtonAnimator:
+          floatingActionButtonAnimator ?? this.floatingActionButtonAnimator,
+      floatingActionButtonLocation:
+          floatingActionButtonLocation ?? this.floatingActionButtonLocation,
+      primary: primary ?? this.primary,
+      persistentFooterAlignment:
+          persistentFooterAlignment ?? this.persistentFooterAlignment,
+      restorationId: restorationId ?? this.restorationId,
+      resizeToAvoidBottomInset:
+          resizeToAvoidBottomInset ?? this.resizeToAvoidBottomInset,
+    );
+  }
+}
+
+class AppbarProperties {
+  final Key? appbarKey;
+  final IconThemeData? actionsIconTheme;
+  final bool automaticallyImplyLeading;
+  final Color? backgroundColor;
+  final double bottomOpacity;
+  final Clip? clipBehavior;
+  final double? elevation;
+  final bool excludeHeaderSemantics;
+  final Color? foregroundColor;
+  final bool forceMaterialTransparency;
+  final IconThemeData? iconTheme;
+  final double? leadingWidth;
+  final bool primary;
+  final double? scrolledUnderElevation;
+  final Color? shadowColor;
+  final ShapeBorder? shape;
+  final Color? surfaceTintColor;
+  final String? title;
+  final bool? titleCenter;
+  final double? titleSpacing;
+  final TextStyle? titleTextStyle;
+  final double? toolbarHeight;
+  final double toolbarOpacity;
+  final TextStyle? toolbarTextStyle;
+
+  const AppbarProperties({
+    this.appbarKey,
+    this.automaticallyImplyLeading = true,
+    this.backgroundColor,
+    this.bottomOpacity = 1,
+    this.clipBehavior,
+    this.elevation,
+    this.excludeHeaderSemantics = false,
+    this.foregroundColor,
+    this.forceMaterialTransparency = false,
+    this.leadingWidth,
+    this.primary = true,
+    this.scrolledUnderElevation,
+    this.shadowColor,
+    this.shape,
+    this.surfaceTintColor,
+    this.title,
+    this.titleCenter,
+    this.titleSpacing,
+    this.titleTextStyle,
+    this.toolbarHeight,
+    this.toolbarOpacity = 1,
+    this.toolbarTextStyle,
+    this.actionsIconTheme,
+    this.iconTheme,
+  });
+
+  factory AppbarProperties.fromContext(
+    BuildContext context, {
+    bool transparency = false,
+  }) {
+    final t = Theme.of(context).appBarTheme;
+    return AppbarProperties(
+      actionsIconTheme: t.actionsIconTheme ?? t.iconTheme,
+      backgroundColor: transparency ? Colors.transparent : t.backgroundColor,
+      elevation: t.elevation,
+      foregroundColor: t.foregroundColor,
+      iconTheme: t.iconTheme,
+      scrolledUnderElevation: t.scrolledUnderElevation,
+      shadowColor: t.shadowColor,
+      shape: t.shape,
+      surfaceTintColor: t.surfaceTintColor,
+      titleCenter: t.centerTitle,
+      titleSpacing: t.titleSpacing,
+      titleTextStyle: t.titleTextStyle,
+      toolbarHeight: t.toolbarHeight,
+      toolbarTextStyle: t.toolbarTextStyle,
+    );
+  }
+
+  AppbarProperties modify({
+    Key? appbarKey,
+    IconThemeData? actionsIconTheme,
+    bool? automaticallyImplyLeading,
+    Color? backgroundColor,
+    double? bottomOpacity,
+    Clip? clipBehavior,
+    double? elevation,
+    bool? excludeHeaderSemantics,
+    Color? foregroundColor,
+    bool? forceMaterialTransparency,
+    IconThemeData? iconTheme,
+    double? leadingWidth,
+    bool? primary,
+    double? scrolledUnderElevation,
+    Color? shadowColor,
+    ShapeBorder? shape,
+    Color? surfaceTintColor,
+    String? title,
+    bool? titleCenter,
+    double? titleSpacing,
+    TextStyle? titleTextStyle,
+    double? toolbarHeight,
+    double? toolbarOpacity,
+    TextStyle? toolbarTextStyle,
+  }) {
+    return AppbarProperties(
+      appbarKey: appbarKey ?? this.appbarKey,
+      actionsIconTheme: actionsIconTheme ?? this.actionsIconTheme,
+      automaticallyImplyLeading:
+          automaticallyImplyLeading ?? this.automaticallyImplyLeading,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      bottomOpacity: bottomOpacity ?? this.bottomOpacity,
+      clipBehavior: clipBehavior ?? this.clipBehavior,
+      elevation: elevation ?? this.elevation,
+      excludeHeaderSemantics:
+          excludeHeaderSemantics ?? this.excludeHeaderSemantics,
+      foregroundColor: foregroundColor ?? this.foregroundColor,
+      forceMaterialTransparency:
+          forceMaterialTransparency ?? this.forceMaterialTransparency,
+      iconTheme: iconTheme ?? this.iconTheme,
+      leadingWidth: leadingWidth ?? this.leadingWidth,
+      primary: primary ?? this.primary,
+      scrolledUnderElevation:
+          scrolledUnderElevation ?? this.scrolledUnderElevation,
+      shadowColor: shadowColor ?? this.shadowColor,
+      shape: shape ?? this.shape,
+      surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor,
+      title: title ?? this.title,
+      titleCenter: titleCenter ?? this.titleCenter,
+      titleSpacing: titleSpacing ?? this.titleSpacing,
+      titleTextStyle: titleTextStyle ?? this.titleTextStyle,
+      toolbarHeight: toolbarHeight ?? this.toolbarHeight,
+      toolbarOpacity: toolbarOpacity ?? this.toolbarOpacity,
+      toolbarTextStyle: toolbarTextStyle ?? this.toolbarTextStyle,
+    );
+  }
+}
+
+class StatusBarProperties {
+  final bool? transparency;
+  final bool? contrastEnforced;
+  final Color? color;
+  final Brightness? brightness;
+  final Brightness? iconBrightness;
+
+  const StatusBarProperties({
+    this.transparency,
+    this.contrastEnforced,
+    this.color,
+    this.brightness,
+    Brightness? iconBrightness,
+  }) : iconBrightness = iconBrightness ?? brightness;
+
+  factory StatusBarProperties.light({
+    Color color = Colors.transparent,
+    bool? contrastEnforced,
+    Brightness brightness = Brightness.light,
+    Brightness? iconBrightness,
+    bool? transparency,
+  }) {
+    return StatusBarProperties(
+      color: color,
+      contrastEnforced: contrastEnforced,
+      brightness: brightness,
+      iconBrightness: iconBrightness ?? brightness,
+      transparency: transparency,
+    );
+  }
+
+  factory StatusBarProperties.dark({
+    Color color = Colors.transparent,
+    bool? contrastEnforced,
+    Brightness brightness = Brightness.dark,
+    Brightness? iconBrightness,
+    bool? transparency,
+  }) {
+    return StatusBarProperties(
+      color: color,
+      contrastEnforced: contrastEnforced,
+      brightness: brightness,
+      iconBrightness: iconBrightness ?? brightness,
+      transparency: transparency,
+    );
+  }
+
+  factory StatusBarProperties.fromContext(
+    BuildContext context, {
+    bool transparency = false,
+  }) {
+    final t = Theme.of(context).appBarTheme.systemOverlayStyle;
+    return StatusBarProperties(
+      brightness: t?.statusBarBrightness,
+      color: transparency ? Colors.transparent : t?.statusBarColor,
+      contrastEnforced: t?.systemStatusBarContrastEnforced,
+      iconBrightness: t?.statusBarIconBrightness,
+    );
+  }
+
+  StatusBarProperties modify({
+    bool? contrastEnforced,
+    Color? color,
+    Brightness? brightness,
+    Brightness? iconBrightness,
+    bool? transparency,
+  }) {
+    return StatusBarProperties(
+      contrastEnforced: contrastEnforced ?? this.contrastEnforced,
+      color: color ?? this.color,
+      brightness: brightness ?? this.brightness,
+      iconBrightness: iconBrightness ?? this.iconBrightness,
+      transparency: transparency ?? this.transparency,
+    );
+  }
+}
+
+class NavigationBarProperties {
+  final Brightness? brightness;
+  final Color? color;
+  final bool? contrastEnforced;
+  final Color? dividerColor;
+  final bool? transparency;
+
+  const NavigationBarProperties({
+    this.contrastEnforced,
+    this.color,
+    Color? dividerColor,
+    this.brightness,
+    this.transparency,
+  }) : dividerColor = dividerColor ?? color;
+
+  factory NavigationBarProperties.light({
+    Brightness brightness = Brightness.light,
+    Color color = Colors.transparent,
+    bool? contrastEnforced,
+    Color? dividerColor,
+    bool? transparency,
+  }) {
+    return NavigationBarProperties(
+      color: color,
+      contrastEnforced: contrastEnforced,
+      brightness: brightness,
+      dividerColor: dividerColor,
+      transparency: transparency,
+    );
+  }
+
+  factory NavigationBarProperties.dark({
+    Brightness brightness = Brightness.dark,
+    Color color = Colors.black,
+    bool? contrastEnforced,
+    Color? dividerColor,
+    bool? transparency,
+  }) {
+    return NavigationBarProperties(
+      color: color,
+      contrastEnforced: contrastEnforced,
+      brightness: brightness,
+      dividerColor: dividerColor,
+      transparency: transparency,
+    );
+  }
+
+  factory NavigationBarProperties.fromContext(
+    BuildContext context, {
+    bool transparency = false,
+  }) {
+    final t = Theme.of(context).appBarTheme.systemOverlayStyle;
+    return NavigationBarProperties(
+      brightness: t?.systemNavigationBarIconBrightness,
+      color: transparency ? Colors.transparent : t?.systemNavigationBarColor,
+      contrastEnforced: t?.systemNavigationBarContrastEnforced,
+      dividerColor: t?.systemNavigationBarDividerColor,
+    );
+  }
+
+  NavigationBarProperties modify({
+    bool? contrastEnforced,
+    Color? color,
+    Color? dividerColor,
+    Brightness? brightness,
+    bool? transparency,
+  }) {
+    return NavigationBarProperties(
+      contrastEnforced: contrastEnforced ?? this.contrastEnforced,
+      color: color ?? this.color,
+      dividerColor: dividerColor ?? this.dividerColor,
+      brightness: brightness ?? this.brightness,
+      transparency: transparency ?? this.transparency,
+    );
+  }
+}
+
 abstract class AndrossyActivity<T extends AndrossyController>
     extends StatefulWidget {
   final String? identifier;
   final bool showLifecycleLog;
   final bool statusBar;
+  final bool transparentAppBar;
+  final bool transparentNavigationBar;
 
   const AndrossyActivity({
     super.key,
     this.identifier,
     this.showLifecycleLog = false,
     this.statusBar = true,
+    this.transparentAppBar = false,
+    this.transparentNavigationBar = false,
   });
 
   AndrossyInstance<T> get instance => AndrossyInstance.init<T>(identifier);
@@ -38,28 +421,41 @@ abstract class AndrossyActivity<T extends AndrossyController>
 
   T init(BuildContext context);
 
+  @mustCallSuper
   @protected
   ScaffoldProperties properties(BuildContext context) {
-    return const ScaffoldProperties();
+    return ScaffoldProperties.fromContext(
+      context,
+      transparencyAppBar: transparentAppBar,
+      transparencyNavigationBar: transparentNavigationBar,
+    );
   }
 
+  @mustCallSuper
   @protected
   AppbarProperties appbarProperties(BuildContext context) {
-    return const AppbarProperties();
+    return AppbarProperties.fromContext(
+      context,
+      transparency: transparentAppBar,
+    );
   }
 
-  StatusBarProperties statusBarProperties(
-    BuildContext context,
-    StatusBarProperties properties,
-  ) {
-    return properties;
+  @mustCallSuper
+  @protected
+  StatusBarProperties statusBarProperties(BuildContext context) {
+    return StatusBarProperties.fromContext(
+      context,
+      transparency: transparentAppBar,
+    );
   }
 
-  NavigationBarProperties navigationBarProperties(
-    BuildContext context,
-    NavigationBarProperties properties,
-  ) {
-    return properties;
+  @mustCallSuper
+  @protected
+  NavigationBarProperties navigationBarProperties(BuildContext context) {
+    return NavigationBarProperties.fromContext(
+      context,
+      transparency: transparentNavigationBar,
+    );
   }
 
   @protected
@@ -74,46 +470,38 @@ abstract class AndrossyActivity<T extends AndrossyController>
 
   @protected
   AppBar? onCreateAppbar(BuildContext context) {
-    var t = Theme.of(context).appBarTheme;
-    var s = appbarProperties(context);
-    var it = s.iconTheme ?? t.iconTheme;
-    var ait = s.actionsIconTheme ?? t.actionsIconTheme;
-    var sos = s.systemOverlayStyle ?? t.systemOverlayStyle;
-    var mSC = statusBarProperties(
-      context,
-      StatusBarProperties(
-        contrastEnforced: sos?.systemStatusBarContrastEnforced,
-        color: sos?.statusBarColor,
-        brightness: sos?.statusBarBrightness,
-        iconBrightness: sos?.statusBarIconBrightness,
-      ),
-    );
-    var mNC = navigationBarProperties(
-      context,
-      NavigationBarProperties(
-        contrastEnforced: sos?.systemNavigationBarContrastEnforced,
-        color: sos?.systemNavigationBarColor,
-        dividerColor: sos?.systemNavigationBarDividerColor,
-        brightness: sos?.systemNavigationBarIconBrightness,
-      ),
-    );
+    final t = Theme.of(context).appBarTheme;
+    final s = appbarProperties(context);
+    final it = s.iconTheme ?? t.iconTheme;
+    final ait = s.actionsIconTheme ?? t.actionsIconTheme;
+
+    final mSC = statusBarProperties(context);
+    final mNC = navigationBarProperties(context);
+
+    final mTitle = onCreateTitle(context, s);
+    final mActions = onCreateActions(context);
+    final mBottom = onCreateToolbarBottom(context);
+    final mFlexibleSpace = onCreateToolbarFlexibleSpace(context);
+    final mLeading = onCreateLeading(context);
+    final mTH = mTitle == null ? 0.0 : s.toolbarHeight ?? t.toolbarHeight;
+
     return AppBar(
       key: s.appbarKey,
-      actions: onCreateActions(context),
+      actions: mActions,
       actionsIconTheme: ait ?? it,
       automaticallyImplyLeading: s.automaticallyImplyLeading,
       backgroundColor: s.backgroundColor ?? t.backgroundColor,
-      bottom: onCreateToolbarBottom(context),
+      bottom: mBottom,
       bottomOpacity: s.bottomOpacity,
       centerTitle: s.titleCenter ?? t.centerTitle,
       clipBehavior: s.clipBehavior,
       elevation: s.elevation ?? t.elevation,
       excludeHeaderSemantics: s.excludeHeaderSemantics,
-      flexibleSpace: onCreateToolbarFlexibleSpace(context),
+      flexibleSpace: mFlexibleSpace,
       foregroundColor: s.foregroundColor ?? t.foregroundColor,
       forceMaterialTransparency: s.forceMaterialTransparency,
       iconTheme: it,
-      leading: onCreateLeading(context),
+      leading: mLeading,
       leadingWidth: s.leadingWidth,
       notificationPredicate: onCreateNotificationPredicate,
       primary: s.primary,
@@ -132,10 +520,10 @@ abstract class AndrossyActivity<T extends AndrossyController>
         systemNavigationBarIconBrightness: mNC.brightness,
         systemNavigationBarContrastEnforced: mNC.contrastEnforced,
       ),
-      title: onCreateTitle(context, s),
+      title: mTitle,
       titleSpacing: s.titleSpacing ?? t.titleSpacing,
       titleTextStyle: s.titleTextStyle ?? t.titleTextStyle,
-      toolbarHeight: s.toolbarHeight ?? t.toolbarHeight,
+      toolbarHeight: mTH,
       toolbarOpacity: s.toolbarOpacity,
       toolbarTextStyle: s.toolbarTextStyle ?? t.toolbarTextStyle,
     );
@@ -376,282 +764,6 @@ class AndrossyActivityState<T extends AndrossyController>
           ),
         );
       },
-    );
-  }
-}
-
-class NavigationBarProperties {
-  final bool? contrastEnforced;
-  final Color? color;
-  final Color? dividerColor;
-  final Brightness? brightness;
-
-  const NavigationBarProperties({
-    this.contrastEnforced,
-    this.color,
-    Color? dividerColor,
-    this.brightness,
-  }) : dividerColor = dividerColor ?? color;
-
-  factory NavigationBarProperties.light([Color color = Colors.transparent]) {
-    return NavigationBarProperties(
-      color: color,
-      brightness: Brightness.dark,
-    );
-  }
-
-  factory NavigationBarProperties.dark([Color color = Colors.black]) {
-    return NavigationBarProperties(
-      color: color,
-      brightness: Brightness.light,
-    );
-  }
-
-  NavigationBarProperties copyWith({
-    bool? contrastEnforced,
-    Color? color,
-    Color? dividerColor,
-    Brightness? brightness,
-  }) {
-    return NavigationBarProperties(
-      contrastEnforced: contrastEnforced ?? this.contrastEnforced,
-      color: color ?? this.color,
-      dividerColor: dividerColor ?? this.dividerColor,
-      brightness: brightness ?? this.brightness,
-    );
-  }
-}
-
-class ScaffoldProperties {
-  final Color? backgroundColor;
-  final double? drawerEdgeDragWidth;
-  final bool drawerEnableOpenDragGesture;
-  final DragStartBehavior drawerDragStartBehavior;
-  final Color? drawerScrimColor;
-  final bool endDrawerEnableOpenDragGesture;
-  final bool extendBody;
-  final bool extendBodyBehindAppBar;
-  final FloatingActionButtonAnimator? floatingActionButtonAnimator;
-  final FloatingActionButtonLocation? floatingActionButtonLocation;
-  final bool primary;
-  final AlignmentDirectional persistentFooterAlignment;
-  final String? restorationId;
-  final bool? resizeToAvoidBottomInset;
-
-  const ScaffoldProperties({
-    this.backgroundColor,
-    this.drawerEdgeDragWidth,
-    this.drawerEnableOpenDragGesture = true,
-    this.drawerDragStartBehavior = DragStartBehavior.start,
-    this.drawerScrimColor,
-    this.endDrawerEnableOpenDragGesture = true,
-    this.extendBody = false,
-    this.extendBodyBehindAppBar = false,
-    this.floatingActionButtonAnimator,
-    this.floatingActionButtonLocation,
-    this.primary = true,
-    this.persistentFooterAlignment = AlignmentDirectional.centerEnd,
-    this.restorationId,
-    this.resizeToAvoidBottomInset,
-  });
-
-  ScaffoldProperties copyWith({
-    Color? backgroundColor,
-    double? drawerEdgeDragWidth,
-    bool? drawerEnableOpenDragGesture,
-    DragStartBehavior? drawerDragStartBehavior,
-    Color? drawerScrimColor,
-    bool? endDrawerEnableOpenDragGesture,
-    bool? extendBody,
-    bool? extendBodyBehindAppBar,
-    FloatingActionButtonAnimator? floatingActionButtonAnimator,
-    FloatingActionButtonLocation? floatingActionButtonLocation,
-    bool? primary,
-    AlignmentDirectional? persistentFooterAlignment,
-    String? restorationId,
-    bool? resizeToAvoidBottomInset,
-  }) {
-    return ScaffoldProperties(
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      drawerEdgeDragWidth: drawerEdgeDragWidth ?? this.drawerEdgeDragWidth,
-      drawerEnableOpenDragGesture:
-          drawerEnableOpenDragGesture ?? this.drawerEnableOpenDragGesture,
-      drawerDragStartBehavior:
-          drawerDragStartBehavior ?? this.drawerDragStartBehavior,
-      drawerScrimColor: drawerScrimColor ?? this.drawerScrimColor,
-      endDrawerEnableOpenDragGesture:
-          endDrawerEnableOpenDragGesture ?? this.endDrawerEnableOpenDragGesture,
-      extendBody: extendBody ?? this.extendBody,
-      extendBodyBehindAppBar:
-          extendBodyBehindAppBar ?? this.extendBodyBehindAppBar,
-      floatingActionButtonAnimator:
-          floatingActionButtonAnimator ?? this.floatingActionButtonAnimator,
-      floatingActionButtonLocation:
-          floatingActionButtonLocation ?? this.floatingActionButtonLocation,
-      primary: primary ?? this.primary,
-      persistentFooterAlignment:
-          persistentFooterAlignment ?? this.persistentFooterAlignment,
-      restorationId: restorationId ?? this.restorationId,
-      resizeToAvoidBottomInset:
-          resizeToAvoidBottomInset ?? this.resizeToAvoidBottomInset,
-    );
-  }
-}
-
-class AppbarProperties {
-  final Key? appbarKey;
-  final IconThemeData? actionsIconTheme;
-  final bool automaticallyImplyLeading;
-  final Color? backgroundColor;
-  final double bottomOpacity;
-  final Clip? clipBehavior;
-  final double? elevation;
-  final bool excludeHeaderSemantics;
-  final Color? foregroundColor;
-  final bool forceMaterialTransparency;
-  final IconThemeData? iconTheme;
-  final double? leadingWidth;
-  final bool primary;
-  final double? scrolledUnderElevation;
-  final Color? shadowColor;
-  final ShapeBorder? shape;
-  final Color? surfaceTintColor;
-  final SystemUiOverlayStyle? systemOverlayStyle;
-  final String? title;
-  final bool? titleCenter;
-  final double? titleSpacing;
-  final TextStyle? titleTextStyle;
-  final double? toolbarHeight;
-  final double toolbarOpacity;
-  final TextStyle? toolbarTextStyle;
-
-  const AppbarProperties({
-    this.appbarKey,
-    this.automaticallyImplyLeading = true,
-    this.backgroundColor,
-    this.bottomOpacity = 1,
-    this.clipBehavior,
-    this.elevation,
-    this.excludeHeaderSemantics = false,
-    this.foregroundColor,
-    this.forceMaterialTransparency = false,
-    this.leadingWidth,
-    this.primary = true,
-    this.scrolledUnderElevation,
-    this.shadowColor,
-    this.shape,
-    this.surfaceTintColor,
-    this.title,
-    this.titleCenter,
-    this.titleSpacing,
-    this.titleTextStyle,
-    this.toolbarHeight,
-    this.toolbarOpacity = 1,
-    this.toolbarTextStyle,
-    this.actionsIconTheme,
-    this.iconTheme,
-    this.systemOverlayStyle,
-  });
-
-  AppbarProperties copyWith({
-    Key? appbarKey,
-    IconThemeData? actionsIconTheme,
-    bool? automaticallyImplyLeading,
-    Color? backgroundColor,
-    double? bottomOpacity,
-    Clip? clipBehavior,
-    double? elevation,
-    bool? excludeHeaderSemantics,
-    Color? foregroundColor,
-    bool? forceMaterialTransparency,
-    IconThemeData? iconTheme,
-    double? leadingWidth,
-    bool? primary,
-    double? scrolledUnderElevation,
-    Color? shadowColor,
-    ShapeBorder? shape,
-    Color? surfaceTintColor,
-    SystemUiOverlayStyle? systemOverlayStyle,
-    String? title,
-    bool? titleCenter,
-    double? titleSpacing,
-    TextStyle? titleTextStyle,
-    double? toolbarHeight,
-    double? toolbarOpacity,
-    TextStyle? toolbarTextStyle,
-  }) {
-    return AppbarProperties(
-      appbarKey: appbarKey ?? this.appbarKey,
-      actionsIconTheme: actionsIconTheme ?? this.actionsIconTheme,
-      automaticallyImplyLeading:
-          automaticallyImplyLeading ?? this.automaticallyImplyLeading,
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      bottomOpacity: bottomOpacity ?? this.bottomOpacity,
-      clipBehavior: clipBehavior ?? this.clipBehavior,
-      elevation: elevation ?? this.elevation,
-      excludeHeaderSemantics:
-          excludeHeaderSemantics ?? this.excludeHeaderSemantics,
-      foregroundColor: foregroundColor ?? this.foregroundColor,
-      forceMaterialTransparency:
-          forceMaterialTransparency ?? this.forceMaterialTransparency,
-      iconTheme: iconTheme ?? this.iconTheme,
-      leadingWidth: leadingWidth ?? this.leadingWidth,
-      primary: primary ?? this.primary,
-      scrolledUnderElevation:
-          scrolledUnderElevation ?? this.scrolledUnderElevation,
-      shadowColor: shadowColor ?? this.shadowColor,
-      shape: shape ?? this.shape,
-      surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor,
-      systemOverlayStyle: systemOverlayStyle ?? this.systemOverlayStyle,
-      title: title ?? this.title,
-      titleCenter: titleCenter ?? this.titleCenter,
-      titleSpacing: titleSpacing ?? this.titleSpacing,
-      titleTextStyle: titleTextStyle ?? this.titleTextStyle,
-      toolbarHeight: toolbarHeight ?? this.toolbarHeight,
-      toolbarOpacity: toolbarOpacity ?? this.toolbarOpacity,
-      toolbarTextStyle: toolbarTextStyle ?? this.toolbarTextStyle,
-    );
-  }
-}
-
-class StatusBarProperties {
-  final bool? contrastEnforced;
-  final Color? color;
-  final Brightness? brightness;
-  final Brightness? iconBrightness;
-
-  const StatusBarProperties({
-    this.contrastEnforced,
-    this.color,
-    this.brightness,
-    Brightness? iconBrightness,
-  }) : iconBrightness = iconBrightness ?? brightness;
-
-  factory StatusBarProperties.light([Color color = Colors.transparent]) {
-    return StatusBarProperties(
-      color: color,
-      brightness: Brightness.dark,
-    );
-  }
-
-  factory StatusBarProperties.dark([Color color = Colors.transparent]) {
-    return StatusBarProperties(
-      color: color,
-      brightness: Brightness.light,
-    );
-  }
-
-  StatusBarProperties copyWith({
-    bool? contrastEnforced,
-    Color? color,
-    Brightness? brightness,
-    Brightness? iconBrightness,
-  }) {
-    return StatusBarProperties(
-      contrastEnforced: contrastEnforced ?? this.contrastEnforced,
-      color: color ?? this.color,
-      brightness: brightness ?? this.brightness,
-      iconBrightness: iconBrightness ?? this.iconBrightness,
     );
   }
 }

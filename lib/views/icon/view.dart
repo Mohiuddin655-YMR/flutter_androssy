@@ -5,9 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'raw.dart';
-
 part 'type.dart';
 
 class IconView<T extends IconViewController> extends YMRView<T> {
@@ -66,6 +64,10 @@ class IconView<T extends IconViewController> extends YMRView<T> {
     /// ANIMATION PROPERTIES
     super.animation,
     super.animationType,
+
+    /// BACKDROP PROPERTIES
+    super.backdropFilter,
+    super.backdropMode,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -134,8 +136,18 @@ class IconView<T extends IconViewController> extends YMRView<T> {
     super.onClick,
     super.onDoubleClick,
     super.onLongClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
     super.onHover,
     super.onToggle,
+
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onValid,
+    super.onValidator,
 
     /// CHILD PROPERTIES
     this.icon,
