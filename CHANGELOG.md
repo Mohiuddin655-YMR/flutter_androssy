@@ -1,3 +1,7 @@
+## 0.3.21
+
+* Update button default color, slide_layout and theme
+
 ## 0.3.20
 
 * Update view and controller with add click effect

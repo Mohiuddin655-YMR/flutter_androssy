@@ -138,6 +138,9 @@ class RadioLayout extends YMRView<RadioLayoutController> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
+
     /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,

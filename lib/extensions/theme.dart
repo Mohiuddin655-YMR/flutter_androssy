@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  final BuildContext context;
   final ThemeData I;
 
-  AppTheme.of(this.context) : I = Theme.of(context);
+  AppTheme.of(BuildContext context) : I = Theme.of(context);
 
   Color get primaryColor => I.primaryColor;
 
@@ -13,9 +12,9 @@ class AppTheme {
 
   Color get primaryColorLight => I.primaryColorLight;
 
-  Color get backgroundColor => Colors.white;
+  Color get backgroundColor => I.colorScheme.background;
 
-  Color get bottomAppBarColor => Colors.white;
+  Color? get bottomAppBarColor => I.bottomAppBarTheme.color;
 
   Color get canvasColor => I.canvasColor;
 
@@ -35,7 +34,7 @@ class AppTheme {
 
   Color get dividerColor => I.dividerColor;
 
-  Color get errorColor => Colors.red;
+  Color get errorColor => I.colorScheme.error;
 
   Color get indicatorColor => I.indicatorColor;
 
@@ -208,7 +207,7 @@ extension ContextExtension on BuildContext {
 
   Color get backgroundColor => I.backgroundColor;
 
-  Color get bottomAppBarColor => I.bottomAppBarColor;
+  Color? get bottomAppBarColor => I.bottomAppBarColor;
 
   Color get canvasColor => I.canvasColor;
 

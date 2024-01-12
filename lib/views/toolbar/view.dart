@@ -138,6 +138,9 @@ class ToolbarView extends YMRView<ToolbarViewController> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
+
     /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,

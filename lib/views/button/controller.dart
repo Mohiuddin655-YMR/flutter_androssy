@@ -131,7 +131,7 @@ class ButtonController extends TextViewController {
               : isBorder
                   ? theme.primaryColor
                   : Colors.white
-          : Colors.grey.shade400;
+          : Colors.grey.withOpacity(0.75);
     }
     return I;
   }
@@ -143,7 +143,7 @@ class ButtonController extends TextViewController {
           ? activated
               ? theme.primaryColor.withOpacity(0.1)
               : theme.primaryColor
-          : Colors.grey.shade200;
+          : Colors.grey.withOpacity(0.1);
     }
     return super.background;
   }
@@ -155,7 +155,7 @@ class ButtonController extends TextViewController {
           ? activated
               ? theme.primaryColor.withOpacity(0.1)
               : theme.primaryColor
-          : Colors.grey.shade200;
+          : Colors.grey.withOpacity(0.1);
     }
     return super.background;
   }

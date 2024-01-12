@@ -124,6 +124,9 @@ class LinearLayout<T extends LinearLayoutController> extends YMRView<T> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
+
     /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,

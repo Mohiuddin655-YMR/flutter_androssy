@@ -11,13 +11,9 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'drawable_state.dart';
-
 part 'highlight_text.dart';
-
 part 'typedefs.dart';
-
 part 'underline.dart';
 
 class EditText<T extends EditTextController> extends TextView<T> {
@@ -76,7 +72,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final double indicatorStroke;
   final Color? indicatorStrokeBackground;
   final ValueState<Color>? indicatorStrokeBackgroundState;
-  final bool indicatorVisible;
 
   /// EDITING PROPERTIES
   final bool autocorrect;
@@ -230,6 +225,9 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
+
     /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,
@@ -335,7 +333,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.indicatorStroke = 2,
     this.indicatorStrokeBackground,
     this.indicatorStrokeBackgroundState,
-    this.indicatorVisible = false,
 
     /// EDITING PROPERTIES
     this.autocorrect = true,

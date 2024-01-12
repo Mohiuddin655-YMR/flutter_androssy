@@ -184,6 +184,9 @@ class NullableView extends YMRView<NullableViewController> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
+
     /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,

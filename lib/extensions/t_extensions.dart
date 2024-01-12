@@ -16,8 +16,8 @@ extension TExtension<T> on T {
     return this;
   }
 
-  T log(String tag) {
-    developer.log("$tag : ${toString()}");
+  T log(String msg) {
+    developer.log("${toString()} : $msg");
     return this;
   }
 }

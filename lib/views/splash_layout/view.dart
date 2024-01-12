@@ -124,6 +124,9 @@ class SplashLayout<T extends SplashLayoutController> extends YMRView<T> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
+
     /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,

@@ -130,6 +130,9 @@ class ImageLayout<T> extends YMRView<ImageLayoutController<T>> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
+
     /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,

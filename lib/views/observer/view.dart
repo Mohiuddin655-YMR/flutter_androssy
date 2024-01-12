@@ -6,7 +6,7 @@ part 'controller.dart';
 part 'extension.dart';
 
 class ViewObserver<T> extends YMRView<Observer<T>> {
-  final Widget Function(BuildContext context, T? value) builder;
+  final Widget Function(BuildContext context, T value) builder;
 
   const ViewObserver({
     /// ROOT PROPERTIES
@@ -112,6 +112,9 @@ class ViewObserver<T> extends YMRView<Observer<T>> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
+
     /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,
@@ -150,7 +153,7 @@ class ViewObserver<T> extends YMRView<Observer<T>> {
   }) : super(controller: observer);
 
   @override
-  Observer<T> initController() => Observer<T>(null);
+  Observer<T> initController() => Observer<T>(null as T);
 
   @override
   Widget? attach(BuildContext context, Observer<T> controller) {

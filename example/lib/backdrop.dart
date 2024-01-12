@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -48,7 +47,7 @@ class Home extends AndrossyActivity<HomeController> {
           height: double.infinity,
           scaleType: BoxFit.cover,
           image:
-          "https://images.pexels.com/photos/45853/grey-crowned-crane-bird-crane-animal-45853.jpeg?auto=compress&cs=tinysrgb&w=600",
+              "https://images.pexels.com/photos/45853/grey-crowned-crane-bird-crane-animal-45853.jpeg?auto=compress&cs=tinysrgb&w=600",
           imageType: ImageType.network,
         ),
         TextView(

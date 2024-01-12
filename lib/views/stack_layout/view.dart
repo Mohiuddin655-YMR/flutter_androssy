@@ -114,6 +114,9 @@ class StackLayout<T extends StackLayoutController> extends YMRView<T> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
+
     /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,

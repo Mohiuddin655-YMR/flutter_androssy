@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
-
-import '../view/view.dart';
+import 'package:flutter_androssy/widgets.dart';
 
 part 'controller.dart';
-part 'flex_position.dart';
-part 'flex_visible_type.dart';
+part 'item.dart';
+part 'typedefs.dart';
 
-class FlexibleView extends YMRView<FlexibleViewController> {
-  final Widget? flexible;
-  final FlexPosition flexPosition;
-  final FlexVisibleType type;
+class SlideLayout<T> extends YMRView<SlideLayoutController<T>> {
+  final OnSlideLayoutCounterBuilder<T>? counterBuilder;
+  final OnSlideLayoutCounterHandler? counterHandler;
+  final ViewPositionType? counterPosition;
+  final bool? counterVisible;
+  final double frameRatio;
+  final int index;
+  final OnSlideLayoutItemBuilder<T> itemBuilder;
+  final List<T> items;
 
-  const FlexibleView({
+  const SlideLayout({
     /// ROOT PROPERTIES
     super.key,
     super.controller,
@@ -152,50 +156,33 @@ class FlexibleView extends YMRView<FlexibleViewController> {
     super.shadowBottom,
 
     /// CHILD PROPERTIES
-    this.flexible,
-    this.flexPosition = FlexPosition.start,
-    this.type = FlexVisibleType.front,
+    this.counterBuilder,
+    this.counterHandler,
+    this.counterPosition,
+    this.counterVisible,
+    this.frameRatio = 1,
+    this.index = 0,
+    required this.items,
+    required this.itemBuilder,
   });
 
   @override
-  FlexibleViewController initController() {
-    return FlexibleViewController();
+  SlideLayoutController<T> initController() {
+    return SlideLayoutController<T>();
   }
 
   @override
-  FlexibleViewController attachController(FlexibleViewController controller) {
-    return controller.fromView(
-      this,
-      flexible: flexible,
-      flexPosition: flexPosition,
-      visibleType: type,
-    );
+  SlideLayoutController<T> attachController(
+    SlideLayoutController<T> controller,
+  ) {
+    return controller.fromSlideImageView(this);
   }
 
   @override
-  Widget? attach(BuildContext context, FlexibleViewController controller) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        controller.isBack
-            ? Positioned(
-                left: controller.flexPosition.left,
-                right: controller.flexPosition.right,
-                top: controller.flexPosition.top,
-                bottom: controller.flexPosition.bottom,
-                child: controller.flexible,
-              )
-            : controller.child,
-        controller.isFront
-            ? Positioned(
-                left: controller.flexPosition.left,
-                right: controller.flexPosition.right,
-                top: controller.flexPosition.top,
-                bottom: controller.flexPosition.bottom,
-                child: controller.flexible,
-              )
-            : controller.child,
-      ],
+  Widget? attach(BuildContext context, SlideLayoutController<T> controller) {
+    return _Item(
+      controller: controller,
+      itemBuilder: itemBuilder,
     );
   }
 }

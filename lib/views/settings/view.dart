@@ -134,6 +134,9 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
+
     /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,
@@ -288,6 +291,9 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.borderRadiusTLState,
     super.borderRadiusTR,
     super.borderRadiusTRState,
+
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
 
     /// MARGIN PROPERTIES
     super.margin,
@@ -444,6 +450,9 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.borderRadiusTR,
     super.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
+
     /// MARGIN PROPERTIES
     super.margin,
     super.marginHorizontal,
@@ -598,6 +607,9 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.borderRadiusTLState,
     super.borderRadiusTR,
     super.borderRadiusTRState,
+
+    /// INDICATOR PROPERTIES
+    super.indicatorVisible,
 
     /// MARGIN PROPERTIES
     super.margin,
