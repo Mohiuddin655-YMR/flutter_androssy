@@ -1,3 +1,7 @@
+## 0.3.20
+
+* Update view and controller with add click effect
+
 ## 0.3.19
 
 * Add backdrop inside view

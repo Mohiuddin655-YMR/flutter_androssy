@@ -1,167 +1,181 @@
 part of 'view.dart';
 
 class ViewController {
-  @mustCallSuper
-  ViewController fromView(YMRView view) {
-    /// VIEW BACKDROP PROPERTIES
-    backdropFilter = view.backdropFilter;
-    backdropMode = view.backdropMode;
+  /// BASE PROPERTIES
+  BuildContext? context;
 
-    /// VIEW BORDER PROPERTIES
-    _borderColor = view.borderColor;
-    _borderSize = view.borderSize;
-    _borderStart = view.borderStart;
-    _borderEnd = view.borderEnd;
-    _borderTop = view.borderTop;
-    _borderBottom = view.borderBottom;
-    _borderHorizontal = view.borderHorizontal;
-    _borderVertical = view.borderVertical;
-    _borderStrokeAlign = view.borderStrokeAlign;
-    borderColorState = view.borderColorState;
-    borderSizeState = view.borderSizeState;
-    borderStartState = view.borderStartState;
-    borderEndState = view.borderEndState;
-    borderTopState = view.borderTopState;
-    borderBottomState = view.borderBottomState;
-    borderHorizontalState = view.borderHorizontalState;
-    borderVerticalState = view.borderVerticalState;
+  ViewRoots roots = const ViewRoots();
 
-    /// VIEW BORDER RADIUS PROPERTIES
-    _borderRadiusAll = view.borderRadius;
-    _borderRadiusBL = view.borderRadiusBL;
-    _borderRadiusBR = view.borderRadiusBR;
-    _borderRadiusTL = view.borderRadiusTL;
-    _borderRadiusTR = view.borderRadiusTR;
-    borderRadiusAllState = view.borderRadiusState;
-    borderRadiusBLState = view.borderRadiusBLState;
-    borderRadiusBRState = view.borderRadiusBRState;
-    borderRadiusTLState = view.borderRadiusTLState;
-    borderRadiusTRState = view.borderRadiusTRState;
+  ThemeData get theme => context != null ? Theme.of(context!) : ThemeData();
 
-    /// INDICATOR AND ACTIVATOR PROPERTIES
+  void onNotifyActivator(
+    dynamic data, {
+    VoidCallback? callback,
+  }) async {
+    if (onActivator != null) {
+      onNotifyWithCallback(() => indicatorVisible = true);
+      bool value = await onActivator!(data);
+      onNotifyWithCallback(() {
+        activated = value;
+        indicatorVisible = false;
+      });
+    } else {
+      if (callback != null) callback();
+    }
+  }
+
+  void onNotifyToggleWithActivator() {
+    onNotifyActivator(!activated, callback: onNotifyToggle);
+  }
+
+  /// CALLBACK PROPERTIES
+  OnViewActivator? _onActivator;
+  OnViewChangeListener? _onChange;
+  OnViewErrorListener? _onError;
+  OnViewHoverListener? _onHover;
+  OnViewValidListener? _onValid;
+  OnViewValidatorListener? _onValidator;
+
+  OnViewActivator? get onActivator => enabled ? _onActivator : null;
+
+  set onActivator(OnViewActivator? value) => _onActivator ??= value;
+
+  OnViewChangeListener? get onChange => enabled ? _onChange : null;
+
+  set onChange(OnViewChangeListener? listener) => _onChange ??= listener;
+
+  OnViewErrorListener? get onError => enabled ? _onError : null;
+
+  set onError(OnViewErrorListener? listener) => _onError ??= listener;
+
+  OnViewHoverListener? get onHover => enabled ? _onHover : null;
+
+  set onHover(OnViewHoverListener? listener) => _onHover ??= listener;
+
+  OnViewValidListener? get onValid => enabled ? _onValid : null;
+
+  set onValid(OnViewValidListener? listener) => _onValid ??= listener;
+
+  OnViewValidatorListener? get onValidator => enabled ? _onValidator : null;
+
+  set onValidator(OnViewValidatorListener? listener) =>
+      _onValidator ??= listener;
+
+  void setOnActivatorListener(OnViewActivator listener) =>
+      _onActivator = listener;
+
+  void setOnChangeListener(OnViewChangeListener listener) =>
+      _onChange = listener;
+
+  void setOnHoverListener(OnViewHoverListener listener) => _onHover = listener;
+
+  void setOnErrorListener(OnViewErrorListener listener) => _onError = listener;
+
+  void setOnValidListener(OnViewValidListener listener) => _onValid = listener;
+
+  void setOnValidatorListener(OnViewValidatorListener listener) =>
+      _onValidator = listener;
+
+  void _initCallback(YMRView view) {
     onActivator = view.onActivator;
+    onChange = view.onChange;
+    onError = view.onError;
+    onHover = view.onHover;
+    onValid = view.onValid;
+    onValidator = view.onValidator;
+  }
 
-    ///
-    ///
-    ///
-    ///
-    ///
-    hoverColor = view.hoverColor;
-    pressedColor = view.pressedColor;
-    rippleColor = view.rippleColor;
+  /// CLICK PROPERTIES
+  ViewClickEffect? clickEffect;
+  OnViewClickListener? _onClick, _onDoubleClick, _onLongClick;
+  OnViewToggleListener? _onToggleClick;
+  OnViewNotifyListener? _onClickHandler, _onDoubleClickHandler;
+  OnViewNotifyListener? _onLongClickHandler;
 
-    /// VIEW CONDITIONAL PROPERTIES
-    absorbMode = view.absorbMode ?? false;
-    activated = view.activated ?? false;
-    enabled = view.enabled ?? true;
-    expandable = view.expandable ?? false;
-    scrollable = view.scrollable ?? false;
-    visible = view.visibility ?? true;
-    wrapper = view.wrapper ?? false;
+  bool get isClickable {
+    return onClick != null || onClickHandler != null || isToggleClickable;
+  }
 
-    /// ANIMATION PROPERTIES
-    animation = view.animation ?? 0;
-    animationType = view.animationType ?? Curves.linear;
+  bool get isDoubleClickable {
+    return onDoubleClick != null || onDoubleClickHandler != null;
+  }
 
-    /// VIEW SIZE PROPERTIES
-    flex = view.flex ?? 0;
-    _dimensionRatio = view.dimensionRatio;
-    elevation = view.elevation ?? 0;
-    _width = view.width;
-    widthState = view.widthState;
-    _widthMax = view.widthMax;
-    _widthMin = view.widthMin;
-    _height = view.height;
-    heightState = view.heightState;
-    _heightMax = view.heightMax;
-    _heightMin = view.heightMin;
+  bool get isLongClickable => onLongClick != null || onLongClickHandler != null;
 
-    /// VIEW MARGIN PROPERTIES
-    marginValue = view.margin ?? 0;
-    marginVertical = view.marginVertical;
-    _marginStart = view.marginStart;
-    _marginEnd = view.marginEnd;
-    _marginTop = view.marginTop;
-    _marginBottom = view.marginBottom;
-    marginHorizontal = view.marginHorizontal;
+  bool get isClickMode {
+    final isAnyClick = isClickable || isDoubleClickable || isLongClickable;
+    return roots.clickable && (isAnyClick || isInkWellMode);
+  }
 
-    /// VIEW PADDING PROPERTIES
-    _padding = view.padding ?? 0;
-    _paddingStart = view.paddingStart;
-    _paddingEnd = view.paddingEnd;
-    _paddingTop = view.paddingTop;
-    _paddingBottom = view.paddingBottom;
-    paddingHorizontal = view.paddingHorizontal;
-    paddingVertical = view.paddingVertical;
+  OnViewClickListener? get onClick => enabled ? _onClick : null;
 
-    /// VIEW SHADOW PROPERTIES
-    shadowColor = view.shadowColor;
-    shadow = view.shadow ?? 0;
-    _shadowStart = view.shadowStart;
-    _shadowEnd = view.shadowEnd;
-    _shadowTop = view.shadowTop;
-    _shadowBottom = view.shadowBottom;
-    shadowHorizontal = view.shadowHorizontal;
-    shadowVertical = view.shadowVertical;
-    shadowBlurRadius = view.shadowBlurRadius ?? 5;
-    shadowBlurStyle = view.shadowBlurStyle ?? BlurStyle.normal;
-    shadowSpreadRadius = view.shadowSpreadRadius ?? 0;
-    shadowType = view.shadowType ?? ViewShadowType.none;
+  set onClick(OnViewClickListener? listener) => _onClick ??= listener;
 
-    /// VIEW DECORATION PROPERTIES
-    _background = view.background;
-    foreground = view.foreground;
-    backgroundBlendMode = view.backgroundBlendMode;
-    foregroundBlendMode = view.foregroundBlendMode;
-    _backgroundGradient = view.backgroundGradient;
-    foregroundGradient = view.foregroundGradient;
-    _backgroundImage = view.backgroundImage;
-    foregroundImage = view.foregroundImage;
-    clipBehavior = view.clipBehavior ?? Clip.antiAlias;
-    gravity = view.gravity;
-    orientation = view.orientation ?? Axis.vertical;
-    _position = view.position;
-    positionType = view.positionType ?? ViewPositionType.center;
-    scrollController = view.scrollController;
-    scrollingType = view.scrollingType ?? ViewScrollingType.none;
-    shape = view.shape ?? ViewShape.rectangular;
-    transform = view.transform;
-    transformGravity = view.transformGravity;
-    transform = view.transform;
-    child = view.child;
+  OnViewClickListener? get onDoubleClick => enabled ? _onDoubleClick : null;
 
-    /// Properties
-    roots = view.initRootProperties();
+  set onDoubleClick(OnViewClickListener? listener) =>
+      _onDoubleClick ??= listener;
 
-    /// Value States
-    backgroundState = view.backgroundState;
-    backgroundImageState = view.backgroundImageState;
-    backgroundGradientState = view.backgroundGradientState;
+  OnViewClickListener? get onLongClick => enabled ? _onLongClick : null;
 
-    /// VIEW LISTENER PROPERTIES
+  set onLongClick(OnViewClickListener? listener) => _onLongClick ??= listener;
+
+  OnViewToggleListener? get onToggleClick => enabled ? _onToggleClick : null;
+
+  set onToggleClick(OnViewToggleListener? listener) =>
+      _onToggleClick ??= listener;
+
+  OnViewNotifyListener? get onClickHandler => enabled ? _onClickHandler : null;
+
+  set onClickHandler(OnViewNotifyListener? listener) =>
+      _onClickHandler ??= listener;
+
+  OnViewNotifyListener? get onDoubleClickHandler =>
+      enabled ? _onDoubleClickHandler : null;
+
+  set onDoubleClickHandler(OnViewNotifyListener? listener) =>
+      _onDoubleClickHandler ??= listener;
+
+  OnViewNotifyListener? get onLongClickHandler =>
+      enabled ? _onLongClickHandler : null;
+
+  set onLongClickHandler(OnViewNotifyListener? listener) =>
+      _onLongClickHandler ??= listener;
+
+  void setClickEffect(ViewClickEffect value) {
+    onNotifyWithCallback(() => clickEffect = value);
+  }
+
+  void setOnClickListener(OnViewClickListener listener) => _onClick = listener;
+
+  void setOnDoubleClickListener(OnViewClickListener listener) =>
+      _onDoubleClick = listener;
+
+  void setOnLongClickListener(OnViewClickListener listener) =>
+      _onLongClick = listener;
+
+  void setOnToggleClickListener(OnViewToggleListener listener) =>
+      _onToggleClick = listener;
+
+  void setOnClickHandlerListener(OnViewNotifyListener listener) =>
+      _onClickHandler = listener;
+
+  void setOnDoubleClickHandlerListener(OnViewNotifyListener listener) =>
+      _onDoubleClickHandler = listener;
+
+  void setOnLongClickHandlerListener(OnViewNotifyListener listener) =>
+      _onLongClickHandler = listener;
+
+  void _initClick(YMRView view) {
+    clickEffect = view.clickEffect;
     onClick = view.onClick;
     onDoubleClick = view.onDoubleClick;
     onLongClick = view.onLongClick;
     onClickHandler = view.onClickHandler;
     onDoubleClickHandler = view.onDoubleClickHandler;
     onLongClickHandler = view.onLongClickHandler;
-    onToggle = view.onToggle;
-
-    /// VIEW DATA LISTENER PROPERTIES
-    onChange = view.onChange;
-    onError = view.onError;
-    onHover = view.onHover;
-    onValid = view.onValid;
-    onValidator = view.onValidator;
-
-    return this;
+    onToggleClick = view.onToggleClick;
   }
-
-  BuildContext? context;
-
-  ViewRoots roots = const ViewRoots();
-
-  ThemeData get theme => context != null ? Theme.of(context!) : ThemeData();
 
   /// BACKDROP PROPERTIES
 
@@ -169,14 +183,19 @@ class ViewController {
 
   ImageFilter? backdropFilter;
 
+  BlendMode? backdropMode;
+
   void setBackdropFilter(ImageFilter? value) {
     onNotifyWithCallback(() => backdropFilter = value);
   }
 
-  BlendMode? backdropMode;
-
   void setBackdropMode(BlendMode? value) {
     onNotifyWithCallback(() => backdropMode = value);
+  }
+
+  void _initBackdrop(YMRView view) {
+    backdropFilter = view.backdropFilter;
+    backdropMode = view.backdropMode;
   }
 
   /// BORDER PROPERTIES
@@ -318,6 +337,8 @@ class ViewController {
 
   set borderEnd(double? value) => _borderEnd = value;
 
+  set borderStrokeAlign(double? value) => _borderStrokeAlign = value;
+
   void setBorderColor(Color? value) {
     onNotifyWithCallback(() => _borderColor = value);
   }
@@ -376,6 +397,30 @@ class ViewController {
 
   void setBorderEndState(ValueState<double>? value) {
     onNotifyWithCallback(() => borderEndState = value);
+  }
+
+  void setBorderStrokeAlign(double? value) {
+    onNotifyWithCallback(() => borderStrokeAlign = value);
+  }
+
+  void _initBorder(YMRView view) {
+    borderColor = view.borderColor;
+    borderSize = view.borderSize;
+    borderStart = view.borderStart;
+    borderEnd = view.borderEnd;
+    borderTop = view.borderTop;
+    borderBottom = view.borderBottom;
+    borderHorizontal = view.borderHorizontal;
+    borderVertical = view.borderVertical;
+    borderStrokeAlign = view.borderStrokeAlign;
+    borderColorState = view.borderColorState;
+    borderSizeState = view.borderSizeState;
+    borderStartState = view.borderStartState;
+    borderEndState = view.borderEndState;
+    borderTopState = view.borderTopState;
+    borderBottomState = view.borderBottomState;
+    borderHorizontalState = view.borderHorizontalState;
+    borderVerticalState = view.borderVerticalState;
   }
 
   /// BORDER RADIUS PROPERTIES
@@ -492,47 +537,316 @@ class ViewController {
     onNotifyWithCallback(() => borderRadiusTRState = value);
   }
 
-  /// INDICATOR AND ACTIVATOR PROPERTIES
+  void _initBorderRadius(YMRView view) {
+    borderRadiusAll = view.borderRadius;
+    borderRadiusBL = view.borderRadiusBL;
+    borderRadiusBR = view.borderRadiusBR;
+    borderRadiusTL = view.borderRadiusTL;
+    borderRadiusTR = view.borderRadiusTR;
+    borderRadiusAllState = view.borderRadiusState;
+    borderRadiusBLState = view.borderRadiusBLState;
+    borderRadiusBRState = view.borderRadiusBRState;
+    borderRadiusTLState = view.borderRadiusTLState;
+    borderRadiusTRState = view.borderRadiusTRState;
+  }
+
+  /// INDICATOR PROPERTIES
 
   bool indicatorVisible = false;
 
   bool get isIndicatorVisible => onActivator != null && indicatorVisible;
 
-  OnViewActivator? _onActivator;
-
-  OnViewActivator? get onActivator => enabled ? _onActivator : null;
-
-  set onActivator(OnViewActivator? value) => _onActivator ??= value;
-
   void setIndicatorVisible(bool value) {
     onNotifyWithCallback(() => indicatorVisible = value);
   }
 
-  void setOnActivatorListener(OnViewActivator listener) =>
-      _onActivator = listener;
-
-  void onNotifyActivator(dynamic data, {VoidCallback? callback}) async {
-    if (onActivator != null) {
-      onNotifyWithCallback(() => indicatorVisible = true);
-      bool value = await onActivator!(data);
-      onNotifyWithCallback(() {
-        activated = value;
-        indicatorVisible = false;
-      });
-    } else {
-      if (callback != null) callback();
-    }
+  void _initIndicator(YMRView view) {
+    indicatorVisible = view.indicatorVisible;
   }
 
-  void onNotifyToggleWithActivator() {
-    onNotifyActivator(!activated, callback: onNotifyToggle);
+  /// MARGIN PROPERTIES
+  double? marginValue;
+
+  EdgeInsets get margin {
+    return EdgeInsets.only(
+      left: marginStart ?? 0,
+      right: marginEnd ?? 0,
+      top: marginTop ?? 0,
+      bottom: marginBottom ?? 0,
+    );
   }
 
-  ///
-  ///
-  ///
-  ///
-  ///
+  double get marginAll {
+    return margin.left + margin.right + margin.top + margin.bottom;
+  }
+
+  double? _marginStart;
+
+  set marginStart(double? value) => _marginStart = value;
+
+  double? get marginStart => _marginStart ?? marginHorizontal ?? marginValue;
+
+  double? _marginEnd;
+
+  set marginEnd(double? value) => _marginEnd = value;
+
+  double? get marginEnd => _marginEnd ?? marginHorizontal ?? marginValue;
+
+  double? _marginTop;
+
+  set marginTop(double? value) => _marginTop = value;
+
+  double? get marginTop => _marginTop ?? marginVertical ?? marginValue;
+
+  double? _marginBottom;
+
+  set marginBottom(double? value) => _marginBottom = value;
+
+  double? get marginBottom => _marginBottom ?? marginVertical ?? marginValue;
+
+  double? marginHorizontal;
+
+  double? marginVertical;
+
+  bool get isMargin => roots.margin && marginAll > 0;
+
+  bool get isMarginX => roots.margin && (margin.left + margin.right) > 0;
+
+  bool get isMarginY => roots.margin && (margin.top + margin.bottom) > 0;
+
+  void setMargin(double? value) {
+    onNotifyWithCallback(() => marginValue = value);
+  }
+
+  void setMarginStart(double? value) {
+    onNotifyWithCallback(() => marginStart = value);
+  }
+
+  void setMarginEnd(double? value) {
+    onNotifyWithCallback(() => marginEnd = value);
+  }
+
+  void setMarginTop(double? value) {
+    onNotifyWithCallback(() => marginTop = value);
+  }
+
+  void setMarginBottom(double? value) {
+    onNotifyWithCallback(() => marginBottom = value);
+  }
+
+  void setMarginHorizontal(double? value) {
+    onNotifyWithCallback(() => marginHorizontal = value);
+  }
+
+  void setMarginVertical(double? value) {
+    onNotifyWithCallback(() => marginVertical = value);
+  }
+
+  void _initMargin(YMRView view) {
+    marginValue = view.margin ?? 0;
+    marginVertical = view.marginVertical;
+    marginStart = view.marginStart;
+    marginEnd = view.marginEnd;
+    marginTop = view.marginTop;
+    marginBottom = view.marginBottom;
+    marginHorizontal = view.marginHorizontal;
+  }
+
+  /// PADDING PROPERTIES
+  double get paddingAll {
+    return (paddingStart ?? 0) +
+        (paddingEnd ?? 0) +
+        (paddingTop ?? 0) +
+        (paddingBottom ?? 0);
+  }
+
+  EdgeInsets? get padding {
+    return paddingAll > 0
+        ? EdgeInsets.only(
+            left: paddingStart ?? 0,
+            right: paddingEnd ?? 0,
+            top: paddingTop ?? 0,
+            bottom: paddingBottom ?? 0,
+          )
+        : null;
+  }
+
+  double? paddingValue;
+
+  double? _paddingStart;
+
+  set paddingStart(double? value) => _paddingStart = value;
+
+  double? get paddingStart =>
+      _paddingStart ?? paddingHorizontal ?? paddingValue;
+
+  double? _paddingEnd;
+
+  set paddingEnd(double? value) => _paddingEnd = value;
+
+  double? get paddingEnd => _paddingEnd ?? paddingHorizontal ?? paddingValue;
+
+  double? _paddingTop;
+
+  set paddingTop(double? value) => _paddingTop = value;
+
+  double? get paddingTop => _paddingTop ?? paddingVertical ?? paddingValue;
+
+  double? _paddingBottom;
+
+  set paddingBottom(double? value) => _paddingBottom = value;
+
+  double? get paddingBottom =>
+      _paddingBottom ?? paddingVertical ?? paddingValue;
+
+  double? paddingHorizontal;
+
+  double? paddingVertical;
+
+  bool get isPadding => roots.padding && paddingAll > 0;
+
+  bool get isPaddingX {
+    return roots.padding && ((paddingStart ?? 0) + (paddingEnd ?? 0)) > 0;
+  }
+
+  bool get isPaddingY {
+    return roots.padding && ((paddingTop ?? 0) + (paddingBottom ?? 0)) > 0;
+  }
+
+  void setPadding(double value) {
+    onNotifyWithCallback(() => paddingValue = value);
+  }
+
+  void setPaddingStart(double? value) {
+    onNotifyWithCallback(() => paddingStart = value);
+  }
+
+  void setPaddingEnd(double? value) {
+    onNotifyWithCallback(() => paddingEnd = value);
+  }
+
+  void setPaddingTop(double? value) {
+    onNotifyWithCallback(() => paddingTop = value);
+  }
+
+  void setPaddingBottom(double? value) {
+    onNotifyWithCallback(() => paddingBottom = value);
+  }
+
+  void setPaddingHorizontal(double? value) {
+    onNotifyWithCallback(() => paddingHorizontal = value);
+  }
+
+  void setPaddingVertical(double? value) {
+    onNotifyWithCallback(() => paddingVertical = value);
+  }
+
+  void _initPadding(YMRView view) {
+    paddingValue = view.padding ?? 0;
+    paddingStart = view.paddingStart;
+    paddingEnd = view.paddingEnd;
+    paddingTop = view.paddingTop;
+    paddingBottom = view.paddingBottom;
+    paddingHorizontal = view.paddingHorizontal;
+    paddingVertical = view.paddingVertical;
+  }
+
+  @mustCallSuper
+  ViewController fromView(YMRView view) {
+    /// ROOT PROPERTIES
+    _initCallback(view);
+    _initClick(view);
+
+    /// OTHER PROPERTIES
+    _initBackdrop(view);
+    _initBorder(view);
+    _initBorderRadius(view);
+    _initIndicator(view);
+    _initMargin(view);
+    _initPadding(view);
+
+    ///
+    ///
+    ///
+    ///
+    ///
+    hoverColor = view.hoverColor;
+    pressedColor = view.pressedColor;
+    rippleColor = view.rippleColor;
+
+    /// VIEW CONDITIONAL PROPERTIES
+    absorbMode = view.absorbMode ?? false;
+    activated = view.activated ?? false;
+    enabled = view.enabled ?? true;
+    expandable = view.expandable ?? false;
+    scrollable = view.scrollable ?? false;
+    visible = view.visibility ?? true;
+    wrapper = view.wrapper ?? false;
+
+    /// ANIMATION PROPERTIES
+    animation = view.animation ?? 0;
+    animationType = view.animationType ?? Curves.linear;
+
+    /// VIEW SIZE PROPERTIES
+    flex = view.flex ?? 0;
+    _dimensionRatio = view.dimensionRatio;
+    elevation = view.elevation ?? 0;
+    _width = view.width;
+    widthState = view.widthState;
+    _widthMax = view.widthMax;
+    _widthMin = view.widthMin;
+    _height = view.height;
+    heightState = view.heightState;
+    _heightMax = view.heightMax;
+    _heightMin = view.heightMin;
+
+    /// VIEW SHADOW PROPERTIES
+    shadowColor = view.shadowColor;
+    shadow = view.shadow ?? 0;
+    _shadowStart = view.shadowStart;
+    _shadowEnd = view.shadowEnd;
+    _shadowTop = view.shadowTop;
+    _shadowBottom = view.shadowBottom;
+    shadowHorizontal = view.shadowHorizontal;
+    shadowVertical = view.shadowVertical;
+    shadowBlurRadius = view.shadowBlurRadius ?? 5;
+    shadowBlurStyle = view.shadowBlurStyle ?? BlurStyle.normal;
+    shadowSpreadRadius = view.shadowSpreadRadius ?? 0;
+    shadowType = view.shadowType ?? ViewShadowType.none;
+
+    /// VIEW DECORATION PROPERTIES
+    _background = view.background;
+    foreground = view.foreground;
+    backgroundBlendMode = view.backgroundBlendMode;
+    foregroundBlendMode = view.foregroundBlendMode;
+    _backgroundGradient = view.backgroundGradient;
+    foregroundGradient = view.foregroundGradient;
+    _backgroundImage = view.backgroundImage;
+    foregroundImage = view.foregroundImage;
+    clipBehavior = view.clipBehavior ?? Clip.antiAlias;
+    gravity = view.gravity;
+    orientation = view.orientation ?? Axis.vertical;
+    _position = view.position;
+    positionType = view.positionType ?? ViewPositionType.center;
+    scrollController = view.scrollController;
+    scrollingType = view.scrollingType ?? ViewScrollingType.none;
+    shape = view.shape ?? ViewShape.rectangular;
+    transform = view.transform;
+    transformGravity = view.transformGravity;
+    transform = view.transform;
+    child = view.child;
+
+    /// Properties
+    roots = view.initRootProperties();
+
+    /// Value States
+    backgroundState = view.backgroundState;
+    backgroundImageState = view.backgroundImageState;
+    backgroundGradientState = view.backgroundGradientState;
+
+    return this;
+  }
+
   bool expandable = false;
   bool scrollable = false;
   bool wrapper = false;
@@ -654,98 +968,6 @@ class ViewController {
   double? _heightMin;
 
   double get heightMin => _heightMin ?? 0.0;
-
-  /// margin properties
-  double? marginValue;
-
-  EdgeInsets get margin {
-    return EdgeInsets.only(
-      left: marginStart ?? 0,
-      right: marginEnd ?? 0,
-      top: marginTop ?? 0,
-      bottom: marginBottom ?? 0,
-    );
-  }
-
-  double get marginAll {
-    return margin.left + margin.right + margin.top + margin.bottom;
-  }
-
-  double? _marginStart;
-
-  double? get marginStart => _marginStart ?? marginHorizontal ?? marginValue;
-
-  double? _marginEnd;
-
-  double? get marginEnd => _marginEnd ?? marginHorizontal ?? marginValue;
-
-  double? _marginTop;
-
-  double? get marginTop => _marginTop ?? marginVertical ?? marginValue;
-
-  double? _marginBottom;
-
-  double? get marginBottom => _marginBottom ?? marginVertical ?? marginValue;
-
-  double? marginHorizontal;
-
-  double? marginVertical;
-
-  bool get isMargin => roots.margin && marginAll > 0;
-
-  bool get isMarginX => roots.margin && (margin.left + margin.right) > 0;
-
-  bool get isMarginY => roots.margin && (margin.top + margin.bottom) > 0;
-
-  double? _padding;
-
-  EdgeInsets? get padding {
-    return paddingAll > 0
-        ? EdgeInsets.only(
-            left: paddingStart ?? 0,
-            right: paddingEnd ?? 0,
-            top: paddingTop ?? 0,
-            bottom: paddingBottom ?? 0,
-          )
-        : null;
-  }
-
-  double get paddingAll {
-    return (paddingStart ?? 0) +
-        (paddingEnd ?? 0) +
-        (paddingTop ?? 0) +
-        (paddingBottom ?? 0);
-  }
-
-  double? _paddingStart;
-
-  double? get paddingStart => _paddingStart ?? paddingHorizontal ?? _padding;
-
-  double? _paddingEnd;
-
-  double? get paddingEnd => _paddingEnd ?? paddingHorizontal ?? _padding;
-
-  double? _paddingTop;
-
-  double? get paddingTop => _paddingTop ?? paddingVertical ?? _padding;
-
-  double? _paddingBottom;
-
-  double? get paddingBottom => _paddingBottom ?? paddingVertical ?? _padding;
-
-  double? paddingHorizontal;
-
-  double? paddingVertical;
-
-  bool get isPadding => roots.padding && paddingAll > 0;
-
-  bool get isPaddingX {
-    return roots.padding && ((paddingStart ?? 0) + (paddingEnd ?? 0)) > 0;
-  }
-
-  bool get isPaddingY {
-    return roots.padding && ((paddingTop ?? 0) + (paddingBottom ?? 0)) > 0;
-  }
 
   /// positional properties
 
@@ -871,7 +1093,7 @@ class ViewController {
   }
 
   bool get isToggleClickable {
-    return onToggle != null || onActivator != null || expandable;
+    return onToggleClick != null || onActivator != null || expandable;
   }
 
   double get maxSize {
@@ -1049,76 +1271,6 @@ class ViewController {
     _notify;
   }
 
-  void setMargin(double value) {
-    marginValue = value;
-    _notify;
-  }
-
-  void setMarginStart(double? value) {
-    _marginStart = value;
-    _notify;
-  }
-
-  void setMarginEnd(double? value) {
-    _marginEnd = value;
-    _notify;
-  }
-
-  void setMarginTop(double? value) {
-    _marginTop = value;
-    _notify;
-  }
-
-  void setMarginBottom(double? value) {
-    _marginBottom = value;
-    _notify;
-  }
-
-  void setMarginHorizontal(double? value) {
-    marginHorizontal = value;
-    _notify;
-  }
-
-  void setMarginVertical(double? value) {
-    marginVertical = value;
-    _notify;
-  }
-
-  void setPadding(double value) {
-    _padding = value;
-    _notify;
-  }
-
-  void setPaddingStart(double? value) {
-    _paddingStart = value;
-    _notify;
-  }
-
-  void setPaddingEnd(double? value) {
-    _paddingEnd = value;
-    _notify;
-  }
-
-  void setPaddingTop(double? value) {
-    _paddingTop = value;
-    _notify;
-  }
-
-  void setPaddingBottom(double? value) {
-    _paddingBottom = value;
-    _notify;
-  }
-
-  void setPaddingHorizontal(double? value) {
-    paddingHorizontal = value;
-    _notify;
-  }
-
-  void setPaddingVertical(double? value) {
-    paddingVertical = value;
-    _notify;
-  }
-
   void setPosition(ViewPosition? value) {
     _position = value;
     _notify;
@@ -1204,102 +1356,6 @@ class ViewController {
     _notify;
   }
 
-  /// observable properties
-  bool get isClickable =>
-      onClick != null || onClickHandler != null || isToggleClickable;
-
-  bool get isDoubleClickable =>
-      onDoubleClick != null || onDoubleClickHandler != null;
-
-  bool get isLongClickable => onLongClick != null || onLongClickHandler != null;
-
-  bool get isObservable =>
-      roots.observer &&
-      (isClickable || isDoubleClickable || isLongClickable || isInkWellMode);
-
-  OnViewClickListener? _onClick;
-
-  OnViewClickListener? get onClick => enabled ? _onClick : null;
-
-  set onClick(OnViewClickListener? listener) => _onClick ??= listener;
-
-  OnViewClickListener? _onDoubleClick;
-
-  OnViewClickListener? get onDoubleClick => enabled ? _onDoubleClick : null;
-
-  set onDoubleClick(OnViewClickListener? listener) =>
-      _onDoubleClick ??= listener;
-
-  OnViewClickListener? _onLongClick;
-
-  OnViewClickListener? get onLongClick => enabled ? _onLongClick : null;
-
-  set onLongClick(OnViewClickListener? listener) => _onLongClick ??= listener;
-
-  OnViewToggleListener? _onToggleClick;
-
-  OnViewToggleListener? get onToggle => enabled ? _onToggleClick : null;
-
-  set onToggle(OnViewToggleListener? listener) => _onToggleClick ??= listener;
-
-  OnViewChangeListener? _onChange;
-
-  OnViewChangeListener? get onChange => enabled ? _onChange : null;
-
-  set onChange(OnViewChangeListener? listener) => _onChange ??= listener;
-
-  OnViewHoverListener? _onHover;
-
-  OnViewHoverListener? get onHover => enabled ? _onHover : null;
-
-  set onHover(OnViewHoverListener? listener) => _onHover ??= listener;
-
-  OnViewErrorListener? _onError;
-
-  OnViewErrorListener? get onError => enabled ? _onError : null;
-
-  set onError(OnViewErrorListener? listener) => _onError ??= listener;
-
-  OnViewValidListener? _onValid;
-
-  OnViewValidListener? get onValid => enabled ? _onValid : null;
-
-  set onValid(OnViewValidListener? listener) => _onValid ??= listener;
-
-  OnViewValidatorListener? _onValidator;
-
-  OnViewValidatorListener? get onValidator => enabled ? _onValidator : null;
-
-  set onValidator(OnViewValidatorListener? listener) =>
-      _onValidator ??= listener;
-
-  OnViewNotifyListener? onClickHandler,
-      onDoubleClickHandler,
-      onLongClickHandler;
-
-  void setOnClickListener(OnViewClickListener listener) => _onClick = listener;
-
-  void setOnDoubleClickListener(OnViewClickListener listener) =>
-      _onDoubleClick = listener;
-
-  void setOnLongClickListener(OnViewClickListener listener) =>
-      _onLongClick = listener;
-
-  void setOnToggleClickListener(OnViewToggleListener listener) =>
-      _onToggleClick = listener;
-
-  void setOnChangeListener(OnViewChangeListener listener) =>
-      _onChange = listener;
-
-  void setOnHoverListener(OnViewHoverListener listener) => _onHover = listener;
-
-  void setOnErrorListener(OnViewErrorListener listener) => _onError = listener;
-
-  void setOnValidListener(OnViewValidListener listener) => _onValid = listener;
-
-  void setOnValidatorListener(OnViewValidatorListener listener) =>
-      _onValidator = listener;
-
   /// notifier properties
 
   OnViewNotifier? _notifier;
@@ -1334,7 +1390,7 @@ class ViewController {
 
   void onNotifyToggle() {
     activated = !activated;
-    onToggle?.call(activated);
+    onToggleClick?.call(activated);
     _notify;
   }
 

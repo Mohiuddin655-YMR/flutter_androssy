@@ -64,6 +64,18 @@ class Home extends AndrossyActivity<HomeController> {
           textAllCaps: true,
           textFontWeight: FontWeight.bold,
           controller: controller.btn1,
+          clickEffect: ViewClickEffect(
+            lowerBound: 0.8,
+            builder: (context, value, child) {
+              return Transform.scale(
+                scale: value,
+                child: Opacity(
+                  opacity: value,
+                  child: child,
+                ),
+              );
+            },
+          ),
         ),
         Button(
           controller: controller.btn2,
@@ -111,7 +123,7 @@ class Home extends AndrossyActivity<HomeController> {
           textAllCaps: true,
           textFontWeight: FontWeight.bold,
           activated: true,
-          onToggle: (_) {},
+          onToggleClick: (_) {},
         ),
         Button(
           marginTop: 24,
@@ -157,7 +169,7 @@ class Home extends AndrossyActivity<HomeController> {
           icon: Icons.call,
           iconSize: 24,
           iconFlexible: true,
-          onToggle: (_) {},
+          onToggleClick: (_) {},
         ),
         Button(
           marginTop: 24,
@@ -210,7 +222,7 @@ class Home extends AndrossyActivity<HomeController> {
           iconSize: 24,
           iconFlexible: true,
           activated: true,
-          onToggle: (_) {},
+          onToggleClick: (_) {},
         ),
         Button(
           marginTop: 24,
@@ -256,7 +268,7 @@ class Home extends AndrossyActivity<HomeController> {
               icon: Icons.call,
               iconSize: 24,
               activated: true,
-              onToggle: (_) {},
+              onToggleClick: (_) {},
             ),
             Button(
               height: 50,
@@ -301,7 +313,7 @@ class Home extends AndrossyActivity<HomeController> {
               icon: Icons.call,
               iconSize: 24,
               activated: true,
-              onToggle: (_) {},
+              onToggleClick: (_) {},
             ),
             Button(
               height: 50,

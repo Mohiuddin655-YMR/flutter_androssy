@@ -34,6 +34,24 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.key,
     super.controller,
 
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onHover,
+    super.onValid,
+    super.onValidator,
+
+    /// CLICK PROPERTIES
+    super.clickEffect,
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onToggleClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
+
     ///BASE PROPERTIES
     super.absorbMode,
     super.activated,
@@ -148,23 +166,6 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.shadowTop,
     super.shadowBottom,
 
-    /// LISTENER PROPERTIES
-    super.onClick,
-    super.onDoubleClick,
-    super.onLongClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
-    super.onHover,
-    super.onToggle,
-
-    /// CALLBACK PROPERTIES
-    super.onActivator,
-    super.onChange,
-    super.onError,
-    super.onValid,
-    super.onValidator,
-
     /// CHILD PROPERTIES
     this.contentPadding = const EdgeInsets.only(
       left: 24,
@@ -187,6 +188,24 @@ class SettingsView extends YMRView<SettingsViewController> {
     /// ROOT PROPERTIES
     super.key,
     super.controller,
+
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onHover,
+    super.onValid,
+    super.onValidator,
+
+    /// CLICK PROPERTIES
+    super.clickEffect,
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onToggleClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -225,15 +244,19 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.shape,
     super.transform,
     super.transformGravity,
+    super.visibility,
     super.width,
     super.widthState,
     super.widthMax,
     super.widthMin,
-    super.visibility,
 
     /// ANIMATION PROPERTIES
     super.animation,
     super.animationType,
+
+    /// BACKDROP PROPERTIES
+    super.backdropFilter,
+    super.backdropMode,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -297,13 +320,6 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
-
-    /// LISTENER PROPERTIES
-    super.onClick,
-    super.onDoubleClick,
-    super.onLongClick,
-    super.onHover,
-    super.onToggle,
 
     /// CHILD PROPERTIES
     this.contentPadding = const EdgeInsets.only(
@@ -328,6 +344,24 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.key,
     super.controller,
 
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onHover,
+    super.onValid,
+    super.onValidator,
+
+    /// CLICK PROPERTIES
+    super.clickEffect,
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onToggleClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
+
     ///BASE PROPERTIES
     super.absorbMode,
     super.activated,
@@ -365,15 +399,19 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.shape,
     super.transform,
     super.transformGravity,
+    super.visibility,
     super.width,
     super.widthState,
     super.widthMax,
     super.widthMin,
-    super.visibility,
 
     /// ANIMATION PROPERTIES
     super.animation,
     super.animationType,
+
+    /// BACKDROP PROPERTIES
+    super.backdropFilter,
+    super.backdropMode,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -437,13 +475,6 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
-
-    /// LISTENER PROPERTIES
-    super.onClick,
-    super.onDoubleClick,
-    super.onLongClick,
-    super.onHover,
-    super.onToggle,
 
     /// CHILD PROPERTIES
     this.contentPadding = const EdgeInsets.only(
@@ -468,6 +499,24 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.key,
     super.controller,
 
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onHover,
+    super.onValid,
+    super.onValidator,
+
+    /// CLICK PROPERTIES
+    super.clickEffect,
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onToggleClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
+
     ///BASE PROPERTIES
     super.absorbMode,
     super.activated,
@@ -505,15 +554,19 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.shape,
     super.transform,
     super.transformGravity,
+    super.visibility,
     super.width,
     super.widthState,
     super.widthMax,
     super.widthMin,
-    super.visibility,
 
     /// ANIMATION PROPERTIES
     super.animation,
     super.animationType,
+
+    /// BACKDROP PROPERTIES
+    super.backdropFilter,
+    super.backdropMode,
 
     /// BORDER PROPERTIES
     super.borderColor,
@@ -577,13 +630,6 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
-
-    /// LISTENER PROPERTIES
-    super.onClick,
-    super.onDoubleClick,
-    super.onLongClick,
-    super.onHover,
-    super.onToggle,
 
     /// CHILD PROPERTIES
     this.contentPadding = const EdgeInsets.only(

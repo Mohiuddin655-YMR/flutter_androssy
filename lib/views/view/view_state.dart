@@ -197,83 +197,11 @@ class _ViewState<T extends ViewController> extends State<YMRView<T>> {
       }
 
       /// CALLBACKS
-      if (controller.isObservable) {
-        if (controller.isInkWellMode) {
-          /// RIPPLED MODE
-          child = Padding(
-            padding: controller.isMargin ? controller.margin : EdgeInsets.zero,
-            child: Material(
-              elevation: controller.elevation,
-              borderRadius: controller.isCircular
-                  ? BorderRadius.circular(controller.maxSize)
-                  : controller.borderRadius,
-              color: controller.background,
-              clipBehavior: controller.clipBehavior,
-              child: InkWell(
-                splashColor: controller.rippleColor,
-                hoverColor: controller.hoverColor,
-                highlightColor: controller.pressedColor,
-                onHover: controller.isHovered ? controller.onNotifyHover : null,
-                onTap: controller.isClickable
-                    ? () {
-                        if (controller.isToggleClickable) {
-                          controller.onNotifyToggleWithActivator();
-                        } else {
-                          controller.onClickHandler != null
-                              ? controller.onClickHandler?.call(controller)
-                              : controller.onClick?.call(context);
-                        }
-                      }
-                    : null,
-                onDoubleTap: controller.isDoubleClickable
-                    ? () {
-                        controller.onDoubleClickHandler != null
-                            ? controller.onDoubleClickHandler?.call(controller)
-                            : controller.onDoubleClick?.call(context);
-                      }
-                    : null,
-                onLongPress: controller.isLongClickable
-                    ? () {
-                        controller.onLongClickHandler != null
-                            ? controller.onLongClickHandler?.call(controller)
-                            : controller.onLongClick?.call(context);
-                      }
-                    : null,
-                child: child,
-              ),
-            ),
-          );
-        } else {
-          /// GESTURE MODE
-          child = GestureDetector(
-            onTap: controller.isClickable
-                ? () {
-                    if (controller.isToggleClickable) {
-                      controller.onNotifyToggleWithActivator();
-                    } else {
-                      controller.onClickHandler != null
-                          ? controller.onClickHandler?.call(controller)
-                          : controller.onClick?.call(context);
-                    }
-                  }
-                : null,
-            onDoubleTap: controller.isDoubleClickable
-                ? () {
-                    controller.onDoubleClickHandler != null
-                        ? controller.onDoubleClickHandler?.call(controller)
-                        : controller.onDoubleClick?.call(context);
-                  }
-                : null,
-            onLongPress: controller.isLongClickable
-                ? () {
-                    controller.onLongClickHandler != null
-                        ? controller.onLongClickHandler?.call(controller)
-                        : controller.onLongClick?.call(context);
-                  }
-                : null,
-            child: child,
-          );
-        }
+      if (controller.isClickMode) {
+        child = ViewListener(
+          controller: controller,
+          child: child,
+        );
       }
 
       /// DIMENSION

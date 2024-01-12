@@ -130,6 +130,24 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.key,
     super.controller,
 
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onHover,
+    super.onValid,
+    super.onValidator,
+
+    /// CLICK PROPERTIES
+    super.clickEffect,
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onToggleClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
+
     ///BASE PROPERTIES
     super.absorbMode,
     super.activated,
@@ -243,23 +261,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
-
-    /// LISTENER PROPERTIES
-    super.onClick,
-    super.onDoubleClick,
-    super.onLongClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
-    super.onHover,
-    super.onToggle,
-
-    /// CALLBACK PROPERTIES
-    super.onActivator,
-    super.onChange,
-    super.onError,
-    super.onValid,
-    super.onValidator,
 
     /// SUPER TEXT PROPERTIES
     super.maxCharacters,
@@ -387,7 +388,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   @override
   ViewRoots initRootProperties() {
     return const ViewRoots(
-      observer: false,
+      clickable: false,
       padding: false,
     );
   }
@@ -585,7 +586,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
               size: controller.drawableEndSize,
               tint: controller.drawableEndTint ?? defaultColor,
               marginStart: controller.drawableEndPadding ?? 4,
-              onToggle:
+              onToggleClick:
                   controller.drawableEndAsEye ? controller.onChangeEye : null,
             ),
         ],

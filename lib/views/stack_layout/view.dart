@@ -14,6 +14,24 @@ class StackLayout<T extends StackLayoutController> extends YMRView<T> {
     super.key,
     super.controller,
 
+    /// CALLBACK PROPERTIES
+    super.onActivator,
+    super.onChange,
+    super.onError,
+    super.onHover,
+    super.onValid,
+    super.onValidator,
+
+    /// CLICK PROPERTIES
+    super.clickEffect,
+    super.onClick,
+    super.onDoubleClick,
+    super.onLongClick,
+    super.onToggleClick,
+    super.onClickHandler,
+    super.onDoubleClickHandler,
+    super.onLongClickHandler,
+
     ///BASE PROPERTIES
     super.absorbMode,
     super.activated,
@@ -127,23 +145,6 @@ class StackLayout<T extends StackLayoutController> extends YMRView<T> {
     super.shadowEnd,
     super.shadowTop,
     super.shadowBottom,
-
-    /// LISTENER PROPERTIES
-    super.onClick,
-    super.onDoubleClick,
-    super.onLongClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
-    super.onHover,
-    super.onToggle,
-
-    /// CALLBACK PROPERTIES
-    super.onActivator,
-    super.onChange,
-    super.onError,
-    super.onValid,
-    super.onValidator,
 
     /// CHILD PROPERTIES
     this.layoutGravity = Alignment.center,

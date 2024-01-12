@@ -125,7 +125,7 @@ class ButtonController extends TextViewController {
   Color? get color {
     var I = textColorState?.fromController(this) ?? textColor;
     if (I == null) {
-      return enabled && isObservable
+      return enabled && isClickMode
           ? activated
               ? theme.primaryColor
               : isBorder
@@ -139,7 +139,7 @@ class ButtonController extends TextViewController {
   @override
   Color? get background {
     if (super.background == null) {
-      return enabled && isObservable
+      return enabled && isClickMode
           ? activated
               ? theme.primaryColor.withOpacity(0.1)
               : theme.primaryColor
@@ -151,7 +151,7 @@ class ButtonController extends TextViewController {
   @override
   Color? get borderColor {
     if (super.borderColor == null) {
-      return enabled && isObservable
+      return enabled && isClickMode
           ? activated
               ? theme.primaryColor.withOpacity(0.1)
               : theme.primaryColor

@@ -2,7 +2,7 @@ part of 'view.dart';
 
 class ViewRoots {
   final bool scrollable;
-  final bool position, flex, ratio, observer, wrapper;
+  final bool position, flex, ratio, clickable, wrapper;
   final bool view, constraints, margin, padding;
   final bool decoration, shadow, shape, radius, border, background;
 
@@ -11,7 +11,7 @@ class ViewRoots {
     this.position = true,
     this.flex = true,
     this.ratio = true,
-    this.observer = true,
+    this.clickable = true,
     this.view = true,
     this.wrapper = true,
     this.constraints = true,
@@ -46,7 +46,7 @@ class ViewRoots {
       position: position ?? this.position,
       flex: flex ?? this.flex,
       ratio: ratio ?? this.ratio,
-      observer: observer ?? this.observer,
+      clickable: observer ?? this.clickable,
       view: view ?? this.view,
       constraints: constraints ?? this.constraints,
       margin: margin ?? this.margin,

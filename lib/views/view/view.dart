@@ -1,29 +1,65 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_androssy/widgets.dart';
 
 import '../../widgets/widget_wrapper.dart';
 
 part 'controller.dart';
+
 part 'typedefs.dart';
+
 part 'value_state.dart';
+
 part 'value_state_type.dart';
+
 part 'view_corner_radius.dart';
+
 part 'view_error.dart';
+
+part 'view_listener.dart';
+
+part 'view_listener_effect.dart';
+
 part 'view_position.dart';
+
 part 'view_position_type.dart';
+
 part 'view_recognizer.dart';
+
 part 'view_roots.dart';
+
 part 'view_scrolling_type.dart';
+
 part 'view_shadow_type.dart';
+
 part 'view_shape.dart';
+
 part 'view_state.dart';
+
 part 'view_toggle_content.dart';
 
 class YMRView<T extends ViewController> extends StatefulWidget {
+  /// ROOT PROPERTIES
   final T? controller;
+
+  /// CALLBACK PROPERTIES
+  final OnViewActivator? onActivator;
+  final OnViewChangeListener? onChange;
+  final OnViewErrorListener? onError;
+  final OnViewHoverListener? onHover;
+  final OnViewValidListener? onValid;
+  final OnViewValidatorListener? onValidator;
+
+  /// CLICK PROPERTIES
+  final ViewClickEffect? clickEffect;
+  final OnViewClickListener? onClick, onDoubleClick, onLongClick;
+  final OnViewToggleListener? onToggleClick;
+  final OnViewNotifyListener<T>? onClickHandler, onDoubleClickHandler;
+  final OnViewNotifyListener<T>? onLongClickHandler;
 
   /// BACKDROP PROPERTIES
   final ImageFilter? backdropFilter;
@@ -32,7 +68,6 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   /// BORDER PROPERTIES
   final Color? borderColor;
   final ValueState<Color>? borderColorState;
-
   final double? borderSize;
   final ValueState<double>? borderSizeState;
   final double? borderHorizontal, borderVertical;
@@ -49,8 +84,24 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final ValueState<double>? borderRadiusBLState, borderRadiusBRState;
   final ValueState<double>? borderRadiusTLState, borderRadiusTRState;
 
-  /// INDICATOR AND ACTIVATOR PROPERTIES
-  final OnViewActivator? onActivator;
+  /// INDICATOR PROPERTIES
+  final bool indicatorVisible;
+
+  /// MARGIN PROPERTIES
+  final double? margin;
+  final double? marginHorizontal, marginVertical;
+  final double? marginTop, marginBottom, marginStart, marginEnd;
+
+  /// PADDING PROPERTIES
+  final double? padding;
+  final double? paddingHorizontal, paddingVertical;
+  final double? paddingTop, paddingBottom, paddingStart, paddingEnd;
+
+  /// SHADOW PROPERTIES
+  final double? shadow;
+  final double? shadowBlurRadius, shadowSpreadRadius;
+  final double? shadowHorizontal, shadowVertical;
+  final double? shadowStart, shadowEnd, shadowTop, shadowBottom;
 
   ///
   ///
@@ -70,19 +121,6 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final ValueState<double>? widthState;
   final double? height, heightMax, heightMin;
   final ValueState<double>? heightState;
-
-  final double? margin;
-  final double? marginHorizontal, marginVertical;
-  final double? marginTop, marginBottom, marginStart, marginEnd;
-
-  final double? padding;
-  final double? paddingHorizontal, paddingVertical;
-  final double? paddingTop, paddingBottom, paddingStart, paddingEnd;
-
-  final double? shadow;
-  final double? shadowBlurRadius, shadowSpreadRadius;
-  final double? shadowHorizontal, shadowVertical;
-  final double? shadowStart, shadowEnd, shadowTop, shadowBottom;
 
   final Color? background, foreground, shadowColor;
   final Color hoverColor, pressedColor, rippleColor;
@@ -112,20 +150,27 @@ class YMRView<T extends ViewController> extends StatefulWidget {
 
   final Widget? child;
 
-  final OnViewClickListener? onClick, onDoubleClick, onLongClick;
-  final OnViewNotifyListener<T>? onClickHandler;
-  final OnViewNotifyListener<T>? onDoubleClickHandler;
-  final OnViewNotifyListener<T>? onLongClickHandler;
-  final OnViewToggleListener? onToggle;
-  final OnViewChangeListener? onChange;
-  final OnViewErrorListener? onError;
-  final OnViewHoverListener? onHover;
-  final OnViewValidListener? onValid;
-  final OnViewValidatorListener? onValidator;
-
   const YMRView({
     /// ROOT PROPERTIES
     super.key,
+
+    /// LISTENER PROPERTIES
+    this.clickEffect,
+    this.onClick,
+    this.onDoubleClick,
+    this.onLongClick,
+    this.onClickHandler,
+    this.onDoubleClickHandler,
+    this.onLongClickHandler,
+    this.onHover,
+    this.onToggleClick,
+
+    /// CALLBACK PROPERTIES
+    this.onActivator,
+    this.onChange,
+    this.onError,
+    this.onValid,
+    this.onValidator,
 
     ///BASE PROPERTIES
     this.controller,
@@ -210,6 +255,9 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.borderRadiusTR,
     this.borderRadiusTRState,
 
+    /// INDICATOR PROPERTIES
+    this.indicatorVisible = false,
+
     /// MARGIN PROPERTIES
     this.margin,
     this.marginHorizontal,
@@ -241,23 +289,6 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.shadowEnd,
     this.shadowTop,
     this.shadowBottom,
-
-    /// LISTENER PROPERTIES
-    this.onClick,
-    this.onDoubleClick,
-    this.onLongClick,
-    this.onClickHandler,
-    this.onDoubleClickHandler,
-    this.onLongClickHandler,
-    this.onHover,
-    this.onToggle,
-
-    /// CALLBACK PROPERTIES
-    this.onActivator,
-    this.onChange,
-    this.onError,
-    this.onValid,
-    this.onValidator,
 
     /// OPTIONAL PROPERTIES
     this.wrapper,

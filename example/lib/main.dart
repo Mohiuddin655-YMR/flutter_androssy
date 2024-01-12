@@ -77,7 +77,7 @@ class Home extends AndrossyActivity<HomeController> {
           pressedColor: Colors.black12,
           title: "This is a arrow title",
           summary: "This is a arrow summary",
-          onToggle: (v) {
+          onToggleClick: (v) {
             "CHECKMARK IS CHANGED => $v".log("checkmark");
           },
         ),
@@ -89,7 +89,7 @@ class Home extends AndrossyActivity<HomeController> {
           pressedColor: Colors.black12,
           title: "This is a arrow title",
           summary: "This is a arrow summary",
-          onToggle: (v) {
+          onToggleClick: (v) {
             "CHECKMARK IS CHANGED => $v".log("checkmark");
           },
         ),
@@ -99,7 +99,7 @@ class Home extends AndrossyActivity<HomeController> {
           pressedColor: Colors.black12,
           title: "This is a switcher title",
           summary: "This is a switcher summary",
-          onToggle: (v) {
+          onToggleClick: (v) {
             "SWITCHER IS CHANGED => $v".log("switcher");
           },
         ),
@@ -110,7 +110,7 @@ class Home extends AndrossyActivity<HomeController> {
           pressedColor: Colors.black12,
           title: "This is a switcher title",
           summary: "This is a switcher summary",
-          onToggle: (v) {
+          onToggleClick: (v) {
             "SWITCHER IS CHANGED => $v".log("switcher");
           },
         ),
