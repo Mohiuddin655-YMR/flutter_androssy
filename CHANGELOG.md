@@ -1,3 +1,7 @@
+## 0.3.22
+
+* Add otp view
+
 ## 0.3.21
 
 * Update button default color, slide_layout and theme
