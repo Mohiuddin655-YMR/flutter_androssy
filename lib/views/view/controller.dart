@@ -8,8 +8,7 @@ class ViewController {
 
   ThemeData get theme => context != null ? Theme.of(context!) : ThemeData();
 
-  void onNotifyActivator(
-    dynamic data, {
+  void onNotifyActivator(dynamic data, {
     VoidCallback? callback,
   }) async {
     if (onActivator != null) {
@@ -567,13 +566,16 @@ class ViewController {
   /// MARGIN PROPERTIES
   double? marginValue;
 
+  EdgeInsets? marginCustom;
+
   EdgeInsets get margin {
-    return EdgeInsets.only(
-      left: marginStart ?? 0,
-      right: marginEnd ?? 0,
-      top: marginTop ?? 0,
-      bottom: marginBottom ?? 0,
-    );
+    return marginCustom ??
+        EdgeInsets.only(
+          left: marginStart ?? 0,
+          right: marginEnd ?? 0,
+          top: marginTop ?? 0,
+          bottom: marginBottom ?? 0,
+        );
   }
 
   double get marginAll {
@@ -642,6 +644,10 @@ class ViewController {
     onNotifyWithCallback(() => marginVertical = value);
   }
 
+  void setMarginCustom(EdgeInsets? value) {
+    onNotifyWithCallback(() => marginCustom = value);
+  }
+
   void _initMargin(YMRView view) {
     marginValue = view.margin ?? 0;
     marginVertical = view.marginVertical;
@@ -650,28 +656,58 @@ class ViewController {
     marginTop = view.marginTop;
     marginBottom = view.marginBottom;
     marginHorizontal = view.marginHorizontal;
+    marginCustom = view.marginCustom;
+  }
+
+  /// OPACITY PROPERTIES
+  double? _opacity;
+
+  set opacity(double? value) => _opacity = value;
+
+  ValueState<double>? opacityState;
+
+  double get opacity => opacityState?.fromController(this) ?? _opacity ?? 0;
+
+  bool get isOpacity => _opacity != null || opacityState != null;
+
+  void setOpacity(double? value) {
+    onNotifyWithCallback(() => opacity = value);
+  }
+
+  void setOpacityState(ValueState<double>? value) {
+    onNotifyWithCallback(() => opacityState = value);
+  }
+
+  bool opacityAlwaysIncludeSemantics = false;
+
+  void setOpacityAlwaysIncludeSemantics(bool value) {
+    onNotifyWithCallback(() => opacityAlwaysIncludeSemantics = value);
+  }
+
+  void _initOpacity(YMRView view) {
+    opacity = view.opacity;
+    opacityState = view.opacityState;
+    opacityAlwaysIncludeSemantics = view.opacityAlwaysIncludeSemantics;
   }
 
   /// PADDING PROPERTIES
-  double get paddingAll {
-    return (paddingStart ?? 0) +
-        (paddingEnd ?? 0) +
-        (paddingTop ?? 0) +
-        (paddingBottom ?? 0);
-  }
-
-  EdgeInsets? get padding {
-    return paddingAll > 0
-        ? EdgeInsets.only(
-            left: paddingStart ?? 0,
-            right: paddingEnd ?? 0,
-            top: paddingTop ?? 0,
-            bottom: paddingBottom ?? 0,
-          )
-        : null;
-  }
-
   double? paddingValue;
+
+  EdgeInsets? paddingCustom;
+
+  EdgeInsets get padding {
+    return paddingCustom ??
+        EdgeInsets.only(
+          left: paddingStart ?? 0,
+          right: paddingEnd ?? 0,
+          top: paddingTop ?? 0,
+          bottom: paddingBottom ?? 0,
+        );
+  }
+
+  double get paddingAll {
+    return padding.left + padding.right + padding.top + padding.bottom;
+  }
 
   double? _paddingStart;
 
@@ -741,6 +777,10 @@ class ViewController {
     onNotifyWithCallback(() => paddingVertical = value);
   }
 
+  void setPaddingCustom(EdgeInsets? value) {
+    onNotifyWithCallback(() => paddingCustom = value);
+  }
+
   void _initPadding(YMRView view) {
     paddingValue = view.padding ?? 0;
     paddingStart = view.paddingStart;
@@ -749,6 +789,7 @@ class ViewController {
     paddingBottom = view.paddingBottom;
     paddingHorizontal = view.paddingHorizontal;
     paddingVertical = view.paddingVertical;
+    paddingCustom = view.paddingCustom;
   }
 
   @mustCallSuper
@@ -763,6 +804,7 @@ class ViewController {
     _initBorderRadius(view);
     _initIndicator(view);
     _initMargin(view);
+    _initOpacity(view);
     _initPadding(view);
 
     ///
@@ -938,9 +980,10 @@ class ViewController {
 
   set width(double? value) => _width = value;
 
-  double? get width => isSquire || isCircular
-      ? maxSize
-      : widthState?.fromController(this) ?? _width;
+  double? get width =>
+      isSquire || isCircular
+          ? maxSize
+          : widthState?.fromController(this) ?? _width;
 
   double? _widthMax;
 
@@ -957,9 +1000,10 @@ class ViewController {
 
   set height(double? value) => _height = value;
 
-  double? get height => isSquire || isCircular
-      ? maxSize
-      : heightState?.fromController(this) ?? _height;
+  double? get height =>
+      isSquire || isCircular
+          ? maxSize
+          : heightState?.fromController(this) ?? _height;
 
   double? _heightMax;
 
@@ -995,24 +1039,24 @@ class ViewController {
   List<BoxShadow>? get shadows {
     return isShadow
         ? [
-            BoxShadow(
-              color: shadowColor ?? Colors.black12,
-              blurRadius: shadowBlurRadius,
-              offset: isOverlayShadow
-                  ? Offset.zero
-                  : Offset(-shadowStart, -shadowTop),
-              blurStyle: shadowBlurStyle,
-              spreadRadius: shadowSpreadRadius,
-            ),
-            if (!isOverlayShadow)
-              BoxShadow(
-                color: shadowColor ?? Colors.black12,
-                blurRadius: shadowBlurRadius,
-                offset: Offset(shadowEnd, shadowBottom),
-                blurStyle: shadowBlurStyle,
-                spreadRadius: shadowSpreadRadius,
-              ),
-          ]
+      BoxShadow(
+        color: shadowColor ?? Colors.black12,
+        blurRadius: shadowBlurRadius,
+        offset: isOverlayShadow
+            ? Offset.zero
+            : Offset(-shadowStart, -shadowTop),
+        blurStyle: shadowBlurStyle,
+        spreadRadius: shadowSpreadRadius,
+      ),
+      if (!isOverlayShadow)
+        BoxShadow(
+          color: shadowColor ?? Colors.black12,
+          blurRadius: shadowBlurRadius,
+          offset: Offset(shadowEnd, shadowBottom),
+          blurStyle: shadowBlurStyle,
+          spreadRadius: shadowSpreadRadius,
+        ),
+    ]
         : null;
   }
 
@@ -1065,10 +1109,10 @@ class ViewController {
 
   bool get isConstraints =>
       roots.constraints &&
-      (_widthMax != null ||
-          _widthMin != null ||
-          _heightMax != null ||
-          _heightMin != null);
+          (_widthMax != null ||
+              _widthMin != null ||
+              _heightMax != null ||
+              _heightMin != null);
 
   bool get isDimensional => roots.ratio && dimensionRatio > 0;
 

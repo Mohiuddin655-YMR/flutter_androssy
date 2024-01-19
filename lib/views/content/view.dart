@@ -3,11 +3,17 @@ import 'package:flutter/material.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'model.dart';
+
 part 'style_content.dart';
+
 part 'style_dot.dart';
+
 part 'widget_dotted_text.dart';
+
 part 'widget_dotted_texts.dart';
+
 part 'widget_paragraph_text.dart';
 
 class ContentView extends YMRView<ContentViewController> {
@@ -134,6 +140,12 @@ class ContentView extends YMRView<ContentViewController> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -143,6 +155,7 @@ class ContentView extends YMRView<ContentViewController> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

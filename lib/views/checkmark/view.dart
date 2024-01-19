@@ -7,6 +7,7 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'alignment.dart';
+
 part 'controller.dart';
 
 class CheckmarkView extends TextView<CheckmarkViewController> {
@@ -151,6 +152,12 @@ class CheckmarkView extends TextView<CheckmarkViewController> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -160,6 +167,7 @@ class CheckmarkView extends TextView<CheckmarkViewController> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

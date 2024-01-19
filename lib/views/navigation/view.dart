@@ -6,8 +6,11 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'item.dart';
+
 part 'type.dart';
+
 part 'typedefs.dart';
 
 class NavigationView extends YMRView<NavigationViewController> {
@@ -163,6 +166,12 @@ class NavigationView extends YMRView<NavigationViewController> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -172,6 +181,7 @@ class NavigationView extends YMRView<NavigationViewController> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

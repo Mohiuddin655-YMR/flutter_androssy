@@ -125,6 +125,12 @@ class StackLayout<T extends StackLayoutController> extends YMRView<T> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -134,6 +140,7 @@ class StackLayout<T extends StackLayoutController> extends YMRView<T> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

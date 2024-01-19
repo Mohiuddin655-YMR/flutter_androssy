@@ -11,9 +11,13 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'drawable_state.dart';
+
 part 'highlight_text.dart';
+
 part 'typedefs.dart';
+
 part 'underline.dart';
 
 class EditText<T extends EditTextController> extends TextView<T> {
@@ -236,6 +240,12 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -245,6 +255,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,
@@ -475,7 +486,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
 
     Widget child = Container(
       color: Colors.transparent,
-      padding: controller.padding ?? EdgeInsets.zero,
+      padding: controller.padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,

@@ -108,9 +108,10 @@ class ButtonController extends TextViewController {
 
   double get iconSpace => _iconSpace ?? (iconOnly ? 0 : 16);
 
-  Color? get iconTint => iconTintEnabled
-      ? iconTintState?.fromController(this) ?? _iconTint ?? color
-      : null;
+  Color? get iconTint =>
+      iconTintEnabled
+          ? iconTintState?.fromController(this) ?? _iconTint ?? color
+          : null;
 
   bool get isCenterText => textCenter;
 
@@ -127,10 +128,10 @@ class ButtonController extends TextViewController {
     if (I == null) {
       return enabled && isClickMode
           ? activated
-              ? theme.primaryColor
-              : isBorder
-                  ? theme.primaryColor
-                  : Colors.white
+          ? theme.primaryColor
+          : isBorder
+          ? theme.primaryColor
+          : Colors.white
           : Colors.grey.withOpacity(0.75);
     }
     return I;
@@ -141,8 +142,8 @@ class ButtonController extends TextViewController {
     if (super.background == null) {
       return enabled && isClickMode
           ? activated
-              ? theme.primaryColor.withOpacity(0.1)
-              : theme.primaryColor
+          ? theme.primaryColor.withOpacity(0.1)
+          : theme.primaryColor
           : Colors.grey.withOpacity(0.1);
     }
     return super.background;
@@ -153,8 +154,8 @@ class ButtonController extends TextViewController {
     if (super.borderColor == null) {
       return enabled && isClickMode
           ? activated
-              ? theme.primaryColor.withOpacity(0.1)
-              : theme.primaryColor
+          ? theme.primaryColor.withOpacity(0.1)
+          : theme.primaryColor
           : Colors.grey.withOpacity(0.1);
     }
     return super.background;

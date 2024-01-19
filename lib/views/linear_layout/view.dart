@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'extensions.dart';
+
 part 'gravity.dart';
+
 part 'typedefs.dart';
 
 class LinearLayout<T extends LinearLayoutController> extends YMRView<T> {
@@ -135,6 +138,12 @@ class LinearLayout<T extends LinearLayoutController> extends YMRView<T> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -144,6 +153,7 @@ class LinearLayout<T extends LinearLayoutController> extends YMRView<T> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

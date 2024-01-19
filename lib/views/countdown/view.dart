@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'extensions.dart';
 
 class CountdownView extends YMRView<CountdownViewController> {
@@ -131,6 +132,12 @@ class CountdownView extends YMRView<CountdownViewController> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -140,6 +147,7 @@ class CountdownView extends YMRView<CountdownViewController> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

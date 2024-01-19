@@ -5,10 +5,14 @@ import 'package:flutter_svg/svg.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'raw.dart';
+
 part 'type.dart';
 
 class IconView<T extends IconViewController> extends YMRView<T> {
+  final bool isAutoFit;
+  final bool isForAction;
   final BoxFit fit;
   final dynamic icon;
   final ValueState<dynamic>? iconState;
@@ -129,6 +133,12 @@ class IconView<T extends IconViewController> extends YMRView<T> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -138,6 +148,7 @@ class IconView<T extends IconViewController> extends YMRView<T> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,
@@ -154,6 +165,8 @@ class IconView<T extends IconViewController> extends YMRView<T> {
     super.shadowBottom,
 
     /// CHILD PROPERTIES
+    this.isAutoFit = true,
+    this.isForAction = false,
     this.icon,
     this.fit = BoxFit.contain,
     this.iconState,
@@ -175,12 +188,23 @@ class IconView<T extends IconViewController> extends YMRView<T> {
 
   @override
   Widget? attach(BuildContext context, T controller) {
-    return RawIconView(
+    Widget child = RawIconView(
       fit: controller.fit,
       icon: controller.icon,
       size: controller.iconSize,
       tint: controller.tint,
       tintMode: controller.tintMode,
     );
+    if (isAutoFit) {
+      child = FittedBox(child: child);
+    }
+    if (isForAction) {
+      child = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [child],
+      );
+    }
+    return child;
   }
 }

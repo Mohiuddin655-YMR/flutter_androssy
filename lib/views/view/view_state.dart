@@ -183,6 +183,15 @@ class _ViewState<T extends ViewController> extends State<YMRView<T>> {
       /// BUILDER
       child = widget.build(context, controller, child);
 
+      /// OPACITY
+      if (controller.isOpacity) {
+        child = Opacity(
+          opacity: controller.opacity,
+          alwaysIncludeSemantics: controller.opacityAlwaysIncludeSemantics,
+          child: child,
+        );
+      }
+
       /// WRAPPER
       if (controller.isWrapper) {
         child = WidgetWrapper(

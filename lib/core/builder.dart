@@ -4,9 +4,9 @@ import 'androssy.dart';
 import 'provider.dart';
 
 typedef AndrossyViewBuilder = Widget Function(
-  BuildContext context,
-  Androssy androssy,
-);
+    BuildContext context,
+    Androssy androssy,
+    );
 
 class AndrossyBuilder extends StatelessWidget {
   final AndrossyViewBuilder builder;

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_androssy/widgets.dart';
 
 part 'controller.dart';
+
 part 'item.dart';
+
 part 'typedefs.dart';
 
 class SlideLayout<T> extends YMRView<SlideLayoutController<T>> {
@@ -131,6 +133,12 @@ class SlideLayout<T> extends YMRView<SlideLayoutController<T>> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -140,6 +148,7 @@ class SlideLayout<T> extends YMRView<SlideLayoutController<T>> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

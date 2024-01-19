@@ -8,12 +8,19 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'arrow.dart';
+
 part 'arrow_config.dart';
+
 part 'checkmark.dart';
+
 part 'checkmark_config.dart';
+
 part 'controller.dart';
+
 part 'switch.dart';
+
 part 'tail.dart';
+
 part 'type.dart';
 
 class SettingsView extends YMRView<SettingsViewController> {
@@ -145,6 +152,12 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -154,6 +167,7 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

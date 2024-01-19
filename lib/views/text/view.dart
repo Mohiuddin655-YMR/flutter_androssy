@@ -4,7 +4,9 @@ import 'package:flutter_androssy/extensions.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'painter.dart';
+
 part 'raw.dart';
 
 class TextView<T extends TextViewController> extends YMRView<T> {
@@ -206,6 +208,12 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -215,6 +223,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

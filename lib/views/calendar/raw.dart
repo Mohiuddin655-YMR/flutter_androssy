@@ -15,15 +15,15 @@ import 'components/widgets/calendar_header.dart';
 import 'components/widgets/cell_content.dart';
 
 typedef OnDaySelected = void Function(
-  DateTime selectedDay,
-  DateTime focusedDay,
-);
+    DateTime selectedDay,
+    DateTime focusedDay,
+    );
 
 typedef OnRangeSelected = void Function(
-  DateTime? start,
-  DateTime? end,
-  DateTime focusedDay,
-);
+    DateTime? start,
+    DateTime? end,
+    DateTime focusedDay,
+    );
 
 enum RangeSelectionMode {
   disabled,
@@ -180,7 +180,8 @@ class RawCalendarView<T> extends StatefulWidget {
     this.onPageChanged,
     this.onFormatChanged,
     this.onCalendarCreated,
-  })  : assert(availableCalendarFormats.keys.contains(calendarFormat)),
+  })
+      : assert(availableCalendarFormats.keys.contains(calendarFormat)),
         assert(availableCalendarFormats.length <= CalendarFormat.values.length),
         assert(weekendDays.isNotEmpty
             ? weekendDays.every(
@@ -233,15 +234,15 @@ class _RawCalendarViewState<T> extends State<RawCalendarView<T>> {
 
   bool get _isRangeSelectionToggleable =>
       _rangeSelectionMode == RangeSelectionMode.toggledOn ||
-      _rangeSelectionMode == RangeSelectionMode.toggledOff;
+          _rangeSelectionMode == RangeSelectionMode.toggledOff;
 
   bool get _isRangeSelectionOn =>
       _rangeSelectionMode == RangeSelectionMode.toggledOn ||
-      _rangeSelectionMode == RangeSelectionMode.enforced;
+          _rangeSelectionMode == RangeSelectionMode.enforced;
 
   bool get _shouldBlockOutsideDays =>
       !widget.calendarStyle.outsideDaysVisible &&
-      widget.calendarFormat == CalendarFormat.month;
+          widget.calendarFormat == CalendarFormat.month;
 
   void _swipeCalendarFormat(SwipeDirection direction) {
     if (widget.onFormatChanged != null) {
@@ -384,8 +385,8 @@ class _RawCalendarViewState<T> extends State<RawCalendarView<T>> {
                 locale: widget.locale,
                 onFormatButtonTap: (format) {
                   assert(
-                    widget.onFormatChanged != null,
-                    'Using `FormatButton` without providing `onFormatChanged` will have no effect.',
+                  widget.onFormatChanged != null,
+                  'Using `FormatButton` without providing `onFormatChanged` will have no effect.',
                   );
 
                   widget.onFormatChanged?.call(format);
@@ -446,15 +447,15 @@ class _RawCalendarViewState<T> extends State<RawCalendarView<T>> {
             },
             dowBuilder: (BuildContext context, DateTime day) {
               Widget? dowCell =
-                  widget.calendarBuilders.dowBuilder?.call(context, day);
+              widget.calendarBuilders.dowBuilder?.call(context, day);
 
               if (dowCell == null) {
                 final weekdayString = widget.daysOfWeekStyle.dowTextFormatter
-                        ?.call(day, widget.locale) ??
+                    ?.call(day, widget.locale) ??
                     DateFormat.E(widget.locale).format(day);
 
                 final isWeekend =
-                    _isWeekend(day, weekendDays: widget.weekendDays);
+                _isWeekend(day, weekendDays: widget.weekendDays);
 
                 dowCell = Center(
                   child: ExcludeSemantics(
@@ -518,8 +519,8 @@ class _RawCalendarViewState<T> extends State<RawCalendarView<T>> {
                   end: isRangeEnd ? constraints.maxWidth * 0.5 : 0.0,
                 ),
                 height:
-                    (shorterSide - widget.calendarStyle.cellMargin.vertical) *
-                        widget.calendarStyle.rangeHighlightScale,
+                (shorterSide - widget.calendarStyle.cellMargin.vertical) *
+                    widget.calendarStyle.rangeHighlightScale,
                 color: widget.calendarStyle.rangeHighlightColor,
               ),
             );
@@ -558,7 +559,7 @@ class _RawCalendarViewState<T> extends State<RawCalendarView<T>> {
         if (!isDisabled) {
           final events = widget.eventLoader?.call(day) ?? [];
           Widget? markerWidget =
-              widget.calendarBuilders.markerBuilder?.call(context, day, events);
+          widget.calendarBuilders.markerBuilder?.call(context, day, events);
 
           if (events.isNotEmpty && markerWidget == null) {
             final center = constraints.maxHeight / 2;
@@ -612,7 +613,7 @@ class _RawCalendarViewState<T> extends State<RawCalendarView<T>> {
 
   Widget _buildSingleMarker(DateTime day, T event, double markerSize) {
     return widget.calendarBuilders.singleMarkerBuilder
-            ?.call(context, day, event) ??
+        ?.call(context, day, event) ??
         Container(
           width: markerSize,
           height: markerSize,
@@ -630,8 +631,8 @@ class _RawCalendarViewState<T> extends State<RawCalendarView<T>> {
 
   int _dayOfYear(DateTime date) {
     return normalizeDate(date)
-            .difference(DateTime.utc(date.year, 1, 1))
-            .inDays +
+        .difference(DateTime.utc(date.year, 1, 1))
+        .inDays +
         1;
   }
 
@@ -686,8 +687,7 @@ class _RawCalendarViewState<T> extends State<RawCalendarView<T>> {
     }
   }
 
-  bool _isWeekend(
-    DateTime day, {
+  bool _isWeekend(DateTime day, {
     List<int> weekendDays = const [DateTime.saturday, DateTime.sunday],
   }) {
     return weekendDays.contains(day.weekday);
@@ -761,7 +761,8 @@ class RawCalendarBase extends StatefulWidget {
     this.onVerticalSwipe,
     this.onPageChanged,
     this.onCalendarCreated,
-  })  : assert(!dowVisible || (dowHeight != null && dowBuilder != null)),
+  })
+      : assert(!dowVisible || (dowHeight != null && dowBuilder != null)),
         assert(isSameDay(focusedDay, firstDay) || focusedDay.isAfter(firstDay)),
         assert(isSameDay(focusedDay, lastDay) || focusedDay.isBefore(lastDay));
 
@@ -825,11 +826,11 @@ class _RawCalendarBaseState extends State<RawCalendarBase> {
 
   bool get _canScrollHorizontally =>
       widget.availableGestures == AvailableGestures.all ||
-      widget.availableGestures == AvailableGestures.horizontalSwipe;
+          widget.availableGestures == AvailableGestures.horizontalSwipe;
 
   bool get _canScrollVertically =>
       widget.availableGestures == AvailableGestures.all ||
-      widget.availableGestures == AvailableGestures.verticalSwipe;
+          widget.availableGestures == AvailableGestures.verticalSwipe;
 
   void _updatePage({bool shouldAnimate = false}) {
     final currentIndex = _calculateFocusedPage(
@@ -847,7 +848,7 @@ class _RawCalendarBaseState extends State<RawCalendarBase> {
     if (shouldAnimate && widget.pageAnimationEnabled) {
       if ((currentIndex - _previousIndex).abs() > 1) {
         final jumpIndex =
-            currentIndex > _previousIndex ? currentIndex - 1 : currentIndex + 1;
+        currentIndex > _previousIndex ? currentIndex - 1 : currentIndex + 1;
 
         _pageController.jumpToPage(jumpIndex);
       }
@@ -879,7 +880,7 @@ class _RawCalendarBaseState extends State<RawCalendarBase> {
             valueListenable: _pageHeight,
             builder: (context, value, child) {
               final height =
-                  constraints.hasBoundedHeight ? constraints.maxHeight : value;
+              constraints.hasBoundedHeight ? constraints.maxHeight : value;
 
               return AnimatedSize(
                 duration: widget.formatAnimationDuration,
@@ -950,8 +951,8 @@ class _RawCalendarBaseState extends State<RawCalendarBase> {
     return dowHeight + rowCount * widget.rowHeight + tablePaddingHeight;
   }
 
-  int _calculateFocusedPage(
-      CalendarFormat format, DateTime startDay, DateTime focusedDay) {
+  int _calculateFocusedPage(CalendarFormat format, DateTime startDay,
+      DateTime focusedDay) {
     switch (format) {
       case CalendarFormat.month:
         return _getMonthCount(startDay, focusedDay);
@@ -972,11 +973,15 @@ class _RawCalendarBaseState extends State<RawCalendarBase> {
   }
 
   int _getWeekCount(DateTime first, DateTime last) {
-    return last.difference(_firstDayOfWeek(first)).inDays ~/ 7;
+    return last
+        .difference(_firstDayOfWeek(first))
+        .inDays ~/ 7;
   }
 
   int _getTwoWeekCount(DateTime first, DateTime last) {
-    return last.difference(_firstDayOfWeek(first)).inDays ~/ 14;
+    return last
+        .difference(_firstDayOfWeek(first))
+        .inDays ~/ 14;
   }
 
   int _getRowCount(CalendarFormat format, DateTime focusedDay) {
@@ -996,7 +1001,9 @@ class _RawCalendarBaseState extends State<RawCalendarBase> {
     final daysAfter = _getDaysAfter(last);
     final lastToDisplay = last.add(Duration(days: daysAfter));
 
-    return (lastToDisplay.difference(firstToDisplay).inDays + 1) ~/ 7;
+    return (lastToDisplay
+        .difference(firstToDisplay)
+        .inDays + 1) ~/ 7;
   }
 
   int _getDaysBefore(DateTime firstDay) {

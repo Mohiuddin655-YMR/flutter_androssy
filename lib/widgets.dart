@@ -29,7 +29,6 @@ export 'views/navigation/view.dart';
 export 'views/nullable/view.dart';
 export 'views/observer/view.dart';
 export 'views/option/view.dart';
-export 'views/otp/view.dart';
 export 'views/progress/view.dart';
 export 'views/radio_layout/view.dart';
 export 'views/rating/view.dart';

@@ -5,8 +5,11 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'alignment.dart';
+
 part 'controller.dart';
+
 part 'icon.dart';
+
 part 'text.dart';
 
 class Button<T extends ButtonController> extends TextView<T> {
@@ -139,6 +142,12 @@ class Button<T extends ButtonController> extends TextView<T> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -148,6 +157,7 @@ class Button<T extends ButtonController> extends TextView<T> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

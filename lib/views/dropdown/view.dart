@@ -5,7 +5,9 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'model.dart';
+
 part 'typedefs.dart';
 
 class DropdownView<T extends Object>
@@ -160,6 +162,12 @@ class DropdownView<T extends Object>
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -169,6 +177,7 @@ class DropdownView<T extends Object>
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

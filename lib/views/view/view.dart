@@ -9,21 +9,37 @@ import 'package:flutter_androssy/widgets.dart';
 import '../../widgets/widget_wrapper.dart';
 
 part 'controller.dart';
+
 part 'typedefs.dart';
+
 part 'value_state.dart';
+
 part 'value_state_type.dart';
+
 part 'view_corner_radius.dart';
+
 part 'view_error.dart';
+
 part 'view_listener.dart';
+
 part 'view_listener_effect.dart';
+
 part 'view_position.dart';
+
 part 'view_position_type.dart';
+
 part 'view_recognizer.dart';
+
 part 'view_roots.dart';
+
 part 'view_scrolling_type.dart';
+
 part 'view_shadow_type.dart';
+
 part 'view_shape.dart';
+
 part 'view_state.dart';
+
 part 'view_toggle_content.dart';
 
 class YMRView<T extends ViewController> extends StatefulWidget {
@@ -75,11 +91,18 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final double? margin;
   final double? marginHorizontal, marginVertical;
   final double? marginTop, marginBottom, marginStart, marginEnd;
+  final EdgeInsets? marginCustom;
+
+  /// OPACITY PROPERTIES
+  final double? opacity;
+  final ValueState<double>? opacityState;
+  final bool opacityAlwaysIncludeSemantics;
 
   /// PADDING PROPERTIES
   final double? padding;
   final double? paddingHorizontal, paddingVertical;
   final double? paddingTop, paddingBottom, paddingStart, paddingEnd;
+  final EdgeInsets? paddingCustom;
 
   /// SHADOW PROPERTIES
   final double? shadow;
@@ -250,6 +273,12 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.marginBottom,
     this.marginStart,
     this.marginEnd,
+    this.marginCustom,
+
+    /// OPACITY PROPERTIES
+    this.opacity,
+    this.opacityState,
+    this.opacityAlwaysIncludeSemantics = false,
 
     /// PADDING PROPERTIES
     this.padding,
@@ -259,6 +288,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.paddingBottom,
     this.paddingStart,
     this.paddingEnd,
+    this.paddingCustom,
 
     /// SHADOW PROPERTIES
     this.shadow,

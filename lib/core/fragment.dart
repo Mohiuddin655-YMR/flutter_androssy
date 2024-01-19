@@ -87,7 +87,8 @@ abstract class AndrossyFragment<T extends AndrossyController>
 }
 
 class _AndrossyFragmentState<T extends AndrossyController>
-    extends State<AndrossyFragment<T>> with WidgetsBindingObserver {
+    extends State<AndrossyFragment<T>>
+    with WidgetsBindingObserver {
   late T controller = widget.init(context);
 
   void _log(String value) {

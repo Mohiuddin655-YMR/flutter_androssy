@@ -5,8 +5,11 @@ import '../icon/view.dart';
 import '../view/view.dart';
 
 part 'config.dart';
+
 part 'controller.dart';
+
 part 'extensions.dart';
+
 part 'raw.dart';
 
 class SwitchView extends YMRView<SwitchViewController> {
@@ -152,6 +155,12 @@ class SwitchView extends YMRView<SwitchViewController> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -161,6 +170,7 @@ class SwitchView extends YMRView<SwitchViewController> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

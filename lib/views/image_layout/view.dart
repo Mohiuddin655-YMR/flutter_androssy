@@ -4,15 +4,25 @@ import '../image/view.dart';
 import '../view/view.dart';
 
 part 'builder.dart';
+
 part 'controller.dart';
+
 part 'layer_type.dart';
+
 part 'layer_x.dart';
+
 part 'layer_x2.dart';
+
 part 'layer_x3.dart';
+
 part 'layer_x4.dart';
+
 part 'layer_x5.dart';
+
 part 'layer_x6.dart';
+
 part 'layer_xn.dart';
+
 part 'typedefs.dart';
 
 class ImageLayout<T> extends YMRView<ImageLayoutController<T>> {
@@ -141,6 +151,12 @@ class ImageLayout<T> extends YMRView<ImageLayoutController<T>> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -150,6 +166,7 @@ class ImageLayout<T> extends YMRView<ImageLayoutController<T>> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

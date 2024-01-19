@@ -155,9 +155,9 @@ class _SwitchButtonState extends State<SwitchButton>
 
     var trackColor = ViewToggleContent(
       active:
-          I.activeTrackColor ?? theme.trackColor(MaterialState.selected) ?? mAC,
+      I.activeTrackColor ?? theme.trackColor(MaterialState.selected) ?? mAC,
       inactive:
-          I.inactiveTrackColor ?? theme.trackColor.none ?? Colors.transparent,
+      I.inactiveTrackColor ?? theme.trackColor.none ?? Colors.transparent,
     ).detect(active);
 
     var trackOutlineColor = ViewToggleContent(
@@ -165,7 +165,7 @@ class _SwitchButtonState extends State<SwitchButton>
           theme.trackOutlineColor(MaterialState.selected) ??
           Colors.transparent,
       inactive:
-          I.inactiveTrackStrokeColor ?? theme.trackOutlineColor.none ?? mIC,
+      I.inactiveTrackStrokeColor ?? theme.trackOutlineColor.none ?? mIC,
     ).detect(active);
 
     var thumbColor = ViewToggleContent(
@@ -219,10 +219,10 @@ class _SwitchButtonState extends State<SwitchButton>
               color: trackColor,
               border: trackStrokeSize > 0
                   ? Border.all(
-                      color: trackOutlineColor,
-                      strokeAlign: BorderSide.strokeAlignInside,
-                      width: trackStrokeSize,
-                    )
+                color: trackOutlineColor,
+                strokeAlign: BorderSide.strokeAlignInside,
+                width: trackStrokeSize,
+              )
                   : null,
             ),
             child: Align(
@@ -237,24 +237,24 @@ class _SwitchButtonState extends State<SwitchButton>
                   color: thumbColor,
                   border: thumbStrokeSize > 0
                       ? Border.all(
-                          strokeAlign: BorderSide.strokeAlignInside,
-                          color: thumbStrokeColor,
-                          width: thumbStrokeSize,
-                        )
+                    strokeAlign: BorderSide.strokeAlignInside,
+                    color: thumbStrokeColor,
+                    width: thumbStrokeSize,
+                  )
                       : null,
                 ),
                 child: thumbIcon != null
                     ? FittedBox(
-                        child: Padding(
-                          padding: EdgeInsets.all(
-                            I.thumbIconSpacing ?? 0,
-                          ),
-                          child: RawIconView(
-                            icon: thumbIcon,
-                            tint: thumbIconTint,
-                          ),
-                        ),
-                      )
+                  child: Padding(
+                    padding: EdgeInsets.all(
+                      I.thumbIconSpacing ?? 0,
+                    ),
+                    child: RawIconView(
+                      icon: thumbIcon,
+                      tint: thumbIconTint,
+                    ),
+                  ),
+                )
                     : null,
               ),
             ),

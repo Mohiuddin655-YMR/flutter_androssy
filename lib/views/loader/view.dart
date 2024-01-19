@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'loading_state.dart';
+
 part 'typedefs.dart';
 
 class LoaderView<T> extends YMRView<LoaderViewController<T>> {
@@ -131,6 +133,12 @@ class LoaderView<T> extends YMRView<LoaderViewController<T>> {
     super.marginBottom,
     super.marginStart,
     super.marginEnd,
+    super.marginCustom,
+
+    /// OPACITY PROPERTIES
+    super.opacity,
+    super.opacityState,
+    super.opacityAlwaysIncludeSemantics,
 
     /// PADDING PROPERTIES
     super.padding,
@@ -140,6 +148,7 @@ class LoaderView<T> extends YMRView<LoaderViewController<T>> {
     super.paddingBottom,
     super.paddingStart,
     super.paddingEnd,
+    super.paddingCustom,
 
     /// SHADOW PROPERTIES
     super.shadow,

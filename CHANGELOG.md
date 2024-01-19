@@ -1,6 +1,8 @@
-## 0.3.22
+## 0.3.23
 
-* Add otp view
+* Add opacity, opacityState, opacityAlwaysIncludeSemantics, marginCustom and paddingCustom
+  properties
+* Add isAutoFit and isForAction properties for icon_view widget
 
 ## 0.3.21
 
