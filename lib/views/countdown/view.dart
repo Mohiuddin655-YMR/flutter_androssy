@@ -5,16 +5,18 @@ import 'package:flutter/material.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'extensions.dart';
+part 'typedefs.dart';
 
 class CountdownView extends YMRView<CountdownViewController> {
-  final Duration? target;
-  final Duration? decrement;
-  final Duration? periodic;
-  final bool? initialStartMode;
+  final bool initialStartMode;
+  final Duration target;
+  final Duration decrement;
+  final Duration periodic;
 
-  final Widget Function(BuildContext, Duration) builder;
+  final OnCountdownBuilder builder;
+  final OnCountdownCompleteListener? onComplete;
+  final OnCountdownRemainingListener? onRemaining;
 
   const CountdownView({
     /// ROOT PROPERTIES
@@ -164,25 +166,29 @@ class CountdownView extends YMRView<CountdownViewController> {
     super.shadowBottom,
 
     /// CHILD PROPERTIES
-    this.target,
-    this.decrement,
-    this.periodic,
-    this.initialStartMode,
+    this.initialStartMode = true,
+    this.target = const Duration(minutes: 2),
+    this.decrement = const Duration(seconds: 1),
+    this.periodic = const Duration(seconds: 1),
     required this.builder,
+    this.onComplete,
+    this.onRemaining,
   });
 
   @override
   CountdownViewController initController() => CountdownViewController();
 
   @override
-  CountdownViewController attachController(CountdownViewController controller) {
+  CountdownViewController attachController(
+    CountdownViewController controller,
+  ) {
     return controller.fromCountdownView(this);
   }
 
   @override
-  void onInit(context, controller) {
-    super.onInit(context, controller);
-    if (controller.initialStartMode) controller._continue();
+  void onReady(context, controller) {
+    super.onReady(context, controller);
+    if (controller.initialStartMode) controller.start();
   }
 
   @override

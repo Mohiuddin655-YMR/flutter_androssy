@@ -5,6 +5,8 @@ class CountdownViewController extends ViewController {
   Duration decrementTime = const Duration(seconds: 1);
   Duration periodicTime = const Duration(seconds: 1);
   bool initialStartMode = true;
+  OnCountdownCompleteListener? _onComplete;
+  OnCountdownRemainingListener? _onRemaining;
 
   late Duration _rt = targetTime;
   Timer? _timer;
@@ -12,25 +14,13 @@ class CountdownViewController extends ViewController {
 
   CountdownViewController fromCountdownView(CountdownView view) {
     super.fromView(view);
-    targetTime = view.target ?? const Duration(minutes: 2);
-    decrementTime = view.decrement ?? const Duration(seconds: 1);
-    periodicTime = view.periodic ?? const Duration(seconds: 1);
-    initialStartMode = view.initialStartMode ?? true;
+    targetTime = view.target;
+    decrementTime = view.decrement;
+    periodicTime = view.periodic;
+    initialStartMode = view.initialStartMode;
+    _onComplete = view.onComplete;
+    _onRemaining = view.onRemaining;
     return this;
-  }
-
-  void _continue() {
-    if (!_isRunning) {
-      _timer = Timer.periodic(periodicTime, (ticker) {
-        if (_rt.inSeconds <= 0) {
-          ticker.cancel();
-        } else {
-          _rt = _rt - decrementTime;
-        }
-        onNotify();
-      });
-    }
-    _isRunning = true;
   }
 
   void _cancel() {
@@ -38,22 +28,56 @@ class CountdownViewController extends ViewController {
     _isRunning = false;
   }
 
-  void onStart() => _continue();
+  void clear() {
+    _cancel();
+    _rt = const Duration();
+    onNotify();
+  }
 
-  void onRestart() {
+  void _continue() {
+    if (!_isRunning) {
+      if (_onComplete != null) _onComplete?.call(false);
+      _timer = Timer.periodic(periodicTime, (ticker) {
+        if (_rt.inSeconds <= 0) {
+          _complete(ticker);
+        } else {
+          _rt = _rt - decrementTime;
+          _remaining(_rt);
+        }
+        onNotify();
+      });
+    }
+    _isRunning = true;
+  }
+
+  void _complete(Timer? ticker) {
+    if (ticker != null) ticker.cancel();
+    if (_timer != null) _timer?.cancel();
+    if (_onComplete != null) _onComplete?.call(true);
+  }
+
+  void _dispose() => _cancel();
+
+  void _remaining(Duration value) {
+    if (_onRemaining != null) _onRemaining?.call(value);
+  }
+
+  void restart() {
     _cancel();
     _rt = targetTime;
     onNotify();
     _continue();
   }
 
-  void onStop() => _cancel();
+  void start() => _continue();
 
-  void onClear() {
-    _cancel();
-    _rt = const Duration();
-    onNotify();
+  void stop() => _cancel();
+
+  void setOnCompleteListener(OnCountdownCompleteListener? listener) {
+    _onComplete = listener;
   }
 
-  void _dispose() => _cancel();
+  void setOnRemainingListener(OnCountdownRemainingListener? listener) {
+    _onRemaining = listener;
+  }
 }

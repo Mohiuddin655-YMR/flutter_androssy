@@ -39,11 +39,14 @@ class EditText<T extends EditTextController> extends TextView<T> {
 
   /// BASE PROPERTIES
   final bool autoDisposeMode;
-  final String digits;
+  final bool characterLimitMode;
+  final String characters;
   final String hint;
   final Color? hintColor;
+  final String ignorableCharacters;
   final Color? primary;
   final int? minCharacters;
+  final List<TextInputFormatter>? inputFormatters;
 
   /// DRAWABLE PROPERTIES
   final dynamic drawableStart;
@@ -307,7 +310,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
 
     /// BASE PROPERTIES
     this.autoDisposeMode = true,
-    this.digits = "",
+    this.characters = "",
     this.hint = "",
     this.hintColor,
     this.primary,
@@ -349,6 +352,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.autocorrect = true,
     this.autofillHints = const [],
     this.autoFocus = false,
+    this.characterLimitMode = false,
     this.clipBehaviorText = Clip.hardEdge,
     this.cursorColor,
     this.cursorHeight,
@@ -362,6 +366,8 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.enableInteractiveSelection,
     this.enableSuggestions = true,
     this.expands = false,
+    this.ignorableCharacters = "",
+    this.inputFormatters,
     this.inputType,
     this.keyboardAppearance = Brightness.light,
     this.magnifierConfiguration = TextMagnifierConfiguration.disabled,
@@ -537,11 +543,14 @@ class EditText<T extends EditTextController> extends TextView<T> {
               enableSuggestions: controller.enableSuggestions,
               expands: controller.expands,
               focusNode: controller._node,
-              inputFormatters: controller.formatter,
+              inputFormatters: controller._formatter,
               keyboardAppearance: controller.keyboardAppearance,
               keyboardType: controller.inputType,
               maxLines: controller.maxLines,
               magnifierConfiguration: controller.magnifierConfiguration,
+              maxLength: controller.characterLimitMode
+                  ? controller.maxCharacters
+                  : null,
               minLines: controller.minLines,
               mouseCursor: controller.mouseCursor,
               obscureText: controller.obscureText,

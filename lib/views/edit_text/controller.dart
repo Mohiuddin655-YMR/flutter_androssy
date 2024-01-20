@@ -40,10 +40,16 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => counterTextVisible = value);
   }
 
-  String digits = "";
+  String characters = "";
 
-  void setDigits(String value) {
-    onNotifyWithCallback(() => digits = value);
+  void setCharacters(String value) {
+    onNotifyWithCallback(() => characters = value);
+  }
+
+  String ignorableCharacters = "";
+
+  void setIgnorableCharacters(String value) {
+    onNotifyWithCallback(() => ignorableCharacters = value);
   }
 
   dynamic _drawableEnd;
@@ -327,6 +333,12 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => autoFocus = value);
   }
 
+  bool characterLimitMode = false;
+
+  void setCharacterLimitMode(bool value) {
+    onNotifyWithCallback(() => characterLimitMode = value);
+  }
+
   Clip clipBehaviorText = Clip.hardEdge;
 
   void setClipBehaviorText(Clip value) {
@@ -409,6 +421,12 @@ class EditTextController extends TextViewController {
 
   void setKeyboardAppearance(Brightness value) {
     onNotifyWithCallback(() => keyboardAppearance = value);
+  }
+
+  List<TextInputFormatter>? inputFormatters;
+
+  void setInputFormatters(List<TextInputFormatter>? value) {
+    onNotifyWithCallback(() => inputFormatters = value);
   }
 
   TextInputType? inputType;
@@ -596,9 +614,10 @@ class EditTextController extends TextViewController {
 
     /// BASE PROPERTIES
     autoDisposeMode = view.autoDisposeMode;
-    digits = view.digits;
+    characters = view.characters;
     hintText = view.hint;
     hintTextColor = view.hintColor;
+    ignorableCharacters = view.ignorableCharacters;
     primary = view.primary;
     maxCharacters = view.maxCharacters;
     minCharacters = view.minCharacters;
@@ -638,6 +657,7 @@ class EditTextController extends TextViewController {
     autocorrect = view.autocorrect;
     autofillHints = view.autofillHints;
     autoFocus = view.autoFocus;
+    characterLimitMode = view.characterLimitMode;
     clipBehaviorText = view.clipBehaviorText;
     cursorColor = view.cursorColor;
     cursorHeight = view.cursorHeight;
@@ -652,6 +672,7 @@ class EditTextController extends TextViewController {
     enableSuggestions = view.enableSuggestions;
     expands = view.expands;
     keyboardAppearance = view.keyboardAppearance;
+    inputFormatters = view.inputFormatters;
     inputType = view.inputType;
     magnifierConfiguration = view.magnifierConfiguration;
     minLines = view.minLines;
@@ -825,13 +846,14 @@ class EditTextController extends TextViewController {
             : "";
   }
 
-  List<TextInputFormatter>? get formatter {
-    if (digits.isNotEmpty) {
-      return [
-        FilteringTextInputFormatter.allow(RegExp("[$digits]")),
-      ];
-    }
-    return null;
+  List<TextInputFormatter>? get _formatter {
+    return [
+      ...?inputFormatters,
+      if (characters.isNotEmpty)
+        FilteringTextInputFormatter.allow(RegExp("[$characters]")),
+      if (ignorableCharacters.isNotEmpty)
+        FilteringTextInputFormatter.deny(RegExp("[$ignorableCharacters]")),
+    ];
   }
 
   ViewError errorType(String text, [bool? valid]) {

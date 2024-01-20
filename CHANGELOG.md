@@ -1,3 +1,7 @@
+## 0.3.24
+
+* Update some countdown_view properties and algorithm
+
 ## 0.3.23
 
 * Add opacity, opacityState, opacityAlwaysIncludeSemantics, marginCustom and paddingCustom
