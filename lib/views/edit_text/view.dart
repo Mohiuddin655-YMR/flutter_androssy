@@ -39,12 +39,12 @@ class EditText<T extends EditTextController> extends TextView<T> {
 
   /// BASE PROPERTIES
   final bool autoDisposeMode;
-  final bool characterLimitMode;
   final String characters;
   final String hint;
   final Color? hintColor;
   final String ignorableCharacters;
   final Color? primary;
+  final bool maxCharactersAsLimit;
   final int? minCharacters;
   final List<TextInputFormatter>? inputFormatters;
 
@@ -352,7 +352,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.autocorrect = true,
     this.autofillHints = const [],
     this.autoFocus = false,
-    this.characterLimitMode = false,
     this.clipBehaviorText = Clip.hardEdge,
     this.cursorColor,
     this.cursorHeight,
@@ -371,6 +370,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.inputType,
     this.keyboardAppearance = Brightness.light,
     this.magnifierConfiguration = TextMagnifierConfiguration.disabled,
+    this.maxCharactersAsLimit = true,
     this.minLines,
     this.mouseCursor,
     this.obscureText,
@@ -548,9 +548,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
               keyboardType: controller.inputType,
               maxLines: controller.maxLines,
               magnifierConfiguration: controller.magnifierConfiguration,
-              maxLength: controller.characterLimitMode
-                  ? controller.maxCharacters
-                  : null,
+              maxLength: null,
               minLines: controller.minLines,
               mouseCursor: controller.mouseCursor,
               obscureText: controller.obscureText,

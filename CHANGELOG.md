@@ -1,3 +1,7 @@
+## 0.3.25
+
+* Update edit_text max_character limit algorithm
+
 ## 0.3.24
 
 * Update some countdown_view properties and algorithm

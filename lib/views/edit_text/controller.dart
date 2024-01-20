@@ -333,10 +333,10 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => autoFocus = value);
   }
 
-  bool characterLimitMode = false;
+  bool maxCharactersAsLimit = true;
 
-  void setCharacterLimitMode(bool value) {
-    onNotifyWithCallback(() => characterLimitMode = value);
+  void setMaxCharactersAsLimit(bool value) {
+    onNotifyWithCallback(() => maxCharactersAsLimit = value);
   }
 
   Clip clipBehaviorText = Clip.hardEdge;
@@ -620,6 +620,7 @@ class EditTextController extends TextViewController {
     ignorableCharacters = view.ignorableCharacters;
     primary = view.primary;
     maxCharacters = view.maxCharacters;
+    maxCharactersAsLimit = view.maxCharactersAsLimit;
     minCharacters = view.minCharacters;
 
     /// DRAWABLE PROPERTIES
@@ -657,7 +658,6 @@ class EditTextController extends TextViewController {
     autocorrect = view.autocorrect;
     autofillHints = view.autofillHints;
     autoFocus = view.autoFocus;
-    characterLimitMode = view.characterLimitMode;
     clipBehaviorText = view.clipBehaviorText;
     cursorColor = view.cursorColor;
     cursorHeight = view.cursorHeight;
@@ -853,6 +853,8 @@ class EditTextController extends TextViewController {
         FilteringTextInputFormatter.allow(RegExp("[$characters]")),
       if (ignorableCharacters.isNotEmpty)
         FilteringTextInputFormatter.deny(RegExp("[$ignorableCharacters]")),
+      if (maxCharactersAsLimit && maxCharacters > 0)
+        LengthLimitingTextInputFormatter(maxCharacters),
     ];
   }
 
