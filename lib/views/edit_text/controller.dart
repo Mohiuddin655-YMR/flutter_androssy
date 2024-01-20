@@ -250,6 +250,28 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => hintTextColor = value);
   }
 
+  TextStyle? _hintStyle;
+
+  set hintStyle(TextStyle? value) => _hintStyle = value;
+
+  TextStyle? get hintStyle {
+    return _hintStyle?.copyWith(
+          color: textColor,
+          fontSize: textSize,
+          fontWeight: textFontWeight,
+          decoration: textDecoration,
+          decorationColor: textDecorationColor,
+          decorationStyle: textDecorationStyle,
+          decorationThickness: textDecorationThickness,
+          fontFamily: textFontFamily,
+          fontStyle: textFontStyle,
+          leadingDistribution: textLeadingDistribution,
+          letterSpacing: letterSpacing,
+          wordSpacing: wordSpacing,
+        ) ??
+        textStyle;
+  }
+
   Widget? indicator;
 
   void setIndicator(Widget? value) {

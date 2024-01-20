@@ -617,7 +617,21 @@ class TextViewController extends ViewController {
   double? get textSize => textSizeState?.fromController(this) ?? _textSize;
 
   TextStyle? get textStyle {
-    return textStyleState?.fromController(this) ?? _textStyle;
+    final raw = textStyleState?.fromController(this) ?? _textStyle;
+    return raw?.copyWith(
+      color: textColor,
+      fontSize: textSize,
+      fontWeight: textFontWeight,
+      decoration: textDecoration,
+      decorationColor: textDecorationColor,
+      decorationStyle: textDecorationStyle,
+      decorationThickness: textDecorationThickness,
+      fontFamily: textFontFamily,
+      fontStyle: textFontStyle,
+      leadingDistribution: textLeadingDistribution,
+      letterSpacing: letterSpacing,
+      wordSpacing: wordSpacing,
+    );
   }
 
   /// PREFIX

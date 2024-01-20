@@ -1,3 +1,7 @@
+## 0.3.26
+
+* Update edit_text hint_style and text_style
+
 ## 0.3.25
 
 * Update edit_text max_character limit algorithm

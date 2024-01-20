@@ -11,13 +11,9 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'drawable_state.dart';
-
 part 'highlight_text.dart';
-
 part 'typedefs.dart';
-
 part 'underline.dart';
 
 class EditText<T extends EditTextController> extends TextView<T> {
@@ -476,9 +472,15 @@ class EditText<T extends EditTextController> extends TextView<T> {
     final hasError = controller.hasError;
 
     var style = (controller.textStyle ?? themeStyle).copyWith(
-      color: controller.textColor,
       fontSize: controller.textSize ?? 18,
       height: 1.2,
+    );
+    var hintStyle = (controller.hintStyle ?? themeStyle).copyWith(
+      fontSize: controller.textSize ?? 18,
+      height: 1.2,
+      color: controller.text.isNotEmpty
+          ? Colors.transparent
+          : controller.hintTextColor ?? secondaryColor,
     );
     var colors = ValueState(
       primary: secondaryColor,
@@ -517,11 +519,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
                 isDense: true,
                 isCollapsed: true,
                 hintText: controller.hintText,
-                hintStyle: style.copyWith(
-                  color: controller.text.isNotEmpty
-                      ? Colors.transparent
-                      : controller.hintTextColor ?? secondaryColor,
-                ),
+                hintStyle: hintStyle,
               ),
               autocorrect: controller.autocorrect,
               autofillHints: controller.autofillHints,
