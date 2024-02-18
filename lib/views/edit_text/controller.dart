@@ -526,6 +526,12 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => textScrollPhysics = value);
   }
 
+  Color? secondaryColor;
+
+  void setSecondaryColor(Color? value) {
+    onNotifyWithCallback(() => secondaryColor = value);
+  }
+
   TextSelectionControls? selectionControls;
 
   void setSelectionControls(TextSelectionControls? value) {
@@ -578,6 +584,12 @@ class EditTextController extends TextViewController {
 
   void setTextInputAction(TextInputAction? value) {
     onNotifyWithCallback(() => textInputAction = value);
+  }
+
+  Color? underlineColor;
+
+  void setUnderlineColor(Color? value) {
+    onNotifyWithCallback(() => underlineColor = value);
   }
 
   UndoHistoryController? undoController;
@@ -707,6 +719,7 @@ class EditTextController extends TextViewController {
     scrollControllerText = view.scrollControllerText;
     textScrollPadding = view.scrollPaddingText;
     textScrollPhysics = view.scrollPhysicsText;
+    secondaryColor = view.secondaryColor;
     selectionControls = view.selectionControls;
     selectionHeightStyle = view.selectionHeightStyle;
     selectionWidthStyle = view.selectionWidthStyle;
@@ -717,6 +730,7 @@ class EditTextController extends TextViewController {
     textCapitalization = view.textCapitalization;
     textInputAction = view.textInputAction;
     textHeightBehavior = view.textHeightBehavior;
+    underlineColor = view.underlineColor;
     undoController = view.undoController;
 
     /// LISTENER & CALLBACKS

@@ -1,3 +1,7 @@
+## 0.3.27
+
+* Edit text underline color and secondary color customizable
+
 ## 0.3.26
 
 * Update edit_text hint_style and text_style

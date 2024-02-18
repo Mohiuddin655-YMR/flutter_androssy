@@ -11,9 +11,13 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'drawable_state.dart';
+
 part 'highlight_text.dart';
+
 part 'typedefs.dart';
+
 part 'underline.dart';
 
 class EditText<T extends EditTextController> extends TextView<T> {
@@ -106,6 +110,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final ScrollController? scrollControllerText;
   final EdgeInsets scrollPaddingText;
   final ScrollPhysics? scrollPhysicsText;
+  final Color? secondaryColor;
   final TextSelectionControls? selectionControls;
   final BoxHeightStyle selectionHeightStyle;
   final BoxWidthStyle selectionWidthStyle;
@@ -115,6 +120,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final SpellCheckConfiguration? spellCheckConfiguration;
   final TextCapitalization textCapitalization;
   final TextInputAction? textInputAction;
+  final Color? underlineColor;
   final UndoHistoryController? undoController;
 
   /// LISTENER & CALLBACKS
@@ -377,6 +383,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.scrollControllerText,
     this.scrollPaddingText = const EdgeInsets.all(20),
     this.scrollPhysicsText,
+    this.secondaryColor,
     this.selectionControls,
     this.selectionHeightStyle = BoxHeightStyle.tight,
     this.selectionWidthStyle = BoxWidthStyle.tight,
@@ -386,6 +393,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.spellCheckConfiguration,
     this.textCapitalization = TextCapitalization.none,
     this.textInputAction,
+    this.underlineColor,
     this.undoController,
 
     /// CALLBACK AND LISTENING PROPERTIES
@@ -466,8 +474,8 @@ class EditText<T extends EditTextController> extends TextView<T> {
     final theme = Theme.of(context);
     final themeStyle = theme.textTheme.bodyLarge ?? const TextStyle();
     final primaryColor = controller.primary ?? theme.primaryColor;
-    const underlineColor = Color(0xffe1e1e1);
-    const secondaryColor = Color(0xffbbbbbb);
+    final secondaryColor = controller.secondaryColor ?? const Color(0xffbbbbbb);
+    final underlineColor = controller.underlineColor ?? const Color(0xffe1e1e1);
     final errorColor = controller.errorTextColor ?? const Color(0xFFFF7769);
     final hasError = controller.hasError;
 
