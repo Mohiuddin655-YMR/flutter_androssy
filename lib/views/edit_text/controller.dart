@@ -934,9 +934,21 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() {
       _initial = false;
       if (onChange != null) onChange!(value);
-      if (onValid != null || onError != null) {
+      if (onValid != null || onError != null || onActivator != null) {
         final valid = isValid;
-        if (onValid != null) onValid!(valid);
+        if (valid) {
+          if (onActivator != null && !_initial) {
+            indicatorVisible = true;
+            onActivator!.call(value).then((_) {
+              onNotifyWithCallback(() {
+                indicatorVisible = false;
+                error = !_;
+                activated = _;
+              });
+            });
+          }
+        }
+        if (onValid != null) onValid!(valid && !error);
         if (onError != null) {
           errorText = onError!(errorType(value, valid)) ?? "";
         }

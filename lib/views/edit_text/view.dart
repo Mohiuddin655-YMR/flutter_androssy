@@ -14,6 +14,10 @@ part 'controller.dart';
 
 part 'drawable_state.dart';
 
+part 'footer.dart';
+
+part 'header.dart';
+
 part 'highlight_text.dart';
 
 part 'typedefs.dart';
@@ -28,6 +32,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   /// FLOATING TEXT PROPERTIES
   final Color? floatingTextColor;
   final double floatingTextSize;
+  final EdgeInsets floatingTextSpace;
   final bool floatingTextVisible;
 
   /// ERROR TEXT PROPERTIES
@@ -303,6 +308,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.helperTextColor,
     this.floatingTextColor,
     this.floatingTextSize = 12,
+    this.floatingTextSpace = EdgeInsets.zero,
     this.floatingTextVisible = false,
 
     /// ERROR TEXT PROPERTIES
@@ -408,6 +414,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     return const ViewRoots(
       clickable: false,
       padding: false,
+      margin: false,
     );
   }
 
@@ -586,11 +593,12 @@ class EditText<T extends EditTextController> extends TextView<T> {
               undoController: controller.undoController,
             ),
           ),
-          if (controller.indicatorVisible)
+          if (controller.isIndicatorVisible)
             Container(
               width: controller.indicatorSize,
               height: controller.indicatorSize,
               padding: EdgeInsets.all(controller.indicatorSize * 0.05),
+              margin: const EdgeInsets.only(left: 8),
               child: CircularProgressIndicator(
                 strokeWidth: controller.indicatorStroke,
                 color: controller.indicatorStrokeColor ?? defaultColor,
@@ -616,22 +624,21 @@ class EditText<T extends EditTextController> extends TextView<T> {
 
     return GestureDetector(
       onTap: () => controller.showKeyboard(context),
+      child: child,
+    );
+
+    return GestureDetector(
+      onTap: () => controller.showKeyboard(context),
       child: controller.isUnderlineHide
           ? child
           : Column(
               children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: _HighlightText(
-                    visible: controller.floatingTextVisible,
-                    valid: controller.text.isNotEmpty,
-                    text: controller.hintText,
-                    textAlign: controller.textAlign,
-                    textSize: controller.floatingTextSize,
-                    textColor: controller.isFocused
-                        ? primaryColor
-                        : controller.floatingTextColor ?? secondaryColor,
-                  ),
+                _Header(
+                  controller: controller,
+                  primaryColor: primaryColor,
+                  secondaryColor: secondaryColor,
+                  visible: floatingTextVisible,
+                  floatingTextSpace: floatingTextSpace,
                 ),
                 child,
                 Underline(
@@ -649,48 +656,60 @@ class EditText<T extends EditTextController> extends TextView<T> {
                     disable: underlineColor,
                   ),
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _HighlightText(
-                        text: hasError
-                            ? controller.errorText
-                            : controller.helperText,
-                        textAlign: TextAlign.start,
-                        textSize: controller.floatingTextSize,
-                        textColor: !hasError
-                            ? controller.helperTextColor ?? secondaryColor
-                            : controller.errorTextColor,
-                        valid: hasError || controller.helperText.isNotEmpty,
-                        visible: hasError || controller.helperText.isNotEmpty,
-                        padding: const EdgeInsets.only(
-                          top: 4,
-                          bottom: 4,
-                        ),
-                      ),
-                      _HighlightText(
-                        text: controller.counter,
-                        textAlign: TextAlign.end,
-                        textSize: controller.floatingTextSize,
-                        textColor: hasError
-                            ? controller.errorTextColor
-                            : secondaryColor,
-                        valid: controller.counterTextVisible &&
-                            controller.isFocused,
-                        visible: controller.counterTextVisible,
-                        padding: const EdgeInsets.only(
-                          top: 4,
-                          bottom: 4,
-                        ),
-                      ),
-                    ],
-                  ),
+                _Footer(
+                  hasError: hasError,
+                  controller: controller,
+                  secondaryColor: secondaryColor,
+                  floatingTextSpace: floatingTextSpace,
                 ),
               ],
             ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, T controller, Widget parent) {
+    final theme = Theme.of(context);
+    final primaryColor = controller.primary ?? theme.primaryColor;
+    final secondaryColor = controller.secondaryColor ?? const Color(0xffbbbbbb);
+    final underlineColor = controller.underlineColor ?? const Color(0xffe1e1e1);
+    final errorColor = controller.errorTextColor ?? const Color(0xFFFF7769);
+    final hasError = controller.hasError;
+
+    return Container(
+      margin: controller.margin,
+      child: Column(
+        children: [
+          _Header(
+            controller: controller,
+            primaryColor: primaryColor,
+            secondaryColor: secondaryColor,
+            visible: floatingTextVisible,
+            floatingTextSpace: floatingTextSpace,
+          ),
+          parent,
+          Underline(
+            visible: controller.background == null && controller.borderAll <= 0,
+            focused: controller.isFocused,
+            enabled: controller.enabled,
+            error: controller.error,
+            height: 1,
+            primary: primaryColor,
+            colorState: ValueState(
+              primary: primaryColor,
+              secondary: underlineColor,
+              error: errorColor,
+              disable: underlineColor,
+            ),
+          ),
+          _Footer(
+            hasError: hasError,
+            controller: controller,
+            secondaryColor: secondaryColor,
+            floatingTextSpace: floatingTextSpace,
+          ),
+        ],
+      ),
     );
   }
 }

@@ -64,9 +64,165 @@ class Home extends AndrossyActivity<HomeController> {
           textFontWeight: FontWeight.bold,
           textSize: 24,
         ),
+        EditLayout(
+          width: double.infinity,
+          marginTop: 24,
+          onValid: controller.btnSubmit.setEnabled,
+          orientation: Axis.horizontal,
+          crossGravity: CrossAxisAlignment.end,
+          children: [
+            EditText(
+              flex: 1,
+              controller: controller.etDay,
+              gravity: Alignment.center,
+              textAlign: TextAlign.center,
+              hint: "Day",
+              helperText: "12",
+              helperTextColor: context.primaryColor,
+              inputType: TextInputType.number,
+              maxCharacters: 2,
+              minCharacters: 1,
+              maxCharactersAsLimit: true,
+              textSize: 18,
+              floatingTextVisible: true,
+            ),
+            const SizedBox(width: 4),
+            EditText(
+              flex: 1,
+              controller: controller.etMonth,
+              gravity: Alignment.center,
+              textAlign: TextAlign.center,
+              hint: "Month",
+              helperText: "Jan",
+              helperTextColor: context.primaryColor,
+              inputType: TextInputType.number,
+              maxCharacters: 2,
+              minCharacters: 1,
+              maxCharactersAsLimit: true,
+              textSize: 18,
+              floatingTextVisible: true,
+            ),
+            const SizedBox(width: 4),
+            EditText(
+              flex: 1,
+              controller: controller.etYear,
+              gravity: Alignment.center,
+              textAlign: TextAlign.center,
+              hint: "Year",
+              helperText: "2000",
+              helperTextColor: context.primaryColor,
+              inputType: TextInputType.number,
+              maxCharacters: 4,
+              minCharacters: 4,
+              maxCharactersAsLimit: true,
+              textSize: 18,
+              floatingTextVisible: true,
+            ),
+          ],
+        ),
+        EditLayout(
+          marginTop: 24,
+          children: [
+            EditText(
+              autoDisposeMode: false,
+              hint: "Fullname",
+              helperText: "Fullname",
+              errorTextVisible: true,
+              counterTextVisible: true,
+              floatingTextVisible: true,
+              marginTop: 8,
+              // paddingHorizontal: 16,
+              // paddingVertical: 16,
+              // borderRadius: 16,
+              inputType: TextInputType.name,
+              // borderColorState: ValueState(
+              //   primary: context.primaryColor.withOpacity(0.1),
+              //   secondary: context.primaryColor,
+              //   disable: context.primaryColor.withOpacity(0.25),
+              // ),
+              // borderSizeState: const ValueState(
+              //   primary: 1.5,
+              //   secondary: 2,
+              // ),
+              maxCharacters: 30,
+              minCharacters: 5,
+              maxCharactersAsLimit: false,
+              // background: Colors.transparent,
+              // drawableStartState: const ValueState(
+              //   primary: Icons.person_outline_rounded,
+              //   secondary: Icons.person_rounded,
+              // ),
+              // drawableStartPadding: 12,
+              onValidator: (value) {
+                return value.length > 4 && value.length < 31;
+              },
+              onError: (type){
+                if (type.isMinimum){
+                  return "Minimum error";
+                } else if (type.isMaximum){
+                  return "Maximum error";
+                } else {
+                  return null;
+                }
+              },
+            ),
+            EditText(
+              autoDisposeMode: false,
+              counterTextVisible: true,
+              floatingTextVisible: true,
+              hint: "Shortname",
+              marginTop: 24,
+              maxCharacters: 25,
+              minCharacters: 3,
+              maxCharactersAsLimit: false,
+              characters: "1234567890qwertyuiopasdfghjklzxcvbnmm_.",
+              // paddingHorizontal: 16,
+              // paddingVertical: 16,
+              borderRadius: 16,
+              inputType: TextInputType.name,
+              // borderColorState: ValueState(
+              //   primary: context.primaryColor.withOpacity(0.1),
+              //   secondary: context.primaryColor,
+              //   disable: context.primaryColor.withOpacity(0.25),
+              // ),
+              // borderSizeState: const ValueState(
+              //   primary: 1.5,
+              //   secondary: 2,
+              // ),
+              // background: Colors.transparent,
+              drawableStartState: const ValueState(
+                primary: Icons.person_outline_rounded,
+                secondary: Icons.person_rounded,
+              ),
+              drawableStartPadding: 12,
+              onActivator: (v) {
+                log("onActivator : $v");
+                return Future.delayed(const Duration(seconds: 2)).then((value) {
+                  return true;
+                });
+              },
+              onValidator: (value) {
+                return value.length > 2 && value.length < 26;
+              },
+              onError: (type){
+                if (type.isMinimum){
+                  return "Minimum error";
+                } else if (type.isMaximum){
+                  return "Maximum error";
+                } else {
+                  return null;
+                }
+              },
+            ),
+          ],
+        ),
         EditText(
           controller: controller.etEmail,
           marginTop: 24,
+          counterTextVisible: true,
+          helperText: "nice",
+          textAlign: TextAlign.center,
+          maxCharacters: 50,
           hint: "Email",
           text: "example@gmail.com",
           textSize: 18,
@@ -143,6 +299,10 @@ class HomeController extends AndrossyController {
   final etEmail = EditTextController();
   final etPassword = EditTextController();
   final btnSubmit = ButtonController();
+
+  final etDay = EditTextController();
+  final etMonth = EditTextController();
+  final etYear = EditTextController();
 
   @override
   void onListener(BuildContext context) {
