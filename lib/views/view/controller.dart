@@ -8,12 +8,14 @@ class ViewController {
 
   ThemeData get theme => context != null ? Theme.of(context!) : ThemeData();
 
-  void onNotifyActivator(dynamic data, {
+  void onNotifyActivator(
+    dynamic data, {
+    bool recheck = false,
     VoidCallback? callback,
   }) async {
     if (onActivator != null) {
       onNotifyWithCallback(() => indicatorVisible = true);
-      bool value = await onActivator!(data);
+      bool value = await onActivator!(recheck, data);
       onNotifyWithCallback(() {
         activated = value;
         indicatorVisible = false;
@@ -23,8 +25,8 @@ class ViewController {
     }
   }
 
-  void onNotifyToggleWithActivator() {
-    onNotifyActivator(!activated, callback: onNotifyToggle);
+  void onNotifyToggleWithActivator([bool recheck = false]) {
+    onNotifyActivator(!activated, recheck: recheck, callback: onNotifyToggle);
   }
 
   /// CALLBACK PROPERTIES
@@ -969,6 +971,10 @@ class ViewController {
 
   bool error = false;
 
+  bool focused = false;
+
+  bool valid = false;
+
   int flex = 0;
 
   bool hover = false;
@@ -980,10 +986,9 @@ class ViewController {
 
   set width(double? value) => _width = value;
 
-  double? get width =>
-      isSquire || isCircular
-          ? maxSize
-          : widthState?.fromController(this) ?? _width;
+  double? get width => isSquire || isCircular
+      ? maxSize
+      : widthState?.fromController(this) ?? _width;
 
   double? _widthMax;
 
@@ -1000,10 +1005,9 @@ class ViewController {
 
   set height(double? value) => _height = value;
 
-  double? get height =>
-      isSquire || isCircular
-          ? maxSize
-          : heightState?.fromController(this) ?? _height;
+  double? get height => isSquire || isCircular
+      ? maxSize
+      : heightState?.fromController(this) ?? _height;
 
   double? _heightMax;
 
@@ -1039,24 +1043,24 @@ class ViewController {
   List<BoxShadow>? get shadows {
     return isShadow
         ? [
-      BoxShadow(
-        color: shadowColor ?? Colors.black12,
-        blurRadius: shadowBlurRadius,
-        offset: isOverlayShadow
-            ? Offset.zero
-            : Offset(-shadowStart, -shadowTop),
-        blurStyle: shadowBlurStyle,
-        spreadRadius: shadowSpreadRadius,
-      ),
-      if (!isOverlayShadow)
-        BoxShadow(
-          color: shadowColor ?? Colors.black12,
-          blurRadius: shadowBlurRadius,
-          offset: Offset(shadowEnd, shadowBottom),
-          blurStyle: shadowBlurStyle,
-          spreadRadius: shadowSpreadRadius,
-        ),
-    ]
+            BoxShadow(
+              color: shadowColor ?? Colors.black12,
+              blurRadius: shadowBlurRadius,
+              offset: isOverlayShadow
+                  ? Offset.zero
+                  : Offset(-shadowStart, -shadowTop),
+              blurStyle: shadowBlurStyle,
+              spreadRadius: shadowSpreadRadius,
+            ),
+            if (!isOverlayShadow)
+              BoxShadow(
+                color: shadowColor ?? Colors.black12,
+                blurRadius: shadowBlurRadius,
+                offset: Offset(shadowEnd, shadowBottom),
+                blurStyle: shadowBlurStyle,
+                spreadRadius: shadowSpreadRadius,
+              ),
+          ]
         : null;
   }
 
@@ -1109,10 +1113,10 @@ class ViewController {
 
   bool get isConstraints =>
       roots.constraints &&
-          (_widthMax != null ||
-              _widthMin != null ||
-              _heightMax != null ||
-              _heightMin != null);
+      (_widthMax != null ||
+          _widthMin != null ||
+          _heightMax != null ||
+          _heightMin != null);
 
   bool get isDimensional => roots.ratio && dimensionRatio > 0;
 

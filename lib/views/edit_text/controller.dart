@@ -28,16 +28,22 @@ class EditTextController extends TextViewController {
     });
   }
 
+  /// ROOT PROPERTIES
+  Alignment get floatingAlignment {
+    final isRTL = textDirection == TextDirection.rtl;
+    return isRTL ? Alignment.centerRight : Alignment.centerLeft;
+  }
+
+  /// SUPER PROPERTIES
+  @override
+  bool get isMargin => marginAll > 0;
+
+  /// BASE PROPERTIES
+
   bool autoDisposeMode = true;
 
   void setAutoDisposeMode(bool value) {
     onNotifyWithCallback(() => autoDisposeMode = value);
-  }
-
-  bool counterTextVisible = false;
-
-  void setCounterTextVisible(bool value) {
-    onNotifyWithCallback(() => counterTextVisible = value);
   }
 
   String characters = "";
@@ -52,6 +58,39 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => ignorableCharacters = value);
   }
 
+  bool maxCharactersAsLimit = true;
+
+  void setMaxCharactersAsLimit(bool value) {
+    onNotifyWithCallback(() => maxCharactersAsLimit = value);
+  }
+
+  int? minCharacters;
+
+  void setMinCharacters(int? value) {
+    onNotifyWithCallback(() => minCharacters = value);
+  }
+
+  Color? _primary;
+
+  Color get primary => _primary ?? theme.primaryColor;
+
+  set primary(Color? value) => _primary = value;
+
+  void setPrimary(Color? value) {
+    onNotifyWithCallback(() => primary = value);
+  }
+
+  void _initBaseProperties(EditText view) {
+    autoDisposeMode = view.autoDisposeMode;
+    characters = view.characters;
+    ignorableCharacters = view.ignorableCharacters;
+    maxCharacters = view.maxCharacters;
+    maxCharactersAsLimit = view.maxCharactersAsLimit;
+    minCharacters = view.minCharacters;
+    primary = view.primary;
+  }
+
+  /// DRAWABLE PROPERTIES
   dynamic _drawableEnd;
 
   set drawableEnd(dynamic value) => _drawableEnd = value;
@@ -64,6 +103,12 @@ class EditTextController extends TextViewController {
 
   void setDrawableEndState(ValueState<dynamic>? value) {
     onNotifyWithCallback(() => drawableEndState = value);
+  }
+
+  bool drawableEndAsEye = false;
+
+  void setDrawableEndAsEye(bool value) {
+    onNotifyWithCallback(() => drawableEndAsEye = value);
   }
 
   double _drawableEndSize = 24;
@@ -114,6 +159,20 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => drawableEndVisible = value);
   }
 
+  void _initDrawableEndProperties(EditText view) {
+    drawableEnd = view.drawableEnd;
+    drawableEndState = view.drawableEndState;
+    drawableEndAsEye = view.drawableEndAsEye;
+    drawableEndSize = view.drawableEndSize;
+    drawableEndSizeState = view.drawableEndSizeState;
+    drawableEndPadding = view.drawableEndPadding;
+    drawableEndPaddingState = view.drawableEndPaddingState;
+    drawableEndTint = view.drawableEndTint;
+    drawableEndTintState = view.drawableEndTintState;
+    drawableEndVisible = view.drawableEndVisible;
+  }
+
+  /// DRAWABLE START PROPERTIES
   dynamic _drawableStart;
 
   set drawableStart(dynamic value) => _drawableStart = value;
@@ -176,12 +235,73 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => drawableStartVisible = value);
   }
 
-  bool drawableEndAsEye = false;
-
-  void setDrawableEndAsEye(bool value) {
-    onNotifyWithCallback(() => drawableEndAsEye = value);
+  void _initDrawableStartProperties(EditText view) {
+    drawableStart = view.drawableStart;
+    drawableStartState = view.drawableStartState;
+    drawableStartSize = view.drawableStartSize;
+    drawableStartSizeState = view.drawableStartSizeState;
+    drawableStartPadding = view.drawableStartPadding;
+    drawableStartPaddingState = view.drawableStartPaddingState;
+    drawableStartTint = view.drawableStartTint;
+    drawableStartTintState = view.drawableStartTintState;
+    drawableStartVisible = view.drawableStartVisible;
   }
 
+  /// COUNTER TEXT PROPERTIES
+
+  Color? _counterTextColor;
+
+  Color? get counterTextColor {
+    return counterTextColorState?.fromController(this) ??
+        _counterTextColor ??
+        secondaryColor;
+  }
+
+  set counterTextColor(Color? value) => _counterTextColor = value;
+
+  ValueState<Color>? counterTextColorState;
+
+  void setCounterTextColor(Color? value) {
+    onNotifyWithCallback(() => counterTextColor = value);
+  }
+
+  TextStyle? _counterTextStyle;
+
+  TextStyle? get counterTextStyle {
+    return counterTextStyleState?.fromController(this) ??
+        _counterTextStyle ??
+        helperTextStyle?.copyWith(
+          color: hasError ? errorTextColor : counterTextColor,
+        );
+  }
+
+  set counterTextStyle(TextStyle? value) => _counterTextStyle = value;
+
+  ValueState<TextStyle>? counterTextStyleState;
+
+  void setCounterTextStyleState(ValueState<TextStyle>? value) {
+    onNotifyWithCallback(() => counterTextStyleState = value);
+  }
+
+  FloatingVisibility counterVisibility = FloatingVisibility.hide;
+
+  bool get counterVisible {
+    return !counterVisibility.isInvisible && textAlign != TextAlign.center;
+  }
+
+  void setCounterVisibility(FloatingVisibility value) {
+    onNotifyWithCallback(() => counterVisibility = value);
+  }
+
+  void _initCounterProperties(EditText view) {
+    counterTextColor = view.counterTextColor;
+    counterTextColorState = view.counterTextColorState;
+    counterTextStyle = view.counterTextStyle;
+    counterTextStyleState = view.counterTextStyleState;
+    counterVisibility = view.counterVisibility;
+  }
+
+  /// ERROR TEXT PROPERTIES
   String? _errorText;
 
   set errorText(String? value) => _errorText = value;
@@ -196,48 +316,181 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => errorTextState = value);
   }
 
-  Color? errorTextColor;
+  Color? _errorTextColor;
+
+  Color? get errorTextColor {
+    return errorTextColorState?.fromController(this) ?? _errorTextColor;
+  }
+
+  set errorTextColor(Color? value) => _errorTextColor = value;
+
+  ValueState<Color>? errorTextColorState;
 
   void setErrorTextColor(Color? value) {
     onNotifyWithCallback(() => errorTextColor = value);
   }
 
-  bool errorTextVisible = false;
+  TextStyle? _errorTextStyle;
 
-  void setErrorTextVisible(bool value) {
-    onNotifyWithCallback(() => errorTextVisible = value);
+  TextStyle? get errorTextStyle {
+    return errorTextStyleState?.fromController(this) ??
+        _errorTextStyle ??
+        helperTextStyle?.copyWith(color: errorTextColor);
   }
 
-  Color? floatingTextColor;
+  set errorTextStyle(TextStyle? value) => _errorTextStyle = value;
 
-  void setFloatingTextColor(Color? value) {
-    onNotifyWithCallback(() => floatingTextColor = value);
+  ValueState<TextStyle>? errorTextStyleState;
+
+  void setErrorTextStyleState(ValueState<TextStyle>? value) {
+    onNotifyWithCallback(() => errorTextStyleState = value);
   }
 
-  double floatingTextSize = 12;
+  FloatingVisibility errorVisibility = FloatingVisibility.hide;
 
-  void setFloatingTextSize(double value) {
-    onNotifyWithCallback(() => floatingTextSize = value);
+  void setErrorVisibility(FloatingVisibility value) {
+    onNotifyWithCallback(() => errorVisibility = value);
   }
 
-  bool floatingTextVisible = false;
-
-  void setFloatingTextVisible(bool value) {
-    onNotifyWithCallback(() => floatingTextVisible = value);
+  void _initErrorTextProperties(EditText view) {
+    errorTextColor = view.errorTextColor;
+    errorTextColorState = view.errorTextColorState;
+    errorTextStyle = view.errorTextStyle;
+    errorTextStyleState = view.errorTextStyleState;
+    errorVisibility = view.errorVisibility;
   }
 
+  /// FLOATING TEXT PROPERTIES
+  String? _floatingText;
+
+  String get floatingText => _floatingText ?? hintText;
+
+  set floatingText(String? value) => _floatingText = value;
+
+  void setFloatingText(String? value) {
+    onNotifyWithCallback(() => floatingText = value);
+  }
+
+  Color? get floatingTextColor {
+    return isFocused ? primary : secondaryColor;
+  }
+
+  TextStyle? _floatingTextStyle;
+
+  TextStyle get floatingTextStyle {
+    final x = floatingTextStyleState?.fromController(this) ??
+        _floatingTextStyle ??
+        const TextStyle(fontSize: 12, fontWeight: FontWeight.w500);
+    if (floatingVisibility.isVisible || text.isNotEmpty) {
+      return x;
+    } else {
+      return x.copyWith(color: Colors.transparent);
+    }
+  }
+
+  set floatingTextStyle(TextStyle? value) => _floatingTextStyle = value;
+
+  void setFloatingTextStyle(TextStyle value) {
+    onNotifyWithCallback(() => floatingTextStyle = value);
+  }
+
+  ValueState<TextStyle>? floatingTextStyleState;
+
+  void setFloatingTextStyleState(ValueState<TextStyle>? value) {
+    onNotifyWithCallback(() => floatingTextStyleState = value);
+  }
+
+  EdgeInsets floatingTextSpace = EdgeInsets.zero;
+
+  void setFloatingTextSpace(EdgeInsets value) {
+    onNotifyWithCallback(() => floatingTextSpace = value);
+  }
+
+  FloatingVisibility floatingVisibility = FloatingVisibility.hide;
+
+  void setFloatingVisibility(FloatingVisibility value) {
+    onNotifyWithCallback(() => floatingVisibility = value);
+  }
+
+  bool get floatingVisible => !floatingVisibility.isInvisible;
+
+  bool get footerVisible => helperTextVisible || counterVisible;
+
+  Color? get footerTextColor => footerTextStyle?.color;
+
+  TextStyle? get footerTextStyle {
+    if (hasError) {
+      return errorTextStyle;
+    } else {
+      return helperTextStyle;
+    }
+  }
+
+  void _initFloatingTextProperties(EditText view) {
+    floatingText = view.floatingText;
+    floatingTextStyle = view.floatingTextStyle;
+    floatingTextStyleState = view.floatingTextStyleState;
+    floatingTextSpace = view.floatingTextSpace;
+    floatingVisibility = view.floatingVisibility;
+  }
+
+  /// HELPER TEXT PROPERTIES
   String helperText = "";
 
   void setHelperText(String value) {
     onNotifyWithCallback(() => helperText = value);
   }
 
-  Color? helperTextColor;
+  Color? _helperTextColor;
+
+  Color? get helperTextColor {
+    return helperTextColorState?.fromController(this) ??
+        _helperTextColor ??
+        secondaryColor;
+  }
+
+  set helperTextColor(Color? value) => _helperTextColor = value;
 
   void setHelperTextColor(Color? value) {
     onNotifyWithCallback(() => helperTextColor = value);
   }
 
+  ValueState<Color>? helperTextColorState;
+
+  void setHelperTextColorState(ValueState<Color>? value) {
+    onNotifyWithCallback(() => helperTextColorState = value);
+  }
+
+  TextStyle? _helperTextStyle;
+
+  TextStyle? get helperTextStyle {
+    return (helperTextStyleState?.fromController(this) ?? _helperTextStyle)
+        ?.copyWith(color: helperTextColor);
+  }
+
+  set helperTextStyle(TextStyle? value) => _helperTextStyle = value;
+
+  void setHelperTextStyle(TextStyle value) {
+    onNotifyWithCallback(() => helperTextStyle = value);
+  }
+
+  ValueState<TextStyle>? helperTextStyleState;
+
+  void setHelperTextStyleState(ValueState<TextStyle>? value) {
+    onNotifyWithCallback(() => helperTextStyleState = value);
+  }
+
+  bool get helperTextVisible => hasError || helperText.isNotEmpty;
+
+  void _initHelperTextProperties(EditText view) {
+    helperText = view.helperText;
+    helperTextColor = view.helperTextColor;
+    helperTextColorState = view.helperTextColorState;
+    helperTextStyle = view.helperTextStyle;
+    helperTextStyleState = view.helperTextStyleState;
+  }
+
+  /// HINT TEXT PROPERTIES
   String hintText = "";
 
   void setHintText(String value) {
@@ -272,6 +525,12 @@ class EditTextController extends TextViewController {
         textStyle;
   }
 
+  void _initHintTextProperties(EditText view) {
+    hintText = view.hint;
+    hintTextColor = view.hintColor;
+  }
+
+  /// INDICATOR PROPERTIES
   Widget? indicator;
 
   void setIndicator(Widget? value) {
@@ -324,19 +583,18 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => indicatorVisible = visible);
   }
 
-  int? minCharacters;
-
-  void setMinCharacters(int? value) {
-    onNotifyWithCallback(() => minCharacters = value);
+  void _initIndicatorProperties(EditText view) {
+    indicator = view.indicator;
+    indicatorSize = view.indicatorSize;
+    indicatorStroke = view.indicatorStroke;
+    indicatorStrokeColor = view.indicatorStrokeColor;
+    indicatorStrokeColorState = view.indicatorStrokeColorState;
+    indicatorStrokeBackground = view.indicatorStrokeBackground;
+    indicatorStrokeBackgroundState = view.indicatorStrokeBackgroundState;
+    indicatorVisible = view.indicatorVisible;
   }
 
-  Color? primary;
-
-  void setPrimary(Color? value) {
-    onNotifyWithCallback(() => primary = value);
-  }
-
-  // EDITING PROPERTIES
+  /// TEXT FIELD PROPERTIES
   bool autocorrect = true;
 
   void setAutocorrect(bool value) {
@@ -353,12 +611,6 @@ class EditTextController extends TextViewController {
 
   void setAutoFocus(bool value) {
     onNotifyWithCallback(() => autoFocus = value);
-  }
-
-  bool maxCharactersAsLimit = true;
-
-  void setMaxCharactersAsLimit(bool value) {
-    onNotifyWithCallback(() => maxCharactersAsLimit = value);
   }
 
   Clip clipBehaviorText = Clip.hardEdge;
@@ -586,19 +838,12 @@ class EditTextController extends TextViewController {
     onNotifyWithCallback(() => textInputAction = value);
   }
 
-  Color? underlineColor;
-
-  void setUnderlineColor(Color? value) {
-    onNotifyWithCallback(() => underlineColor = value);
-  }
-
   UndoHistoryController? undoController;
 
   void setUndoController(UndoHistoryController? value) {
     onNotifyWithCallback(() => undoController = value);
   }
 
-  // CALLBACK & LISTENERS
   EditTextPrivateCommandListener? _onAppPrivateCommand;
 
   set onAppPrivateCommand(EditTextPrivateCommandListener? listener) =>
@@ -631,64 +876,7 @@ class EditTextController extends TextViewController {
   void setOnEditTextTapOutsideListener(EditTextTapOutsideListener listener) =>
       onTapOutside = listener;
 
-  EditTextController fromEditText(EditText view) {
-    super.fromTextView(view);
-
-    helperText = view.helperText;
-    helperTextColor = view.helperTextColor;
-    floatingTextColor = view.floatingTextColor;
-    floatingTextSize = view.floatingTextSize;
-    floatingTextVisible = view.floatingTextVisible;
-    errorTextVisible = view.errorTextVisible;
-    errorTextColor = view.errorTextColor;
-    counterTextVisible = view.counterTextVisible;
-    onChange = view.onChange;
-    onError = view.onError;
-    onValidator = view.onValidator;
-
-    /// BASE PROPERTIES
-    autoDisposeMode = view.autoDisposeMode;
-    characters = view.characters;
-    hintText = view.hint;
-    hintTextColor = view.hintColor;
-    ignorableCharacters = view.ignorableCharacters;
-    primary = view.primary;
-    maxCharacters = view.maxCharacters;
-    maxCharactersAsLimit = view.maxCharactersAsLimit;
-    minCharacters = view.minCharacters;
-
-    /// DRAWABLE PROPERTIES
-    drawableStart = view.drawableStart;
-    drawableStartState = view.drawableStartState;
-    drawableStartSize = view.drawableStartSize;
-    drawableStartSizeState = view.drawableStartSizeState;
-    drawableStartPadding = view.drawableStartPadding;
-    drawableStartPaddingState = view.drawableStartPaddingState;
-    drawableStartTint = view.drawableStartTint;
-    drawableStartTintState = view.drawableStartTintState;
-    drawableStartVisible = view.drawableStartVisible;
-    drawableEnd = view.drawableEnd;
-    drawableEndState = view.drawableEndState;
-    drawableEndSize = view.drawableEndSize;
-    drawableEndSizeState = view.drawableEndSizeState;
-    drawableEndPadding = view.drawableEndPadding;
-    drawableEndPaddingState = view.drawableEndPaddingState;
-    drawableEndTint = view.drawableEndTint;
-    drawableEndTintState = view.drawableEndTintState;
-    drawableEndVisible = view.drawableEndVisible;
-    drawableEndAsEye = view.drawableEndAsEye;
-
-    /// INDICATOR PROPERTIES
-    indicator = view.indicator;
-    indicatorSize = view.indicatorSize;
-    indicatorStroke = view.indicatorStroke;
-    indicatorStrokeColor = view.indicatorStrokeColor;
-    indicatorStrokeColorState = view.indicatorStrokeColorState;
-    indicatorStrokeBackground = view.indicatorStrokeBackground;
-    indicatorStrokeBackgroundState = view.indicatorStrokeBackgroundState;
-    indicatorVisible = view.indicatorVisible;
-
-    /// EDITING PROPERTIES
+  void _initTextFieldProperties(EditText view) {
     autocorrect = view.autocorrect;
     autofillHints = view.autofillHints;
     autoFocus = view.autoFocus;
@@ -729,17 +917,84 @@ class EditTextController extends TextViewController {
     spellCheckConfiguration = view.spellCheckConfiguration;
     textCapitalization = view.textCapitalization;
     textInputAction = view.textInputAction;
-    textHeightBehavior = view.textHeightBehavior;
-    underlineColor = view.underlineColor;
     undoController = view.undoController;
-
-    /// LISTENER & CALLBACKS
+    // LISTENERS
     onAppPrivateCommand = view.onAppPrivateCommand;
     onEditingComplete = view.onEditingComplete;
     onSubmitted = view.onSubmitted;
     onTapOutside = view.onTapOutside;
+  }
 
-    /// CUSTOMIZATIONS
+  /// UNDERLINE PROPERTIES
+  Color? underlineColor;
+
+  void setUnderlineColor(Color? value) {
+    onNotifyWithCallback(() => underlineColor = value);
+  }
+
+  ValueState<Color>? _underlineColorState;
+
+  ValueState<Color> get underlineColorState {
+    return _underlineColorState ??
+        ValueState(
+          primary: primary,
+          secondary: underlineColor ?? const Color(0xffe1e1e1),
+          error: errorTextColor ?? const Color(0xFFFF7769),
+          disable: underlineColor ?? const Color(0xffe1e1e1),
+        );
+  }
+
+  set underlineColorState(ValueState<Color>? value) {
+    _underlineColorState = value;
+  }
+
+  void setUnderlineColorState(ValueState<Color>? value) {
+    onNotifyWithCallback(() => underlineColorState = value);
+  }
+
+  double? _underlineHeight;
+
+  double? get underlineHeight {
+    return underlineHeightState?.fromController(this) ?? _underlineHeight;
+  }
+
+  set underlineHeight(double? value) => _underlineHeight = value;
+
+  void setUnderlineHeight(double? value) {
+    onNotifyWithCallback(() => underlineHeight = value);
+  }
+
+  ValueState<double>? underlineHeightState;
+
+  void setUnderlineHeightState(ValueState<double>? value) {
+    onNotifyWithCallback(() => underlineHeightState = value);
+  }
+
+  bool get underlineVisible {
+    return background == null ||
+        background == Colors.transparent && borderAll <= 0;
+  }
+
+  void _initUnderlineProperties(EditText view) {
+    underlineColor = view.underlineColor;
+    underlineColorState = view.underlineColorState;
+    underlineHeight = view.underlineHeight;
+    underlineHeightState = view.underlineHeightState;
+  }
+
+  EditTextController fromEditText(EditText view) {
+    super.fromTextView(view);
+    _initBaseProperties(view);
+    _initCounterProperties(view);
+    _initDrawableEndProperties(view);
+    _initDrawableStartProperties(view);
+    _initFloatingTextProperties(view);
+    _initErrorTextProperties(view);
+    _initHelperTextProperties(view);
+    _initHintTextProperties(view);
+    _initIndicatorProperties(view);
+    _initTextFieldProperties(view);
+    _initUnderlineProperties(view);
     _editor.text = view.text ?? _editor.text;
     return this;
   }
@@ -762,11 +1017,21 @@ class EditTextController extends TextViewController {
     return value ?? _drawableEndPadding;
   }
 
+  EdgeInsets get drawableEndSpace {
+    final isRTL = textDirection == TextDirection.rtl;
+    final space = drawableEndPadding ?? 12;
+    return EdgeInsets.only(
+      left: !isRTL ? space : 0,
+      right: isRTL ? space : 0,
+    );
+  }
+
   Color? get drawableEndTint {
     var value = drawableEndTintState?.fromController(this);
     return value ?? _drawableEndTint;
   }
 
+  /// DRAWABLE START PROPERTIES
   dynamic get drawableStart {
     var value = drawableStartState?.fromController(this);
     return value ?? _drawableStart;
@@ -782,6 +1047,15 @@ class EditTextController extends TextViewController {
     return value ?? _drawableStartPadding;
   }
 
+  EdgeInsets get drawableStartSpace {
+    final isRTL = textDirection == TextDirection.rtl;
+    final space = drawableStartPadding ?? 12;
+    return EdgeInsets.only(
+      left: isRTL ? space : 0,
+      right: !isRTL ? space : 0,
+    );
+  }
+
   Color? get drawableStartTint {
     var value = drawableStartTintState?.fromController(this);
     return value ?? _drawableStartTint;
@@ -789,7 +1063,7 @@ class EditTextController extends TextViewController {
 
   String? get errorText => errorTextState?.fromController(this) ?? _errorText;
 
-  bool get hasError => !isValid && (errorText ?? "").isNotEmpty;
+  bool get hasError => (errorText ?? "").isNotEmpty;
 
   Color? get indicatorStrokeColor {
     var value = indicatorStrokeColorState?.fromController(this);
@@ -850,11 +1124,9 @@ class EditTextController extends TextViewController {
   /// CUSTOMIZATIONS
   bool _initial = true;
 
-  bool _focused = false;
-
   bool get isInitial => _initial;
 
-  bool get isFocused => _focused;
+  bool get isFocused => focused;
 
   bool get isReadMode => !enabled && readOnly;
 
@@ -863,6 +1135,14 @@ class EditTextController extends TextViewController {
   bool get isValid {
     if (onValidator != null) {
       return onValidator!(_editor.text);
+    } else {
+      return true;
+    }
+  }
+
+  bool get isChecked {
+    if (onActivator != null) {
+      return valid;
     } else {
       return true;
     }
@@ -912,9 +1192,9 @@ class EditTextController extends TextViewController {
   }
 
   void _handleFocusChange() {
-    if (_node.hasFocus != _focused) {
-      _focused = _node.hasFocus;
-      if (onFocusChanged(_focused)) {
+    if (_node.hasFocus != focused) {
+      focused = _node.hasFocus;
+      if (onFocusChanged(focused)) {
         onNotify();
       }
     }
@@ -930,27 +1210,42 @@ class EditTextController extends TextViewController {
     return true;
   }
 
+  bool _running = false;
+
   void _handleEditingChange(String value) {
     onNotifyWithCallback(() {
       _initial = false;
+      valid = false;
+      error = false;
+      errorText = "";
       if (onChange != null) onChange!(value);
       if (onValid != null || onError != null || onActivator != null) {
-        final valid = isValid;
-        if (valid) {
-          if (onActivator != null && !_initial) {
-            indicatorVisible = true;
-            onActivator!.call(value).then((_) {
-              onNotifyWithCallback(() {
-                indicatorVisible = false;
-                error = !_;
-                activated = _;
-              });
+        valid = isValid;
+        if (valid && onActivator != null && !_initial) {
+          _running = indicatorVisible;
+          indicatorVisible = true;
+          onActivator!.call(_running, value).then((_) {
+            onNotifyWithCallback(() {
+              indicatorVisible = false;
+              valid = _ && isValid;
+              error = !valid;
+              if (onValid != null) onValid!(valid);
+              if (onError != null) {
+                if (error) {
+                  errorText = onError!(ViewError.alreadyFound) ?? "";
+                } else {
+                  errorText =
+                      onError!(errorType(value, valid && isChecked)) ?? "";
+                }
+              }
             });
+          });
+        } else {
+          final checked = isChecked;
+          if (onValid != null) onValid!(valid && checked);
+          if (onError != null) {
+            errorText = onError!(errorType(value, valid && checked)) ?? "";
           }
-        }
-        if (onValid != null) onValid!(valid && !error);
-        if (onError != null) {
-          errorText = onError!(errorType(value, valid)) ?? "";
         }
       }
     });

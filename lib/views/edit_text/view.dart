@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -14,6 +15,8 @@ part 'controller.dart';
 
 part 'drawable_state.dart';
 
+part 'floating_visibility.dart';
+
 part 'footer.dart';
 
 part 'header.dart';
@@ -25,23 +28,6 @@ part 'typedefs.dart';
 part 'underline.dart';
 
 class EditText<T extends EditTextController> extends TextView<T> {
-  /// HELPER TEXT PROPERTIES
-  final String helperText;
-  final Color? helperTextColor;
-
-  /// FLOATING TEXT PROPERTIES
-  final Color? floatingTextColor;
-  final double floatingTextSize;
-  final EdgeInsets floatingTextSpace;
-  final bool floatingTextVisible;
-
-  /// ERROR TEXT PROPERTIES
-  final bool errorTextVisible;
-  final Color? errorTextColor;
-
-  /// COUNTER TEXT PROPERTIES
-  final bool counterTextVisible;
-
   /// BASE PROPERTIES
   final bool autoDisposeMode;
   final String characters;
@@ -53,17 +39,14 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final int? minCharacters;
   final List<TextInputFormatter>? inputFormatters;
 
-  /// DRAWABLE PROPERTIES
-  final dynamic drawableStart;
-  final ValueState<dynamic>? drawableStartState;
-  final EditTextDrawableBuilder<T>? drawableStartBuilder;
-  final double drawableStartSize;
-  final ValueState<double>? drawableStartSizeState;
-  final double? drawableStartPadding;
-  final ValueState<double>? drawableStartPaddingState;
-  final Color? drawableStartTint;
-  final ValueState<Color>? drawableStartTintState;
-  final bool drawableStartVisible;
+  /// COUNTER TEXT PROPERTIES
+  final Color? counterTextColor;
+  final ValueState<Color>? counterTextColorState;
+  final TextStyle? counterTextStyle;
+  final ValueState<TextStyle>? counterTextStyleState;
+  final FloatingVisibility counterVisibility;
+
+  /// DRAWABLE END PROPERTIES
   final dynamic drawableEnd;
   final ValueState<dynamic>? drawableEndState;
   final EditTextDrawableBuilder<T>? drawableEndBuilder;
@@ -76,6 +59,39 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final bool drawableEndVisible;
   final bool drawableEndAsEye;
 
+  /// DRAWABLE START PROPERTIES
+  final dynamic drawableStart;
+  final ValueState<dynamic>? drawableStartState;
+  final EditTextDrawableBuilder<T>? drawableStartBuilder;
+  final double drawableStartSize;
+  final ValueState<double>? drawableStartSizeState;
+  final double? drawableStartPadding;
+  final ValueState<double>? drawableStartPaddingState;
+  final Color? drawableStartTint;
+  final ValueState<Color>? drawableStartTintState;
+  final bool drawableStartVisible;
+
+  /// ERROR TEXT PROPERTIES
+  final FloatingVisibility errorVisibility;
+  final Color? errorTextColor;
+  final ValueState<Color>? errorTextColorState;
+  final TextStyle? errorTextStyle;
+  final ValueState<TextStyle>? errorTextStyleState;
+
+  /// FLOATING TEXT PROPERTIES
+  final String? floatingText;
+  final TextStyle? floatingTextStyle;
+  final ValueState<TextStyle>? floatingTextStyleState;
+  final EdgeInsets floatingTextSpace;
+  final FloatingVisibility floatingVisibility;
+
+  /// HELPER TEXT PROPERTIES
+  final String helperText;
+  final Color? helperTextColor;
+  final ValueState<Color>? helperTextColorState;
+  final TextStyle? helperTextStyle;
+  final ValueState<TextStyle>? helperTextStyleState;
+
   /// INDICATOR PROPERTIES
   final Widget? indicator;
   final double indicatorSize;
@@ -85,7 +101,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final Color? indicatorStrokeBackground;
   final ValueState<Color>? indicatorStrokeBackgroundState;
 
-  /// EDITING PROPERTIES
+  /// TEXT FIELD PROPERTIES
   final bool autocorrect;
   final List<String> autofillHints;
   final bool autoFocus;
@@ -125,14 +141,17 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final SpellCheckConfiguration? spellCheckConfiguration;
   final TextCapitalization textCapitalization;
   final TextInputAction? textInputAction;
-  final Color? underlineColor;
   final UndoHistoryController? undoController;
-
-  /// LISTENER & CALLBACKS
   final EditTextPrivateCommandListener? onAppPrivateCommand;
   final EditTextVoidListener? onEditingComplete;
   final EditTextSubmitListener? onSubmitted;
   final EditTextTapOutsideListener? onTapOutside;
+
+  /// UNDERLINE PROPERTIES
+  final Color? underlineColor;
+  final ValueState<Color>? underlineColorState;
+  final double? underlineHeight;
+  final ValueState<double>? underlineHeightState;
 
   const EditText({
     /// ROOT PROPERTIES
@@ -291,6 +310,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.textFontFamily,
     super.textFontStyle,
     super.textFontWeight,
+    super.textDirection,
     super.selectionColor,
     super.strutStyle,
     super.text,
@@ -303,38 +323,22 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.textStyle,
     super.textWidthBasis,
 
-    /// HELPER TEXT PROPERTIES
-    this.helperText = "",
-    this.helperTextColor,
-    this.floatingTextColor,
-    this.floatingTextSize = 12,
-    this.floatingTextSpace = EdgeInsets.zero,
-    this.floatingTextVisible = false,
-
-    /// ERROR TEXT PROPERTIES
-    this.errorTextColor = const Color(0xFFFF7769),
-    this.errorTextVisible = true,
-    this.counterTextVisible = false,
-
     /// BASE PROPERTIES
     this.autoDisposeMode = true,
     this.characters = "",
     this.hint = "",
     this.hintColor,
-    this.primary,
     this.minCharacters,
+    this.primary,
 
-    /// DRAWABLE PROPERTIES
-    this.drawableStart,
-    this.drawableStartState,
-    this.drawableStartBuilder,
-    this.drawableStartSize = 24,
-    this.drawableStartSizeState,
-    this.drawableStartPadding,
-    this.drawableStartPaddingState,
-    this.drawableStartTint,
-    this.drawableStartTintState,
-    this.drawableStartVisible = true,
+    /// COUNTER PROPERTIES
+    this.counterTextColor,
+    this.counterTextColorState,
+    this.counterTextStyle,
+    this.counterTextStyleState,
+    this.counterVisibility = FloatingVisibility.hide,
+
+    /// DRAWABLE END PROPERTIES
     this.drawableEnd,
     this.drawableEndState,
     this.drawableEndBuilder,
@@ -347,6 +351,39 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.drawableEndVisible = true,
     this.drawableEndAsEye = false,
 
+    /// DRAWABLE START PROPERTIES
+    this.drawableStart,
+    this.drawableStartState,
+    this.drawableStartBuilder,
+    this.drawableStartSize = 24,
+    this.drawableStartSizeState,
+    this.drawableStartPadding,
+    this.drawableStartPaddingState,
+    this.drawableStartTint,
+    this.drawableStartTintState,
+    this.drawableStartVisible = true,
+
+    /// ERROR TEXT PROPERTIES
+    this.errorTextColor = const Color(0xFFFF7769),
+    this.errorTextColorState,
+    this.errorTextStyle,
+    this.errorTextStyleState,
+    this.errorVisibility = FloatingVisibility.auto,
+
+    /// FLOATING TEXT PROPERTIES
+    this.floatingText,
+    this.floatingTextStyle,
+    this.floatingTextStyleState,
+    this.floatingTextSpace = EdgeInsets.zero,
+    this.floatingVisibility = FloatingVisibility.hide,
+
+    /// HELPER TEXT PROPERTIES
+    this.helperText = "",
+    this.helperTextColor,
+    this.helperTextColorState,
+    this.helperTextStyle,
+    this.helperTextStyleState,
+
     /// INDICATOR PROPERTIES
     this.indicator,
     this.indicatorSize = 24,
@@ -356,7 +393,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.indicatorStrokeBackground,
     this.indicatorStrokeBackgroundState,
 
-    /// EDITING PROPERTIES
+    /// TEXT FIELD PROPERTIES
     this.autocorrect = true,
     this.autofillHints = const [],
     this.autoFocus = false,
@@ -399,14 +436,18 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.spellCheckConfiguration,
     this.textCapitalization = TextCapitalization.none,
     this.textInputAction,
-    this.underlineColor,
     this.undoController,
-
-    /// CALLBACK AND LISTENING PROPERTIES
+    // LISTENERS
     this.onAppPrivateCommand,
     this.onEditingComplete,
     this.onSubmitted,
     this.onTapOutside,
+
+    /// UNDERLINE PROPERTIES
+    this.underlineColor,
+    this.underlineColorState,
+    this.underlineHeight,
+    this.underlineHeightState,
   });
 
   @override
@@ -480,11 +521,8 @@ class EditText<T extends EditTextController> extends TextView<T> {
   Widget? attach(BuildContext context, T controller) {
     final theme = Theme.of(context);
     final themeStyle = theme.textTheme.bodyLarge ?? const TextStyle();
-    final primaryColor = controller.primary ?? theme.primaryColor;
+    final primaryColor = controller.primary;
     final secondaryColor = controller.secondaryColor ?? const Color(0xffbbbbbb);
-    final underlineColor = controller.underlineColor ?? const Color(0xffe1e1e1);
-    final errorColor = controller.errorTextColor ?? const Color(0xFFFF7769);
-    final hasError = controller.hasError;
 
     var style = (controller.textStyle ?? themeStyle).copyWith(
       fontSize: controller.textSize ?? 18,
@@ -497,219 +535,171 @@ class EditText<T extends EditTextController> extends TextView<T> {
           ? Colors.transparent
           : controller.hintTextColor ?? secondaryColor,
     );
-    var colors = ValueState(
+    final colors = ValueState(
       primary: secondaryColor,
       secondary: primaryColor,
       disable: secondaryColor,
-      ternary: secondaryColor,
-      error: errorColor,
     );
 
-    var defaultColor = colors.fromController(controller);
+    final defaultColor = colors.fromController(controller);
 
-    Widget child = Container(
-      color: Colors.transparent,
-      padding: controller.padding,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (drawableStartBuilder != null)
-            drawableStartBuilder!(context, controller)
-          else
-            IconView(
-              visibility: controller.drawableStart != null,
-              icon: controller.drawableStart,
-              size: controller.drawableStartSize,
-              tint: controller.drawableStartTint ?? defaultColor,
-              marginEnd: controller.drawableStartPadding ?? 12,
-            ),
-          Expanded(
-            child: TextField(
-              canRequestFocus: true,
-              enabled: controller.enabled,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.zero,
-                isDense: true,
-                isCollapsed: true,
-                hintText: controller.hintText,
-                hintStyle: hintStyle,
+    return GestureDetector(
+      onTap: () => controller.showKeyboard(context),
+      child: Container(
+        color: Colors.transparent,
+        padding: controller.padding,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          textDirection: controller.textDirection,
+          children: [
+            if (drawableStartBuilder != null)
+              drawableStartBuilder!(context, controller)
+            else
+              IconView(
+                visibility: controller.drawableStart != null,
+                icon: controller.drawableStart,
+                size: controller.drawableStartSize,
+                tint: controller.drawableStartTint ?? defaultColor,
+                marginCustom: controller.drawableStartSpace,
               ),
-              autocorrect: controller.autocorrect,
-              autofillHints: controller.autofillHints,
-              autofocus: controller.autoFocus,
-              clipBehavior: controller.clipBehaviorText,
-              controller: controller._editor,
-              cursorColor: controller.cursorColor ?? primaryColor,
-              cursorHeight: controller.cursorHeight,
-              cursorOpacityAnimates: controller.cursorOpacityAnimates,
-              cursorRadius: controller.cursorRadius,
-              cursorWidth: controller.cursorWidth,
-              contentInsertionConfiguration:
-                  controller.contentInsertionConfiguration,
-              contextMenuBuilder: controller.contextMenuBuilder,
-              dragStartBehavior: controller.dragStartBehavior,
-              enableIMEPersonalizedLearning:
-                  controller.enableIMEPersonalizedLearning,
-              enableInteractiveSelection: controller.enableInteractiveSelection,
-              enableSuggestions: controller.enableSuggestions,
-              expands: controller.expands,
-              focusNode: controller._node,
-              inputFormatters: controller._formatter,
-              keyboardAppearance: controller.keyboardAppearance,
-              keyboardType: controller.inputType,
-              maxLines: controller.maxLines,
-              magnifierConfiguration: controller.magnifierConfiguration,
-              maxLength: null,
-              minLines: controller.minLines,
-              mouseCursor: controller.mouseCursor,
-              obscureText: controller.obscureText,
-              obscuringCharacter: controller.obscuringCharacter,
-              onAppPrivateCommand: controller.onAppPrivateCommand,
-              onChanged: controller._handleEditingChange,
-              onEditingComplete: controller.onEditingComplete,
-              onSubmitted: controller.onSubmitted,
-              onTapOutside: controller.onTapOutside,
-              readOnly: controller.isReadMode,
-              restorationId: controller.restorationId,
-              scribbleEnabled: controller.scribbleEnabled,
-              scrollController: controller.scrollControllerText,
-              scrollPadding: controller.textScrollPadding,
-              scrollPhysics: controller.textScrollPhysics,
-              selectionControls: controller.selectionControls,
-              selectionHeightStyle: controller.selectionHeightStyle,
-              selectionWidthStyle: controller.selectionWidthStyle,
-              showCursor: controller.showCursor,
-              smartDashesType: controller.smartDashesType,
-              smartQuotesType: controller.smartQuotesType,
-              spellCheckConfiguration: controller.spellCheckConfiguration,
-              strutStyle: controller.strutStyle,
-              style: style,
-              textAlign: controller.textAlign ?? TextAlign.start,
-              textCapitalization: controller.textCapitalization,
-              textDirection: controller.textDirection,
-              textInputAction: controller.textInputAction,
-              undoController: controller.undoController,
-            ),
-          ),
-          if (controller.isIndicatorVisible)
-            Container(
-              width: controller.indicatorSize,
-              height: controller.indicatorSize,
-              padding: EdgeInsets.all(controller.indicatorSize * 0.05),
-              margin: const EdgeInsets.only(left: 8),
-              child: CircularProgressIndicator(
-                strokeWidth: controller.indicatorStroke,
-                color: controller.indicatorStrokeColor ?? defaultColor,
-                backgroundColor: controller.indicatorStrokeBackground ??
-                    defaultColor?.withOpacity(0.1),
+            Expanded(
+              child: TextField(
+                canRequestFocus: true,
+                enabled: controller.enabled,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                  isDense: true,
+                  isCollapsed: true,
+                  hintText: controller.hintText,
+                  hintStyle: hintStyle,
+                  hintTextDirection: controller.textDirection,
+                ),
+                autocorrect: controller.autocorrect,
+                autofillHints: controller.autofillHints,
+                autofocus: controller.autoFocus,
+                clipBehavior: controller.clipBehaviorText,
+                controller: controller._editor,
+                cursorColor: controller.cursorColor ?? primaryColor,
+                cursorHeight: controller.cursorHeight,
+                cursorOpacityAnimates: controller.cursorOpacityAnimates,
+                cursorRadius: controller.cursorRadius,
+                cursorWidth: controller.cursorWidth,
+                contentInsertionConfiguration:
+                    controller.contentInsertionConfiguration,
+                contextMenuBuilder: controller.contextMenuBuilder,
+                dragStartBehavior: controller.dragStartBehavior,
+                enableIMEPersonalizedLearning:
+                    controller.enableIMEPersonalizedLearning,
+                enableInteractiveSelection:
+                    controller.enableInteractiveSelection,
+                enableSuggestions: controller.enableSuggestions,
+                expands: controller.expands,
+                focusNode: controller._node,
+                inputFormatters: controller._formatter,
+                keyboardAppearance: controller.keyboardAppearance,
+                keyboardType: controller.inputType,
+                maxLines: controller.maxLines,
+                magnifierConfiguration: controller.magnifierConfiguration,
+                maxLength: null,
+                minLines: controller.minLines,
+                mouseCursor: controller.mouseCursor,
+                obscureText: controller.obscureText,
+                obscuringCharacter: controller.obscuringCharacter,
+                onAppPrivateCommand: controller.onAppPrivateCommand,
+                onChanged: controller._handleEditingChange,
+                onEditingComplete: controller.onEditingComplete,
+                onSubmitted: controller.onSubmitted,
+                onTapOutside: controller.onTapOutside,
+                readOnly: controller.isReadMode,
+                restorationId: controller.restorationId,
+                scribbleEnabled: controller.scribbleEnabled,
+                scrollController: controller.scrollControllerText,
+                scrollPadding: controller.textScrollPadding,
+                scrollPhysics: controller.textScrollPhysics,
+                selectionControls: controller.selectionControls,
+                selectionHeightStyle: controller.selectionHeightStyle,
+                selectionWidthStyle: controller.selectionWidthStyle,
+                showCursor: controller.showCursor,
+                smartDashesType: controller.smartDashesType,
+                smartQuotesType: controller.smartQuotesType,
+                spellCheckConfiguration: controller.spellCheckConfiguration,
+                strutStyle: controller.strutStyle,
+                style: style,
+                textAlign: controller.textAlign ?? TextAlign.start,
+                textCapitalization: controller.textCapitalization,
+                textDirection: controller.textDirection,
+                textInputAction: controller.textInputAction,
+                undoController: controller.undoController,
               ),
-            )
-          else if (drawableEndBuilder != null)
-            drawableEndBuilder!(context, controller)
-          else
-            IconView(
-              visibility: controller.drawableEnd != null,
-              icon: controller.drawableEnd,
-              size: controller.drawableEndSize,
-              tint: controller.drawableEndTint ?? defaultColor,
-              marginStart: controller.drawableEndPadding ?? 4,
-              onToggleClick:
-                  controller.drawableEndAsEye ? controller.onChangeEye : null,
             ),
-        ],
+            if (controller.isIndicatorVisible)
+              Container(
+                width: controller.indicatorSize,
+                height: controller.indicatorSize,
+                padding: EdgeInsets.all(controller.indicatorSize * 0.05),
+                margin: controller.drawableEndSpace,
+                child: CircularProgressIndicator(
+                  strokeWidth: controller.indicatorStroke,
+                  color: controller.indicatorStrokeColor ?? defaultColor,
+                  backgroundColor: controller.indicatorStrokeBackground ??
+                      defaultColor?.withOpacity(0.1),
+                ),
+              )
+            else if (drawableEndBuilder != null)
+              drawableEndBuilder!(context, controller)
+            else
+              IconView(
+                visibility: controller.drawableEnd != null,
+                icon: controller.drawableEnd,
+                size: controller.drawableEndSize,
+                tint: controller.drawableEndTint ?? defaultColor,
+                marginCustom: controller.drawableEndSpace,
+                onToggleClick:
+                    controller.drawableEndAsEye ? controller.onChangeEye : null,
+              ),
+          ],
+        ),
       ),
-    );
-
-    return GestureDetector(
-      onTap: () => controller.showKeyboard(context),
-      child: child,
-    );
-
-    return GestureDetector(
-      onTap: () => controller.showKeyboard(context),
-      child: controller.isUnderlineHide
-          ? child
-          : Column(
-              children: [
-                _Header(
-                  controller: controller,
-                  primaryColor: primaryColor,
-                  secondaryColor: secondaryColor,
-                  visible: floatingTextVisible,
-                  floatingTextSpace: floatingTextSpace,
-                ),
-                child,
-                Underline(
-                  visible: controller.background == null &&
-                      controller.borderAll <= 0,
-                  focused: controller.isFocused,
-                  enabled: controller.enabled,
-                  error: controller.error,
-                  height: 1,
-                  primary: primaryColor,
-                  colorState: ValueState(
-                    primary: primaryColor,
-                    secondary: underlineColor,
-                    error: errorColor,
-                    disable: underlineColor,
-                  ),
-                ),
-                _Footer(
-                  hasError: hasError,
-                  controller: controller,
-                  secondaryColor: secondaryColor,
-                  floatingTextSpace: floatingTextSpace,
-                ),
-              ],
-            ),
     );
   }
 
   @override
   Widget build(BuildContext context, T controller, Widget parent) {
-    final theme = Theme.of(context);
-    final primaryColor = controller.primary ?? theme.primaryColor;
-    final secondaryColor = controller.secondaryColor ?? const Color(0xffbbbbbb);
-    final underlineColor = controller.underlineColor ?? const Color(0xffe1e1e1);
-    final errorColor = controller.errorTextColor ?? const Color(0xFFFF7769);
-    final hasError = controller.hasError;
+    final floatingVisible = controller.floatingVisible;
+    final underlineVisible = controller.underlineVisible;
+    final footerVisible = controller.footerVisible;
 
-    return Container(
-      margin: controller.margin,
-      child: Column(
-        children: [
-          _Header(
-            controller: controller,
-            primaryColor: primaryColor,
-            secondaryColor: secondaryColor,
-            visible: floatingTextVisible,
-            floatingTextSpace: floatingTextSpace,
-          ),
-          parent,
-          Underline(
-            visible: controller.background == null && controller.borderAll <= 0,
-            focused: controller.isFocused,
-            enabled: controller.enabled,
-            error: controller.error,
-            height: 1,
-            primary: primaryColor,
-            colorState: ValueState(
-              primary: primaryColor,
-              secondary: underlineColor,
-              error: errorColor,
-              disable: underlineColor,
-            ),
-          ),
-          _Footer(
-            hasError: hasError,
-            controller: controller,
-            secondaryColor: secondaryColor,
-            floatingTextSpace: floatingTextSpace,
-          ),
-        ],
-      ),
-    );
+    final visible = floatingVisible || footerVisible || underlineVisible;
+
+    final child = visible
+        ? Column(
+            textDirection: controller.textDirection,
+            children: [
+              if (floatingVisible) _Header(controller),
+              parent,
+              if (underlineVisible)
+                Underline(
+                  focused: controller.isFocused,
+                  enabled: controller.enabled,
+                  error: controller.error,
+                  height: 1,
+                  primary: controller.primary,
+                  colorState: controller.underlineColorState,
+                ),
+              if (footerVisible) _Footer(controller),
+            ],
+          )
+        : parent;
+
+    if (controller.isMargin) {
+      return Padding(
+        padding: controller.margin,
+        child: child,
+      );
+    } else {
+      return child;
+    }
   }
 }

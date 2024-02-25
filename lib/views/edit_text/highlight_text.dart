@@ -5,31 +5,35 @@ class _HighlightText extends StatelessWidget {
   final bool visible;
   final String? text;
   final TextAlign? textAlign;
+  final TextDirection? textDirection;
+  final TextStyle? textStyle;
   final Color? textColor;
-  final double textSize;
 
   const _HighlightText({
     this.visible = true,
     required this.text,
     this.textAlign,
+    this.textDirection,
+    this.textStyle,
     this.textColor,
-    this.textSize = 12,
     this.valid = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final style = textStyle ??
+        TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: valid ? textColor ?? Colors.grey : Colors.transparent,
+        );
     return Visibility(
       visible: visible,
       child: Text(
         text ?? "",
         textAlign: textAlign,
-        style: TextStyle(
-          color: valid ? textColor ?? Colors.grey : Colors.transparent,
-          fontFamily: "",
-          fontSize: textSize,
-          fontWeight: FontWeight.w500,
-        ),
+        textDirection: textDirection,
+        style: style,
       ),
     );
   }

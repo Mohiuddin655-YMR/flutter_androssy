@@ -58,13 +58,8 @@ class Home extends AndrossyActivity<HomeController> {
       layoutGravity: LayoutGravity.center,
       onValid: controller.btnSubmit.setEnabled,
       children: [
-        const TextView(
-          text: "Sign up",
-          textColor: Colors.black,
-          textFontWeight: FontWeight.bold,
-          textSize: 24,
-        ),
         EditLayout(
+          visibility: false,
           width: double.infinity,
           marginTop: 24,
           onValid: controller.btnSubmit.setEnabled,
@@ -84,7 +79,7 @@ class Home extends AndrossyActivity<HomeController> {
               minCharacters: 1,
               maxCharactersAsLimit: true,
               textSize: 18,
-              floatingTextVisible: true,
+              floatingVisibility: FloatingVisibility.auto,
             ),
             const SizedBox(width: 4),
             EditText(
@@ -100,7 +95,7 @@ class Home extends AndrossyActivity<HomeController> {
               minCharacters: 1,
               maxCharactersAsLimit: true,
               textSize: 18,
-              floatingTextVisible: true,
+              floatingVisibility: FloatingVisibility.auto,
             ),
             const SizedBox(width: 4),
             EditText(
@@ -116,110 +111,87 @@ class Home extends AndrossyActivity<HomeController> {
               minCharacters: 4,
               maxCharactersAsLimit: true,
               textSize: 18,
-              floatingTextVisible: true,
+              floatingVisibility: FloatingVisibility.auto,
             ),
           ],
         ),
         EditLayout(
           marginTop: 24,
           children: [
-            EditText(
-              autoDisposeMode: false,
-              hint: "Fullname",
-              helperText: "Fullname",
-              errorTextVisible: true,
-              counterTextVisible: true,
-              floatingTextVisible: true,
-              marginTop: 8,
-              // paddingHorizontal: 16,
-              // paddingVertical: 16,
-              // borderRadius: 16,
-              inputType: TextInputType.name,
-              // borderColorState: ValueState(
-              //   primary: context.primaryColor.withOpacity(0.1),
-              //   secondary: context.primaryColor,
-              //   disable: context.primaryColor.withOpacity(0.25),
-              // ),
-              // borderSizeState: const ValueState(
-              //   primary: 1.5,
-              //   secondary: 2,
-              // ),
-              maxCharacters: 30,
-              minCharacters: 5,
-              maxCharactersAsLimit: false,
-              // background: Colors.transparent,
-              // drawableStartState: const ValueState(
-              //   primary: Icons.person_outline_rounded,
-              //   secondary: Icons.person_rounded,
-              // ),
-              // drawableStartPadding: 12,
-              onValidator: (value) {
-                return value.length > 4 && value.length < 31;
-              },
-              onError: (type){
-                if (type.isMinimum){
-                  return "Minimum error";
-                } else if (type.isMaximum){
-                  return "Maximum error";
-                } else {
-                  return null;
-                }
-              },
-            ),
-            EditText(
-              autoDisposeMode: false,
-              counterTextVisible: true,
-              floatingTextVisible: true,
-              hint: "Shortname",
-              marginTop: 24,
-              maxCharacters: 25,
-              minCharacters: 3,
-              maxCharactersAsLimit: false,
-              characters: "1234567890qwertyuiopasdfghjklzxcvbnmm_.",
-              // paddingHorizontal: 16,
-              // paddingVertical: 16,
-              borderRadius: 16,
-              inputType: TextInputType.name,
-              // borderColorState: ValueState(
-              //   primary: context.primaryColor.withOpacity(0.1),
-              //   secondary: context.primaryColor,
-              //   disable: context.primaryColor.withOpacity(0.25),
-              // ),
-              // borderSizeState: const ValueState(
-              //   primary: 1.5,
-              //   secondary: 2,
-              // ),
-              // background: Colors.transparent,
-              drawableStartState: const ValueState(
-                primary: Icons.person_outline_rounded,
-                secondary: Icons.person_rounded,
+            Container(
+              color: Colors.green.shade50,
+              child: EditText(
+                autoDisposeMode: false,
+                hint: "أدخل النص الخاص بك...؟",
+                floatingVisibility: FloatingVisibility.always,
+                counterVisibility: FloatingVisibility.always,
+                textDirection: TextDirection.ltr,
+                floatingTextSpace: const EdgeInsets.only(
+                  left: 8,
+                  right: 8,
+                  top: 4,
+                  bottom: 4,
+                ),
+                // marginTop: 8,
+                paddingHorizontal: 16,
+                paddingVertical: 16,
+                borderRadius: 16,
+                inputType: TextInputType.name,
+                borderColorState: ValueState(
+                  primary: context.primaryColor.withOpacity(0.1),
+                  secondary: context.primaryColor,
+                  disable: context.errorColor.withOpacity(0.25),
+                ),
+                borderSizeState: const ValueState(
+                  primary: 1.5,
+                  secondary: 2,
+                ),
+                maxCharacters: 30,
+                minCharacters: 5,
+                maxCharactersAsLimit: false,
+                background: Colors.transparent,
+                drawableStartState: const ValueState(
+                  primary: Icons.person_outline_rounded,
+                  secondary: Icons.person_rounded,
+                ),
+                drawableEndState: const ValueState(
+                  primary: null,
+                  valid: Icons.check,
+                  error: Icons.clear,
+                ),
+                drawableStartPadding: 12,
+                drawableEndPadding: 0,
+                onValidator: (value) {
+                  return value.length > 4 && value.length < 31;
+                },
+                onValid: (v) {
+                  log("VALID: $v");
+                },
+                onError: (type) {
+                  log("ON ERROR : $type");
+                  if (type.isMinimum) {
+                    return "Minimum error";
+                  } else if (type.isMaximum) {
+                    return "Maximum error";
+                  } else if (type.isAlreadyFound) {
+                    return "Unavailable";
+                  } else {
+                    return null;
+                  }
+                },
+                onActivator: (recall, value) async {
+                  await Future.delayed(const Duration(seconds: 2));
+                  final isNotFound = value != "123456";
+                  return isNotFound;
+                },
               ),
-              drawableStartPadding: 12,
-              onActivator: (v) {
-                log("onActivator : $v");
-                return Future.delayed(const Duration(seconds: 2)).then((value) {
-                  return true;
-                });
-              },
-              onValidator: (value) {
-                return value.length > 2 && value.length < 26;
-              },
-              onError: (type){
-                if (type.isMinimum){
-                  return "Minimum error";
-                } else if (type.isMaximum){
-                  return "Maximum error";
-                } else {
-                  return null;
-                }
-              },
             ),
           ],
         ),
         EditText(
           controller: controller.etEmail,
           marginTop: 24,
-          counterTextVisible: true,
+          counterVisibility: FloatingVisibility.auto,
           helperText: "nice",
           textAlign: TextAlign.center,
           maxCharacters: 50,

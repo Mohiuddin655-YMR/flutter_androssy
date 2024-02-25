@@ -7,6 +7,7 @@ class ValueState<T> {
   final T? disable;
   final T? error;
   final T? hover;
+  final T? valid;
 
   const ValueState({
     this.primary,
@@ -15,26 +16,39 @@ class ValueState<T> {
     this.disable,
     this.error,
     this.hover,
+    this.valid,
   });
 
   T? detect(
     bool activated, {
     bool enabled = true,
     bool error = false,
+    bool focused = false,
     bool hover = false,
+    bool valid = false,
   }) {
     if (enabled) {
       if (hover) {
         return this.hover ?? secondary ?? primary;
       } else if (error) {
-        return this.error ?? ternary ?? primary;
+        if (focused) {
+          return this.error ?? secondary ?? primary;
+        } else {
+          return this.error  ?? primary;
+        }
+      } else if (valid) {
+        if (focused) {
+          return this.valid ?? secondary ?? primary;
+        } else {
+          return this.valid ?? primary;
+        }
       } else if (activated) {
         return secondary ?? primary;
       } else {
         return primary;
       }
     } else {
-      return disable ?? ternary ?? primary;
+      return disable ?? ternary ?? secondary ?? primary;
     }
   }
 
@@ -83,7 +97,9 @@ class ValueState<T> {
       controller.activated,
       enabled: controller.enabled,
       error: controller.error,
+      focused: controller.focused,
       hover: controller.hover,
+      valid: controller.valid,
     );
   }
 

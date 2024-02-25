@@ -17,7 +17,7 @@ enum ViewError {
 
   bool get isMinimum => this == ViewError.minimum;
 
-  bool get isUnavailable => this == ViewError.alreadyFound;
+  bool get isAlreadyFound => this == ViewError.alreadyFound;
 
   bool get isUnmodified => this == ViewError.unmodified;
 }

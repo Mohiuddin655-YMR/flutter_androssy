@@ -1,5 +1,7 @@
 part of 'view.dart';
 
+typedef OnEditTextChecker = Future<bool> Function(String value);
+
 typedef EditTextDrawableBuilder<T extends EditTextController> = Widget Function(
   BuildContext context,
   T controller,

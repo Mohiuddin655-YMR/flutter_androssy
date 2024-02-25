@@ -20,7 +20,7 @@ class EditLayoutController extends LinearLayoutController {
   Iterable get _validations {
     return _checks.where((i) {
       if (i is EditTextController) {
-        return i.isValid;
+        return i.isValid && i.isChecked;
       } else if (i is EditLayoutController) {
         return i.isValid;
       }

@@ -34,4 +34,4 @@ typedef OnViewNotifier = void Function(VoidCallback fn);
 typedef OnViewNotifyListener<T extends ViewController> = void Function(
     T controller);
 
-typedef OnViewActivator = Future<bool> Function(dynamic value);
+typedef OnViewActivator = Future<bool> Function(bool running, dynamic value);

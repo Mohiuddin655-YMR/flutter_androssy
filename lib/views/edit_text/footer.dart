@@ -1,25 +1,21 @@
 part of 'view.dart';
 
 class _Footer extends StatelessWidget {
-  final bool hasError;
   final EditTextController controller;
-  final Color? secondaryColor;
-  final EdgeInsets floatingTextSpace;
 
-  const _Footer({
-    required this.hasError,
-    required this.controller,
-    required this.secondaryColor,
-    required this.floatingTextSpace,
-  });
+  const _Footer(this.controller);
 
   @override
   Widget build(BuildContext context) {
+    final cv = controller.counterVisibility;
+    final counterVisible = !cv.isInvisible;
+    final hasError = controller.hasError;
     return Container(
       width: double.infinity,
-      padding: floatingTextSpace.copyWith(bottom: 0),
+      padding: controller.floatingTextSpace.copyWith(bottom: 0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
+        textDirection: controller.textDirection,
         mainAxisAlignment: controller.textAlign == TextAlign.center
             ? MainAxisAlignment.center
             : MainAxisAlignment.spaceBetween,
@@ -28,20 +24,23 @@ class _Footer extends StatelessWidget {
             visible: hasError || controller.helperText.isNotEmpty,
             text: hasError ? controller.errorText : controller.helperText,
             textAlign: controller.textAlign,
-            textSize: controller.floatingTextSize,
-            textColor: !hasError
-                ? controller.helperTextColor ?? secondaryColor
-                : controller.errorTextColor,
+            textDirection: controller.textDirection,
+            textStyle: controller.footerTextStyle,
+            textColor: hasError
+                ? controller.errorTextColor
+                : controller.helperTextColor,
             valid: hasError || controller.helperText.isNotEmpty,
           ),
           _HighlightText(
-            visible: controller.textAlign != TextAlign.center &&
-                controller.counterTextVisible,
+            visible: counterVisible && controller.textAlign != TextAlign.center,
             text: controller.counter,
             textAlign: TextAlign.end,
-            textSize: controller.floatingTextSize,
-            textColor: hasError ? controller.errorTextColor : secondaryColor,
-            valid: controller.counterTextVisible && controller.isFocused,
+            textDirection: controller.textDirection,
+            textStyle: controller.counterTextStyle,
+            textColor: hasError
+                ? controller.errorTextColor
+                : controller.counterTextColor,
+            valid: counterVisible && (controller.isFocused || cv.isVisible),
           ),
         ],
       ),
