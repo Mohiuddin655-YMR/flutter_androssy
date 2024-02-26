@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'extensions.dart';
-
 part 'gravity.dart';
-
 part 'typedefs.dart';
 
 class LinearLayout<T extends LinearLayoutController> extends YMRView<T> {

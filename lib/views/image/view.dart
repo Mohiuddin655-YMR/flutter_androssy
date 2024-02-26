@@ -10,15 +10,10 @@ import 'package:flutter_svg/svg.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'image_config_network.dart';
-
 part 'image_type.dart';
-
 part 'image_type_extensions.dart';
-
 part 'raw.dart';
-
 part 'typedefs.dart';
 
 class ImageView<T extends ImageViewController> extends YMRView<T> {

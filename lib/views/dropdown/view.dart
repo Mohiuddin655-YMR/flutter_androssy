@@ -5,9 +5,7 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'model.dart';
-
 part 'typedefs.dart';
 
 class DropdownView<T extends Object>

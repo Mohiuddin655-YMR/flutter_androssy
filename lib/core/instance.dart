@@ -71,9 +71,9 @@ class _Instances {
   }
 
   static AndrossyInstance<T> create<T extends AndrossyController>(
-      AndrossyInstance<T> Function() instance, [
-        String? name,
-      ]) {
+    AndrossyInstance<T> Function() instance, [
+    String? name,
+  ]) {
     return _proxies[_key<T>(name)] ??= instance();
   }
 

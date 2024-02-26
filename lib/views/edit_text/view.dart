@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -6,25 +5,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../icon/view.dart';
-import '../text/view.dart';
-import '../view/view.dart';
+import 'package:flutter_androssy/core.dart';
 
 part 'controller.dart';
-
 part 'drawable_state.dart';
-
 part 'floating_visibility.dart';
-
 part 'footer.dart';
-
 part 'header.dart';
-
 part 'highlight_text.dart';
-
 part 'typedefs.dart';
-
 part 'underline.dart';
 
 class EditText<T extends EditTextController> extends TextView<T> {
@@ -79,6 +68,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final ValueState<TextStyle>? errorTextStyleState;
 
   /// FLOATING TEXT PROPERTIES
+  final Alignment? floatingAlignment;
   final String? floatingText;
   final TextStyle? floatingTextStyle;
   final ValueState<TextStyle>? floatingTextStyleState;
@@ -118,6 +108,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final bool? enableInteractiveSelection;
   final bool enableSuggestions;
   final bool expands;
+  final TextInputAction? inputAction;
   final TextInputType? inputType;
   final Brightness keyboardAppearance;
   final TextMagnifierConfiguration magnifierConfiguration;
@@ -140,7 +131,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
   final SmartQuotesType? smartQuotesType;
   final SpellCheckConfiguration? spellCheckConfiguration;
   final TextCapitalization textCapitalization;
-  final TextInputAction? textInputAction;
   final UndoHistoryController? undoController;
   final EditTextPrivateCommandListener? onAppPrivateCommand;
   final EditTextVoidListener? onEditingComplete;
@@ -371,6 +361,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.errorVisibility = FloatingVisibility.auto,
 
     /// FLOATING TEXT PROPERTIES
+    this.floatingAlignment,
     this.floatingText,
     this.floatingTextStyle,
     this.floatingTextStyleState,
@@ -411,6 +402,7 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.enableSuggestions = true,
     this.expands = false,
     this.ignorableCharacters = "",
+    this.inputAction,
     this.inputFormatters,
     this.inputType,
     this.keyboardAppearance = Brightness.light,
@@ -435,7 +427,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     this.smartQuotesType,
     this.spellCheckConfiguration,
     this.textCapitalization = TextCapitalization.none,
-    this.textInputAction,
     this.undoController,
     // LISTENERS
     this.onAppPrivateCommand,
@@ -515,6 +506,12 @@ class EditText<T extends EditTextController> extends TextView<T> {
           configuration.spellCheckSuggestionsToolbarBuilder ??
               defaultSpellCheckSuggestionsToolbarBuilder,
     );
+  }
+
+  @override
+  void onReady(BuildContext context, T controller) {
+    super.onReady(context, controller);
+    controller._handleEditingChange(controller.text);
   }
 
   @override
@@ -681,20 +678,17 @@ class EditText<T extends EditTextController> extends TextView<T> {
               parent,
               if (underlineVisible)
                 Underline(
-                  focused: controller.isFocused,
-                  enabled: controller.enabled,
-                  error: controller.error,
-                  height: 1,
-                  primary: controller.primary,
-                  colorState: controller.underlineColorState,
+                  active: controller.isFocused,
+                  color: controller.underlineColor,
+                  height: controller.underlineHeight,
                 ),
               if (footerVisible) _Footer(controller),
             ],
           )
         : parent;
 
-    if (controller.isMargin) {
-      return Padding(
+    if (controller._isMargin) {
+      return Container(
         padding: controller.margin,
         child: child,
       );

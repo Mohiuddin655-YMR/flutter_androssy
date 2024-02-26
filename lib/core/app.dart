@@ -96,8 +96,7 @@ class AndrossyApp extends MaterialApp {
     this.localizer = const AndrossyLocalizer.none(),
     this.androssy = const Androssy(),
     this.userNetworkStatus = false,
-  })
-      : assert(routerDelegate != null || routerConfig != null),
+  })  : assert(routerDelegate != null || routerConfig != null),
         notifier = AndrossyNotifier(androssy),
         super.router();
 

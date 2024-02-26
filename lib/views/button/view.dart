@@ -5,11 +5,8 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'alignment.dart';
-
 part 'controller.dart';
-
 part 'icon.dart';
-
 part 'text.dart';
 
 class Button<T extends ButtonController> extends TextView<T> {

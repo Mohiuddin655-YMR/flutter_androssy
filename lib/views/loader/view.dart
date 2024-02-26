@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'loading_state.dart';
-
 part 'typedefs.dart';
 
 class LoaderView<T> extends YMRView<LoaderViewController<T>> {

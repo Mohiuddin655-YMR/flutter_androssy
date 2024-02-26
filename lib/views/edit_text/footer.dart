@@ -16,9 +16,7 @@ class _Footer extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         textDirection: controller.textDirection,
-        mainAxisAlignment: controller.textAlign == TextAlign.center
-            ? MainAxisAlignment.center
-            : MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: controller.footerAlignment,
         children: [
           _HighlightText(
             visible: hasError || controller.helperText.isNotEmpty,

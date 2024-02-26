@@ -84,25 +84,25 @@ class SwitchConfig {
       activeThumbIcon: activeThumbIcon ?? this.activeThumbIcon,
       activeThumbIconTint: activeThumbIconTint ?? this.activeThumbIconTint,
       activeThumbStrokeColor:
-      activeThumbStrokeColor ?? this.activeThumbStrokeColor,
+          activeThumbStrokeColor ?? this.activeThumbStrokeColor,
       activeThumbStrokeSize:
-      activeThumbStrokeSize ?? this.activeThumbStrokeSize,
+          activeThumbStrokeSize ?? this.activeThumbStrokeSize,
       activeThumbSpacing: activeThumbSpacing ?? this.activeThumbSpacing,
       activeTrackColor: activeTrackColor ?? this.activeTrackColor,
       activeTrackStrokeColor:
-      activeTrackStrokeColor ?? this.activeTrackStrokeColor,
+          activeTrackStrokeColor ?? this.activeTrackStrokeColor,
       inactiveThumbColor: inactiveThumbColor ?? this.inactiveThumbColor,
       inactiveThumbIcon: inactiveThumbIcon ?? this.inactiveThumbIcon,
       inactiveThumbIconTint:
-      inactiveThumbIconTint ?? this.inactiveThumbIconTint,
+          inactiveThumbIconTint ?? this.inactiveThumbIconTint,
       inactiveThumbStrokeColor:
-      inactiveThumbStrokeColor ?? this.inactiveThumbStrokeColor,
+          inactiveThumbStrokeColor ?? this.inactiveThumbStrokeColor,
       inactiveThumbStrokeSize:
-      inactiveThumbStrokeSize ?? this.inactiveThumbStrokeSize,
+          inactiveThumbStrokeSize ?? this.inactiveThumbStrokeSize,
       inactiveThumbSpacing: inactiveThumbSpacing ?? this.inactiveThumbSpacing,
       inactiveTrackColor: inactiveTrackColor ?? this.inactiveTrackColor,
       inactiveTrackStrokeColor:
-      inactiveTrackStrokeColor ?? this.inactiveTrackStrokeColor,
+          inactiveTrackStrokeColor ?? this.inactiveTrackStrokeColor,
       size: size ?? this.size,
       thumbIconSpacing: thumbIconSpacing ?? this.thumbIconSpacing,
       thumbWalkingTime: thumbWalkingTime ?? this.thumbWalkingTime,

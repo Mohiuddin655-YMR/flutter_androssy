@@ -28,15 +28,7 @@ class EditTextController extends TextViewController {
     });
   }
 
-  /// ROOT PROPERTIES
-  Alignment get floatingAlignment {
-    final isRTL = textDirection == TextDirection.rtl;
-    return isRTL ? Alignment.centerRight : Alignment.centerLeft;
-  }
-
-  /// SUPER PROPERTIES
-  @override
-  bool get isMargin => marginAll > 0;
+  bool get _isMargin => marginAll > 0;
 
   /// BASE PROPERTIES
 
@@ -361,6 +353,27 @@ class EditTextController extends TextViewController {
   }
 
   /// FLOATING TEXT PROPERTIES
+
+  Alignment? _floatingAlignment;
+
+  Alignment get floatingAlignment {
+    if (textAlign == TextAlign.center) {
+      return Alignment.center;
+    } else {
+      if (_floatingAlignment != null) {
+        return _floatingAlignment!;
+      }
+      final isRTL = textDirection == TextDirection.rtl;
+      return isRTL ? Alignment.centerRight : Alignment.centerLeft;
+    }
+  }
+
+  set floatingAlignment(Alignment? value) => _floatingAlignment = value;
+
+  void setFloatingAlignment(String? value) {
+    onNotifyWithCallback(() => floatingText = value);
+  }
+
   String? _floatingText;
 
   String get floatingText => _floatingText ?? hintText;
@@ -414,6 +427,22 @@ class EditTextController extends TextViewController {
 
   bool get floatingVisible => !floatingVisibility.isInvisible;
 
+  /// FOOTER PROPERTIES
+
+  MainAxisAlignment get footerAlignment {
+    if (floatingAlignment == Alignment.center) {
+      return MainAxisAlignment.center;
+    } else {
+      if (_floatingAlignment == Alignment.centerRight) {
+        return MainAxisAlignment.end;
+      }
+      if (_floatingAlignment == Alignment.centerLeft) {
+        return MainAxisAlignment.start;
+      }
+      return MainAxisAlignment.spaceBetween;
+    }
+  }
+
   bool get footerVisible => helperTextVisible || counterVisible;
 
   Color? get footerTextColor => footerTextStyle?.color;
@@ -427,6 +456,7 @@ class EditTextController extends TextViewController {
   }
 
   void _initFloatingTextProperties(EditText view) {
+    floatingAlignment = view.floatingAlignment;
     floatingText = view.floatingText;
     floatingTextStyle = view.floatingTextStyle;
     floatingTextStyleState = view.floatingTextStyleState;
@@ -916,7 +946,7 @@ class EditTextController extends TextViewController {
     smartQuotesType = view.smartQuotesType;
     spellCheckConfiguration = view.spellCheckConfiguration;
     textCapitalization = view.textCapitalization;
-    textInputAction = view.textInputAction;
+    textInputAction = view.inputAction;
     undoController = view.undoController;
     // LISTENERS
     onAppPrivateCommand = view.onAppPrivateCommand;
@@ -926,27 +956,25 @@ class EditTextController extends TextViewController {
   }
 
   /// UNDERLINE PROPERTIES
-  Color? underlineColor;
+  Color? _underlineColor;
+
+  Color? get underlineColor {
+    return underlineColorState?.fromController(this) ??
+        _underlineColor ??
+        ValueState(
+          primary: const Color(0xffe1e1e1),
+          secondary: primary,
+          error: const Color(0xFFFF7769),
+        ).fromController(this);
+  }
+
+  set underlineColor(Color? value) => _underlineColor = value;
 
   void setUnderlineColor(Color? value) {
     onNotifyWithCallback(() => underlineColor = value);
   }
 
-  ValueState<Color>? _underlineColorState;
-
-  ValueState<Color> get underlineColorState {
-    return _underlineColorState ??
-        ValueState(
-          primary: primary,
-          secondary: underlineColor ?? const Color(0xffe1e1e1),
-          error: errorTextColor ?? const Color(0xFFFF7769),
-          disable: underlineColor ?? const Color(0xffe1e1e1),
-        );
-  }
-
-  set underlineColorState(ValueState<Color>? value) {
-    _underlineColorState = value;
-  }
+  ValueState<Color>? underlineColorState;
 
   void setUnderlineColorState(ValueState<Color>? value) {
     onNotifyWithCallback(() => underlineColorState = value);
@@ -954,8 +982,8 @@ class EditTextController extends TextViewController {
 
   double? _underlineHeight;
 
-  double? get underlineHeight {
-    return underlineHeightState?.fromController(this) ?? _underlineHeight;
+  double get underlineHeight {
+    return underlineHeightState?.fromController(this) ?? _underlineHeight ?? 1;
   }
 
   set underlineHeight(double? value) => _underlineHeight = value;
@@ -1126,7 +1154,7 @@ class EditTextController extends TextViewController {
 
   bool get isInitial => _initial;
 
-  bool get isFocused => focused;
+  bool get isFocused => enabled && focused;
 
   bool get isReadMode => !enabled && readOnly;
 
@@ -1224,27 +1252,34 @@ class EditTextController extends TextViewController {
         if (valid && onActivator != null && !_initial) {
           _running = indicatorVisible;
           indicatorVisible = true;
+          valid = false;
+          error = false;
           onActivator!.call(_running, value).then((_) {
             onNotifyWithCallback(() {
               indicatorVisible = false;
-              valid = _ && isValid;
-              error = !valid;
-              if (onValid != null) onValid!(valid);
-              if (onError != null) {
-                if (error) {
-                  errorText = onError!(ViewError.alreadyFound) ?? "";
-                } else {
-                  errorText =
-                      onError!(errorType(value, valid && isChecked)) ?? "";
+              valid = isValid;
+              if (valid) {
+                final x = valid;
+                valid = _ && x;
+                error = !_ && text.isNotEmpty && x;
+                if (onValid != null) onValid!(valid);
+                if (onError != null) {
+                  if (error) {
+                    errorText = onError!(ViewError.alreadyFound) ?? "";
+                  } else {
+                    errorText = onError!(errorType(value, valid)) ?? "";
+                  }
                 }
               }
             });
           });
         } else {
-          final checked = isChecked;
-          if (onValid != null) onValid!(valid && checked);
+          indicatorVisible = false;
+          valid = valid && isChecked;
+          error = !valid && text.isNotEmpty;
+          if (onValid != null) onValid!(valid);
           if (onError != null) {
-            errorText = onError!(errorType(value, valid && checked)) ?? "";
+            errorText = onError!(errorType(value, valid)) ?? "";
           }
         }
       }

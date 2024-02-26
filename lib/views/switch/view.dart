@@ -5,11 +5,8 @@ import '../icon/view.dart';
 import '../view/view.dart';
 
 part 'config.dart';
-
 part 'controller.dart';
-
 part 'extensions.dart';
-
 part 'raw.dart';
 
 class SwitchView extends YMRView<SwitchViewController> {

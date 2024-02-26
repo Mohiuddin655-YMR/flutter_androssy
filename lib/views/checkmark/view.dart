@@ -7,7 +7,6 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'alignment.dart';
-
 part 'controller.dart';
 
 class CheckmarkView extends TextView<CheckmarkViewController> {

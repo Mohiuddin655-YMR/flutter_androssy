@@ -6,11 +6,8 @@ import '../text/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'item.dart';
-
 part 'type.dart';
-
 part 'typedefs.dart';
 
 class NavigationView extends YMRView<NavigationViewController> {

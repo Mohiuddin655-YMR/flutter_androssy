@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_andomie/core.dart';
 import 'package:flutter_androssy/core.dart';
@@ -59,20 +60,19 @@ class Home extends AndrossyActivity<HomeController> {
       onValid: controller.btnSubmit.setEnabled,
       children: [
         EditLayout(
-          visibility: false,
           width: double.infinity,
           marginTop: 24,
-          onValid: controller.btnSubmit.setEnabled,
           orientation: Axis.horizontal,
           crossGravity: CrossAxisAlignment.end,
           children: [
             EditText(
               flex: 1,
               controller: controller.etDay,
-              gravity: Alignment.center,
-              textAlign: TextAlign.center,
+              floatingAlignment: Alignment.centerLeft,
+              textAlign: TextAlign.start,
               hint: "Day",
-              helperText: "12",
+              text: "2",
+              helperText: "02",
               helperTextColor: context.primaryColor,
               inputType: TextInputType.number,
               maxCharacters: 2,
@@ -80,6 +80,14 @@ class Home extends AndrossyActivity<HomeController> {
               maxCharactersAsLimit: true,
               textSize: 18,
               floatingVisibility: FloatingVisibility.auto,
+              onValidator: (value) {
+                final day = int.tryParse(value) ?? 0;
+                if (day <= 31 && day > 0) {
+                  return true;
+                } else {
+                  return false;
+                }
+              },
             ),
             const SizedBox(width: 4),
             EditText(
@@ -88,6 +96,7 @@ class Home extends AndrossyActivity<HomeController> {
               gravity: Alignment.center,
               textAlign: TextAlign.center,
               hint: "Month",
+              text: "1",
               helperText: "Jan",
               helperTextColor: context.primaryColor,
               inputType: TextInputType.number,
@@ -96,15 +105,24 @@ class Home extends AndrossyActivity<HomeController> {
               maxCharactersAsLimit: true,
               textSize: 18,
               floatingVisibility: FloatingVisibility.auto,
+              onValidator: (value) {
+                final month = int.tryParse(value) ?? 0;
+                if (month <= 12 && month > 0) {
+                  return true;
+                } else {
+                  return false;
+                }
+              },
             ),
             const SizedBox(width: 4),
             EditText(
               flex: 1,
               controller: controller.etYear,
-              gravity: Alignment.center,
-              textAlign: TextAlign.center,
+              floatingAlignment: Alignment.centerRight,
+              textAlign: TextAlign.end,
               hint: "Year",
-              helperText: "2000",
+              text: "2024",
+              helperText: "2024",
               helperTextColor: context.primaryColor,
               inputType: TextInputType.number,
               maxCharacters: 4,
@@ -112,88 +130,299 @@ class Home extends AndrossyActivity<HomeController> {
               maxCharactersAsLimit: true,
               textSize: 18,
               floatingVisibility: FloatingVisibility.auto,
-            ),
-          ],
-        ),
-        EditLayout(
-          marginTop: 24,
-          children: [
-            Container(
-              color: Colors.green.shade50,
-              child: EditText(
-                autoDisposeMode: false,
-                hint: "أدخل النص الخاص بك...؟",
-                floatingVisibility: FloatingVisibility.always,
-                counterVisibility: FloatingVisibility.always,
-                textDirection: TextDirection.ltr,
-                floatingTextSpace: const EdgeInsets.only(
-                  left: 8,
-                  right: 8,
-                  top: 4,
-                  bottom: 4,
-                ),
-                // marginTop: 8,
-                paddingHorizontal: 16,
-                paddingVertical: 16,
-                borderRadius: 16,
-                inputType: TextInputType.name,
-                borderColorState: ValueState(
-                  primary: context.primaryColor.withOpacity(0.1),
-                  secondary: context.primaryColor,
-                  disable: context.errorColor.withOpacity(0.25),
-                ),
-                borderSizeState: const ValueState(
-                  primary: 1.5,
-                  secondary: 2,
-                ),
-                maxCharacters: 30,
-                minCharacters: 5,
-                maxCharactersAsLimit: false,
-                background: Colors.transparent,
-                drawableStartState: const ValueState(
-                  primary: Icons.person_outline_rounded,
-                  secondary: Icons.person_rounded,
-                ),
-                drawableEndState: const ValueState(
-                  primary: null,
-                  valid: Icons.check,
-                  error: Icons.clear,
-                ),
-                drawableStartPadding: 12,
-                drawableEndPadding: 0,
-                onValidator: (value) {
-                  return value.length > 4 && value.length < 31;
-                },
-                onValid: (v) {
-                  log("VALID: $v");
-                },
-                onError: (type) {
-                  log("ON ERROR : $type");
-                  if (type.isMinimum) {
-                    return "Minimum error";
-                  } else if (type.isMaximum) {
-                    return "Maximum error";
-                  } else if (type.isAlreadyFound) {
-                    return "Unavailable";
-                  } else {
-                    return null;
-                  }
-                },
-                onActivator: (recall, value) async {
-                  await Future.delayed(const Duration(seconds: 2));
-                  final isNotFound = value != "123456";
-                  return isNotFound;
-                },
-              ),
+              onValidator: (value) {
+                final mYear = DateTime.timestamp().year;
+                final year = int.tryParse(value) ?? 0;
+                if (year <= mYear && year > 1950) {
+                  return true;
+                } else {
+                  return false;
+                }
+              },
             ),
           ],
         ),
         EditText(
+          marginTop: 24,
+          autoDisposeMode: true,
+          hint: "Enter your full name",
+          text: "123456",
+          floatingText: "Full Name",
+          floatingVisibility: FloatingVisibility.always,
+          counterVisibility: FloatingVisibility.always,
+          textDirection: TextDirection.ltr,
+          floatingTextSpace: const EdgeInsets.only(
+            left: 8,
+            right: 8,
+            top: 4,
+            bottom: 4,
+          ),
+          paddingHorizontal: 16,
+          paddingVertical: 16,
+          borderRadius: 16,
+          inputType: TextInputType.name,
+          inputAction: TextInputAction.done,
+          borderColorState: ValueState(
+            primary: context.primaryColor.withOpacity(0.1),
+            secondary: context.primaryColor,
+            error: CupertinoColors.destructiveRed,
+            valid: CupertinoColors.activeGreen,
+            disable: context.errorColor.withOpacity(0.25),
+          ),
+          borderSizeState: const ValueState(
+            primary: 1.5,
+            secondary: 2,
+          ),
+          maxCharacters: 30,
+          minCharacters: 5,
+          maxCharactersAsLimit: false,
+          background: Colors.transparent,
+          drawableStartState: const ValueState(
+            primary: Icons.person_outline_rounded,
+            secondary: Icons.person_rounded,
+          ),
+          drawableStartTintState: ValueState(
+            primary: context.primaryColor.withOpacity(0.5),
+            secondary: context.primaryColor,
+            error: CupertinoColors.destructiveRed,
+            valid: CupertinoColors.activeGreen,
+            disable: context.errorColor.withOpacity(0.25),
+          ),
+          drawableEndState: const ValueState(
+            valid: Icons.check,
+            error: Icons.error_outline,
+          ),
+          drawableEndTintState: ValueState(
+            primary: Colors.grey,
+            valid: context.primaryColor,
+            error: Colors.redAccent,
+          ),
+          drawableStartPadding: 12,
+          drawableEndPadding: 0,
+          onActivator: (recall, value) async {
+            if (!recall) await Future.delayed(const Duration(seconds: 2));
+            final isNotFound = value != "123456";
+            return isNotFound;
+          },
+          onError: (type) {
+            if (type.isMinimum) {
+              return "Minimum characters error!";
+            } else if (type.isMaximum) {
+              return "Maximum characters error!";
+            } else if (type.isAlreadyFound) {
+              return "Currently not available";
+            } else {
+              return null;
+            }
+          },
+          onValid: (value) {
+            log("VALID: $value");
+          },
+          onValidator: (value) => value.length > 4 && value.length < 31,
+        ),
+        EditText(
+          marginTop: 24,
+          autoDisposeMode: true,
+          hint: "أدخل اسمك الكامل",
+          text: "123456",
+          floatingText: "الاسم الكامل",
+          floatingVisibility: FloatingVisibility.always,
+          counterVisibility: FloatingVisibility.always,
+          textDirection: TextDirection.rtl,
+          floatingTextSpace: const EdgeInsets.only(
+            left: 8,
+            right: 8,
+            top: 4,
+            bottom: 4,
+          ),
+          paddingHorizontal: 16,
+          paddingVertical: 16,
+          borderRadius: 16,
+          inputType: TextInputType.name,
+          inputAction: TextInputAction.done,
+          borderColorState: ValueState(
+            primary: context.primaryColor.withOpacity(0.1),
+            secondary: context.primaryColor,
+            error: CupertinoColors.destructiveRed,
+            valid: CupertinoColors.activeGreen,
+            disable: context.errorColor.withOpacity(0.25),
+          ),
+          borderSizeState: const ValueState(
+            primary: 1.5,
+            secondary: 2,
+          ),
+          maxCharacters: 30,
+          minCharacters: 5,
+          maxCharactersAsLimit: false,
+          background: Colors.transparent,
+          drawableStartState: const ValueState(
+            primary: Icons.person_outline_rounded,
+            secondary: Icons.person_rounded,
+          ),
+          drawableStartTintState: ValueState(
+            primary: context.primaryColor.withOpacity(0.5),
+            secondary: context.primaryColor,
+            error: CupertinoColors.destructiveRed,
+            valid: CupertinoColors.activeGreen,
+            disable: context.errorColor.withOpacity(0.25),
+          ),
+          drawableEndState: const ValueState(
+            valid: Icons.check,
+            error: Icons.error_outline,
+          ),
+          drawableEndTintState: ValueState(
+            primary: Colors.grey,
+            valid: context.primaryColor,
+            error: Colors.redAccent,
+          ),
+          drawableStartPadding: 12,
+          drawableEndPadding: 0,
+          onActivator: (recall, value) async {
+            if (!recall) await Future.delayed(const Duration(seconds: 2));
+            final isNotFound = value != "123456";
+            return isNotFound;
+          },
+          onError: (type) {
+            if (type.isMinimum) {
+              return "خطأ الحد الأدنى للأحرف!";
+            } else if (type.isMaximum) {
+              return "الحد الأقصى لعدد الأحرف!";
+            } else if (type.isAlreadyFound) {
+              return "حاليا غير متوفر!";
+            } else {
+              return null;
+            }
+          },
+          onValid: (value) {
+            log("VALID: $value");
+          },
+          onValidator: (value) => value.length > 4 && value.length < 31,
+        ),
+        EditText(
+          marginTop: 24,
+          autoDisposeMode: true,
+          hint: "Enter your full name",
+          floatingText: "Full Name",
+          floatingVisibility: FloatingVisibility.auto,
+          counterVisibility: FloatingVisibility.auto,
+          textDirection: TextDirection.ltr,
+          inputType: TextInputType.name,
+          inputAction: TextInputAction.done,
+          maxCharacters: 30,
+          minCharacters: 5,
+          maxCharactersAsLimit: false,
+          drawableStartState: const ValueState(
+            primary: Icons.person_outline_rounded,
+            secondary: Icons.person_rounded,
+          ),
+          drawableStartTintState: ValueState(
+            primary: context.primaryColor.withOpacity(0.5),
+            secondary: context.primaryColor,
+            error: CupertinoColors.destructiveRed,
+            valid: CupertinoColors.activeGreen,
+            disable: context.errorColor.withOpacity(0.25),
+          ),
+          drawableEndState: const ValueState(
+            valid: Icons.check,
+            error: Icons.error_outline,
+          ),
+          drawableEndTintState: ValueState(
+            primary: Colors.grey,
+            valid: context.primaryColor,
+            error: Colors.redAccent,
+          ),
+          underlineColorState: ValueState(
+            primary: context.primaryColor.withOpacity(0.1),
+            secondary: context.primaryColor,
+            error: CupertinoColors.destructiveRed,
+            valid: CupertinoColors.activeGreen,
+            disable: context.errorColor.withOpacity(0.25),
+          ),
+          onActivator: (recall, value) async {
+            if (!recall) await Future.delayed(const Duration(seconds: 2));
+            final isNotFound = value != "123456";
+            return isNotFound;
+          },
+          onError: (type) {
+            if (type.isMinimum) {
+              return "Minimum characters error!";
+            } else if (type.isMaximum) {
+              return "Maximum characters error!";
+            } else if (type.isAlreadyFound) {
+              return "Currently not available";
+            } else {
+              return null;
+            }
+          },
+          onValid: (value) {
+            log("VALID: $value");
+          },
+          onValidator: (value) => value.length > 4 && value.length < 31,
+        ),
+        EditText(
+          marginTop: 8,
+          autoDisposeMode: true,
+          hint: "أدخل اسمك الكامل",
+          floatingText: "الاسم الكامل",
+          floatingVisibility: FloatingVisibility.auto,
+          counterVisibility: FloatingVisibility.auto,
+          textDirection: TextDirection.rtl,
+          inputType: TextInputType.name,
+          inputAction: TextInputAction.done,
+          maxCharacters: 30,
+          minCharacters: 5,
+          maxCharactersAsLimit: false,
+          drawableStartState: const ValueState(
+            primary: Icons.person_outline_rounded,
+            secondary: Icons.person_rounded,
+          ),
+          drawableStartTintState: ValueState(
+            primary: context.primaryColor.withOpacity(0.5),
+            secondary: context.primaryColor,
+            error: CupertinoColors.destructiveRed,
+            valid: CupertinoColors.activeGreen,
+            disable: context.errorColor.withOpacity(0.25),
+          ),
+          drawableEndState: const ValueState(
+            valid: Icons.check,
+            error: Icons.error_outline,
+          ),
+          drawableEndTintState: ValueState(
+            primary: Colors.grey,
+            valid: context.primaryColor,
+            error: Colors.redAccent,
+          ),
+          underlineColorState: ValueState(
+            primary: context.primaryColor.withOpacity(0.1),
+            secondary: context.primaryColor,
+            error: CupertinoColors.destructiveRed,
+            valid: CupertinoColors.activeGreen,
+            disable: context.errorColor.withOpacity(0.25),
+          ),
+          onActivator: (recall, value) async {
+            if (!recall) await Future.delayed(const Duration(seconds: 2));
+            final isNotFound = value != "123456";
+            return isNotFound;
+          },
+          onError: (type) {
+            if (type.isMinimum) {
+              return "خطأ الحد الأدنى للأحرف!";
+            } else if (type.isMaximum) {
+              return "الحد الأقصى لعدد الأحرف!";
+            } else if (type.isAlreadyFound) {
+              return "حاليا غير متوفر!";
+            } else {
+              return null;
+            }
+          },
+          onValid: (value) {
+            log("VALID: $value");
+          },
+          onValidator: (value) => value.length > 4 && value.length < 31,
+        ),
+        EditText(
           controller: controller.etEmail,
           marginTop: 24,
-          counterVisibility: FloatingVisibility.auto,
-          helperText: "nice",
-          textAlign: TextAlign.center,
           maxCharacters: 50,
           hint: "Email",
           text: "example@gmail.com",

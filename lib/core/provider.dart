@@ -79,7 +79,8 @@ class AndrossyProvider extends InheritedWidget {
   }
 
   void updateSettings(
-      AndrossySettings Function(AndrossySettings old) callback,) async {
+    AndrossySettings Function(AndrossySettings old) callback,
+  ) async {
     var raw = androssy.copy(settings: callback(androssy.settings));
     var done = await pref.setString(kAndrossyPath, raw.json);
     if (done) notify(raw);

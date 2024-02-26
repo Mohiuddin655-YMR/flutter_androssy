@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'extension.dart';
 
 class ViewObserver<T> extends YMRView<Observer<T>> {

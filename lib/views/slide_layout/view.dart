@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_androssy/widgets.dart';
 
 part 'controller.dart';
-
 part 'item.dart';
-
 part 'typedefs.dart';
 
 class SlideLayout<T> extends YMRView<SlideLayoutController<T>> {

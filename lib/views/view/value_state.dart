@@ -34,13 +34,13 @@ class ValueState<T> {
         if (focused) {
           return this.error ?? secondary ?? primary;
         } else {
-          return this.error  ?? primary;
+          return primary ?? this.error;
         }
       } else if (valid) {
         if (focused) {
           return this.valid ?? secondary ?? primary;
         } else {
-          return this.valid ?? primary;
+          return primary ?? this.valid;
         }
       } else if (activated) {
         return secondary ?? primary;
@@ -48,7 +48,7 @@ class ValueState<T> {
         return primary;
       }
     } else {
-      return disable ?? ternary ?? secondary ?? primary;
+      return disable ?? ternary ?? primary;
     }
   }
 

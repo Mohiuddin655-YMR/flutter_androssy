@@ -55,7 +55,7 @@ class HeaderStyle {
     this.headerMargin = const EdgeInsets.all(0.0),
     this.headerPadding = const EdgeInsets.symmetric(vertical: 8.0),
     this.formatButtonPadding =
-    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+        const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
     this.leftChevronPadding = const EdgeInsets.all(12.0),
     this.rightChevronPadding = const EdgeInsets.all(12.0),
     this.leftChevronMargin = const EdgeInsets.symmetric(horizontal: 8.0),

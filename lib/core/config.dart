@@ -13,9 +13,7 @@ class AndrossyConfigure {
     required List<Object> instances,
   }) async {
     var config = AndrossyConfigure._();
-    if (instances
-        .whereType<SharedPreferences>()
-        .isEmpty) {
+    if (instances.whereType<SharedPreferences>().isEmpty) {
       config._instance(await SharedPreferences.getInstance());
     }
     for (var i in instances) {

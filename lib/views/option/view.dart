@@ -290,52 +290,53 @@ class OptionViewBuilder<T> extends YMRView<OptionViewBuilderController<T>> {
   }
 
   @override
-  Widget? attach(BuildContext context,
-      OptionViewBuilderController<T> controller,) {
+  Widget? attach(
+    BuildContext context,
+    OptionViewBuilderController<T> controller,
+  ) {
     return controller.itemCount > 0
         ? Flex(
-      direction: controller.orientation,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(controller.itemCount, (index) {
-        var item = controller.items[index];
-        var child = builder(item, index == controller.currentIndex);
-        if (controller.isSpacer && controller.itemCount - 1 != index) {
-          child = Flex(
             direction: controller.orientation,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: [
-              if (controller.isExpandable)
-                Flexible(fit: FlexFit.tight, child: child)
-              else
-                child,
-              SizedBox(
-                width: controller.isVerticalMode
-                    ? null
-                    : controller.spaceBetween,
-                height: controller.isVerticalMode
-                    ? controller.spaceBetween
-                    : null,
-              ),
-            ],
-          );
-        }
-        var root = GestureDetector(
-          onTap: () =>
-              controller.onNotifyWithCallback(
-                    () {
-                  if (controller.onItemClick != null) {
-                    controller.onItemClick?.call(context, item);
-                  }
-                },
-                index: index,
-              ),
-          child: AbsorbPointer(child: child),
-        );
-        return controller.isExpandable ? Expanded(child: root) : root;
-      }),
-    )
+            children: List.generate(controller.itemCount, (index) {
+              var item = controller.items[index];
+              var child = builder(item, index == controller.currentIndex);
+              if (controller.isSpacer && controller.itemCount - 1 != index) {
+                child = Flex(
+                  direction: controller.orientation,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (controller.isExpandable)
+                      Flexible(fit: FlexFit.tight, child: child)
+                    else
+                      child,
+                    SizedBox(
+                      width: controller.isVerticalMode
+                          ? null
+                          : controller.spaceBetween,
+                      height: controller.isVerticalMode
+                          ? controller.spaceBetween
+                          : null,
+                    ),
+                  ],
+                );
+              }
+              var root = GestureDetector(
+                onTap: () => controller.onNotifyWithCallback(
+                  () {
+                    if (controller.onItemClick != null) {
+                      controller.onItemClick?.call(context, item);
+                    }
+                  },
+                  index: index,
+                ),
+                child: AbsorbPointer(child: child),
+              );
+              return controller.isExpandable ? Expanded(child: root) : root;
+            }),
+          )
         : null;
   }
 }

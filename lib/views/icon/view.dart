@@ -5,9 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'raw.dart';
-
 part 'type.dart';
 
 class IconView<T extends IconViewController> extends YMRView<T> {

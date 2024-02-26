@@ -4,25 +4,15 @@ import '../image/view.dart';
 import '../view/view.dart';
 
 part 'builder.dart';
-
 part 'controller.dart';
-
 part 'layer_type.dart';
-
 part 'layer_x.dart';
-
 part 'layer_x2.dart';
-
 part 'layer_x3.dart';
-
 part 'layer_x4.dart';
-
 part 'layer_x5.dart';
-
 part 'layer_x6.dart';
-
 part 'layer_xn.dart';
-
 part 'typedefs.dart';
 
 class ImageLayout<T> extends YMRView<ImageLayoutController<T>> {
