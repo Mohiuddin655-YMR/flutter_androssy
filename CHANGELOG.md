@@ -1,3 +1,7 @@
+## 0.3.28
+
+* Edit text some updates
+
 ## 0.3.27
 
 * Edit text underline color and secondary color customizable
