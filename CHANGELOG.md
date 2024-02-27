@@ -1,3 +1,7 @@
+## 0.3.29
+
+* Edit text text updating fixed
+
 ## 0.3.28
 
 * Edit text some updates

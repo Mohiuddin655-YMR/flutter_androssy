@@ -28,6 +28,45 @@ class EditTextController extends TextViewController {
     });
   }
 
+  /// SUPER PROPERTIES
+
+  @override
+  bool get activated => isFocused;
+
+  @override
+  int? get maxLines {
+    switch (inputType) {
+      case TextInputType.datetime:
+      case TextInputType.emailAddress:
+      case TextInputType.name:
+      case TextInputType.number:
+      case TextInputType.phone:
+      case TextInputType.streetAddress:
+      case TextInputType.text:
+      case TextInputType.visiblePassword:
+      case TextInputType.text:
+        return 1;
+      case TextInputType.multiline:
+      case TextInputType.url:
+      default:
+        return null;
+    }
+  }
+
+  @override
+  double? get paddingVertical => super.paddingVertical ?? 8;
+
+  @override
+  String get text => _editor.text;
+
+  @override
+  set text(String? value) => _editor.text = value ?? "";
+
+  @override
+  void setText(String? value) {
+    _editor.text = value ?? "";
+  }
+
   bool get _isMargin => marginAll > 0;
 
   /// BASE PROPERTIES
@@ -80,6 +119,7 @@ class EditTextController extends TextViewController {
     maxCharactersAsLimit = view.maxCharactersAsLimit;
     minCharacters = view.minCharacters;
     primary = view.primary;
+    text = view.text;
   }
 
   /// DRAWABLE PROPERTIES
@@ -1023,7 +1063,6 @@ class EditTextController extends TextViewController {
     _initIndicatorProperties(view);
     _initTextFieldProperties(view);
     _initUnderlineProperties(view);
-    _editor.text = view.text ?? _editor.text;
     return this;
   }
 
@@ -1106,35 +1145,6 @@ class EditTextController extends TextViewController {
   bool get obscureText {
     return _obscureText ?? (inputType == TextInputType.visiblePassword);
   }
-
-  @override
-  bool get activated => isFocused;
-
-  @override
-  int? get maxLines {
-    switch (inputType) {
-      case TextInputType.datetime:
-      case TextInputType.emailAddress:
-      case TextInputType.name:
-      case TextInputType.number:
-      case TextInputType.phone:
-      case TextInputType.streetAddress:
-      case TextInputType.text:
-      case TextInputType.visiblePassword:
-      case TextInputType.text:
-        return 1;
-      case TextInputType.multiline:
-      case TextInputType.url:
-      default:
-        return null;
-    }
-  }
-
-  @override
-  double? get paddingVertical => super.paddingVertical ?? 8;
-
-  @override
-  String get text => _editor.text;
 
   /// CALLBACK & LISTENERS
 
