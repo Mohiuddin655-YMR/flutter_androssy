@@ -1,3 +1,7 @@
+## 0.3.33
+
+* FlexibleView child property added
+
 ## 0.3.32
 
 * TabLayout update

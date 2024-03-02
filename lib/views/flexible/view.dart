@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
+
 part 'flex_position.dart';
+
 part 'flex_visible_type.dart';
 
 class FlexibleView extends YMRView<FlexibleViewController> {
@@ -159,6 +161,7 @@ class FlexibleView extends YMRView<FlexibleViewController> {
     super.shadowBottom,
 
     /// CHILD PROPERTIES
+    super.child,
     this.flexible,
     this.flexPosition = FlexPosition.start,
     this.type = FlexVisibleType.front,
