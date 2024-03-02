@@ -1406,10 +1406,12 @@ class ViewController {
 
   /// notifier properties
 
+  bool isMountable = false;
+
   OnViewNotifier? _notifier;
 
   void get _notify {
-    if (_notifier != null) {
+    if (_notifier != null && isMountable) {
       _notifier?.call(() {});
     }
   }
@@ -1419,7 +1421,7 @@ class ViewController {
   void onNotify() => _notify;
 
   void onNotifyWithCallback(VoidCallback callback) {
-    if (_notifier != null) {
+    if (_notifier != null && isMountable) {
       _notifier?.call(callback);
     }
   }

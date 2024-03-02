@@ -2,45 +2,50 @@ import 'package:flutter/material.dart';
 
 import '../tab/view.dart';
 import '../view/view.dart';
-import '../view_pager/view.dart';
+
+part 'controller.dart';
+
+part 'enums.dart';
+
+part 'tab.dart';
+
+part 'typedefs.dart';
 
 class TabLayout extends YMRView<TabLayoutController> {
+  /// BASE PROPERTIES
   final TabController tabController;
-  final ViewPagerController? pagerController;
-
-  final double? tabMargin;
-  final double? tabMarginStart, tabMarginEnd, tabMarginTop, tabMarginBottom;
-  final double? tabMarginHorizontal, tabMarginVertical;
-
-  final double? tabPadding;
-  final double? tabPaddingStart, tabPaddingEnd, tabPaddingTop, tabPaddingBottom;
-  final double? tabPaddingHorizontal, tabPaddingVertical;
-
+  final int initialIndex;
   final List<TabItem>? tabs;
+  final Color? tabContentColor;
+  final ValueState<Color>? tabContentColorState;
+  final bool? tabInlineLabel;
+  final EdgeInsets? tabMargin;
+  final TabMode? tabMode;
+  final EdgeInsets? tabPadding;
 
+  /// TAB ICON PROPERTIES
   final double? tabIconSize;
   final ValueState<double>? tabIconSizeState;
   final Color? tabIconTint;
   final double? tabIconSpace;
   final ValueState<Color>? tabIconTintState;
 
-  final Color? tabContentColor;
-  final ValueState<Color>? tabContentColorState;
-  final double? tabTitleSize;
+  /// TAB TITLE PROPERTIES
+  final double tabTitleSize;
   final ValueState<double>? tabTitleSizeState;
   final FontWeight? tabTitleWeight;
   final ValueState<FontWeight>? tabTitleWeightState;
 
+  /// TAB INDICATOR PROPERTIES
   final Decoration? tabIndicator;
   final Color? tabIndicatorColor;
-  final bool? tabIndicatorFullWidth;
-  final double? tabIndicatorHeight;
+  final bool tabIndicatorFullWidth;
+  final double tabIndicatorHeight;
 
-  final bool? tabInlineLabel;
-  final TabMode? tabMode;
-
-  final bool Function(bool selected)? onVisibleIconWhenTabSelected;
-  final bool Function(bool selected)? onVisibleTitleWhenTabSelected;
+  /// TAB LISTENER PROPERTIES
+  final OnTabChangeListener? onTabChange;
+  final OnTabContentVisibilityChecker? onTabIconVisibleWhenSelected;
+  final OnTabContentVisibilityChecker? onTabTitleVisibleWhenSelected;
 
   const TabLayout({
     /// ROOT PROPERTIES
@@ -191,88 +196,60 @@ class TabLayout extends YMRView<TabLayoutController> {
 
     /// CHILD PROPERTIES
     required this.tabController,
-    this.pagerController,
+    this.initialIndex = 0,
     this.tabs,
-    this.tabIconSize,
-    this.tabIconSizeState,
-    this.tabIconSpace,
-    this.tabIconTint,
-    this.tabIconTintState,
     this.tabContentColor,
     this.tabContentColorState,
-    this.tabTitleSize,
+    this.tabInlineLabel,
+    this.tabMargin,
+    this.tabMode,
+    this.tabPadding,
+    this.tabIconSize,
+    this.tabIconSizeState,
+    this.tabIconTint,
+    this.tabIconSpace,
+    this.tabIconTintState,
+    this.tabTitleSize = 12,
     this.tabTitleSizeState,
     this.tabTitleWeight,
     this.tabTitleWeightState,
     this.tabIndicator,
     this.tabIndicatorColor,
-    this.tabIndicatorFullWidth,
-    this.tabIndicatorHeight,
-    this.tabInlineLabel,
-    this.tabMargin,
-    this.tabMarginStart,
-    this.tabMarginEnd,
-    this.tabMarginTop,
-    this.tabMarginBottom,
-    this.tabMarginHorizontal,
-    this.tabMarginVertical,
-    this.tabPadding,
-    this.tabPaddingStart,
-    this.tabPaddingEnd,
-    this.tabPaddingTop,
-    this.tabPaddingBottom,
-    this.tabPaddingHorizontal,
-    this.tabPaddingVertical,
-    this.tabMode,
-    this.onVisibleIconWhenTabSelected,
-    this.onVisibleTitleWhenTabSelected,
+    this.tabIndicatorFullWidth = false,
+    this.tabIndicatorHeight = 2,
+
+    /// TAB LISTENER PROPERTIES
+    this.onTabChange,
+    this.onTabIconVisibleWhenSelected,
+    this.onTabTitleVisibleWhenSelected,
   });
 
   @override
-  TabLayoutController initController() {
-    return TabLayoutController();
-  }
+  TabLayoutController initController() => TabLayoutController();
 
   @override
   TabLayoutController attachController(TabLayoutController controller) {
-    return controller.fromView(
-      this,
-      pagerController: pagerController,
-      items: tabs,
-      tabContentColor: tabContentColor,
-      tabContentColorState: tabContentColorState,
-      tabIconSize: tabIconSize,
-      tabIconSizeState: tabIconSizeState,
-      tabIconSpace: tabIconSpace,
-      tabIconTint: tabIconTint,
-      tabIconTintState: tabIconTintState,
-      tabIndicator: tabIndicator,
-      tabIndicatorColor: tabIndicatorColor,
-      tabIndicatorFullWidth: tabIndicatorFullWidth,
-      tabIndicatorHeight: tabIndicatorHeight,
-      tabInlineLabel: tabInlineLabel,
-      tabMargin: tabMargin,
-      tabMarginStart: tabMarginStart,
-      tabMarginEnd: tabMarginEnd,
-      tabMarginTop: tabMarginTop,
-      tabMarginBottom: tabMarginBottom,
-      tabMarginHorizontal: tabMarginHorizontal,
-      tabMarginVertical: tabMarginVertical,
-      tabPadding: tabPadding,
-      tabPaddingStart: tabPaddingStart,
-      tabPaddingEnd: tabPaddingEnd,
-      tabPaddingTop: tabPaddingTop,
-      tabPaddingBottom: tabPaddingBottom,
-      tabPaddingHorizontal: tabPaddingHorizontal,
-      tabPaddingVertical: tabPaddingVertical,
-      tabMode: tabMode,
-      tabTitleSize: tabTitleSize,
-      tabTitleSizeState: tabTitleSizeState,
-      tabTitleWeight: tabTitleWeight,
-      tabTitleWeightState: tabTitleWeightState,
-      onVisibleIconWhenTabSelected: onVisibleIconWhenTabSelected,
-      onVisibleTitleWhenTabSelected: onVisibleTitleWhenTabSelected,
-    );
+    return controller.fromTabLayout(this);
+  }
+
+  @override
+  void onInit(BuildContext context, TabLayoutController controller) {
+    super.onInit(context, controller);
+    final tc = tabController;
+    controller.currentIndex = tc.index;
+    final anim = tc.animation;
+    if (anim != null) {
+      anim.addListener(() => controller.setPage(anim.value));
+    }
+  }
+
+  @override
+  void onDispose(BuildContext context, TabLayoutController controller) {
+    super.onDispose(context, controller);
+    final anim = tabController.animation;
+    if (anim != null) {
+      anim.removeListener(() => controller.setPage(anim.value));
+    }
   }
 
   @override
@@ -292,227 +269,39 @@ class TabLayout extends YMRView<TabLayoutController> {
       isScrollable: controller.tabMode == TabMode.scrollable,
       key: key,
       labelPadding: controller.tabMode == TabMode.scrollable
-          ? EdgeInsets.only(
-              left: controller.tabMarginStart,
-              right: controller.tabMarginEnd,
-              top: controller.tabMarginTop,
-              bottom: controller.tabMarginBottom,
-            )
+          ? controller.tabMargin
           : null,
-      onTap: (index) => controller.pagerController.pager.jumpToPage(index),
+      onTap: controller.setIndex,
       overlayColor: null,
       padding: null,
       physics: null,
       splashBorderRadius: null,
       splashFactory: null,
-      tabs: controller.items.map((e) {
+      tabs: List.generate(controller.tabs.length, (index) {
+        final item = controller.tabs.elementAt(index);
         return TabView(
-          activated: e.index == tabController.index,
+          activated: index == controller.currentIndex,
           contentColor: controller.tabContentColor,
           contentColorState: controller.tabContentColorState,
-          marginVertical: controller.tabMode == TabMode.scrollable
-              ? null
-              : controller.tabMarginVertical,
-          padding: controller.tabPadding,
-          paddingStart: controller.tabPaddingStart,
-          paddingEnd: controller.tabPaddingEnd,
-          paddingTop: controller.tabPaddingTop,
-          paddingBottom: controller.tabPaddingBottom,
-          paddingHorizontal: controller.tabPaddingHorizontal,
-          paddingVertical: controller.tabPaddingVertical,
-          icon: e.icon,
-          iconState: e.iconState,
+          icon: item.icon,
+          iconState: item.iconState,
           iconSize: controller.tabIconSize,
           iconSizeState: controller.tabIconSizeState,
           iconSpace: controller.tabIconSpace,
           iconTint: controller.tabIconTint,
           iconTintState: controller.tabIconTintState,
           inline: controller.tabInlineLabel,
-          title: e.title,
-          titleState: e.titleState,
+          title: item.title,
+          titleState: item.titleState,
           titleSize: controller.tabTitleSize,
           titleSizeState: controller.tabTitleSizeState,
           titleWeight: controller.tabTitleWeight,
           titleWeightState: controller.tabTitleWeightState,
-          onVisibleIconWhenTabSelected: controller.onVisibleIconWhenTabSelected,
+          onVisibleIconWhenTabSelected: controller.onTabIconVisibleWhenSelected,
           onVisibleTitleWhenTabSelected:
-              controller.onVisibleTitleWhenTabSelected,
+              controller.onTabTitleVisibleWhenSelected,
         );
-      }).toList(),
+      }),
     );
   }
 }
-
-class TabLayoutController extends ViewController {
-  ViewPagerController pagerController = ViewPagerController();
-
-  List<TabItem> items = [];
-
-  double tabMargin = 0;
-  double? _tabMarginStart, _tabMarginEnd, _tabMarginTop, _tabMarginBottom;
-  double? tabMarginHorizontal, tabMarginVertical;
-
-  double tabPadding = 0;
-  double? tabPaddingStart, tabPaddingEnd, tabPaddingTop, tabPaddingBottom;
-  double? tabPaddingHorizontal, tabPaddingVertical;
-
-  double? tabIconSize;
-  ValueState<double>? tabIconSizeState;
-  double? tabIconSpace;
-  Color? _tabIconTint;
-  ValueState<Color>? _tabIconTintState;
-
-  Color? tabContentColor;
-  ValueState<Color>? tabContentColorState;
-
-  double tabTitleSize = 12;
-  ValueState<double>? tabTitleSizeState;
-  FontWeight? tabTitleWeight;
-  ValueState<FontWeight>? tabTitleWeightState;
-
-  Decoration? tabIndicator;
-  Color? tabIndicatorColor;
-  bool tabIndicatorFullWidth = false;
-  double tabIndicatorHeight = 2;
-
-  bool tabInlineLabel = false;
-  TabMode? tabMode;
-
-  bool Function(bool selected)? onVisibleIconWhenTabSelected;
-  bool Function(bool selected)? onVisibleTitleWhenTabSelected;
-
-  Color? get tabIconTint => _tabIconTint ?? tabContentColor;
-
-  ValueState<Color>? get tabIconTintState =>
-      _tabIconTintState ?? tabContentColorState;
-
-  @override
-  TabLayoutController fromView(
-    YMRView<ViewController> view, {
-    ViewPagerController? pagerController,
-    List<TabItem>? items,
-    double? tabIconSize,
-    ValueState<double>? tabIconSizeState,
-    double? tabIconSpace,
-    Color? tabIconTint,
-    ValueState<Color>? tabIconTintState,
-    double? tabMargin,
-    double? tabMarginStart,
-    double? tabMarginEnd,
-    double? tabMarginTop,
-    double? tabMarginBottom,
-    double? tabMarginHorizontal,
-    double? tabMarginVertical,
-    double? tabPadding,
-    double? tabPaddingStart,
-    double? tabPaddingEnd,
-    double? tabPaddingTop,
-    double? tabPaddingBottom,
-    double? tabPaddingHorizontal,
-    double? tabPaddingVertical,
-    Color? tabContentColor,
-    ValueState<Color>? tabContentColorState,
-    double? tabTitleSize,
-    ValueState<double>? tabTitleSizeState,
-    FontWeight? tabTitleWeight,
-    ValueState<FontWeight>? tabTitleWeightState,
-    Decoration? tabIndicator,
-    Color? tabIndicatorColor,
-    bool? tabIndicatorFullWidth,
-    double? tabIndicatorHeight,
-    bool? tabInlineLabel,
-    TabMode? tabMode,
-    bool Function(bool selected)? onVisibleIconWhenTabSelected,
-    bool Function(bool selected)? onVisibleTitleWhenTabSelected,
-  }) {
-    super.fromView(view);
-    this.pagerController = pagerController ?? ViewPagerController();
-    this.items = items ?? [];
-
-    //TAB ICON PROPERTIES
-    this.tabIconSize = tabIconSize;
-    this.tabIconSizeState = tabIconSizeState;
-    this.tabIconSpace = tabIconSpace;
-    _tabIconTint = tabIconTint;
-    _tabIconTintState = tabIconTintState;
-
-    // TAB MARGIN PROPERTIES
-    this.tabMargin = tabMargin ?? 0;
-    _tabMarginStart = tabMarginStart;
-    _tabMarginEnd = tabMarginEnd;
-    _tabMarginTop = tabMarginTop;
-    _tabMarginBottom = tabMarginBottom;
-    this.tabMarginHorizontal = tabMarginHorizontal;
-    this.tabMarginVertical = tabMarginVertical;
-
-    // TAB PADDING PROPERTIES
-    this.tabPadding = tabPadding ?? 0;
-    this.tabPaddingStart = tabPaddingStart;
-    this.tabPaddingEnd = tabPaddingEnd;
-    this.tabPaddingTop = tabPaddingTop;
-    this.tabPaddingBottom = tabPaddingBottom;
-    this.tabPaddingHorizontal = tabPaddingHorizontal;
-    this.tabPaddingVertical = tabPaddingVertical;
-
-    // TAB TITLE PROPERTIES
-    this.tabContentColor = tabContentColor;
-    this.tabContentColorState = tabContentColorState;
-    this.tabTitleSize = tabTitleSize ?? 12;
-    this.tabTitleSizeState = tabTitleSizeState;
-    this.tabTitleWeight = tabTitleWeight;
-    this.tabTitleWeightState = tabTitleWeightState;
-
-    // TAB INDICATOR PROPERTIES
-    this.tabIndicator = tabIndicator;
-    this.tabIndicatorColor = tabIndicatorColor;
-    this.tabIndicatorFullWidth = tabIndicatorFullWidth ?? false;
-    this.tabIndicatorHeight = tabIndicatorHeight ?? 2;
-
-    // TAB OTHER PROPERTIES
-    this.tabMode = tabMode;
-    this.tabInlineLabel = tabInlineLabel ?? false;
-    this.onVisibleIconWhenTabSelected = onVisibleIconWhenTabSelected;
-    this.onVisibleTitleWhenTabSelected = onVisibleTitleWhenTabSelected;
-    return this;
-  }
-
-  double get tabMarginStart {
-    return _tabMarginStart ?? tabMarginHorizontal ?? tabMargin;
-  }
-
-  double get tabMarginEnd {
-    return _tabMarginEnd ?? tabMarginHorizontal ?? tabMargin;
-  }
-
-  double get tabMarginTop {
-    return _tabMarginTop ?? tabMarginVertical ?? tabMargin;
-  }
-
-  double get tabMarginBottom {
-    return _tabMarginBottom ?? tabMarginVertical ?? tabMargin;
-  }
-}
-
-class TabItem {
-  final int index;
-  final String title;
-  final ValueState<String>? titleState;
-  final dynamic icon;
-  final ValueState<dynamic>? iconState;
-
-  const TabItem({
-    required this.index,
-    this.icon,
-    this.iconState,
-    this.title = "",
-    this.titleState,
-  });
-}
-
-enum TabIndicatorGravity { bottom, center, top, stretch }
-
-enum TabIndicatorAnimationMode { linear, elastic, fade }
-
-enum TabMode { scrollable, fixed, auto }
-
-enum TabGravity { fill, center, start }

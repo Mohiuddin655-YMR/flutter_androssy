@@ -5,21 +5,27 @@ class _ViewState<T extends ViewController> extends State<YMRView<T>> {
 
   @override
   void initState() {
-    controller = widget.controller ?? widget.initController();
-    controller.setNotifier(setState);
-    controller = widget.attachController(controller);
-    widget.onInit(context, controller);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.onReady(context, controller);
-    });
     super.initState();
+    if (mounted){
+      controller = widget.controller ?? widget.initController();
+      controller.setNotifier(setState);
+      controller.isMountable = mounted;
+      controller = widget.attachController(controller);
+      widget.onInit(context, controller);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.onReady(context, controller);
+      });
+    }
   }
 
   @override
   void didUpdateWidget(covariant YMRView<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    controller = widget.controller ?? widget.initController();
+    controller.setNotifier(setState);
+    controller.isMountable = mounted;
     controller = widget.attachController(controller);
     widget.onUpdateWidget(context, controller, oldWidget);
-    super.didUpdateWidget(oldWidget);
   }
 
   @override

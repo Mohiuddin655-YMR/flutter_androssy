@@ -1,3 +1,11 @@
+## 0.3.32
+
+* TabLayout update
+
+## 0.3.31
+
+* View mounted mode setup
+
 ## 0.3.29
 
 * Edit text text updating fixed
