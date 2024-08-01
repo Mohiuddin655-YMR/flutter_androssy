@@ -5,7 +5,7 @@ import '../view/view.dart';
 part 'controller.dart';
 part 'extension.dart';
 
-class ViewObserver<T> extends YMRView<Observer<T>> {
+class ViewObserver<T> extends BaseView<Observer<T>> {
   final Widget Function(BuildContext context, T value) builder;
 
   const ViewObserver({
@@ -26,9 +26,6 @@ class ViewObserver<T> extends YMRView<Observer<T>> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../view/view.dart';
 
-class StreamView<T> extends YMRView<StreamViewController> {
+typedef OnStreamViewBuilder<T> = Widget Function(
+  BuildContext context,
+  T? controller,
+);
+
+class StreamView<T> extends BaseView<StreamViewController> {
   final Stream<T> stream;
-  final OnViewBuilder<T> builder;
+  final OnStreamViewBuilder<T> builder;
 
   const StreamView({
     /// ROOT PROPERTIES
@@ -25,9 +30,6 @@ class StreamView<T> extends YMRView<StreamViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -183,7 +185,7 @@ class StreamView<T> extends YMRView<StreamViewController> {
 class StreamViewController extends ViewController {
   @override
   StreamViewController fromView(
-    YMRView<ViewController> view,
+    BaseView<ViewController> view,
   ) {
     super.fromView(view);
     return this;

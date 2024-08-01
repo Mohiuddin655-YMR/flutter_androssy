@@ -1306,7 +1306,9 @@ class EditTextController extends TextViewController {
     if (autoDisposeMode) dispose();
   }
 
+  @override
   void dispose() {
+    super.dispose();
     removeFocusListener();
     _editor.dispose();
     _node.dispose();

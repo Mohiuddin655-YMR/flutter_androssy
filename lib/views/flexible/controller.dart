@@ -14,7 +14,7 @@ class FlexibleViewController extends ViewController {
 
   @override
   FlexibleViewController fromView(
-    YMRView<ViewController> view, {
+    BaseView<ViewController> view, {
     Widget? flexible,
     FlexPosition? flexPosition,
     FlexVisibleType? visibleType,

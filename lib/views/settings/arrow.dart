@@ -12,9 +12,9 @@ class SettingsTailingArrow extends StatelessWidget {
   Widget build(BuildContext context) {
     final config = controller.arrowConfig;
     if (config.arrow != null) return config.arrow!;
-    return RawIconView(
+    return AndrossyIcon(
       icon: config.icon ?? Icons.arrow_forward_ios_rounded,
-      tint: config.color ?? Colors.grey.withOpacity(0.5),
+      color: config.color ?? Colors.grey.withOpacity(0.5),
       size: config.size ?? 24,
     );
   }

@@ -1,10 +1,10 @@
 part of 'view.dart';
 
-class Content {
+class ContentViewItem {
   final String? title;
   final String? body;
 
-  Content({
+  ContentViewItem({
     this.title,
     this.body,
   });

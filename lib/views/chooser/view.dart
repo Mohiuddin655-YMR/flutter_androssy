@@ -4,7 +4,9 @@ import '../view/view.dart';
 
 part 'controller.dart';
 
-class ChooserView<T> extends YMRView<ChooserViewController<T>> {
+typedef OnViewItemClickListener<T> = void Function(BuildContext contex, T item);
+
+class ChooserView<T> extends BaseView<ChooserViewController<T>> {
   final int currentIndex;
   final WrapAlignment itemAlignment;
   final Clip itemClipBehavior;
@@ -39,9 +41,6 @@ class ChooserView<T> extends YMRView<ChooserViewController<T>> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

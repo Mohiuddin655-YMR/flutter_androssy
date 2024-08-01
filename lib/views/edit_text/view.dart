@@ -5,7 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_androssy/core.dart';
+import 'package:flutter_androssy_kits/widgets.dart';
+
+import '../../utils/value_state.dart';
+import '../../utils/view_error.dart';
+import '../../utils/view_roots.dart';
+import '../text/view.dart';
 
 part 'controller.dart';
 part 'drawable_state.dart';
@@ -13,6 +18,7 @@ part 'floating_visibility.dart';
 part 'footer.dart';
 part 'header.dart';
 part 'highlight_text.dart';
+part 'icon.dart';
 part 'typedefs.dart';
 part 'underline.dart';
 
@@ -162,9 +168,6 @@ class EditText<T extends EditTextController> extends TextView<T> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -553,12 +556,12 @@ class EditText<T extends EditTextController> extends TextView<T> {
             if (drawableStartBuilder != null)
               drawableStartBuilder!(context, controller)
             else
-              IconView(
+              _Icon(
                 visibility: controller.drawableStart != null,
                 icon: controller.drawableStart,
                 size: controller.drawableStartSize,
                 tint: controller.drawableStartTint ?? defaultColor,
-                marginCustom: controller.drawableStartSpace,
+                margin: controller.drawableStartSpace,
               ),
             Expanded(
               child: TextField(
@@ -647,12 +650,12 @@ class EditText<T extends EditTextController> extends TextView<T> {
             else if (drawableEndBuilder != null)
               drawableEndBuilder!(context, controller)
             else
-              IconView(
+              _Icon(
                 visibility: controller.drawableEnd != null,
                 icon: controller.drawableEnd,
                 size: controller.drawableEndSize,
                 tint: controller.drawableEndTint ?? defaultColor,
-                marginCustom: controller.drawableEndSpace,
+                margin: controller.drawableEndSpace,
                 onToggleClick:
                     controller.drawableEndAsEye ? controller.onChangeEye : null,
               ),

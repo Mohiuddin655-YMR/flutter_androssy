@@ -4,7 +4,7 @@ import '../view/view.dart';
 
 typedef OnPageChangeListener = void Function(int index);
 
-class ViewPager extends YMRView<ViewPagerController> {
+class ViewPager extends BaseView<ViewPagerController> {
   final OnPageChangeListener? onPageChange;
   final List<Widget> items;
 
@@ -27,9 +27,6 @@ class ViewPager extends YMRView<ViewPagerController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -199,7 +196,7 @@ class ViewPagerController extends ViewController {
 
   @override
   ViewPagerController fromView(
-    YMRView<ViewController> view, {
+    BaseView<ViewController> view, {
     List<Widget>? items,
     OnPageChangeListener? onPageChange,
   }) {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../text/view.dart';
 import '../view/view.dart';
 
-class TitledView extends YMRView<TitledViewController> {
+class TitledView extends BaseView<TitledViewController> {
   /// TITLE CONTENTS
   final String? title;
   final Color? titleColor;
@@ -40,9 +40,6 @@ class TitledView extends YMRView<TitledViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

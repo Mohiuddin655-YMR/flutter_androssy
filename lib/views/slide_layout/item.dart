@@ -35,6 +35,7 @@ class _ItemState<T> extends State<_Item<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final position = controller.counterPosition.position;
     final items = controller.items;
     final size = controller.size;
     return AspectRatio(
@@ -50,35 +51,40 @@ class _ItemState<T> extends State<_Item<T>> {
               return widget.itemBuilder(context, index, items[index]);
             },
           ),
-          ViewObserver(
-            visibility: controller.counterVisible,
-            positionType: controller.counterPosition,
-            observer: controller.index,
-            builder: (context, value) {
-              if (controller.counterBuilder != null) {
-                return controller.counterBuilder!(
-                  context,
-                  value,
-                  controller.size,
-                  controller.item,
-                );
-              } else {
-                return TextView(
-                  gravity: Alignment.center,
-                  controller: tvCounter,
-                  background: Colors.black.withOpacity(0.75),
-                  borderRadius: 25,
-                  margin: 12,
-                  paddingVertical: 8,
-                  paddingHorizontal: 12,
-                  text: controller.countingText(value + 1, size),
-                  textColor: Colors.white,
-                  textSize: 12,
-                  maxLines: 1,
-                  visibility: size > 1,
-                );
-              }
-            },
+          Positioned(
+            top: position.top,
+            bottom: position.bottom,
+            left: position.left,
+            right: position.right,
+            child: ViewObserver(
+              visibility: controller.counterVisible,
+              observer: controller.index,
+              builder: (context, value) {
+                if (controller.counterBuilder != null) {
+                  return controller.counterBuilder!(
+                    context,
+                    value,
+                    controller.size,
+                    controller.item,
+                  );
+                } else {
+                  return TextView(
+                    gravity: Alignment.center,
+                    controller: tvCounter,
+                    background: Colors.black.withOpacity(0.75),
+                    borderRadius: 25,
+                    margin: 12,
+                    paddingVertical: 8,
+                    paddingHorizontal: 12,
+                    text: controller.countingText(value + 1, size),
+                    textColor: Colors.white,
+                    textSize: 12,
+                    maxLines: 1,
+                    visibility: size > 1,
+                  );
+                }
+              },
+            ),
           ),
         ],
       ),

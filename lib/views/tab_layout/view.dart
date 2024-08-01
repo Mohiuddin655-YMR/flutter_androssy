@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/value_state.dart';
 import '../tab/view.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-
 part 'enums.dart';
-
 part 'tab.dart';
-
 part 'typedefs.dart';
 
-class TabLayout extends YMRView<TabLayoutController> {
+class TabLayout extends BaseView<TabLayoutController> {
   /// BASE PROPERTIES
   final TabController tabController;
   final int initialIndex;
@@ -66,9 +64,6 @@ class TabLayout extends YMRView<TabLayoutController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

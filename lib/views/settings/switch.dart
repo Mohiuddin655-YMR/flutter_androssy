@@ -10,7 +10,7 @@ class SettingsTailingSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SwitchButton(
+    return AndrossySwitch(
       value: controller.activated,
       config: controller.switchConfig,
     );

@@ -4,7 +4,7 @@ import '../view/view.dart';
 
 part 'controller.dart';
 
-class StackLayout<T extends StackLayoutController> extends YMRView<T> {
+class StackLayout<T extends StackLayoutController> extends BaseView<T> {
   final Alignment layoutGravity;
 
   final List<Widget> children;
@@ -28,9 +28,6 @@ class StackLayout<T extends StackLayoutController> extends YMRView<T> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

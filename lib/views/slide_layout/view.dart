@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_androssy/widgets.dart';
+
+import '../../utils/view_position.dart';
+import '../observer/view.dart';
+import '../text/view.dart';
+import '../view/view.dart';
 
 part 'controller.dart';
 part 'item.dart';
 part 'typedefs.dart';
 
-class SlideLayout<T> extends YMRView<SlideLayoutController<T>> {
+class SlideLayout<T> extends BaseView<SlideLayoutController<T>> {
   final OnSlideLayoutCounterBuilder<T>? counterBuilder;
   final OnSlideLayoutCounterHandler? counterHandler;
   final ViewPositionType? counterPosition;
@@ -34,9 +38,6 @@ class SlideLayout<T> extends YMRView<SlideLayoutController<T>> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

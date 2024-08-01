@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_androssy/extensions.dart';
-import 'package:flutter_androssy/extensions/theme.dart';
 
-import '../linear_layout/view.dart';
+import '../../extensions/theme.dart';
+import '../../utils/value_state.dart';
 import '../text/view.dart';
-import '../view/view.dart';
 
 part 'alignment.dart';
 part 'controller.dart';
@@ -55,9 +53,6 @@ class CheckmarkView extends TextView<CheckmarkViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -279,27 +274,28 @@ class CheckmarkView extends TextView<CheckmarkViewController> {
       onChanged: (value) => controller.onNotifyToggleWithActivator(),
     );
 
-    return LinearLayout(
+    return SizedBox(
       width: double.infinity,
-      orientation: Axis.horizontal,
-      crossGravity: controller.checkboxAlignment.isTopMode
-          ? CrossAxisAlignment.start
-          : controller.checkboxAlignment.isBottomMode
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.center,
-      children: [
-        if (controller._isStart) child,
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: controller._isStart ? controller.spaceBetween : 0,
-              right: !controller._isStart ? controller.spaceBetween : 0,
+      child: Row(
+        crossAxisAlignment: controller.checkboxAlignment.isTopMode
+            ? CrossAxisAlignment.start
+            : controller.checkboxAlignment.isBottomMode
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.center,
+        children: [
+          if (controller._isStart) child,
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: controller._isStart ? controller.spaceBetween : 0,
+                right: !controller._isStart ? controller.spaceBetween : 0,
+              ),
+              child: super.attach(context, controller)!,
             ),
-            child: super.attach(context, controller)!,
           ),
-        ),
-        if (!controller._isStart) child,
-      ],
+          if (!controller._isStart) child,
+        ],
+      ),
     );
   }
 }

@@ -1,13 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_androssy/extensions.dart';
+import 'package:flutter_androssy_kits/widgets.dart';
 
+import '../../utils/value_state.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-part 'painter.dart';
-part 'raw.dart';
 
-class TextView<T extends TextViewController> extends YMRView<T> {
+class TextView<T extends TextViewController> extends BaseView<T> {
   final int maxCharacters;
   final int? maxLines;
 
@@ -46,7 +46,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final TextStyle? textStyle;
   final ValueState<TextStyle>? textStyleState;
   final TextWidthBasis textWidthBasis;
-  final OnViewClickListener? onTextClick;
+  final ValueChanged<BuildContext>? onTextClick;
 
   ///PREFIX
   final FontStyle? prefixFontStyle;
@@ -67,7 +67,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final TextStyle? prefixTextStyle;
   final ValueState<TextStyle>? prefixTextStyleState;
   final bool prefixTextVisible;
-  final OnViewClickListener? onPrefixClick;
+  final ValueChanged<BuildContext>? onPrefixClick;
 
   ///SUFFIX
   final FontStyle? suffixFontStyle;
@@ -88,7 +88,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
   final TextStyle? suffixTextStyle;
   final ValueState<TextStyle>? suffixTextStyleState;
   final bool suffixTextVisible;
-  final OnViewClickListener? onSuffixClick;
+  final ValueChanged<BuildContext>? onSuffixClick;
 
   const TextView({
     /// ROOT PROPERTIES
@@ -109,9 +109,6 @@ class TextView<T extends TextViewController> extends YMRView<T> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -330,7 +327,7 @@ class TextView<T extends TextViewController> extends YMRView<T> {
 
   @override
   Widget? attach(BuildContext context, T controller) {
-    return RawTextView(
+    return AndrossyText(
       ellipsis: controller.ellipsis,
       letterSpacing: controller.letterSpacing,
       lineHeight: controller.spacingFactor,

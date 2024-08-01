@@ -40,20 +40,20 @@ class CheckmarkConfig {
     );
   }
 
-  MaterialStateProperty<Color?>? fillColor(SettingsViewController controller) {
+  WidgetStateProperty<Color?>? fillColor(SettingsViewController controller) {
     if (fillColorState != null) {
-      return MaterialStateProperty.all(
+      return WidgetStateProperty.all(
         fillColorState?.fromController(controller),
       );
     }
     return null;
   }
 
-  MaterialStateProperty<Color?>? overlayColor(
+  WidgetStateProperty<Color?>? overlayColor(
     SettingsViewController controller,
   ) {
     if (overlayColorState != null) {
-      return MaterialStateProperty.all(
+      return WidgetStateProperty.all(
         overlayColorState?.fromController(controller),
       );
     }

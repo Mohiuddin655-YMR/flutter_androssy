@@ -1,33 +1,24 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_androssy_kits/widgets.dart';
 
 import '../view/view.dart';
 
 part 'controller.dart';
-part 'image_config_network.dart';
-part 'image_type.dart';
-part 'image_type_extensions.dart';
-part 'raw.dart';
 part 'typedefs.dart';
 
-class ImageView<T extends ImageViewController> extends YMRView<T> {
+class ImageView<T extends ImageViewController> extends BaseView<T> {
   final bool? cacheMode;
   final dynamic image;
   final Color? tint;
   final BlendMode? tintMode;
-  final ImageType? imageType;
+  final AndrossyImageType? imageType;
   final dynamic placeholder;
   final Color? placeholderTint;
   final BlendMode? placeholderTintMode;
-  final ImageType? placeholderType;
+  final AndrossyImageType? placeholderType;
   final BoxFit? scaleType;
-  final ImageConfigNetwork? networkImageConfig;
+  final AndrossyNetworkImageConfig? networkImageConfig;
 
   const ImageView({
     /// ROOT PROPERTIES
@@ -48,9 +39,6 @@ class ImageView<T extends ImageViewController> extends YMRView<T> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -198,7 +186,7 @@ class ImageView<T extends ImageViewController> extends YMRView<T> {
 
   @override
   Widget? attach(BuildContext context, T controller) {
-    return RawImageView(
+    return AndrossyImage(
       width: controller.width,
       height: controller.height,
       cacheMode: controller.cacheMode,

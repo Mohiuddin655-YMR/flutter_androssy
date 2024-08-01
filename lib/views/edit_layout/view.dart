@@ -27,9 +27,6 @@ class EditLayout<T extends EditLayoutController> extends LinearLayout<T> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

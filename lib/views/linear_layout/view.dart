@@ -7,7 +7,7 @@ part 'extensions.dart';
 part 'gravity.dart';
 part 'typedefs.dart';
 
-class LinearLayout<T extends LinearLayoutController> extends YMRView<T> {
+class LinearLayout<T extends LinearLayoutController> extends BaseView<T> {
   final LayoutGravity? layoutGravity;
   final CrossAxisAlignment? crossGravity;
   final MainAxisAlignment? mainGravity;
@@ -38,9 +38,6 @@ class LinearLayout<T extends LinearLayoutController> extends YMRView<T> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

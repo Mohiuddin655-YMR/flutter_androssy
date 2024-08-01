@@ -57,22 +57,16 @@ class ViewListener extends StatelessWidget {
     if (controller.isToggleClickable) {
       controller.onNotifyToggleWithActivator();
     } else {
-      controller.onClickHandler != null
-          ? controller.onClickHandler?.call(controller)
-          : controller.onClick?.call(context);
+      controller.onClick?.call(context);
     }
   }
 
   void _onDoubleClick(BuildContext context) {
-    controller.onDoubleClickHandler != null
-        ? controller.onDoubleClickHandler?.call(controller)
-        : controller.onDoubleClick?.call(context);
+    controller.onDoubleClick?.call(context);
   }
 
   void _onLongClick(BuildContext context) {
-    controller.onLongClickHandler != null
-        ? controller.onLongClickHandler?.call(controller)
-        : controller.onLongClick?.call(context);
+    controller.onLongClick?.call(context);
   }
 }
 

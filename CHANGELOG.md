@@ -1,3 +1,7 @@
+## 1.0.0-alpha1
+
+* Alpha version
+
 ## 0.3.33
 
 * FlexibleView child property added

@@ -69,9 +69,9 @@ class SettingsViewController extends ViewController {
     onNotifyWithCallback(() => checkmarkConfig = value);
   }
 
-  SwitchConfig switchConfig = const SwitchConfig();
+  AndrossySwitchConfig switchConfig = const AndrossySwitchConfig();
 
-  void setSwitchConfig(SwitchConfig value) {
+  void setSwitchConfig(AndrossySwitchConfig value) {
     onNotifyWithCallback(() => switchConfig = value);
   }
 

@@ -31,20 +31,19 @@ class EditLayoutController extends LinearLayoutController {
   void _config() {
     _items = children.where((e) {
       if (e is EditText) {
-        return e.controller is EditTextController &&
-            e.controller!.onValidator != null;
+        return e.controller.onValidator != null;
       } else if (e is EditLayout) {
-        return e.controller is EditLayoutController;
+        return e.controller.onValidator != null;
       } else {
         return false;
       }
     });
     _checks = _items.map((e) {
       if (e is EditText) {
-        return e.controller!;
+        return e.controller;
       }
       if (e is EditLayout) {
-        return e.controller!;
+        return e.controller;
       }
     }).toSet();
     if (_initial && onValid != null) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../view/view.dart';
 
-class ToggleBuilder extends YMRView<ToggleBuilderController> {
+class ToggleBuilder extends BaseView<ToggleBuilderController> {
   final Widget Function(BuildContext context, bool value) builder;
 
   const ToggleBuilder({
@@ -24,9 +24,6 @@ class ToggleBuilder extends YMRView<ToggleBuilderController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

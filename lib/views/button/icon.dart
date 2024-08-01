@@ -11,22 +11,32 @@ class _Icon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconView(
-      visibility: visible,
-      marginStart: !controller.isCenterText && controller.isEndIconVisible
-          ? controller.iconSpace
-          : null,
-      marginEnd: !controller.isCenterText && controller.isStartIconVisible
-          ? controller.iconSpace
-          : null,
-      positionType: controller.isCenterText
-          ? controller.isEndIconVisible
-              ? ViewPositionType.right
-              : ViewPositionType.left
-          : null,
-      icon: controller.icon,
-      tint: controller.iconTint,
-      size: controller.iconSize,
+    Widget child = Padding(
+      padding: EdgeInsets.only(
+        left: !controller.isCenterText && controller.isEndIconVisible
+            ? controller.iconSpace
+            : 0,
+        right: !controller.isCenterText && controller.isStartIconVisible
+            ? controller.iconSpace
+            : 0,
+      ),
+      child: AndrossyIcon(
+        icon: controller.icon,
+        color: controller.iconTint,
+        size: controller.iconSize,
+      ),
     );
+    if (controller.isCenterText) {
+      child = Positioned(
+        left: controller.isEndIconVisible ? null : 0,
+        right: controller.isEndIconVisible ? 0 : null,
+        child: child,
+      );
+    }
+    if (visible) {
+      return child;
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }

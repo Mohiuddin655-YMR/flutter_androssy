@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_androssy_kits/widgets.dart';
 
-import '../../extensions.dart';
-import '../../widgets/settings_tile.dart';
-import '../icon/view.dart';
-import '../switch/view.dart';
-import '../text/view.dart';
+import '../../extensions/theme.dart';
+import '../../utils/value_state.dart';
 import '../view/view.dart';
 
 part 'arrow.dart';
@@ -12,11 +10,12 @@ part 'arrow_config.dart';
 part 'checkmark.dart';
 part 'checkmark_config.dart';
 part 'controller.dart';
+part 'icon.dart';
 part 'switch.dart';
 part 'tail.dart';
 part 'type.dart';
 
-class SettingsView extends YMRView<SettingsViewController> {
+class SettingsView extends BaseView<SettingsViewController> {
   final dynamic icon;
   final double? iconSize;
   final Color? iconTint;
@@ -26,7 +25,7 @@ class SettingsView extends YMRView<SettingsViewController> {
   final SettingsViewType type;
   final ArrowConfig arrowConfig;
   final CheckmarkConfig checkmarkConfig;
-  final SwitchConfig switchConfig;
+  final AndrossySwitchConfig switchConfig;
   final EdgeInsets contentPadding;
 
   const SettingsView({
@@ -48,9 +47,6 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -192,7 +188,7 @@ class SettingsView extends YMRView<SettingsViewController> {
   })  : type = SettingsViewType.none,
         arrowConfig = const ArrowConfig(),
         checkmarkConfig = const CheckmarkConfig(),
-        switchConfig = const SwitchConfig();
+        switchConfig = const AndrossySwitchConfig();
 
   const SettingsView.arrow({
     /// ROOT PROPERTIES
@@ -213,9 +209,6 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -350,7 +343,7 @@ class SettingsView extends YMRView<SettingsViewController> {
     this.arrowConfig = const ArrowConfig(),
   })  : type = SettingsViewType.arrow,
         checkmarkConfig = const CheckmarkConfig(),
-        switchConfig = const SwitchConfig();
+        switchConfig = const AndrossySwitchConfig();
 
   const SettingsView.checkmark({
     /// ROOT PROPERTIES
@@ -371,9 +364,6 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -508,7 +498,7 @@ class SettingsView extends YMRView<SettingsViewController> {
     this.checkmarkConfig = const CheckmarkConfig(),
   })  : type = SettingsViewType.checkmark,
         arrowConfig = const ArrowConfig(),
-        switchConfig = const SwitchConfig();
+        switchConfig = const AndrossySwitchConfig();
 
   const SettingsView.switcher({
     /// ROOT PROPERTIES
@@ -529,9 +519,6 @@ class SettingsView extends YMRView<SettingsViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -663,7 +650,7 @@ class SettingsView extends YMRView<SettingsViewController> {
     required this.title,
     this.summary,
     this.summaryState,
-    this.switchConfig = const SwitchConfig(),
+    this.switchConfig = const AndrossySwitchConfig(),
   })  : type = SettingsViewType.switcher,
         arrowConfig = const ArrowConfig(),
         checkmarkConfig = const CheckmarkConfig();
@@ -684,26 +671,26 @@ class SettingsView extends YMRView<SettingsViewController> {
 
     return Opacity(
       opacity: controller.enabled ? 1 : 0.5,
-      child: SettingTile(
+      child: AndrossySetting(
         background: Colors.transparent,
         rippleColor: Colors.transparent,
         pressedColor: Colors.transparent,
         padding: contentPadding,
-        header: RawTextView(
+        header: AndrossyText(
           text: controller.title,
           textStyle: controller.titleStyle ?? mTT.titleMedium,
         ),
-        body: TextView(
+        body: AndrossyText(
           visibility: controller.summary?.isNotEmpty ?? false,
           text: controller.summary,
           textStyle: controller.summaryStyle ?? mTT.titleSmall,
         ),
-        leading: IconView(
+        leading: _Icon(
           visibility: controller.icon != null,
           icon: controller.icon,
           size: controller.iconSize ?? context.iconTheme.size ?? 24,
           tint: controller.iconTint ?? context.iconTheme.color,
-          marginEnd: 24,
+          margin: const EdgeInsets.only(right: 24),
         ),
         tailing: controller.type == SettingsViewType.none
             ? null

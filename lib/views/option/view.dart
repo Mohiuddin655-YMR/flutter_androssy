@@ -2,9 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../../utils/view_roots.dart';
 import '../view/view.dart';
 
 typedef OptionViewItemBuilder<T> = Widget Function(T item, bool selected);
+
+typedef OptionViewItemClickListener<T> = void Function(
+    BuildContext contex, T item);
 
 class OptionViewBuilderController<T> extends ViewController {
   int currentIndex = 0;
@@ -91,14 +95,15 @@ class OptionViewBuilderController<T> extends ViewController {
     super.onNotifyWithCallback(() => spaceBetween = value);
   }
 
-  OnViewItemClickListener<T>? _onItemClick;
+  OptionViewItemClickListener<T>? _onItemClick;
 
-  OnViewItemClickListener<T>? get onItemClick => enabled ? _onItemClick : null;
+  OptionViewItemClickListener<T>? get onItemClick =>
+      enabled ? _onItemClick : null;
 
-  set onItemClick(OnViewItemClickListener<T>? listener) =>
+  set onItemClick(OptionViewItemClickListener<T>? listener) =>
       _onItemClick ??= listener;
 
-  void setOnItemClickListener(OnViewItemClickListener<T> listener) {
+  void setOnItemClickListener(OptionViewItemClickListener<T> listener) {
     _onItemClick = listener;
   }
 
@@ -109,14 +114,14 @@ class OptionViewBuilderController<T> extends ViewController {
   }
 }
 
-class OptionViewBuilder<T> extends YMRView<OptionViewBuilderController<T>> {
+class OptionViewBuilder<T> extends BaseView<OptionViewBuilderController<T>> {
   final int currentIndex;
   final int? itemCount;
   final double spaceBetween;
 
   final List<T> items;
   final OptionViewItemBuilder<T> builder;
-  final OnViewItemClickListener<T>? onItemClick;
+  final OptionViewItemClickListener<T>? onItemClick;
 
   const OptionViewBuilder({
     /// ROOT PROPERTIES
@@ -137,9 +142,6 @@ class OptionViewBuilder<T> extends YMRView<OptionViewBuilderController<T>> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

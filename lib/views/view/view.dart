@@ -2,51 +2,34 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_androssy/widgets.dart';
 
-import '../../widgets/widget_wrapper.dart';
+import '../../utils/value_state.dart';
+import '../../utils/view_error.dart';
+import '../../utils/view_listener_effect.dart';
+import '../../utils/view_position.dart';
+import '../../utils/view_roots.dart';
+import '../../utils/view_shape.dart';
+import 'raw.dart';
 
 part 'controller.dart';
-
-part 'decoration.dart';
-
-part 'typedefs.dart';
-
-part 'value_state.dart';
-
-part 'value_state_type.dart';
-
 part 'view_corner_radius.dart';
-
-part 'view_error.dart';
-
 part 'view_listener.dart';
-
-part 'view_listener_effect.dart';
-
-part 'view_position.dart';
-
-part 'view_position_type.dart';
-
-part 'view_recognizer.dart';
-
-part 'view_roots.dart';
-
 part 'view_scrolling_type.dart';
-
 part 'view_shadow_type.dart';
 
-part 'view_shape.dart';
+typedef OnViewActivator = Future<bool> Function(bool running, dynamic value);
+typedef OnViewChangeListener<T> = void Function(T value);
+typedef OnViewClickListener = void Function(BuildContext context);
+typedef OnViewErrorListener = String? Function(ViewError error);
+typedef OnViewHoverListener = void Function(bool value);
+typedef OnViewToggleListener = void Function(bool value);
+typedef OnViewValidListener = void Function(bool value);
+typedef OnViewValidatorListener = bool Function(String value);
 
-part 'view_state.dart';
-
-part 'view_toggle_content.dart';
-
-class YMRView<T extends ViewController> extends StatefulWidget {
+class BaseView<T extends ViewController> extends StatefulWidget {
   /// ROOT PROPERTIES
-  final T? controller;
+  final T? _controller;
 
   /// CALLBACK PROPERTIES
   final OnViewActivator? onActivator;
@@ -60,8 +43,6 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   final ViewClickEffect? clickEffect;
   final OnViewClickListener? onClick, onDoubleClick, onLongClick;
   final OnViewToggleListener? onToggleClick;
-  final OnViewNotifyListener<T>? onClickHandler, onDoubleClickHandler;
-  final OnViewNotifyListener<T>? onLongClickHandler;
 
   /// BACKDROP PROPERTIES
   final ImageFilter? backdropFilter;
@@ -159,7 +140,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
 
   final Widget? child;
 
-  const YMRView({
+  const BaseView({
     /// ROOT PROPERTIES
     super.key,
 
@@ -168,9 +149,6 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.onClick,
     this.onDoubleClick,
     this.onLongClick,
-    this.onClickHandler,
-    this.onDoubleClickHandler,
-    this.onLongClickHandler,
     this.onHover,
     this.onToggleClick,
 
@@ -182,7 +160,7 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     this.onValidator,
 
     ///BASE PROPERTIES
-    this.controller,
+    T? controller,
     this.absorbMode,
     this.activated,
     this.background,
@@ -309,7 +287,9 @@ class YMRView<T extends ViewController> extends StatefulWidget {
     /// OPTIONAL PROPERTIES
     this.wrapper,
     this.child,
-  });
+  }) : _controller = controller;
+
+  T get controller => _controller ?? initController();
 
   T initController() => ViewController() as T;
 
@@ -340,8 +320,227 @@ class YMRView<T extends ViewController> extends StatefulWidget {
   void onChangeDependencies(BuildContext context, T controller) {}
 
   @mustCallSuper
-  void onDispose(BuildContext context, T controller) => controller._dispose();
+  void onDispose(BuildContext context, T controller) => controller.dispose();
 
   @override
-  State<YMRView<T>> createState() => _ViewState<T>();
+  State<BaseView<T>> createState() => _State<T>();
+}
+
+class _State<T extends ViewController> extends State<BaseView<T>> {
+  late T controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = widget.attachController(widget.controller);
+    widget.onInit(context, controller);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onReady(context, controller);
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant BaseView<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    widget.onUpdateWidget(context, controller, oldWidget);
+  }
+
+  @override
+  void didChangeDependencies() {
+    widget.onChangeDependencies(context, controller);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    widget.onDispose(context, controller);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget._controller != null) {
+      return ListenableBuilder(
+        listenable: controller,
+        builder: (context, _) {
+          controller.context = context;
+          return _View(
+            controller: controller,
+            attach: widget.attach,
+            builder: widget.build,
+            root: widget.root,
+          );
+        },
+      );
+    }
+    return _View(
+      controller: controller,
+      attach: widget.attach,
+      builder: widget.build,
+      root: widget.root,
+    );
+  }
+}
+
+class _View<T extends ViewController> extends StatelessWidget {
+  final T controller;
+  final Widget? Function(BuildContext _, T __) attach;
+  final Widget Function(BuildContext _, T __, Widget ___) builder;
+  final Widget Function(BuildContext _, T __, Widget ___) root;
+
+  const _View({
+    super.key,
+    required this.controller,
+    required this.attach,
+    required this.builder,
+    required this.root,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    controller.context = context;
+
+    /// INITIAL
+    Widget child = const SizedBox();
+
+    /// STYLES
+    if (controller.roots.view) {
+      final root = controller.roots;
+      final isCircular = controller.isCircular;
+      final isRadius = controller.isBorderRadius;
+      final isRippleMode = controller.isInkWellMode;
+      final isMargin = controller.isMargin;
+      final isConstraints = controller.isConstraints;
+
+      final borderRadius = !isRippleMode && isRadius && !isCircular
+          ? controller.borderRadius
+          : null;
+
+      child = Container(
+        alignment: controller.gravity,
+        clipBehavior: root.decoration && !isRippleMode
+            ? controller.clipBehavior
+            : Clip.none,
+        width: controller.width,
+        height: controller.height,
+        transform: controller.transform,
+        transformAlignment: controller.transformGravity,
+        constraints: isConstraints
+            ? BoxConstraints(
+                maxWidth: controller.widthMax,
+                minWidth: controller.widthMin,
+                maxHeight: controller.heightMax,
+                minHeight: controller.heightMin,
+              )
+            : null,
+        decoration: root.decoration
+            ? BoxDecoration(
+                backgroundBlendMode: controller.backgroundBlendMode,
+                border: controller.isBorder ? controller.boxBorder : null,
+                borderRadius: isCircular ? null : borderRadius,
+                color: root.background && !isRippleMode
+                    ? controller.background
+                    : null,
+                gradient: controller.backgroundGradient,
+                image: controller.backgroundImage,
+                boxShadow: controller.shadows,
+                shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+              )
+            : null,
+        foregroundDecoration: root.decoration
+            ? BoxDecoration(
+                backgroundBlendMode: controller.foregroundBlendMode,
+                borderRadius: borderRadius,
+                color: controller.foreground,
+                gradient: controller.foregroundGradient,
+                image: controller.foregroundImage,
+                shape: isCircular ? BoxShape.circle : BoxShape.rectangle,
+              )
+            : null,
+        margin: isMargin && !isRippleMode ? controller.margin : null,
+        padding: controller.isPadding && !controller.isScrollable
+            ? controller.padding
+            : null,
+        child: child,
+      );
+    }
+
+    /// CALLBACKS
+    if (controller.isClickMode) {
+      child = ViewListener(
+        controller: controller,
+        child: child,
+      );
+    }
+    return AndrossyView(
+      visible: controller.visible,
+      scrollable: controller.isScrollable,
+      scrollController: controller.scrollController,
+      scrollingType: controller.scrollingType,
+      orientation: controller.orientation,
+      padding: controller.padding,
+      backdropFilter: controller.backdropFilter,
+      backdropMode: controller.backdropMode,
+      roots: controller.roots,
+      isCircular: controller.isCircular,
+      isBorderRadius: controller.isBorderRadius,
+      isMargin: controller.isMargin,
+      isConstraints: controller.isConstraints,
+      borderRadius: controller.borderRadius,
+      animationEnabled: controller.animationEnabled,
+      animation: controller.animation,
+      animationType: controller.animationType,
+      gravity: controller.gravity,
+      clipBehavior: controller.clipBehavior,
+      width: controller.width,
+      height: controller.height,
+      transform: controller.transform,
+      transformGravity: controller.transformGravity,
+      widthMax: controller.widthMax,
+      widthMin: controller.widthMin,
+      heightMax: controller.heightMax,
+      heightMin: controller.heightMin,
+      backgroundBlendMode: controller.backgroundBlendMode,
+      foregroundBlendMode: controller.foregroundBlendMode,
+      isBorder: controller.isBorder,
+      boxBorder: controller.boxBorder,
+      attach: (_) => attach(_, controller),
+      builder: (_, __) => builder(_, controller, __),
+      root: (_, __) => root(_, controller, __),
+      background: controller.background,
+      backgroundGradient: controller.backgroundGradient,
+      backgroundImage: controller.backgroundImage,
+      shadows: controller.shadows,
+      foreground: controller.foreground,
+      foregroundGradient: controller.foregroundGradient,
+      foregroundImage: controller.foregroundImage,
+      margin: controller.margin,
+      isPadding: controller.isPadding,
+      isScrollable: controller.isScrollable,
+      isOpacity: controller.isOpacity,
+      opacity: controller.opacity,
+      opacityAlwaysIncludeSemantics: controller.opacityAlwaysIncludeSemantics,
+      onNotifyWrapper: controller.isWrapper ? controller.onNotifyWrapper : null,
+      absorbMode: controller.absorbMode,
+      isClickMode: controller.isClickMode,
+      isDimensional: controller.isDimensional,
+      dimensionRatio: controller.dimensionRatio,
+      isFlexible: controller.isExpendable,
+      flex: controller.flex,
+      isPositional: controller.isPositional,
+      position: controller.position,
+      elevation: controller.elevation,
+      maxSize: controller.maxSize,
+      isInkWellMode: controller.isInkWellMode,
+      rippleColor: controller.rippleColor,
+      hoverColor: controller.hoverColor,
+      pressedColor: controller.pressedColor,
+      clickEffect: controller.clickEffect,
+      onClick: controller.onClick,
+      onDoubleClick: controller.onDoubleClick,
+      onLongClick: controller.onLongClick,
+      onNotifyHover: controller.onNotifyHover,
+      onNotifyToggle: controller.onNotifyToggle,
+    );
+  }
 }

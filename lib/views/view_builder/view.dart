@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../view/view.dart';
 
-class ViewBuilder extends YMRView<ViewBuilderController> {
+typedef OnViewIndexBuilder = Widget Function(BuildContext context, int index);
+
+class ViewBuilder extends BaseView<ViewBuilderController> {
   final int currentIndex;
   final OnViewIndexBuilder builder;
 
@@ -25,9 +27,6 @@ class ViewBuilder extends YMRView<ViewBuilderController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

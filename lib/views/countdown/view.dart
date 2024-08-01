@@ -8,7 +8,7 @@ part 'controller.dart';
 part 'extensions.dart';
 part 'typedefs.dart';
 
-class CountdownView extends YMRView<CountdownViewController> {
+class CountdownView extends BaseView<CountdownViewController> {
   final bool initialStartMode;
   final Duration target;
   final Duration decrement;
@@ -37,9 +37,6 @@ class CountdownView extends YMRView<CountdownViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

@@ -27,17 +27,9 @@ class ImageViewController extends ViewController {
     onNotifyWithCallback(() => imageTintMode = value);
   }
 
-  ImageType _imageType = ImageType.detect;
+  AndrossyNetworkImageConfig? networkImageConfig;
 
-  set imageType(ImageType value) => _imageType = value;
-
-  void setImageType(ImageType value) {
-    onNotifyWithCallback(() => imageType = value);
-  }
-
-  ImageConfigNetwork? networkImageConfig;
-
-  void setNetworkImageConfig(ImageConfigNetwork? value) {
+  void setNetworkImageConfig(AndrossyNetworkImageConfig? value) {
     onNotifyWithCallback(() => networkImageConfig = value);
   }
 
@@ -59,14 +51,6 @@ class ImageViewController extends ViewController {
     onNotifyWithCallback(() => placeholderTintMode = value);
   }
 
-  ImageType _placeholderType = ImageType.detect;
-
-  set placeholderType(ImageType value) => _placeholderType = value;
-
-  void setPlaceholderType(ImageType value) {
-    onNotifyWithCallback(() => placeholderType = value);
-  }
-
   BoxFit? scaleType;
 
   void setScaleType(BoxFit? value) {
@@ -83,25 +67,24 @@ class ImageViewController extends ViewController {
     _image = view.image;
     imageTint = view.tint;
     imageTintMode = view.tintMode;
-    _imageType = view.imageType ?? ImageType.detect;
-    _placeholderType = view.placeholderType ?? ImageType.detect;
     return this;
   }
 
   dynamic get image => isPlaceholder ? placeholder : _image;
 
-  ImageType get type => isPlaceholder ? placeholderType : imageType;
+  AndrossyImageType get type => isPlaceholder ? placeholderType : imageType;
 
   bool get isPlaceholder {
     final data = _image;
     final x = data is String ? data.isEmpty : false;
-    final y = imageType == ImageType.detect || imageType == ImageType.unknown;
+    final y = imageType == AndrossyImageType.detect ||
+        imageType == AndrossyImageType.unknown;
     return x || y;
   }
 
-  ImageType get imageType => ImageType.from(_image, _imageType);
+  AndrossyImageType get imageType => AndrossyImageType.from(_image);
 
-  ImageType get placeholderType {
-    return ImageType.from(placeholder, _placeholderType);
+  AndrossyImageType get placeholderType {
+    return AndrossyImageType.from(placeholder);
   }
 }

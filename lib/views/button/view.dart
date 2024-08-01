@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_androssy_kits/widgets.dart';
 
-import '../icon/view.dart';
+import '../../utils/value_state.dart';
 import '../text/view.dart';
-import '../view/view.dart';
 
 part 'alignment.dart';
 part 'controller.dart';
@@ -42,9 +42,6 @@ class Button<T extends ButtonController> extends TextView<T> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_androssy_kits/widgets.dart';
 
-import '../icon/view.dart';
+import '../../utils/value_state.dart';
 import '../text/view.dart';
-import '../view/view.dart';
 
 part 'controller.dart';
 part 'model.dart';
@@ -63,9 +63,6 @@ class DropdownView<T extends Object>
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -252,9 +249,9 @@ class DropdownView<T extends Object>
                     if (leadingIconBuilder != null) {
                       return leadingIconBuilder!(context);
                     } else {
-                      return RawIconView(
+                      return AndrossyIcon(
                         icon: controller.leadingIcon,
-                        tint: controller.leadingIconTint,
+                        color: controller.leadingIconTint,
                         size: controller.leadingIconSize ?? 18,
                       );
                     }
@@ -267,10 +264,10 @@ class DropdownView<T extends Object>
                     if (trailingIconBuilder != null) {
                       return trailingIconBuilder!(context);
                     } else {
-                      return RawIconView(
+                      return AndrossyIcon(
                         icon: controller.trailingIcon ??
                             Icons.keyboard_arrow_down,
-                        tint: controller.trailingIconTint,
+                        color: controller.trailingIconTint,
                         size: controller.trailingIconSize ?? 18,
                       );
                     }
@@ -283,10 +280,10 @@ class DropdownView<T extends Object>
                     if (trailingSelectedIconBuilder != null) {
                       return trailingSelectedIconBuilder!(context);
                     } else {
-                      return RawIconView(
+                      return AndrossyIcon(
                         icon: controller.trailingSelectedIcon ??
                             Icons.keyboard_arrow_up,
-                        tint: controller.trailingSelectedIconTint,
+                        color: controller.trailingSelectedIconTint,
                         size: controller.trailingSelectedIconSize ?? 18,
                       );
                     }
@@ -305,7 +302,7 @@ class DropdownView<T extends Object>
             contentPadding: EdgeInsets.zero,
           ),
           menuStyle: MenuStyle(
-            padding: MaterialStateProperty.all(EdgeInsets.zero),
+            padding: WidgetStateProperty.all(EdgeInsets.zero),
           ),
           dropdownMenuEntries: items.map((e) {
             return DropdownMenuEntry<T>(

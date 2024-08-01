@@ -5,22 +5,22 @@ class ImageLayoutController<T> extends ViewController {
   ImageLayoutFrameRatioBuilder? frameRatioBuilder;
   Color? itemBackground;
   double spaceBetween = 4;
-  ImageType? imageType;
+  AndrossyImageType? imageType;
   List<T> items = [];
   dynamic placeholder;
-  ImageType? placeholderType;
+  AndrossyImageType? placeholderType;
 
   @override
   ImageLayoutController<T> fromView(
-    YMRView<ViewController> view, {
+    BaseView<ViewController> view, {
     double? frameRatio,
     ImageLayoutFrameRatioBuilder? frameBuilder,
     Color? itemBackground,
     double? itemSpace,
-    ImageType? itemType,
+    AndrossyImageType? itemType,
     List<T>? items,
     dynamic placeholder,
-    ImageType? placeholderType,
+    AndrossyImageType? placeholderType,
   }) {
     super.fromView(view);
     this.frameRatio = frameRatio;

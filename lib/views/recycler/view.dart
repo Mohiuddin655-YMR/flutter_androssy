@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/view_roots.dart';
 import '../linear_layout/view.dart';
-import '../view/view.dart';
 
-typedef RecyclerViewItemBuilder<T> = Widget Function(int index, T item);
+typedef OnRecyclerViewChangeListener<T> = void Function(T value);
+typedef OnRecyclerViewItemBuilder<T> = Widget Function(int index, T item);
 
 class RecyclerView<T> extends LinearLayout<RecyclerViewController<T>> {
   final List<T> items;
@@ -12,7 +13,7 @@ class RecyclerView<T> extends LinearLayout<RecyclerViewController<T>> {
 
   final double spaceBetween;
   final RecyclerLayoutType layoutType;
-  final RecyclerViewItemBuilder<T> builder;
+  final OnRecyclerViewItemBuilder<T> builder;
 
   const RecyclerView({
     /// ROOT PROPERTIES
@@ -33,9 +34,6 @@ class RecyclerView<T> extends LinearLayout<RecyclerViewController<T>> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -311,7 +309,7 @@ class RecyclerViewController<T> extends LinearLayoutController {
 
   double spaceBetween = 0;
   RecyclerLayoutType layoutType = RecyclerLayoutType.linear;
-  OnViewChangeListener? onPagingListener;
+  OnRecyclerViewChangeListener? onPagingListener;
 
   /// ROOT START
   set itemCount(int? value) => _itemCount = value;

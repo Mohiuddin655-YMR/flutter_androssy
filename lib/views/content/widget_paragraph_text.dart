@@ -2,7 +2,7 @@ part of 'view.dart';
 
 class _ParagraphText extends StatelessWidget {
   final ContentViewController controller;
-  final Content content;
+  final ContentViewItem content;
   final bool showDot;
 
   const _ParagraphText({

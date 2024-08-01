@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_androssy/extensions/theme.dart';
+import 'package:flutter_androssy_kits/widgets.dart';
 
-import '../../widgets/rating_bar.dart';
-import '../../widgets/rating_indicator.dart';
-import '../icon/view.dart';
+import '../../extensions/theme.dart';
+import '../../utils/value_state.dart';
 import '../view/view.dart';
 
-class RatingView extends YMRView<RatingViewController> {
+class RatingView extends BaseView<RatingViewController> {
   /// BASE PROPERTIES
   final bool allowHalfRating;
   final bool draggable;
@@ -51,9 +50,6 @@ class RatingView extends YMRView<RatingViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -218,7 +214,7 @@ class RatingView extends YMRView<RatingViewController> {
     var mRC = controller.ratedColor ?? context.primaryColor;
     var mUC = controller.ratedColor ?? context.primaryColor.withAlpha(50);
     if (type == RatingViewType.indicator) {
-      return RatingIndicator(
+      return AndrossyRatingIndicator(
         direction: controller.orientation,
         itemCount: controller.itemCount,
         itemPadding: controller.itemPadding,
@@ -228,14 +224,14 @@ class RatingView extends YMRView<RatingViewController> {
         textDirection: controller.textDirection,
         unratedColor: controller.unratedColor ?? mUC,
         itemBuilder: (context, rating) {
-          return RawIconView(
+          return AndrossyIcon(
             icon: controller.ratedIcon ?? Icons.star,
-            tint: controller.ratedColor ?? mRC,
+            color: controller.ratedColor ?? mRC,
           );
         },
       );
     } else {
-      return RawRatingView(
+      return AndrossyRating(
         allowHalfRating: controller.allowHalfRating,
         direction: controller.orientation,
         ignoreGestures: controller.ignoreGestures,
@@ -253,18 +249,18 @@ class RatingView extends YMRView<RatingViewController> {
         unratedColor: controller.unratedColor ?? mUC,
         updateOnDrag: controller.draggable,
         wrapAlignment: controller.wrapAlignment,
-        ratingIcon: RatingIcon(
-          full: RawIconView(
+        icon: AndrossyRatingIcon(
+          full: AndrossyIcon(
             icon: controller.ratedIcon ?? Icons.star,
-            tint: controller.ratedColor ?? mRC,
+            color: controller.ratedColor ?? mRC,
           ),
-          half: RawIconView(
+          half: AndrossyIcon(
             icon: controller.halfRatedIcon ?? Icons.star_half,
-            tint: controller.halfRatedColor ?? mRC.withOpacity(0.75),
+            color: controller.halfRatedColor ?? mRC.withOpacity(0.75),
           ),
-          empty: RawIconView(
+          empty: AndrossyIcon(
             icon: controller.unratedIcon ?? Icons.star_outline,
-            tint: controller.unratedColor ?? mRC.withOpacity(0.5),
+            color: controller.unratedColor ?? mRC.withOpacity(0.5),
           ),
         ),
         onRatingChange: controller._changeRating,

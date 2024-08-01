@@ -11,7 +11,7 @@ typedef NullableViewBuilder = Widget Function(
   Widget parent,
 );
 
-class NullableView extends YMRView<NullableViewController> {
+class NullableView extends BaseView<NullableViewController> {
   ///IMAGE
   final dynamic icon;
   final NullableViewBuilder? iconBuilder;
@@ -98,9 +98,6 @@ class NullableView extends YMRView<NullableViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

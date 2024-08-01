@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_androssy_kits/widgets.dart';
 
-import '../icon/view.dart';
+import '../../utils/value_state.dart';
 import '../view/view.dart';
 
-class TabView extends YMRView<TabViewController> {
+class TabView extends BaseView<TabViewController> {
   final Color? contentColor;
   final ValueState<Color>? contentColorState;
   final dynamic icon;
@@ -43,9 +44,6 @@ class TabView extends YMRView<TabViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -253,7 +251,7 @@ class TabViewController extends ViewController {
 
   @override
   TabViewController fromView(
-    YMRView<ViewController> view, {
+    BaseView<ViewController> view, {
     Color? contentColor,
     ValueState<Color>? contentColorState,
     dynamic icon,
@@ -377,10 +375,10 @@ class _TabViewIcon extends StatelessWidget {
         right: controller._iconSpacingX,
         bottom: controller._iconSpacingY,
       ),
-      child: RawIconView(
+      child: AndrossyIcon(
         icon: controller.icon,
         size: controller.iconSize,
-        tint: controller.iconTint,
+        color: controller.iconTint,
       ),
     );
   }

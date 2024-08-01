@@ -9,7 +9,7 @@ class _Text extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RawTextView(
+    return AndrossyText(
       text: controller.text,
       textAlign: TextAlign.center,
       textColor: controller.color,

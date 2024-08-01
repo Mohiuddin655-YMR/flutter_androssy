@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/widget_wrapper.dart';
+import '../view/render.dart';
 import '../view/view.dart';
 
-class WrapperView extends YMRView<WrapperViewController> {
+class WrapperView extends BaseView<WrapperViewController> {
   @override
   Widget get child => super.child ?? const SizedBox();
 
@@ -26,9 +26,6 @@ class WrapperView extends YMRView<WrapperViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -178,8 +175,8 @@ class WrapperView extends YMRView<WrapperViewController> {
 
   @override
   Widget? attach(BuildContext context, WrapperViewController controller) {
-    return WidgetWrapper(
-      wrapper: controller.onNotify,
+    return AndrossyRender(
+      render: controller.onNotify,
       child: child,
     );
   }

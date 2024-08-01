@@ -1,12 +1,73 @@
 part of 'view.dart';
 
-class ViewController {
+class ViewController extends ChangeNotifier {
   /// BASE PROPERTIES
   BuildContext? context;
 
   ViewRoots roots = const ViewRoots();
 
   ThemeData get theme => context != null ? Theme.of(context!) : ThemeData();
+
+  void get _notify => notifyListeners();
+
+  @mustCallSuper
+  ViewController fromView(BaseView view) {
+    child = view.child;
+    roots = view.initRootProperties();
+
+    /// ROOT PROPERTIES
+    _initCallback(view);
+    _initClick(view);
+
+    /// BASE PROPERTIES
+    _initAnimations(view);
+    _initConditions(view);
+    _initDecorations(view);
+    _initEffects(view);
+    _initDimens(view);
+
+    /// OTHER PROPERTIES
+    _initBackdrop(view);
+    _initBorder(view);
+    _initBorderRadius(view);
+    _initIndicator(view);
+    _initMargin(view);
+    _initOpacity(view);
+    _initPadding(view);
+    _initShadow(view);
+    return this;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    return scrollController?.dispose();
+  }
+
+  void onNotify() => _notify;
+
+  void onNotifyWithCallback(VoidCallback callback) {
+    callback();
+    onNotify();
+  }
+
+  void onNotifyHover(bool status) {
+    hover = status;
+    onHover?.call(hover);
+    _notify;
+  }
+
+  void onNotifyWrapper(Size size) {
+    width = size.width;
+    height = size.height;
+    _notify;
+  }
+
+  void onNotifyToggle() {
+    activated = !activated;
+    onToggleClick?.call(activated);
+    _notify;
+  }
 
   void onNotifyActivator(
     dynamic data, {
@@ -77,7 +138,7 @@ class ViewController {
   void setOnValidatorListener(OnViewValidatorListener listener) =>
       _onValidator = listener;
 
-  void _initCallback(YMRView view) {
+  void _initCallback(BaseView view) {
     onActivator = view.onActivator;
     onChange = view.onChange;
     onError = view.onError;
@@ -90,18 +151,12 @@ class ViewController {
   ViewClickEffect? clickEffect;
   OnViewClickListener? _onClick, _onDoubleClick, _onLongClick;
   OnViewToggleListener? _onToggleClick;
-  OnViewNotifyListener? _onClickHandler, _onDoubleClickHandler;
-  OnViewNotifyListener? _onLongClickHandler;
 
-  bool get isClickable {
-    return onClick != null || onClickHandler != null || isToggleClickable;
-  }
+  bool get isClickable => onClick != null || isToggleClickable;
 
-  bool get isDoubleClickable {
-    return onDoubleClick != null || onDoubleClickHandler != null;
-  }
+  bool get isDoubleClickable => onDoubleClick != null;
 
-  bool get isLongClickable => onLongClick != null || onLongClickHandler != null;
+  bool get isLongClickable => onLongClick != null;
 
   bool get isClickMode {
     final isAnyClick = isClickable || isDoubleClickable || isLongClickable;
@@ -126,23 +181,6 @@ class ViewController {
   set onToggleClick(OnViewToggleListener? listener) =>
       _onToggleClick ??= listener;
 
-  OnViewNotifyListener? get onClickHandler => enabled ? _onClickHandler : null;
-
-  set onClickHandler(OnViewNotifyListener? listener) =>
-      _onClickHandler ??= listener;
-
-  OnViewNotifyListener? get onDoubleClickHandler =>
-      enabled ? _onDoubleClickHandler : null;
-
-  set onDoubleClickHandler(OnViewNotifyListener? listener) =>
-      _onDoubleClickHandler ??= listener;
-
-  OnViewNotifyListener? get onLongClickHandler =>
-      enabled ? _onLongClickHandler : null;
-
-  set onLongClickHandler(OnViewNotifyListener? listener) =>
-      _onLongClickHandler ??= listener;
-
   void setClickEffect(ViewClickEffect value) {
     onNotifyWithCallback(() => clickEffect = value);
   }
@@ -158,29 +196,15 @@ class ViewController {
   void setOnToggleClickListener(OnViewToggleListener listener) =>
       _onToggleClick = listener;
 
-  void setOnClickHandlerListener(OnViewNotifyListener listener) =>
-      _onClickHandler = listener;
-
-  void setOnDoubleClickHandlerListener(OnViewNotifyListener listener) =>
-      _onDoubleClickHandler = listener;
-
-  void setOnLongClickHandlerListener(OnViewNotifyListener listener) =>
-      _onLongClickHandler = listener;
-
-  void _initClick(YMRView view) {
+  void _initClick(BaseView view) {
     clickEffect = view.clickEffect;
     onClick = view.onClick;
     onDoubleClick = view.onDoubleClick;
     onLongClick = view.onLongClick;
-    onClickHandler = view.onClickHandler;
-    onDoubleClickHandler = view.onDoubleClickHandler;
-    onLongClickHandler = view.onLongClickHandler;
     onToggleClick = view.onToggleClick;
   }
 
   /// BACKDROP PROPERTIES
-
-  bool get isBackdropFilter => backdropFilter != null;
 
   ImageFilter? backdropFilter;
 
@@ -194,7 +218,7 @@ class ViewController {
     onNotifyWithCallback(() => backdropMode = value);
   }
 
-  void _initBackdrop(YMRView view) {
+  void _initBackdrop(BaseView view) {
     backdropFilter = view.backdropFilter;
     backdropMode = view.backdropMode;
   }
@@ -404,7 +428,7 @@ class ViewController {
     onNotifyWithCallback(() => borderStrokeAlign = value);
   }
 
-  void _initBorder(YMRView view) {
+  void _initBorder(BaseView view) {
     borderColor = view.borderColor;
     borderSize = view.borderSize;
     borderStart = view.borderStart;
@@ -538,7 +562,7 @@ class ViewController {
     onNotifyWithCallback(() => borderRadiusTRState = value);
   }
 
-  void _initBorderRadius(YMRView view) {
+  void _initBorderRadius(BaseView view) {
     borderRadiusAll = view.borderRadius;
     borderRadiusBL = view.borderRadiusBL;
     borderRadiusBR = view.borderRadiusBR;
@@ -561,9 +585,11 @@ class ViewController {
     onNotifyWithCallback(() => indicatorVisible = value);
   }
 
-  void _initIndicator(YMRView view) {
+  void _initIndicator(BaseView view) {
     indicatorVisible = view.indicatorVisible;
   }
+
+  int get indicatorHashCode => indicatorVisible.hashCode;
 
   /// MARGIN PROPERTIES
   double? marginValue;
@@ -650,7 +676,7 @@ class ViewController {
     onNotifyWithCallback(() => marginCustom = value);
   }
 
-  void _initMargin(YMRView view) {
+  void _initMargin(BaseView view) {
     marginValue = view.margin ?? 0;
     marginVertical = view.marginVertical;
     marginStart = view.marginStart;
@@ -686,7 +712,7 @@ class ViewController {
     onNotifyWithCallback(() => opacityAlwaysIncludeSemantics = value);
   }
 
-  void _initOpacity(YMRView view) {
+  void _initOpacity(BaseView view) {
     opacity = view.opacity;
     opacityState = view.opacityState;
     opacityAlwaysIncludeSemantics = view.opacityAlwaysIncludeSemantics;
@@ -783,7 +809,7 @@ class ViewController {
     onNotifyWithCallback(() => paddingCustom = value);
   }
 
-  void _initPadding(YMRView view) {
+  void _initPadding(BaseView view) {
     paddingValue = view.padding ?? 0;
     paddingStart = view.paddingStart;
     paddingEnd = view.paddingEnd;
@@ -794,31 +820,91 @@ class ViewController {
     paddingCustom = view.paddingCustom;
   }
 
-  @mustCallSuper
-  ViewController fromView(YMRView view) {
-    /// ROOT PROPERTIES
-    _initCallback(view);
-    _initClick(view);
+  /// Shadow properties
+  double shadow = 0;
 
-    /// OTHER PROPERTIES
-    _initBackdrop(view);
-    _initBorder(view);
-    _initBorderRadius(view);
-    _initIndicator(view);
-    _initMargin(view);
-    _initOpacity(view);
-    _initPadding(view);
+  List<BoxShadow>? get shadows {
+    return isShadow
+        ? [
+            BoxShadow(
+              color: shadowColor ?? Colors.black12,
+              blurRadius: shadowBlurRadius,
+              offset: isOverlayShadow
+                  ? Offset.zero
+                  : Offset(-shadowStart, -shadowTop),
+              blurStyle: shadowBlurStyle,
+              spreadRadius: shadowSpreadRadius,
+            ),
+            if (!isOverlayShadow)
+              BoxShadow(
+                color: shadowColor ?? Colors.black12,
+                blurRadius: shadowBlurRadius,
+                offset: Offset(shadowEnd, shadowBottom),
+                blurStyle: shadowBlurStyle,
+                spreadRadius: shadowSpreadRadius,
+              ),
+          ]
+        : null;
+  }
 
-    ///
-    ///
-    ///
-    ///
-    ///
-    hoverColor = view.hoverColor;
-    pressedColor = view.pressedColor;
-    rippleColor = view.rippleColor;
+  bool get isShadow {
+    final x = shadowStart + shadowEnd + shadowTop + shadowBottom;
+    return roots.shadow && (x > 0 || shadowType == ViewShadowType.overlay);
+  }
 
-    /// VIEW CONDITIONAL PROPERTIES
+  Color? shadowColor;
+
+  double shadowBlurRadius = 5;
+
+  BlurStyle shadowBlurStyle = BlurStyle.normal;
+
+  double shadowSpreadRadius = 0;
+
+  ViewShadowType shadowType = ViewShadowType.none;
+
+  double? shadowHorizontal;
+
+  double? shadowVertical;
+
+  double? _shadowStart;
+
+  double get shadowStart => _shadowStart ?? shadowHorizontal ?? shadow;
+
+  double? _shadowEnd;
+
+  double get shadowEnd => _shadowEnd ?? shadowHorizontal ?? shadow;
+
+  double? _shadowTop;
+
+  double get shadowTop => _shadowTop ?? shadowVertical ?? shadow;
+
+  double? _shadowBottom;
+
+  double get shadowBottom => _shadowBottom ?? shadowVertical ?? shadow;
+
+  ViewShape shape = ViewShape.rectangular;
+
+  void _initShadow(BaseView view) {
+    _shadowStart = view.shadowStart;
+    _shadowEnd = view.shadowEnd;
+    _shadowTop = view.shadowTop;
+    _shadowBottom = view.shadowBottom;
+    shadow = view.shadow ?? 0;
+    shadowHorizontal = view.shadowHorizontal;
+    shadowVertical = view.shadowVertical;
+    shadowColor = view.shadowColor;
+    shadowBlurRadius = view.shadowBlurRadius ?? 5;
+    shadowBlurStyle = view.shadowBlurStyle ?? BlurStyle.normal;
+    shadowSpreadRadius = view.shadowSpreadRadius ?? 0;
+    shadowType = view.shadowType ?? ViewShadowType.none;
+  }
+
+  void _initAnimations(BaseView view) {
+    animation = view.animation ?? 0;
+    animationType = view.animationType ?? Curves.linear;
+  }
+
+  void _initConditions(BaseView view) {
     absorbMode = view.absorbMode ?? false;
     activated = view.activated ?? false;
     enabled = view.enabled ?? true;
@@ -826,44 +912,21 @@ class ViewController {
     scrollable = view.scrollable ?? false;
     visible = view.visibility ?? true;
     wrapper = view.wrapper ?? false;
+  }
 
-    /// ANIMATION PROPERTIES
-    animation = view.animation ?? 0;
-    animationType = view.animationType ?? Curves.linear;
+  Matrix4? transform;
 
-    /// VIEW SIZE PROPERTIES
-    flex = view.flex ?? 0;
-    _dimensionRatio = view.dimensionRatio;
-    elevation = view.elevation ?? 0;
-    _width = view.width;
-    widthState = view.widthState;
-    _widthMax = view.widthMax;
-    _widthMin = view.widthMin;
-    _height = view.height;
-    heightState = view.heightState;
-    _heightMax = view.heightMax;
-    _heightMin = view.heightMin;
+  Alignment? transformGravity;
 
-    /// VIEW SHADOW PROPERTIES
-    shadowColor = view.shadowColor;
-    shadow = view.shadow ?? 0;
-    _shadowStart = view.shadowStart;
-    _shadowEnd = view.shadowEnd;
-    _shadowTop = view.shadowTop;
-    _shadowBottom = view.shadowBottom;
-    shadowHorizontal = view.shadowHorizontal;
-    shadowVertical = view.shadowVertical;
-    shadowBlurRadius = view.shadowBlurRadius ?? 5;
-    shadowBlurStyle = view.shadowBlurStyle ?? BlurStyle.normal;
-    shadowSpreadRadius = view.shadowSpreadRadius ?? 0;
-    shadowType = view.shadowType ?? ViewShadowType.none;
-
-    /// VIEW DECORATION PROPERTIES
+  void _initDecorations(BaseView view) {
     _background = view.background;
-    foreground = view.foreground;
     backgroundBlendMode = view.backgroundBlendMode;
-    foregroundBlendMode = view.foregroundBlendMode;
     _backgroundGradient = view.backgroundGradient;
+    backgroundState = view.backgroundState;
+    backgroundGradientState = view.backgroundGradientState;
+    backgroundImageState = view.backgroundImageState;
+    foreground = view.foreground;
+    foregroundBlendMode = view.foregroundBlendMode;
     foregroundGradient = view.foregroundGradient;
     _backgroundImage = view.backgroundImage;
     foregroundImage = view.foregroundImage;
@@ -878,17 +941,26 @@ class ViewController {
     transform = view.transform;
     transformGravity = view.transformGravity;
     transform = view.transform;
-    child = view.child;
+  }
 
-    /// Properties
-    roots = view.initRootProperties();
+  void _initDimens(BaseView view) {
+    elevation = view.elevation ?? 0;
+    flex = view.flex ?? 0;
+    _dimensionRatio = view.dimensionRatio;
+    _width = view.width;
+    widthState = view.widthState;
+    _widthMax = view.widthMax;
+    _widthMin = view.widthMin;
+    _height = view.height;
+    heightState = view.heightState;
+    _heightMax = view.heightMax;
+    _heightMin = view.heightMin;
+  }
 
-    /// Value States
-    backgroundState = view.backgroundState;
-    backgroundImageState = view.backgroundImageState;
-    backgroundGradientState = view.backgroundGradientState;
-
-    return this;
+  void _initEffects(BaseView view) {
+    hoverColor = view.hoverColor;
+    pressedColor = view.pressedColor;
+    rippleColor = view.rippleColor;
   }
 
   bool expandable = false;
@@ -1036,74 +1108,6 @@ class ViewController {
   }
 
   ViewScrollingType scrollingType = ViewScrollingType.none;
-
-  /// Shadow properties
-  double shadow = 0;
-
-  List<BoxShadow>? get shadows {
-    return isShadow
-        ? [
-            BoxShadow(
-              color: shadowColor ?? Colors.black12,
-              blurRadius: shadowBlurRadius,
-              offset: isOverlayShadow
-                  ? Offset.zero
-                  : Offset(-shadowStart, -shadowTop),
-              blurStyle: shadowBlurStyle,
-              spreadRadius: shadowSpreadRadius,
-            ),
-            if (!isOverlayShadow)
-              BoxShadow(
-                color: shadowColor ?? Colors.black12,
-                blurRadius: shadowBlurRadius,
-                offset: Offset(shadowEnd, shadowBottom),
-                blurStyle: shadowBlurStyle,
-                spreadRadius: shadowSpreadRadius,
-              ),
-          ]
-        : null;
-  }
-
-  bool get isShadow {
-    final x = shadowStart + shadowEnd + shadowTop + shadowBottom;
-    return roots.shadow && (x > 0 || shadowType == ViewShadowType.overlay);
-  }
-
-  Color? shadowColor;
-
-  double shadowBlurRadius = 5;
-
-  BlurStyle shadowBlurStyle = BlurStyle.normal;
-
-  double shadowSpreadRadius = 0;
-
-  ViewShadowType shadowType = ViewShadowType.none;
-
-  double? shadowHorizontal;
-
-  double? shadowVertical;
-
-  double? _shadowStart;
-
-  double get shadowStart => _shadowStart ?? shadowHorizontal ?? shadow;
-
-  double? _shadowEnd;
-
-  double get shadowEnd => _shadowEnd ?? shadowHorizontal ?? shadow;
-
-  double? _shadowTop;
-
-  double get shadowTop => _shadowTop ?? shadowVertical ?? shadow;
-
-  double? _shadowBottom;
-
-  double get shadowBottom => _shadowBottom ?? shadowVertical ?? shadow;
-
-  ViewShape shape = ViewShape.rectangular;
-
-  Matrix4? transform;
-
-  Alignment? transformGravity;
 
   /// default properties
   bool visible = true;
@@ -1403,46 +1407,4 @@ class ViewController {
     shape = value;
     _notify;
   }
-
-  /// notifier properties
-
-  bool isMountable = false;
-
-  OnViewNotifier? _notifier;
-
-  void get _notify {
-    if (_notifier != null && isMountable) {
-      _notifier?.call(() {});
-    }
-  }
-
-  void setNotifier(OnViewNotifier? notifier) => _notifier = notifier;
-
-  void onNotify() => _notify;
-
-  void onNotifyWithCallback(VoidCallback callback) {
-    if (_notifier != null && isMountable) {
-      _notifier?.call(callback);
-    }
-  }
-
-  void onNotifyHover(bool status) {
-    hover = status;
-    onHover?.call(hover);
-    _notify;
-  }
-
-  void onNotifyWrapper(Size size) {
-    width = size.width;
-    height = size.height;
-    _notify;
-  }
-
-  void onNotifyToggle() {
-    activated = !activated;
-    onToggleClick?.call(activated);
-    _notify;
-  }
-
-  void _dispose() => scrollController?.dispose();
 }

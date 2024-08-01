@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_androssy_kits/widgets.dart';
 
 import '../image/view.dart';
 import '../view/view.dart';
@@ -15,15 +16,15 @@ part 'layer_x6.dart';
 part 'layer_xn.dart';
 part 'typedefs.dart';
 
-class ImageLayout<T> extends YMRView<ImageLayoutController<T>> {
+class ImageLayout<T> extends BaseView<ImageLayoutController<T>> {
   final double? frameRatio;
   final ImageLayoutFrameRatioBuilder? frameRatioBuilder;
   final Color? itemBackground;
   final double? itemSpace;
-  final ImageType? itemType;
+  final AndrossyImageType? itemType;
   final List<T>? items;
   final dynamic placeholder;
-  final ImageType? placeholderType;
+  final AndrossyImageType? placeholderType;
 
   const ImageLayout({
     /// ROOT PROPERTIES
@@ -44,9 +45,6 @@ class ImageLayout<T> extends YMRView<ImageLayoutController<T>> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_androssy_kits/widgets.dart';
 
-import '../../extensions.dart';
-import '../icon/view.dart';
 import '../view/view.dart';
 
-part 'config.dart';
 part 'controller.dart';
-part 'extensions.dart';
-part 'raw.dart';
 
-class SwitchView extends YMRView<SwitchViewController> {
+class SwitchView extends BaseView<SwitchViewController> {
   final double size;
 
   final Color? activeThumbColor;
@@ -56,9 +52,6 @@ class SwitchView extends YMRView<SwitchViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -221,7 +214,7 @@ class SwitchView extends YMRView<SwitchViewController> {
 
   @override
   Widget? attach(context, controller) {
-    return SwitchButton(
+    return AndrossySwitch(
       activeThumbColor: activeThumbColor,
       activeThumbIcon: activeThumbIcon,
       activeThumbIconTint: activeThumbIconTint,

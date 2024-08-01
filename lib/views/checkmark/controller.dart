@@ -65,14 +65,14 @@ class CheckmarkViewController extends TextViewController {
     return v ?? context!.primaryColor;
   }
 
-  MaterialStateProperty<Color> get fillColorProperty {
-    return MaterialStateProperty.resolveWith((states) {
+  WidgetStateProperty<Color> get fillColorProperty {
+    return WidgetStateProperty.resolveWith((states) {
       return fillColor;
     });
   }
 
-  MaterialStateProperty<Color> get overlayColor {
-    return MaterialStateProperty.resolveWith((states) {
+  WidgetStateProperty<Color> get overlayColor {
+    return WidgetStateProperty.resolveWith((states) {
       return fillColor.withAlpha(overlayOpacity);
     });
   }

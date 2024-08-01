@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_androssy_kits/flutter_androssy_kits.dart';
 
-import '../text/view.dart';
 import '../view/view.dart';
 
-class ToolbarView extends YMRView<ToolbarViewController> {
+class ToolbarView extends BaseView<ToolbarViewController> {
   final List<Widget>? actions;
   final Color elevationColor;
   final IconThemeData? iconTheme;
@@ -17,7 +17,7 @@ class ToolbarView extends YMRView<ToolbarViewController> {
   final double? leadingIconSize;
   final double? leadingSize;
   final bool? leadingVisible;
-  final OnViewClickListener? onLeadingClick;
+  final ValueChanged<BuildContext>? onLeadingClick;
 
   ///STATUS BAR
   final Color? statusBarColor;
@@ -52,9 +52,6 @@ class ToolbarView extends YMRView<ToolbarViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -284,7 +281,7 @@ class ToolbarView extends YMRView<ToolbarViewController> {
               mainAxisSize: MainAxisSize.max,
               children: [controller.titleCustom!],
             )
-          : RawTextView(
+          : AndrossyText(
               text: controller.title,
               textSize: controller.titleSize,
               textColor: controller.titleColor,
@@ -311,7 +308,7 @@ class ToolbarViewController extends ViewController {
   double leadingIconSize = 24;
   double? leadingSize;
   bool leadingVisible = true;
-  OnViewClickListener? onLeadingClick;
+  ValueChanged<BuildContext>? onLeadingClick;
 
   ///STATUS BAR
   Color? _statusBarColor;

@@ -4,7 +4,7 @@ class ContentViewController extends ViewController {
   String? header;
   String? description;
   DotStyle dotStyle = DotStyle.bullet;
-  List<Content> paragraphs = [];
+  List<ContentViewItem> paragraphs = [];
   ContentStyle paragraphStyle = const ContentStyle();
   ContentStyle? _titleStyle;
 

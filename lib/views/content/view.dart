@@ -10,10 +10,10 @@ part 'widget_dotted_text.dart';
 part 'widget_dotted_texts.dart';
 part 'widget_paragraph_text.dart';
 
-class ContentView extends YMRView<ContentViewController> {
+class ContentView extends BaseView<ContentViewController> {
   final String? header;
   final String? description;
-  final List<Content>? paragraphs;
+  final List<ContentViewItem>? paragraphs;
   final ContentStyle? titleStyle;
   final ContentStyle? paragraphStyle;
   final DotStyle? dotStyle;
@@ -37,9 +37,6 @@ class ContentView extends YMRView<ContentViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -191,7 +188,7 @@ class ContentView extends YMRView<ContentViewController> {
       children: [
         if ((controller.description ?? "").isNotEmpty)
           _ParagraphText(
-            content: Content(
+            content: ContentViewItem(
               title: controller.header,
               body: controller.description,
             ),

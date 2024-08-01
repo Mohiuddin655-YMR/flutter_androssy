@@ -227,13 +227,13 @@ class TextViewController extends ViewController {
     onNotifyWithCallback(() => textWidthBasis = value);
   }
 
-  OnViewClickListener? _onTextClick;
+  ValueChanged<BuildContext>? _onTextClick;
 
-  set onTextClick(OnViewClickListener? value) => _onTextClick ??= value;
+  set onTextClick(ValueChanged<BuildContext>? value) => _onTextClick ??= value;
 
-  OnViewClickListener? get onTextClick => enabled ? _onTextClick : null;
+  ValueChanged<BuildContext>? get onTextClick => enabled ? _onTextClick : null;
 
-  void setOnTextClickListener(OnViewClickListener? listener) {
+  void setOnTextClickListener(ValueChanged<BuildContext>? listener) {
     _onTextClick = listener;
   }
 
@@ -356,13 +356,15 @@ class TextViewController extends ViewController {
     onNotifyWithCallback(() => prefixTextVisible = value);
   }
 
-  OnViewClickListener? _onPrefixClick;
+  ValueChanged<BuildContext>? _onPrefixClick;
 
-  set onPrefixClick(OnViewClickListener? value) => _onPrefixClick ??= value;
+  set onPrefixClick(ValueChanged<BuildContext>? value) =>
+      _onPrefixClick ??= value;
 
-  OnViewClickListener? get onPrefixClick => enabled ? _onPrefixClick : null;
+  ValueChanged<BuildContext>? get onPrefixClick =>
+      enabled ? _onPrefixClick : null;
 
-  void setOnPrefixClickListener(OnViewClickListener? listener) {
+  void setOnPrefixClickListener(ValueChanged<BuildContext>? listener) {
     _onPrefixClick = listener;
   }
 
@@ -485,13 +487,15 @@ class TextViewController extends ViewController {
     onNotifyWithCallback(() => suffixTextVisible = value);
   }
 
-  OnViewClickListener? _onSuffixClick;
+  ValueChanged<BuildContext>? _onSuffixClick;
 
-  OnViewClickListener? get onSuffixClick => enabled ? _onSuffixClick : null;
+  ValueChanged<BuildContext>? get onSuffixClick =>
+      enabled ? _onSuffixClick : null;
 
-  set onSuffixClick(OnViewClickListener? value) => _onSuffixClick ??= value;
+  set onSuffixClick(ValueChanged<BuildContext>? value) =>
+      _onSuffixClick ??= value;
 
-  void setOnSuffixClickListener(OnViewClickListener? listener) {
+  void setOnSuffixClickListener(ValueChanged<BuildContext>? listener) {
     _onSuffixClick = listener;
   }
 

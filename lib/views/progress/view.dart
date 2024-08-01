@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_androssy/extensions/theme.dart';
 
+import '../../extensions/theme.dart';
 import '../view/view.dart';
 
-class ProgressView extends YMRView<ProgressViewController> {
+class ProgressView extends BaseView<ProgressViewController> {
   final Color? progressBackground;
   final Color? progressForeground;
   final double progressStrokeWidth;
@@ -27,9 +27,6 @@ class ProgressView extends YMRView<ProgressViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

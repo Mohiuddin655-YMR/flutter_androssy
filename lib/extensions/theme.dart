@@ -12,7 +12,7 @@ class AppTheme {
 
   Color get primaryColorLight => I.primaryColorLight;
 
-  Color get backgroundColor => I.colorScheme.background;
+  Color get backgroundColor => scaffoldBackgroundColor;
 
   Color? get bottomAppBarColor => I.bottomAppBarTheme.color;
 

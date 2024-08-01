@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/value_state.dart';
+import '../../utils/view_position.dart';
+import '../../utils/view_roots.dart';
 import '../icon/view.dart';
 import '../linear_layout/view.dart';
 import '../text/view.dart';
@@ -10,7 +13,7 @@ part 'item.dart';
 part 'type.dart';
 part 'typedefs.dart';
 
-class NavigationView extends YMRView<NavigationViewController> {
+class NavigationView extends BaseView<NavigationViewController> {
   final int currentIndex;
   final double? iconSize;
   final ValueState<double>? iconSizeState;
@@ -66,9 +69,6 @@ class NavigationView extends YMRView<NavigationViewController> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,

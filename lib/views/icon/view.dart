@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_androssy/core.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_androssy_kits/widgets.dart';
 
+import '../../utils/value_state.dart';
 import '../view/view.dart';
 
 part 'controller.dart';
-part 'raw.dart';
-part 'type.dart';
 
-class IconView<T extends IconViewController> extends YMRView<T> {
+class IconView<T extends IconViewController> extends BaseView<T> {
   final bool isAutoFit;
   final bool isForAction;
   final BoxFit fit;
@@ -42,9 +40,6 @@ class IconView<T extends IconViewController> extends YMRView<T> {
     super.onDoubleClick,
     super.onLongClick,
     super.onToggleClick,
-    super.onClickHandler,
-    super.onDoubleClickHandler,
-    super.onLongClickHandler,
 
     ///BASE PROPERTIES
     super.absorbMode,
@@ -186,11 +181,11 @@ class IconView<T extends IconViewController> extends YMRView<T> {
 
   @override
   Widget? attach(BuildContext context, T controller) {
-    Widget child = RawIconView(
+    Widget child = AndrossyIcon(
       fit: controller.fit,
       icon: controller.icon,
       size: controller.iconSize,
-      tint: controller.tint,
+      color: controller.tint,
       tintMode: controller.tintMode,
     );
     if (isAutoFit) {
