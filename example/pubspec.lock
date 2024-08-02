@@ -260,15 +260,15 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.0.0-alpha2"
+    version: "1.0.0-alpha3"
   flutter_androssy_kits:
     dependency: transitive
     description:
       name: flutter_androssy_kits
-      sha256: d9a2c8aa7449daa8b9138ecf555a77fa2d325f5b9ce80a5d851ae8f145f02f5a
+      sha256: a12cd8bcd8c6d42b473f13ca73ab24ade70d8bc2a3d06dfaea1e252ae4d72676
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1-alpha1"
   flutter_app_navigator:
     dependency: "direct main"
     description:
